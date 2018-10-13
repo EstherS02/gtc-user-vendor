@@ -215,23 +215,24 @@ export function resend(req, res) {
 									return;
 								});
 						} else {
-
+							res.status(500).send("Internal server error");
 						}
 					})
 				} else {
 					return res.status(400).send("Failed to create.");
 				}
-			})
-				.catch(function(error) {
-					console.log('Error :::', error);
-					res.status(500).send("Internal server error");
-					return;
-				});
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				res.status(500).send("Internal server error");
+				return;
+			});
+		}else{
+			res.status(500).send("Mail is not Registered");
 		}
 	}).catch(function(error) {
 		console.log('Error :::', error);
 		res.status(500).send("Internal server error");
-		return
+		return;
 	});
 }
 
@@ -273,7 +274,6 @@ export function userAuthenticate(req, res) {
 				res.status(404).send("Not Fouond");
 				return;
 			}
-
 		})
 		.catch(function(error) {
 			console.log('Error :::', error);

@@ -26,9 +26,9 @@ export async function cartCalculation(userID, req, res) {
 	cart['coupon_applied'] = false;
 	cart['marketplace_summary'] = {};
 	cart['marketplace_products'] = {};
-	cart['grant_total'] = 0;
+	cart['grand_total'] = 0;
 	cart['discount_amount'] = 0;
-	cart['grant_total_with_discounted_amount'] = 0;
+	cart['grand_total_with_discounted_amount'] = 0;
 
 	const includeArray = [{
 		model: model['Product'],
@@ -235,10 +235,10 @@ export async function cartCalculation(userID, req, res) {
 
 			await Promise.all(Object.keys(cart['marketplace_summary']).map(async (key) => {
 				if (cart['marketplace_summary'].hasOwnProperty(key)) {
-					cart['grant_total'] += cart['marketplace_summary'][key].total;
+					cart['grand_total'] += cart['marketplace_summary'][key].total;
 				}
 			}));
-			cart['grant_total_with_discounted_amount'] = (cart['grant_total'] - cart['discount_amount']).toFixed(2);
+			cart['grand_total_with_discounted_amount'] = (cart['grand_total'] - cart['discount_amount']).toFixed(2);
 		}
 		return cart;
 	} catch (error) {
