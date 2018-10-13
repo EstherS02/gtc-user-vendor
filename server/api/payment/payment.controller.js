@@ -146,7 +146,8 @@ export function makePayment(req, res) {
 				var promises = [];
 				for (var i = 0; i < createdOrders.length; i++) {
 					createdOrders[i].order.order_status = orderStatus['FAILEDORDER'];
-					createdOrders[i].order.gtc_fees = 1.00;
+					createdOrders[i].order.last_updated_on = new Date();
+					// createdOrders[i].order.gtc_fees = 1.00;
 					promises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
 				}
 				Promise.all(promises).then(result => {
@@ -783,6 +784,7 @@ export function makePlanPayment(req, res) {
 			if(req.user.user_contact_email){
 				sendUpgrademail(req.body.plan_id, req.user);
 			}
+		}
 		}).then(function(paymentRow) {
 			if (vendorId != 0) {
 				vendorPlanBodyParam = {
