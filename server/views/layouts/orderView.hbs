@@ -364,8 +364,12 @@
 													 id="inputGroupSelect02">
 														<option disabled selected>{{objectKey orderStatus order.order_status}}</option>
 														{{#each orderStatus}}
-															{{#ifCond this ">=" ../order.order_status}}
-																<option value="{{this}}">{{objectKey ../orderStatus this}}</option>
+															{{#ifCond this "!=" ../orderStatus.CANCELLEDORDER}}
+																{{#ifCond this "!=" ../orderStatus.FAILEDORDER}}
+																	{{#ifCond this ">=" ../order.order_status}}
+																		<option value="{{this}}">{{objectKey ../orderStatus this}}</option>
+																	{{/ifCond}}
+																{{/ifCond}}
 															{{/ifCond}}
 														{{/each}}
 													</select>
@@ -434,7 +438,7 @@
 											</div>
 										</div>
 										<div class="col-md-2">
-											<button type="submit" class="btn btn-primary btn-sm">Change</button>
+											<button type="submit" class="btn btn-primary btn-sm">SUBMIT</button>
 										</div>
 									</div>
 

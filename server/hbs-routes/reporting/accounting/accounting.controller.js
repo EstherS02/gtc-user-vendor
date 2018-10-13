@@ -65,7 +65,7 @@ export function accounting(req, res) {
 
 	async.series({
 		cartInfo: function(callback) {
-			cartService.cartCalculation(LoggedInUser.id, req)
+			cartService.cartCalculation(LoggedInUser.id, req, res)
 				.then((cartResult) => {
 					return callback(null, cartResult);
 				}).catch((error) => {

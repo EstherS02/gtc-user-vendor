@@ -22,9 +22,7 @@ var vendor_id = {{{ DisplayJSON LoggedInUser.Vendor.id}}}
         $("#termsAndCondForm").submit(function (e) {
             e.preventDefault();
 
-            let input = $("#termsAndCondForm :input").filter(function (index, element) {
-                return $(element).val() != '';
-            }).serialize();
+            let input = $("#termsAndCondForm :input").serialize();
 
             var termsAndCondInput = input + '&vendor_id=' + vendor_id + '&status=' + 1;
             $.ajax({
@@ -36,8 +34,10 @@ var vendor_id = {{{ DisplayJSON LoggedInUser.Vendor.id}}}
                     $('#gtc-cart-alert .cart-message').text("Updated Successfully")
                     $("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function () {
                         $("#gtc-cart-alert").slideUp(100);
-                        // location.reload();
                     });
+					setTimeout(function() {
+						location.reload();
+					}, 1000);
                 },
                 error: function (error) {
                     $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
