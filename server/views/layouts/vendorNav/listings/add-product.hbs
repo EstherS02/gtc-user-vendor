@@ -315,10 +315,10 @@
 												{{else}}
 												<option disabled selected>Select Status</option>
 												{{/if}}
-												<option value="ACTIVE">Active</option>
-												<option value="INACTIVE">InActive</option>
-												<option value="SUSPENDED">Suspended</option>
-												<option value="SOLDOUT">Sold Out</option>
+												<option value="1">Active</option>
+												<option value="2">InActive</option>
+												<option value="7">Suspended</option>
+												<option value="8">Sold Out</option>
 												</select>
 											</div>
 										</div>
@@ -374,7 +374,7 @@
 									</div>
 								</div>
 								<div class="row">
-									{{#ifCond this.type '==' 'wholesale'}}
+									<!-- {{#ifCond this.type '==' 'wholesale'}}
 										<div class="col-lg-8">
 											<div class="form-group">
 												<label class="label-control">Add bulk order discount tier.</label>
@@ -422,7 +422,7 @@
 												</section>
 											</div>
 										</div>
-									{{/ifCond}}
+									{{/ifCond}} -->
 
 									<div class="col-lg-8" id="attributeDiv">
 										{{#if editProduct.ProductAttributes}}
@@ -571,7 +571,7 @@
 								<div class="col-lg-5">
 									<div class="input-group">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name='feature_status'>
-											<option value="ACTIVE">Active</option>
+											<option value="1">Active</option>
 										</select>
 									</div>
 								</div>

@@ -112,12 +112,18 @@ export function featureMany(req, res) {
 export async function create(req, res) {
 	var bodyParams = {};
 	var productMediaPromises = [];
+	var productAttributes = [];
+	var ProductAttributePromises = [];
 	var productModelName = "Product";
 	var productMediaModelName = "ProductMedia";
+	var productAttributeModelName = "ProductAttribute";
 
 	if (_.isEmpty(req.files)) {
 		return res.status(400).send("Minimum one product image required.");
 	}
+
+	if (!req.body.exclusive_sale)
+		req.body.exclusive_sale = 0;
 
 	req.checkBody('sku', 'Missing Query Param').notEmpty();
 	req.checkBody('product_name', 'Missing Query Param').notEmpty();
@@ -130,7 +136,6 @@ export async function create(req, res) {
 	req.checkBody('city', 'Missing Query Param').notEmpty();
 	req.checkBody('quantity_available', 'Missing Query Param').notEmpty();
 	req.checkBody('price', 'Missing Query Param').notEmpty();
-	req.checkBody('exclusive_sale', 'Missing Query Param').notEmpty();
 
 	if (req.body.marketplace_id === marketplace['WHOLESALE']) {
 		req.checkBody('marketplace_type_id', 'Missing Query Param').notEmpty();
@@ -165,6 +170,11 @@ export async function create(req, res) {
 		return;
 	}
 
+	if (req.body.product_attributes.length > 0) {
+		productAttributes = JSON.parse(req.body.product_attributes);
+		delete req.body.product_attributes;
+	}
+
 	bodyParams = req.body;
 	bodyParams['vendor_id'] = req.user.Vendor.id;
 	bodyParams['publish_date'] = new Date();
@@ -180,26 +190,59 @@ export async function create(req, res) {
 		if (!existsVendorSKU) {
 			const newProduct = await service.createRow(productModelName, bodyParams);
 			for (let key in req.files) {
-				if (req.files.hasOwnProperty(key)) {
-					const parsedFile = path.parse(req.files[key].originalFilename);
-					const timeInMilliSeconds = new Date().getTime();
-					const uploadPath = config.images_base_path + "/products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+				if (key == "product_base_image") {
+					if (req.files.hasOwnProperty(key)) {
+						const parsedFile = path.parse(req.files[key].originalFilename);
+						const timeInMilliSeconds = new Date().getTime();
+						const uploadPath = config.images_base_path + "/products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 
-					const productMediaUpload = await move(req.files[key].path, uploadPath);
-					if (productMediaUpload) {
-						productMediaPromises.push(service.createRow(productMediaModelName, {
-							product_id: newProduct.id,
-							type: 1,
-							url: config.imageUrlRewritePath.base + "products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext,
-							base_image: 1, //req.files[key].baseImage
-							status: status['ACTIVE'],
-							created_by: req.user.first_name,
-							created_on: new Date()
-						}));
+						const productMediaUpload = await move(req.files[key].path, uploadPath);
+						if (productMediaUpload) {
+							productMediaPromises.push(service.createRow(productMediaModelName, {
+								product_id: newProduct.id,
+								type: 1,
+								url: config.imageUrlRewritePath.base + "products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext,
+								base_image: 1,
+								status: status['ACTIVE'],
+								created_by: req.user.first_name,
+								created_on: new Date()
+							}));
+						}
+					}
+				} else {
+					if (req.files.hasOwnProperty(key)) {
+						const parsedFile = path.parse(req.files[key].originalFilename);
+						const timeInMilliSeconds = new Date().getTime();
+						const uploadPath = config.images_base_path + "/products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+
+						const productMediaUpload = await move(req.files[key].path, uploadPath);
+						if (productMediaUpload) {
+							productMediaPromises.push(service.createRow(productMediaModelName, {
+								product_id: newProduct.id,
+								type: 1,
+								url: config.imageUrlRewritePath.base + "products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext,
+								base_image: 0,
+								status: status['ACTIVE'],
+								created_by: req.user.first_name,
+								created_on: new Date()
+							}));
+						}	
 					}
 				}
 			}
 			Promise.all(productMediaPromises);
+			await Promise.all(productAttributes.map(async (productAttribute) => {
+				ProductAttributePromises.push(service.upsertRow(productAttributeModelName, {
+					product_id: newProduct.id,
+					attribute_id: productAttribute.attribute_id,
+					value: productAttribute.attribute_value,
+					status: status['ACTIVE']
+				}, {
+					product_id: newProduct.id,
+					attribute_id: productAttribute.attribute_id
+				}, req.user.first_name));
+			}));
+			Promise.all(ProductAttributePromises);
 			return res.status(201).send(newProduct);
 		} else {
 			return res.status(409).send("Stack keep unit already exists.");
