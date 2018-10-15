@@ -122,9 +122,6 @@ export async function create(req, res) {
 		return res.status(400).send("Minimum one product image required.");
 	}
 
-	if (!req.body.exclusive_sale)
-		req.body.exclusive_sale = 0;
-
 	req.checkBody('sku', 'Missing Query Param').notEmpty();
 	req.checkBody('product_name', 'Missing Query Param').notEmpty();
 	req.checkBody('status', 'Missing Query Param').notEmpty();
@@ -136,6 +133,7 @@ export async function create(req, res) {
 	req.checkBody('city', 'Missing Query Param').notEmpty();
 	req.checkBody('quantity_available', 'Missing Query Param').notEmpty();
 	req.checkBody('price', 'Missing Query Param').notEmpty();
+	req.checkBody('exclusive_sale', 'Missing Query Param').notEmpty();
 
 	if (req.body.marketplace_id === marketplace['WHOLESALE']) {
 		req.checkBody('marketplace_type_id', 'Missing Query Param').notEmpty();

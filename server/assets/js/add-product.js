@@ -4,55 +4,6 @@ if (discountLength) {
 	count = 0;
 }
 
-function addProduct(formDataObject) {
-	/*var obj = {};
-
-	console.log("attributeArr........",attributeArr);
-	console.log("imageArr............",imageArr);
-*/
-	/*if (attributeArr.length > 0)
-		obj.attributeArr = JSON.stringify(attributeArr);*/
-	/*if (discountArr.length > 0)
-		obj.discountArr = JSON.stringify(discountArr);*/
-	/*if (imageArr.length > 0)
-		obj.imageArr = JSON.stringify(imageArr);*/
-	
-	/*obj.marketplace_id = $('#marketplace_id').val();*/
-	/*let temp = $('#marketplace_id').val();
-
-	formDataObject.append('marketplace_id', temp);
-*/
-	/*$.ajax({
-		type: 'POST',
-		url: '/api/product/',
-		data: formDataObject,
-		cache: false,
-		processData: false,
-		contentType: false,
-		success: function(data) {
-			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-			$('#gtc-cart-alert .cart-message').text("Product Added Successfully")
-			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-				$("#gtc-cart-alert").slideUp(500);
-			});
-			$('.pip').empty();
-			$('.base_image').empty();
-			setTimeout(function() {
-				location.reload(true);
-			}, 3000);
-		},
-		error: function(error) {
-			$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-			$('#gtc-cart-alert .cart-message').text(error.responseText);
-			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-				$("#gtc-cart-alert").slideUp(500);
-			});
-			//$('.pip').empty();
-			//$('.base_image').empty();
-		}
-	})*/
-}
-
 function updateProduct(product_id, productInput) {
 
 	var obj = {};
@@ -496,6 +447,9 @@ $(document).ready(function() {
 				formData.append('product_media_'+i, file.cropperOutputImage, file.originalFileName);
 			});
 
+			if (formData.get('exclusive_sale') == null)
+				formData.append('exclusive_sale', 0);
+
 			if (!product_id){
 				$.ajax({
 					type: 'POST',
@@ -522,11 +476,8 @@ $(document).ready(function() {
 						$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
 							$("#gtc-cart-alert").slideUp(500);
 						});
-						//$('.pip').empty();
-						//$('.base_image').empty();
 					}
 				})
-				//addProduct(formData);
 			}else{
 				updateProduct(product_id, formData)
 			}
