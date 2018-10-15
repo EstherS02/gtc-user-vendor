@@ -41,6 +41,15 @@ function isGlobalObj() {
 				queryObj['id'] = req.gtcGlobalUserObj.userId;
 
 				model['User'].findOne({
+					include: [{
+						model: model['UserPlan'],
+						where: {
+							status: {
+								$eq: status['ACTIVE']
+							}
+						},
+						required: false,
+					}],
 					where: queryObj,
 					attributes: {
 						exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
