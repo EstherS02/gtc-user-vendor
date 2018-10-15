@@ -304,8 +304,6 @@
 													<td class="text_blue_color">
 														{{#ifCond this.order_status '==' ../orderStatusCode.DELIVEREDORDER}}
 														<a href="/refund/{{this.id}}"><i class="fas fa-credit-card"></i> Request Refund</a>
-														{{else ifCond this.order_status '==' ../orderStatusCode.RETURNEDORDER}}
-														Refund Issued
 														{{/ifCond}}
 													</td>
 													<td class="text_blue_color">
