@@ -767,7 +767,7 @@ export function makePlanPayment(req, res) {
 			});
 		}
 	}).then(function(paymentRow) {
-			if (vendorId != 0) {
+			if((vendorId != 0 && upgradingPlan != 5)) {
 				vendorPlanBodyParam = {
 					vendor_id: vendorId,
 					plan_id: req.body.plan_id,
