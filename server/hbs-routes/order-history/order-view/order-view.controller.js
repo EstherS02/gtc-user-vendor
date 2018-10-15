@@ -5,7 +5,7 @@ const _ = require('lodash');
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
-const orderStatus = require('../../../config/order_status');
+const orderStatusCode = require('../../../config/order_status');
 const status = require('../../../config/status');
 const service = require('../../../api/service');
 const cartObj = require('../../../api/cart/cart.controller');
@@ -177,7 +177,7 @@ export function orderView(req, res) {
                 orderItemsCount: results.orderItems.count,
                 seperatedItemsList: seperatedItems,
                 totalPriceList: totalPrice,
-                orderStatus: orderStatus,
+                orderStatusCode: orderStatusCode,
                 categories: results.categories,
                 cartheader:results.cartCounts,
 				bottomCategory: bottomCategory,
