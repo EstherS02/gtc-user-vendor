@@ -339,108 +339,109 @@
 							</tbody>
 						</table>
 					</div>
-					{{/each}} {{#ifCond this.type '==' 'sales-history'}}
-						<form id="orderStatusChange">
-							<div class="row">
-								<div class="col-md-3">
-									<p>
-										<b>Change Order Status:
-											<span class="text-danger">*</span>
-										</b>
-									</p>
-								</div>
-								<div class="col-md-5">
-									<div class="form-group">
-										<div class="input-group">
-											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status"
-												id="inputGroupSelect02">
-												<option disabled selected>{{objectKey orderStatus order.order_status}}</option>
-												{{#each orderStatus}}
-													{{#ifCond this "!=" ../orderStatus.CANCELLEDORDER}}
-														{{#ifCond this "!=" ../orderStatus.FAILEDORDER}}
-															{{#ifCond this "!=" ../orderStatus.RETURNEDORDER}}
-																{{#ifCond this ">=" ../order.order_status}}
-																	<option value="{{this}}">{{objectKey ../orderStatus this}}</option>
-																{{/ifCond}}
+				{{/each}}
+				{{#ifCond this.type '==' 'sales-history'}}
+					<form id="orderStatusChange">
+						<div class="row">
+							<div class="col-md-3">
+								<p>
+									<b>Change Order Status:
+										<span class="text-danger">*</span>
+									</b>
+								</p>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<div class="input-group">
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status"
+											id="inputGroupSelect02">
+											<option disabled selected>{{objectKey orderStatus order.order_status}}</option>
+											{{#each orderStatus}}
+												{{#ifCond this "!=" ../orderStatus.CANCELLEDORDER}}
+													{{#ifCond this "!=" ../orderStatus.FAILEDORDER}}
+														{{#ifCond this "!=" ../orderStatus.RETURNEDORDER}}
+															{{#ifCond this ">=" ../order.order_status}}
+																<option value="{{this}}">{{objectKey ../orderStatus this}}</option>
 															{{/ifCond}}
 														{{/ifCond}}
 													{{/ifCond}}
-												{{/each}}
-											</select>
-										</div>
+												{{/ifCond}}
+											{{/each}}
+										</select>
 									</div>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-md-3">
-									<p>
-										<b>Expected Delivery Date:
-											<span class="text-danger"></span>
-										</b>
-									</p>
-								</div>
-								<div class="col-md-5">
-									<div class="form-group">
-										<div class="input-group">
-											<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date"
-												value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm"
-												{{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}} disabled="true" {{/ifCond}}>
-										</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<p>
+									<b>Expected Delivery Date:
+										<span class="text-danger"></span>
+									</b>
+								</p>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<div class="input-group">
+										<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date"
+											value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm"
+											{{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}} disabled="true" {{/ifCond}}>
 									</div>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-md-3">
-									<p>
-										<b>Select Carrier:</b>
-									</p>
-								</div>
-								<div class="col-md-5">
-									<div class="form-group">
-										<div class="input-group">
-											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name"
-												id="inputGroupSelect02" {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}} disabled="true"
-												{{/ifCond}}>
-												{{#if order.Shipping.provider_name}}
-													<option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
-												{{else}}
-													<option disabled selected>Select Carrier</option>
-												{{/if}}
-												{{#each carriersCode}}
-													<option value="{{this}}">{{@key}}</option>
-												{{/each}}
-											</select>
-										</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<p>
+									<b>Select Carrier:</b>
+								</p>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<div class="input-group">
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name"
+											id="inputGroupSelect02" {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}} disabled="true"
+											{{/ifCond}}>
+											{{#if order.Shipping.provider_name}}
+												<option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
+											{{else}}
+												<option disabled selected>Select Carrier</option>
+											{{/if}}
+											{{#each carriersCode}}
+												<option value="{{this}}">{{@key}}</option>
+											{{/each}}
+										</select>
 									</div>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-md-3">
-									<p>
-										<b>Enter Tracking Id:</b>
-									</p>
-								</div>
-								<div class="col-md-5">
-									<div class="form-group">
-										<div class="input-group">
-											<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm"
-												{{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}} disabled="true" {{/ifCond}}>
-										</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<p>
+									<b>Enter Tracking Id:</b>
+								</p>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<div class="input-group">
+										<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm"
+											{{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}} disabled="true" {{/ifCond}}>
 									</div>
 								</div>
-								<div class="col-md-2">
-									<button type="submit" class="btn btn-primary btn-sm">SUBMIT</button>
-								</div>
 							</div>
-
-						</form>
-					{{/ifCond}}
-						<a href="/order-track/{{order.id}}">Click here to track your order</a>
+							<div class="col-md-2">
+								<button type="submit" class="btn btn-primary btn-sm">SUBMIT</button>
+							</div>
+						</div>
+					</form>
+				{{/ifCond}}
+				<a href="/order-track/{{order.id}}">Click here to track your order</a>
 			</div>
 			<div class="col-md-3 your_order_bg">
 				<div class="container">
-
-					{{#each marketPlaces as |marketplace|}} {{#each ../totalPriceList as |totalPrice|}} {{#ifCond marketplace.code '==' @key}}
+					{{#each marketPlaces as |marketplace|}} 
+						{{#each ../totalPriceList as |totalPrice|}} 
+							{{#ifCond marketplace.code '==' @key}}
 								<h6 class="{{cartPageClass marketplace 'CART-RIGHT'}}">{{cartPageClass marketplace 'LABEL'}} Summary</h6>
 								<hr class="common_margin" />
 								<div class="row">
@@ -480,8 +481,9 @@
 										</p>
 									</div>
 								</div>
-							{{/ifCond}} {{/each}} {{/each}}
-
+							{{/ifCond}} 
+						{{/each}}
+					{{/each}}
 					<hr class="common_margin" />
 					<div class="row">
 						<div class="col-md-8">
@@ -498,7 +500,6 @@
 					<hr class="common_margin" />
 				</div>
 				<div class="container">
-
 					<h6 class="yourorder_wholesalesum_head" style="color:black">Order Summary</h6>
 					<hr class="common_margin" />
 					<div class="row">
@@ -608,7 +609,6 @@
 			</div>
 		</div>
 	</div>
-
 </section>
 {{> footer/bottom-footer}}
 

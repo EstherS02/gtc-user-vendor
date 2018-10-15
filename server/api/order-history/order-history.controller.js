@@ -7,7 +7,7 @@ const service = require('../service');
 const statusCode = require('../../config/status');
 const _ = require('lodash');
 const carrierCode = require('../../config/carriers');
-const orderStaus = require('../../config/order_status');
+const orderStatusCode = require('../../config/order_status');
 const sendEmail = require('../../agenda/send-email');
 var async = require('async');
 const populate = require('../../utilities/populate');
@@ -31,25 +31,25 @@ export function updateStatus(req, res) {
 		delete bodyParams.tracking_id;
 	}
 
-	if (bodyParams.order_status == orderStaus.CONFIRMEDORDER) {
+	if (bodyParams.order_status == orderStatusCode.CONFIRMEDORDER) {
 		order_status = 'confirmed';
 	}
 
-	if (bodyParams.order_status == orderStaus.PROCESSINGORDER) {
+	if (bodyParams.order_status == orderStatusCode.PROCESSINGORDER) {
 		order_status = 'processed';
 	}
 
-	if (bodyParams.order_status == orderStaus.DISPATCHEDORDER) {
+	if (bodyParams.order_status == orderStatusCode.DISPATCHEDORDER) {
 		order_status = 'dispatched';
 		bodyParams['shipped_on'] = date;
 	}
 
-	if (bodyParams.order_status == orderStaus.DELIVEREDORDER) {
+	if (bodyParams.order_status == orderStatusCode.DELIVEREDORDER) {
 		order_status = 'delivered';
 		bodyParams['delivered_on'] = date;
 	}
 
-	if (bodyParams.order_status == orderStaus.RETURNEDORDER) {
+	if (bodyParams.order_status == orderStatusCode.RETURNEDORDER) {
 		order_status = 'returned';
 		bodyParams['returned_on'] = date;
 	}
@@ -249,7 +249,7 @@ export function returnRequest(req, res) {
 								let OrderItem = {
 									reason_for_cancellation: req.body.reason_for_return,
 									cancelled_on: new Date(),
-									order_status: orderStaus['CANCELLEDORDER'],
+									order_status: orderStatusCode['CANCELLEDORDER'],
 									last_updated_by: req.user.first_name,
 									last_updated_on: new Date()
 								};

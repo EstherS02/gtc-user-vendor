@@ -212,8 +212,8 @@
 													{{#select queryURI.status}}
 
 													<option disabled selected>Status</option>
-													{{#each orderStatus}}
-													<option value="{{@key}}">{{objectKey ../orderStatus @this}}</option>
+													{{#each orderStatusCode}}
+													<option value="{{@key}}">{{objectKey ../orderStatusCode @this}}</option>
 													{{/each}}
 													{{/select}}
 
@@ -282,30 +282,32 @@
 												{{#if Order}}
 												{{#each Order}}
 												<tr>
-													<td ><input type="checkbox" class="checkbox" id="check{{this.id}}" value="{{this.id}}"></td>
+													<td><input type="checkbox" class="checkbox" id="check{{this.id}}" value="{{this.id}}"></td>
 													<td><a href="/order-history/{{this.id}}">{{this.id}}</a></td>
 													<td style="display:none">{{this.purchase_order_id}}</td>
 													<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
 													<td>Stripe</td>
-														{{#ifCond this.order_status '==' 6}}
-													<td style="color:goldenrod">{{objectKey ../orderStatus  this.order_status}}</td>
-														{{else ifCond this.order_status '==' 7}}
-														<td style="color:goldenrod">{{objectKey ../orderStatus  this.order_status}}</td>
-														{{else ifCond this.order_status '==' 8}}
-														<td style="color:goldenrod">{{objectKey ../orderStatus  this.order_status}}</td>
-														{{else ifCond this.order_status '!=' ''}}
-														<td class="text_green_color">{{objectKey ../orderStatus  this.order_status}}</td>
+													{{#ifCond this.order_status '==' ../orderStatusCode.RETURNEDORDER}}
+														<td style="color:goldenrod">{{objectKey ../orderStatusCode  this.order_status}}</td>
+													{{else ifCond this.order_status '==' ../orderStatusCode.CANCELLEDORDER}}
+														<td style="color:goldenrod">{{objectKey ../orderStatusCode  this.order_status}}</td>
+													{{else ifCond this.order_status '==' ../orderStatusCode.FAILEDORDER}}
+														<td style="color:goldenrod">{{objectKey ../orderStatusCode  this.order_status}}</td>
+													{{else ifCond this.order_status '!=' ''}}
+														<td class="text_green_color">{{objectKey ../orderStatusCode  this.order_status}}</td>
+													{{/ifCond}}
+													<td>
+														{{#ifCond this.order_status '<' ../orderStatusCode.RETURNEDORDER}}
+														<a href="/order-track/{{this.id}}">Track</a>
 														{{/ifCond}}
-													<td><a href="/order-track/{{this.id}}">Track Order</a></td>
-													
-														{{#ifCond this.order_status '!=' "6" }}
-															<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}">
-														<i class="fas fa-credit-card"></i> Request Refund</a></td>
-																	{{else}}
-																	<td class="text_blue_color">Refund Issued</td>
-														
-																
-																	{{/ifCond}} 
+													</td>
+													<td class="text_blue_color">
+														{{#ifCond this.order_status '==' ../orderStatusCode.DELIVEREDORDER}}
+														<a href="/refund/{{this.id}}"><i class="fas fa-credit-card"></i> Request Refund</a>
+														{{else ifCond this.order_status '==' ../orderStatusCode.RETURNEDORDER}}
+														Refund Issued
+														{{/ifCond}}
+													</td>
 													<td class="text_blue_color">
 														<a href="javascript:;" onclick="javascript:location.href='gtc-mail/compose?id={{this.OrderItems.[0].Product.Vendor.id}}&text={{this.OrderItems.[0].Product.Vendor.vendor_name}}'">
 														<i class="fa fa-envelope" aria-hidden="true"></i> Contact Seller</a></td>
