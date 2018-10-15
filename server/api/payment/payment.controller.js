@@ -899,14 +899,17 @@ export function refundOrder(req, res) {
 	var refundOrderitemsID = [];
 	var notification = [];
 	var refundsOrderitems = JSON.parse(req.body.refundOrderItems);
+
 	for (var i = 0; i < refundsOrderitems.length; i++) {
 		refundOrderitemsID.push(refundsOrderitems[i]);
 	}
+
 	var order_id, paymentObj, refundObj, refundAmt, order;
 	order_id = req.params.orderId;
 	refundAmt = req.body.total_refund;
 	let includeArray = [];
 	includeArray = populate.populateData("Payment");
+	
 	let orderPaymentQueryObj = {
 		order_id: order_id,
 		order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT']
@@ -998,6 +1001,7 @@ export function refundOrder(req, res) {
 			return res.status(500).send(error);
 		});
 }
+
 export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 	var orderItemid = refundOrderitemsID;
 	var includeArr = populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Vendor.User,Order');

@@ -192,16 +192,16 @@
 						</div>
 					</div>
 					<div class="container">
-						<table class="table table-hover">
+						<table class="table">
 							{{#each ../seperatedItemsList}}
 								{{#ifCond marketPlace.code '==' @key}} 
 									{{#ifCond @key.length '>' 0}}
 										<thead>
 											<tr>
-												<th class="shop_list_title">Product</th>
-												<th class="shop_list_title">Price</th>
-												<th class="shop_list_title">Qty</th>
-												<th class="shop_list_title">Total Price</th>
+												<th width="45%">Product</th>
+												<th width="25%">Price</th>
+												<th width="15%">Qty</th>
+												<th width="15%" class="text-right">Total Price</th>
 											</tr>
 										</thead>
 									{{/ifCond}} 
@@ -315,8 +315,8 @@
 											<td>
 												<div class="row">
 													<div class="col-md-6">
-														<input id="quantity-cart-{{orderItems.id}}" type="text" min="1" value="{{orderItems.quantity}}" class="shop_qty_num all-quantity-cart-items"
-															style="width: 50px;" readonly>
+														<input id="quantity-cart-{{orderItems.id}}" type="text" min="1" value={{orderItems.quantity}} class="m-input-xxs all-quantity-cart-items"
+														readonly>
 													</div>
 												</div>
 											</td>
@@ -344,11 +344,7 @@
 					<form id="orderStatusChange">
 						<div class="row">
 							<div class="col-md-3">
-								<p>
-									<b>Change Order Status:
-										<span class="text-danger">*</span>
-									</b>
-								</p>
+								<label class="label-control" style="color:#535353"><b>Change Order Status:</b><span class="text-danger">*</span></label>
 							</div>
 							<div class="col-md-5">
 								<div class="form-group">
@@ -374,11 +370,7 @@
 						</div>
 						<div class="row">
 							<div class="col-md-3">
-								<p>
-									<b>Expected Delivery Date:
-										<span class="text-danger"></span>
-									</b>
-								</p>
+								<label class="label-control" style="color:#535353"><b>Expected Delivery Date:</b></label>
 							</div>
 							<div class="col-md-5">
 								<div class="form-group">
@@ -392,9 +384,7 @@
 						</div>
 						<div class="row">
 							<div class="col-md-3">
-								<p>
-									<b>Select Carrier:</b>
-								</p>
+								<label class="label-control" style="color:#535353"><b>Select Carrier:</b></label>
 							</div>
 							<div class="col-md-5">
 								<div class="form-group">
@@ -417,9 +407,7 @@
 						</div>
 						<div class="row">
 							<div class="col-md-3">
-								<p>
-									<b>Enter Tracking Id:</b>
-								</p>
+								<label class="label-control" style="color:#535353"><b>Enter Tracking Id:</b></label>
 							</div>
 							<div class="col-md-5">
 								<div class="form-group">
