@@ -324,7 +324,7 @@
 												<div class="row">
 													<div class="col-md-12">
 														<p class="shop_price_doller">{{quantityPrice orderItems.quantity orderItems.Product.price '$'}}</p>
-														{{#ifCond ../../order.order_status '<' ../../orderStatus.PROCESSINGORDER }}
+														{{#ifCond ../../order.order_status '<' ../../orderStatusCode.PROCESSINGORDER }}
 															<a data-id="{{orderItems.id}}" href="javascript:;" class="data-value">
 																<p data-id="{{orderItems.id}}" class="shop_total_remove text-center" data-toggle="modal"
 																	data-target="#importModal" data-whatever="@mdo">CANCEL</p>
@@ -355,13 +355,13 @@
 									<div class="input-group">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status"
 											id="inputGroupSelect02">
-											<option disabled selected>{{objectKey orderStatus order.order_status}}</option>
-											{{#each orderStatus}}
-												{{#ifCond this "!=" ../orderStatus.CANCELLEDORDER}}
-													{{#ifCond this "!=" ../orderStatus.FAILEDORDER}}
-														{{#ifCond this "!=" ../orderStatus.RETURNEDORDER}}
+											<option disabled selected>{{objectKey orderStatusCode order.order_status}}</option>
+											{{#each orderStatusCode}}
+												{{#ifCond this "!=" ../orderStatusCode.CANCELLEDORDER}}
+													{{#ifCond this "!=" ../orderStatusCode.FAILEDORDER}}
+														{{#ifCond this "!=" ../orderStatusCode.RETURNEDORDER}}
 															{{#ifCond this ">=" ../order.order_status}}
-																<option value="{{this}}">{{objectKey ../orderStatus this}}</option>
+																<option value="{{this}}">{{objectKey ../orderStatusCode this}}</option>
 															{{/ifCond}}
 														{{/ifCond}}
 													{{/ifCond}}
@@ -385,7 +385,7 @@
 									<div class="input-group">
 										<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date"
 											value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm"
-											{{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}} disabled="true" {{/ifCond}}>
+											{{#ifCond order.order_status ">" orderStatusCode.DISPATCHEDORDER}} disabled="true" {{/ifCond}}>
 									</div>
 								</div>
 							</div>
@@ -400,7 +400,7 @@
 								<div class="form-group">
 									<div class="input-group">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name"
-											id="inputGroupSelect02" {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}} disabled="true"
+											id="inputGroupSelect02" {{#ifCond order.order_status ">" orderStatusCode.DISPATCHEDORDER}} disabled="true"
 											{{/ifCond}}>
 											{{#if order.Shipping.provider_name}}
 												<option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
@@ -425,7 +425,7 @@
 								<div class="form-group">
 									<div class="input-group">
 										<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm"
-											{{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}} disabled="true" {{/ifCond}}>
+											{{#ifCond order.order_status ">" orderStatusCode.DISPATCHEDORDER}} disabled="true" {{/ifCond}}>
 									</div>
 								</div>
 							</div>
@@ -509,7 +509,7 @@
 							</p>
 						</div>
 						<div class="col-md-7">
-							<p class="shop_subtotal float-right">{{objectKey orderStatus order.order_status}}</p>
+							<p class="shop_subtotal float-right">{{objectKey orderStatusCode order.order_status}}</p>
 						</div>
 					</div>
 					<hr class="common_margin" />
@@ -536,7 +536,7 @@
 							</div>
 						</div>
 					{{else}}
-						{{#ifCond order.order_status "<" orderStatus.DISPATCHEDORDER}}
+						{{#ifCond order.order_status "<" orderStatusCode.DISPATCHEDORDER}}
 							<div class="row">
 								<div class="col-md-12">
 									<p class="shop_subtotal float-right">Your Order Not yet shipped</p>
@@ -545,7 +545,7 @@
 						{{/ifCond}}
 					{{/if}}
 					<hr class="common_margin" />
-					{{#ifCond order.order_status '==' orderStatus.DISPATCHEDORDER}}
+					{{#ifCond order.order_status '==' orderStatusCode.DISPATCHEDORDER}}
 						<div class="row">
 							<div class="col-md-5">
 								<p class="shop_subtotal">
@@ -557,7 +557,7 @@
 							</div>
 						</div>
 						<hr class="common_margin" />
-					{{/ifCond}}{{#ifCond order.order_status '==' orderStatus.DELIVEREDORDER}}
+					{{/ifCond}}{{#ifCond order.order_status '==' orderStatusCode.DELIVEREDORDER}}
 						<div class="row">
 							<div class="col-md-6">
 								<p class="shop_subtotal">
@@ -569,7 +569,7 @@
 							</div>
 						</div>
 						<hr class="common_margin" />
-					{{/ifCond}} {{#ifCond order.order_status '==' orderStatus.CANCELLEDORDER}}
+					{{/ifCond}} {{#ifCond order.order_status '==' orderStatusCode.CANCELLEDORDER}}
 						<div class="row">
 							<div class="col-md-6">
 								<p class="shop_subtotal">
@@ -581,7 +581,7 @@
 							</div>
 						</div>
 						<hr class="common_margin" />
-					{{/ifCond}} {{#ifCond order.order_status '==' orderStatus.DISPATCHEDORDER}}
+					{{/ifCond}} {{#ifCond order.order_status '==' orderStatusCode.DISPATCHEDORDER}}
 						<div class="row">
 							<div class="col-md-6">
 								<p class="shop_subtotal">
