@@ -112,7 +112,7 @@ export function index(req, res) {
 
 	if (req.query.category) {
 		queryURI['category'] = parseInt(req.query.category);
-		productQueryParams['category_id'] = parseInt(req.query.category);
+		productQueryParams['product_category_id'] = parseInt(req.query.category);
 		productCountQueryParams['product_category_id'] = parseInt(req.query.category);
 		productCountCategory['product_category_id'] = parseInt(req.query.category);
 	}
@@ -126,7 +126,7 @@ export function index(req, res) {
 
 	if (req.query.location) {
 		queryURI['location'] = req.query.location;
-		productQueryParams['product_location_id'] = req.query.location;
+		productQueryParams['product_location'] = req.query.location;
 		productCountQueryParams['product_location'] = req.query.location;
 		productCountCategory['product_location'] = req.query.location;
 	}
