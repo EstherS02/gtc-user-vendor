@@ -109,7 +109,7 @@
 	function editCoupon() {
 		$.ajax({
 			url: '/api/cart/cancel-coupon',
-			type: 'GET',
+			type: 'DELETE',
 			success: function(data, statusText, xhr) {
 				location.reload();
 			},

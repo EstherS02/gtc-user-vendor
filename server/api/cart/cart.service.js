@@ -32,9 +32,6 @@ export async function cartCalculation(userID, req, res) {
 
 	const includeArray = [{
 		model: model['Product'],
-		where: {
-			status: status['ACTIVE']
-		},
 		attributes: ['id', 'product_name', 'product_slug', 'marketplace_id', 'marketplace_type_id', 'vendor_id', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer'],
 		include: [{
 			model: model['Vendor'],
