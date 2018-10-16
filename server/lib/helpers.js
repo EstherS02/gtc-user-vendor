@@ -243,8 +243,6 @@ Handlebars.registerHelper('timeLeft', function(context,options){
     }
     }
     return secondsDiff;
-
-
 });
 
 var serialize = function(obj) {

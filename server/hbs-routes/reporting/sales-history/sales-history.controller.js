@@ -9,7 +9,7 @@ const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
 const marketPlace = require('../../../config/marketplace');
-const orderStatus = require('../../../config/order_status');
+const orderStatusCode = require('../../../config/order_status');
 const orderItemStatus = require('../../../config/order-item-status');
 var async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
@@ -105,7 +105,7 @@ export function salesHistory(req, res) {
     }
     if (status) {
         queryURI['status'] = status;
-        orderQueryObj['order_status'] = orderStatus[status];
+        orderQueryObj['order_status'] = orderStatusCode[status];
     }
     // end Query string assignment
     var order = "desc"; //"asc"
@@ -233,7 +233,7 @@ export function salesHistory(req, res) {
 						selectedPage: 'sales-history',
 						cartheader: results.cartCounts,
 						totalTransaction: (total_transaction).toFixed(2),
-						orderStatus: orderStatus,
+						orderStatusCode: orderStatusCode,
 						
 						// pagination
 						page: page,
@@ -261,7 +261,7 @@ export function salesHistory(req, res) {
 						selectedPage: 'order',
 						cartheader: results.cartCounts,
 						totalTransaction: (total_transaction).toFixed(2),
-						orderStatus: orderStatus,
+						orderStatusCode: orderStatusCode,
 						
 						// pagination
 						page: page,
@@ -450,7 +450,7 @@ export function orderView(req, res) {
                 orderItemsCount: results.orderItems.count,
                 seperatedItemsList: seperatedItems,
                 totalPriceList: totalPrice,
-                orderStatus: orderStatus,
+                orderStatusCode: orderStatusCode,
                 cartheader: results.cartCounts,
                 categories: results.categories,
                 bottomCategory: bottomCategory,

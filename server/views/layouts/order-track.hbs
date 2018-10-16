@@ -100,7 +100,7 @@
 													<h6>Shipping Address</h6>
 													<div class="text-nowrap" style="color:#A9A9A9;font-size: small; text-align: left;">
 														<div>{{orderTrack.shippingAddress.address_line1}}</div>
-														<div>{{orderTrack.shippingAddress.address_line2}},</div>
+														{{#if orderTrack.shippingAddress.address_line2}}<div>{{orderTrack.shippingAddress.address_line2}},</div>{{/if}}
 														<div>{{orderTrack.shippingAddress.city}},</div>
 														<div>{{orderTrack.shippingAddress.State.name}} ,{{orderTrack.shippingAddress.Country.name}}.</div>
 													</div>

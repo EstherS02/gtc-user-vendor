@@ -331,9 +331,9 @@
 														{{#select queryURI.status}}
 
 															<option disabled selected>STATUS</option>
-															{{#each orderStatus}}
+															{{#each orderStatusCode}}
 																{{!-- <option value="{{@key}}">{{@key}}</option> --}}
-																<option value="{{@key}}">{{objectKey ../orderStatus @this}}</option>
+																<option value="{{@key}}">{{objectKey ../orderStatusCode @this}}</option>
 															{{/each}}
 														{{/select}}
 													</select>
@@ -415,16 +415,18 @@
 																<td style="display:none">{{this.purchase_order_id}}</td>
 																<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
 																<td>Stripe</td>
-																<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
+																<td class="text_green_color">{{objectKey ../orderStatusCode this.order_status}}</td>
 																<td></td>
-																<td><a href="/order-track/{{this.id}}">Track Order</a></td>
+																<td>
+																	{{#ifCond this.order_status '<' ../orderStatusCode.RETURNEDORDER}}
+																		<a href="/order-track/{{this.id}}">Track Order</a>
+																	{{/ifCond}}
+																</td>
 																<td class="text_blue_color">
-																	{{#ifCond this.order_status '!=' "6" }}
+																	{{#ifCond this.order_status '==' ../orderStatusCode.DELIVEREDORDER}}
 																		<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo" style="cursor:pointer">
 																			<i class="fas fa-credit-card"></i>Issue Refund
 																		</p>
-																	{{else}}
-																		<p style="cursor:pointer">Refund Issued</p>
 																	{{/ifCond}}
 																</td>
 																<td class="text_blue_color">

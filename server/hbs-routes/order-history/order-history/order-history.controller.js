@@ -9,7 +9,7 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
-const orderStatus = require('../../../config/order_status');
+const orderStatusCode = require('../../../config/order_status');
 const async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
 
@@ -70,7 +70,7 @@ export function orderHistory(req, res) {
 	}
 	if (status) {
 		queryURI['status'] = status;
-		orderQueryObj['order_status'] = orderStatus[status];
+		orderQueryObj['order_status'] = orderStatusCode[status];
 	}
 
 
@@ -192,7 +192,7 @@ export function orderHistory(req, res) {
 				marketPlace: marketplace,
 				statusCode: statusCode,
 				cart: results.cartInfo,
-				orderStatus: orderStatus,
+				orderStatusCode: orderStatusCode,
 				totalTransaction: (total_transaction).toFixed(2),
 				page: page,
 				pageSize: limit,

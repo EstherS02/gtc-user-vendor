@@ -19,7 +19,7 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 		});
 	});
 	function paymentSuccess() {
-		window.location = '/upgradeplan';
+		window.location = '/upgradeplan/userBulkupgradePlan';
 	}
 	$(document).ready(function() {
 		$("#plandetailsform").validate({
@@ -141,6 +141,7 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 	});
 
 	function makePayment() {
+	
 		var plan_id = document.getElementById("selectplan").value;
 		  if($('[type="checkbox"]').is(":checked")){
 				 var autoRenewalMail = 1;
@@ -161,6 +162,7 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 			}),
 			success: function(data) {
 				setTimeout(function() {
+					$('#myModal').modal('hide');
 					$('#paymentSuccess').modal('show');
 				}, 1000);
 			},
