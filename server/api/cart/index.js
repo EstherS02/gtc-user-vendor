@@ -8,7 +8,7 @@ var permission = require('../../config/permission');
 var router = express.Router();
 
 router.get('/check-already-subscribed/:id', auth.isAuthenticatedUser(), controller.checkAlreadySubscribed);
-//router.post('/validate-cart')
+router.post('/validate', auth.isAuthenticated(), controller.validateCart)
 router.post('/update-cart', auth.isAuthenticated(), controller.updateCart);
 router.post('/apply-coupon', auth.isAuthenticatedUser(), controller.applyCoupon);
 router.post('/add-cart/:id', auth.isAuthenticated(), controller.addToCart);

@@ -489,11 +489,75 @@ export async function applyCoupon(req, res) {
 	}
 }
 
+export async function validateCart(req, res) {
+	var queryObj = {};
+	var order = "desc";
+	const field = "created_on";
+	const cartModelName = "Cart";
+	const productModelName = "Product";
+
+	const includeArray = [{
+		model: model['Product'],
+		attributes: ['id', 'product_name']
+	}];
+
+	const includeProductArray = [{
+		model: model['Vendor'],
+		include: [{
+			model: model['VendorPlan'],
+			attributes: [],
+			where: {
+				status: status['ACTIVE'],
+				start_date: {
+					'$lte': moment().format('YYYY-MM-DD')
+				},
+				end_date: {
+					'$gte': moment().format('YYYY-MM-DD')
+				}
+			}
+		}],
+		attributes: ['id'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}];
+
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['user_id'] = req.user.id;
+
+	try {
+		const cartResonse = await service.findAllRows(cartModelName, includeArray, queryObj, 0, null, field, order);
+
+		if (cartResonse.count) {
+			const cartItems = cartResonse.rows;
+
+			for (let cartItem of cartItems) {
+				const validProduct = await service.findOneRow(productModelName, {
+					id: cartItem.product_id,
+					status: status['ACTIVE'],
+					quantity_available: {
+						'$gte': cartItem.quantity
+					}
+				}, includeProductArray);
+				if (!validProduct) {
+					return res.status(400).send(cartItem.Product.product_name + " is currently unable to proceed to checkout.");
+					break;
+				}
+			}
+			return res.status(200).send("OK");
+		} else {
+			return res.status(404).send("Your Shopping Cart is empty.");
+		}
+	} catch (error) {
+		console.log("validateCart Error:::", error);
+		return res.status(500).send(error);
+	}
+}
+
 export function cancelCoupon(req, res) {
 	res.clearCookie('applied_coupon');
 	return res.status(200).send('Coupon Removed Successfully.');
 }
-
 
 export function checkAlreadySubscribed(req, res) {
 	var product_id, user_id, subscriptionQueryObj = {};
