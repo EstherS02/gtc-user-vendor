@@ -3,15 +3,45 @@
 	$(document).ready(function() {
 		$("#continue").click(function(e) {
 			e.preventDefault();
-			window.location.href = "/order-checkout/payment-method" + window.location.search;
+			$.ajax({
+				url: '/api/cart/validate',
+				type: 'POST',
+				success: function(data) {
+					window.location.href = "/order-checkout/payment-method" + window.location.search;
+				},
+				error: function(error) {
+					redirectText = "click here to redirect to cart page";
+					auth.alertService(error.status, error.responseText, redirectText);
+				}
+			});
 		});
 		$("#shippingMethodLink").click(function(e) {
 			e.preventDefault();
-			window.location.href = "/order-checkout/shipping-method" + window.location.search;
+			$.ajax({
+				url: '/api/cart/validate',
+				type: 'POST',
+				success: function(data) {
+					window.location.href = "/order-checkout/shipping-method" + window.location.search;
+				},
+				error: function(error) {
+					redirectText = "click here to redirect to cart page";
+					auth.alertService(error.status, error.responseText, redirectText);
+				}
+			});
 		});
 		$("#paymentMethodLink").click(function(e) {
 			e.preventDefault();
-			window.location.href = "/order-checkout/payment-method" + window.location.search;
+			$.ajax({
+				url: '/api/cart/validate',
+				type: 'POST',
+				success: function(data) {
+					window.location.href = "/order-checkout/payment-method" + window.location.search;
+				},
+				error: function(error) {
+					redirectText = "click here to redirect to cart page";
+					auth.alertService(error.status, error.responseText, redirectText);
+				}
+			});
 		});
 	});
 
@@ -19,6 +49,9 @@
 		window.location.href = "/cart";
 	}
 </script>
+<div id="vendorAlert" tabindex="1">
+	<div class="gtc-container"></div>
+</div>
 <div class="wrapper-content">
 	<div class="container-sm">
 		<div class="title-header-1 gtc-p-l-r">

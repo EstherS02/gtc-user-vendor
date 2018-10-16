@@ -100,63 +100,73 @@
 
 		$("#customer-information").submit(function(e) {
 			e.preventDefault();
-			customerInformationObj['rules'] = {};
-			customerInformationObj['messages'] = {};
+			$.ajax({
+				url: '/api/cart/validate',
+				type: 'POST',
+				success: function(data) {
+					customerInformationObj['rules'] = {};
+					customerInformationObj['messages'] = {};
 
-			if (!$('#inputBillingAddressId').val() && !$('#billingAddressSelectId').val()) {
-				customerInformationObj['rules'].billing_first_name = "required";
-				customerInformationObj['rules'].billing_addressline1 = "required";
-				customerInformationObj['rules'].billing_city = "required";
-				customerInformationObj['rules'].billing_country = "required";
-				customerInformationObj['rules'].billing_state = "required";
-				customerInformationObj['rules'].billing_phone = "required";
-				customerInformationObj['messages'].billing_first_name = "First name is required.";
-				customerInformationObj['messages'].billing_addressline1 = "Address line 1 is required.";
-				customerInformationObj['messages'].billing_city = "City is required.";
-				customerInformationObj['messages'].billing_country = "Country is required.";
-				customerInformationObj['messages'].billing_state = "State is required.";
-				customerInformationObj['messages'].billing_phone = "Phone Number is required.";
-			}
-
-			if (!$('#inputShippingAddressId').val() && !$('#shippingAddressSelectId').val()) {
-				customerInformationObj['rules'].shipping_first_name = "required";
-				customerInformationObj['rules'].shipping_addressline1 = "required";
-				customerInformationObj['rules'].shipping_city = "required";
-				customerInformationObj['rules'].shipping_country = "required";
-				customerInformationObj['rules'].shipping_state = "required";
-				customerInformationObj['rules'].shipping_phone = "required";
-				customerInformationObj['messages'].shipping_first_name = "First name is required.";
-				customerInformationObj['messages'].shipping_addressline1 = "Address line 1 is required.";
-				customerInformationObj['messages'].shipping_city = "City is required.";
-				customerInformationObj['messages'].shipping_country = "Country is required.";
-				customerInformationObj['messages'].shipping_state = "State is required.";
-				customerInformationObj['messages'].shipping_phone = "Phone Number is required.";
-			}
-
-			if ($('#customer-information').valid()) {
-				$.ajax({
-					url: '/api/order-checkout/customer-information',
-					type: 'POST',
-					data: JSON.stringify(getFormData($("#customer-information"))),
-					contentType: "application/json",
-					success: function(data) {
-						window.location.href = "/order-checkout/shipping-method?selected_shipping_address_id=" + data.shipping_address_id + "&selected_billing_address_id=" + data.billing_address_id;
-					},
-					error: function(error) {
-						var errorJSON = JSON.parse(error.responseText);
-						console.log("Error occured adding Shipping Details", error);
-						$("#blukErrorBlock").empty();
-						var ul = $('<ul></ul>');
-						if (errorJSON.length > 0) {
-							for (var i = 0; i < errorJSON.length; i++) {
-								ul.append('<li><span>' + errorJSON[i].msg + '</span></li>')
-							}
-						}
-						$("#blukErrorBlock").focus();
-						$('#blukErrorBlock').append(ul);
+					if (!$('#inputBillingAddressId').val() && !$('#billingAddressSelectId').val()) {
+						customerInformationObj['rules'].billing_first_name = "required";
+						customerInformationObj['rules'].billing_addressline1 = "required";
+						customerInformationObj['rules'].billing_city = "required";
+						customerInformationObj['rules'].billing_country = "required";
+						customerInformationObj['rules'].billing_state = "required";
+						customerInformationObj['rules'].billing_phone = "required";
+						customerInformationObj['messages'].billing_first_name = "First name is required.";
+						customerInformationObj['messages'].billing_addressline1 = "Address line 1 is required.";
+						customerInformationObj['messages'].billing_city = "City is required.";
+						customerInformationObj['messages'].billing_country = "Country is required.";
+						customerInformationObj['messages'].billing_state = "State is required.";
+						customerInformationObj['messages'].billing_phone = "Phone Number is required.";
 					}
-				});
-			}
+
+					if (!$('#inputShippingAddressId').val() && !$('#shippingAddressSelectId').val()) {
+						customerInformationObj['rules'].shipping_first_name = "required";
+						customerInformationObj['rules'].shipping_addressline1 = "required";
+						customerInformationObj['rules'].shipping_city = "required";
+						customerInformationObj['rules'].shipping_country = "required";
+						customerInformationObj['rules'].shipping_state = "required";
+						customerInformationObj['rules'].shipping_phone = "required";
+						customerInformationObj['messages'].shipping_first_name = "First name is required.";
+						customerInformationObj['messages'].shipping_addressline1 = "Address line 1 is required.";
+						customerInformationObj['messages'].shipping_city = "City is required.";
+						customerInformationObj['messages'].shipping_country = "Country is required.";
+						customerInformationObj['messages'].shipping_state = "State is required.";
+						customerInformationObj['messages'].shipping_phone = "Phone Number is required.";
+					}
+
+					if ($('#customer-information').valid()) {
+						$.ajax({
+							url: '/api/order-checkout/customer-information',
+							type: 'POST',
+							data: JSON.stringify(getFormData($("#customer-information"))),
+							contentType: "application/json",
+							success: function(data) {
+								window.location.href = "/order-checkout/shipping-method?selected_shipping_address_id=" + data.shipping_address_id + "&selected_billing_address_id=" + data.billing_address_id;
+							},
+							error: function(error) {
+								var errorJSON = JSON.parse(error.responseText);
+								console.log("Error occured adding Shipping Details", error);
+								$("#blukErrorBlock").empty();
+								var ul = $('<ul></ul>');
+								if (errorJSON.length > 0) {
+									for (var i = 0; i < errorJSON.length; i++) {
+										ul.append('<li><span>' + errorJSON[i].msg + '</span></li>')
+									}
+								}
+								$("#blukErrorBlock").focus();
+								$('#blukErrorBlock').append(ul);
+							}
+						});
+					}
+				},
+				error: function(error) {
+					redirectText = "click here to redirect to cart page";
+					auth.alertService(error.status, error.responseText, redirectText);
+				}
+			});
 		});
 
 		$("#customer-information").validate(customerInformationObj);
@@ -188,17 +198,40 @@
 	$(document).ready(function() {
 		$("#shippingMethodLink").click(function(e) {
 			e.preventDefault();
-			window.location.href = "/order-checkout/shipping-method" + window.location.search;
+			$.ajax({
+				url: '/api/cart/validate',
+				type: 'POST',
+				success: function(data) {
+					window.location.href = "/order-checkout/shipping-method" + window.location.search;
+				},
+				error: function(error) {
+					redirectText = "click here to redirect to cart page";
+					auth.alertService(error.status, error.responseText, redirectText);
+				}
+			});
 		});
 		$("#paymentMethodLink").click(function(e) {
 			e.preventDefault();
-			window.location.href = "/order-checkout/payment-method" + window.location.search;
+			$.ajax({
+				url: '/api/cart/validate',
+				type: 'POST',
+				success: function(data) {
+					window.location.href = "/order-checkout/payment-method" + window.location.search;
+				},
+				error: function(error) {
+					redirectText = "click here to redirect to cart page";
+					auth.alertService(error.status, error.responseText, redirectText);
+				}
+			});
 		});
 	});
 	function CartPage() {
 		window.location.href = "/cart";
 	}
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}
+<div id="vendorAlert" tabindex="1">
+	<div class="gtc-container"></div>
+</div>
 <div class="wrapper-content">
 	<div class="container-sm">
 		<div class="title-header-1 gtc-p-l-r">

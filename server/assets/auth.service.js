@@ -74,7 +74,7 @@
 			});
 		}
 
-		fn.alertService = function(statusCode, responseText) {
+		fn.alertService = function(statusCode, responseText, redirectText=null) {
 			$("#vendorAlert .gtc-container").empty();
 			if (statusCode == 200 || statusCode == 201) {
 				$("#vendorAlert").addClass("vendor-alert msg-success");
@@ -83,6 +83,10 @@
 			} else if (statusCode == 400 || statusCode == 500 || statusCode == 404) {
 				$("#vendorAlert").addClass("vendor-alert msg-danger");
 				$("#vendorAlert .gtc-container").append("<span>" + responseText + "</span>");
+				if (redirectText != null) {
+					$("#vendorAlert .gtc-container").append("<a class=\"link\">" + redirectText + "</a>");
+					$("#vendorAlert .gtc-container .link").attr("href", "/cart")
+				}
 				$("#vendorAlert").focus();
 			}
 			setTimeout(function() {
