@@ -347,7 +347,7 @@ export async function edit(req, res) {
 								product_id: product.id,
 								type: 1,
 								url: config.imageUrlRewritePath.base + "products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext,
-								base_image: 0,
+								base_image: (key == "product_base_image")? 1 : 0,
 								status: status['ACTIVE'],
 								created_by: req.user.first_name,
 								created_on: new Date()

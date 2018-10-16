@@ -258,8 +258,7 @@
 										<div class="form-group">
 											<label class="label-control">State</label>
 											<div class="input-group">
-												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state"
-												 value="">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state" value="">
 													{{#if editProduct.state_id}}
 														<option value="{{editProduct.state_id}}">{{editProduct.State.name}}</option>
 													{{else}}
@@ -309,9 +308,9 @@
 											</label>
 											<div class="input-group">
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status"
-												 id="product_status">
+												 id="product_status" value="{{editProduct.status}}">
 												{{#if editProduct.status}}
-												<option value="{{editProduct.status}}" disabled selected>{{objectKey statusCode editProduct.status}}</option>
+												<!-- <option value="{{editProduct.status}}" selected>{{objectKey statusCode editProduct.status}}</option> -->
 												{{else}}
 												<option disabled selected>Select Status</option>
 												{{/if}}
