@@ -175,12 +175,12 @@
 												{{#ifCond this.order_item_status '<' ../orderItemStatus.REFUND_FAILED}}
 												<div class="col-md-12">
 													<a data-id="{{this.id}}" href="javascript:;" class="data-value">
-													<button data-id="{{this.id}}" class="ladda-button btn btn-small btn-muted" data-toggle="modal" data-target="#refundModal"
+													<button data-id="{{this.id}}" class="btn btn-small btn-muted" data-toggle="modal" data-target="#refundModal"
 													data-whatever="@mdo" style="width:100%">REQUEST A RETURN</button>
 													</a>
 												</div>
 												{{else}}
-												<button class="ladda-button btn btn-small btn-muted" style="width:100%"> 
+												<button class="btn btn-small btn-muted" style="width:100%; cursor:default"> 
 													{{#ifCond this.order_item_status '==' ../orderItemStatus.RETURN_REQUESTED}} RETURN ALREADY REQUESTED
 													{{else ifCond this.order_item_status '==' ../orderItemStatus.RETURN_APPROVED}} RETURN APPROVED 
 													{{else ifCond this.order_item_status '==' ../orderItemStatus.RETURN_REJECTED}} RETURN REJECTED 
@@ -208,7 +208,7 @@
 		</div>
 	</div>
 </div>
-	{{> footer/bottom-footer}}
+{{> footer/bottom-footer}}
 
 <div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-labelledby="refundTitle" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">

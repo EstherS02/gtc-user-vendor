@@ -605,7 +605,7 @@ export function sendOrderMail(orderIdStore, req) { //export function sendOrderMa
 							var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
 							var body;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
-							body = body.replace('/%Path%/g', req.protocol + '://' + req.get('host'));
+							body = body.replace(/%Path%/g,'https://gtc.ibcpods.com/');// req.protocol + '://' + req.get('host'));
 							body = body.replace(/%currency%/g, '$');
 							body = body.replace('%UserName%', user.first_name)
 							_.forOwn(OrderList.rows, function(orders) {
@@ -714,14 +714,22 @@ function usernotification(order, user) {
 	var queryObjNotification = {};
 	var NotificationTemplateModel = 'NotificationSetting';
 	queryObjNotification['code'] = config.notification.templates.orderDetail;
+	var orderEle='';
 	service.findOneRow(NotificationTemplateModel, queryObjNotification)
 		.then(function(response) {
 			var bodyParams = {};
+			_.forOwn(OrderList.rows, function(orders) {
+				if(orderEle.length>0){
+				orderEle = `, <a href="https://gtc.ibcpods.com/order-history/"`+orders.id+`>#`+orders.id+`</a>`;	
+				}
+				orderEle = `<a href="https://gtc.ibcpods.com/order-history/"`+orders.id+`>#`+orders.id+`</a>`;
+			});
 			bodyParams.user_id = user.id;
 			bodyParams.description = response.description
 			bodyParams.description = bodyParams.description.replace('%Firstname%', user.first_name);
 			bodyParams.description = bodyParams.description.replace('%LastName%', user.last_name);
-			bodyParams.description = bodyParams.description.replace('%path%', '/order-history/' + order.id);
+			bodyParams.description = bodyParams.description.replace('%orderEle%',orderEle);
+			bodyParams.description = bodyParams.description.replace('%url%',orderEle);
 			bodyParams.name = response.name;
 			bodyParams.code = response.code;
 			bodyParams.is_read = 1;

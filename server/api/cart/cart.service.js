@@ -226,7 +226,9 @@ export async function cartCalculation(userID, req, res) {
 				} else if (coupon.discount_type == 2 && parseFloat(totalAmount).toFixed(2) >= parseFloat(coupon.discount_value).toFixed(2)) {
 					cart['discount_amount'] = parseFloat(coupon.discount_value).toFixed(2);
 				}
-			} else {
+			}
+			 else {
+			 	if(req.cookie)
 				res.clearCookie('applied_coupon');
 			}
 

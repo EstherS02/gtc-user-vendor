@@ -58,11 +58,45 @@
 				}
 			}
 		});
-		$("#plandetailsform").submit(function(e) {
+		//$("#plandetailsform").submit(function(e) {
+		//	e.preventDefault();
+		//	if ($('#plandetailsform').valid()) {
+		//		var planstatus = $('#plan_status').val();
+		//		if (planstatus == "2") {
+		//			if ($('#plandetailsform').valid()) {
+		//				var plan_id = document.getElementById("selectplan").value;
+		//				$.ajax({
+		//					url: '/api/upgrade-plan/selectplan',
+		//					type: 'POST',
+		//					contentType: 'application/json',
+		//					dataType: "json",
+		//					data: JSON.stringify({
+		//							id: plan_id
+		//						}),
+		//					success: function(data) {
+		//							$('#Plan_cost').html("Total Plan Charge: $" + data.data.cost);
+		//							$('#amount').val(data.data.cost);
+		//							$('#myModal').modal('show');
+		//						},
+		//					error: function(error) {
+		//							$('#complete-order-submit').prop('disabled', false);
+		//							$('#complete-order-submit').css({
+		//								'cursor': "pointer"
+		//							});
+		//						}
+		//				});
+		//			}
+		//		}
+		//		else {
+		//			$('#myModal2').modal('show');
+		//		}
+		//	}
+		//});
+			$("#plandetailsform").submit(function(e) {
 			e.preventDefault();
 			if ($('#plandetailsform').valid()) {
 				var planstatus = $('#plan_status').val();
-				if (planstatus == "2") {
+				
 					if ($('#plandetailsform').valid()) {
 						var plan_id = document.getElementById("selectplan").value;
 						$.ajax({
@@ -86,10 +120,7 @@
 								}
 						});
 					}
-				}
-				else {
-					$('#myModal2').modal('show');
-				}
+			
 			}
 		});
 		$("#userPlandetails").submit(function(e) {
