@@ -89,7 +89,8 @@ var all = {
 			planExpired : "PLAN-EXPIRED",
 			subscriptionAutoRenewalOrder:"SUBSCRIPTION-AUTO-RENEWAL-ORDER",
 			newProductAnnouncementMail: "NEW-PRODUCT-ANNOUNCEMENT-MAIL",
-			featureProductAutoRenewal: "FEATURE-PRODUCT-AUTO-RENEWAL"
+			featureProductAutoRenewal: "FEATURE-PRODUCT-AUTO-RENEWAL",
+			vendorOrderConformation: "VENDOR-ORDER-CONFORMATION"
         }
     },
     //Notification

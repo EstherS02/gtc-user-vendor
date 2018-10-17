@@ -349,8 +349,7 @@
 							<div class="col-md-5">
 								<div class="form-group">
 									<div class="input-group">
-										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status"
-											id="inputGroupSelect02">
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status"	>
 											<option disabled selected>{{objectKey orderStatusCode order.order_status}}</option>
 											{{#each orderStatusCode}}
 												{{#ifCond this "!=" ../orderStatusCode.CANCELLEDORDER}}
@@ -390,7 +389,7 @@
 								<div class="form-group">
 									<div class="input-group">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name"
-											id="inputGroupSelect02" {{#ifCond order.order_status ">" orderStatusCode.DISPATCHEDORDER}} disabled="true"
+											{{#ifCond order.order_status ">" orderStatusCode.DISPATCHEDORDER}} disabled="true"
 											{{/ifCond}}>
 											{{#if order.Shipping.provider_name}}
 												<option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
