@@ -589,7 +589,6 @@ export function sendOrderMail(orderIdStore, req) { //export function sendOrderMa
 	var order = "asc";
 	var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
 		if (OrderList) {
-
 			usernotification(OrderList, user);
 			vendorMail(OrderList, user);
 			if (user.user_contact_email) {
@@ -604,15 +603,17 @@ export function sendOrderMail(orderIdStore, req) { //export function sendOrderMa
 							var email = user_email;
 							var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
 							var body;
+							var total = 0;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
-							body = body.replace(/%Path%/g,'https://gtc.ibcpods.com/');// req.protocol + '://' + req.get('host'));
+							body = body.replace(/%Path%/g,'https://gtc.ibcpods.com');// req.protocol + '://' + req.get('host'));
 							body = body.replace(/%currency%/g, '$');
 							body = body.replace('%UserName%', user.first_name)
 							_.forOwn(OrderList.rows, function(orders) {
 								body = body.replace('%placed_on%', moment(orders.created_on).format('MMM D, Y'));
-								body = body.replace('%Total_Price%', numeral(orders.total_price).format('$' + '0,0.00'))
+								total = total + orders.total_price;
 								orderNew.push(orders);
 							});
+							body = body.replace('%Total_Price%', numeral(total).format('$' + '0,0.00'))
 							var template = Handlebars.compile(body);
 							var data = {
 								order: orderNew
@@ -667,7 +668,7 @@ function sendVendorEmail(order, user) {
 				_.forOwn(order, function(orders) {
 
 					body = body.replace('%placed_on%', moment(new Date()).format('MMM D, Y'));
-					body = body.replace('%Total_Price%', numeral(order.total_price).format('$' + '0,0.00'))
+					body = body.replace('%Total_Price%', numeral(order.vendor_pay).format('$' + '0,0.00'))
 					orderNew.push(orders);
 
 				});
@@ -718,7 +719,8 @@ function usernotification(order, user) {
 	service.findOneRow(NotificationTemplateModel, queryObjNotification)
 		.then(function(response) {
 			var bodyParams = {};
-			_.forOwn(OrderList.rows, function(orders) {
+			console.log("-----------------------",order)
+			_.forOwn(order.rows, function(orders) {
 				if(orderEle.length>0){
 				orderEle = `, <a href="https://gtc.ibcpods.com/order-history/"`+orders.id+`>#`+orders.id+`</a>`;	
 				}

@@ -38,9 +38,23 @@ export async function addToCart(req, res) {
 			where: {
 				id: productID,
 				status: status['ACTIVE']
-			}
+			},
+			include:[{
+				model:model['Vendor'],
+				attributes:['id'],
+				include:[{
+					model:model['User'],
+					attributes:['id','first_name','last_name']
+				}]
+			}]
 		});
 		if (productResponse) {
+			// console.log("--------8----================productResponse",JSON.stringify(productResponse))
+			// if(productResponse.marketplace_id == 1){
+					
+			// }else{
+			// 	// -------------------------------------------------------
+			// }
 			const product = productResponse.toJSON();
 			if (product.quantity_available == 0) {
 				return res.status(400).json({
