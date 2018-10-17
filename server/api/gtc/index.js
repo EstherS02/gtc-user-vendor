@@ -23,6 +23,7 @@ router.put('/:endpoint/upsert', middleware.validateEndpoint(), controller.upsert
 router.put('/:endpoint/delete', middleware.validateEndpoint(), controller.destroyMany);
 router.put('/:endpoint/:id', middleware.validateEndpoint(), controller.update);
 router.put('/:endpoint/delete/:id', middleware.validateEndpoint(), controller.destroy);
+router.delete('/:endpoint/:id', middleware.validateEndpoint(), controller.delete);
 
 
 module.exports = router;

@@ -140,14 +140,12 @@ export function addProduct(req, res) {
 				if (results.editProduct.ProductMedia[i].base_image != 1) {
 					productImages.push({
 						uploadedImage: results.editProduct.ProductMedia[i].url,
-						fileName: 'ProductImage.png',
-						existing: 'yes'
+						id: results.editProduct.ProductMedia[i].id
 					})
 				} else if (results.editProduct.ProductMedia[i].base_image == 1) {
 					productBaseImage.push({
 						uploadedBaseImage: results.editProduct.ProductMedia[i].url,
-						fileName: 'ProductImage.png',
-						existing: 'yes'
+						id: results.editProduct.ProductMedia[i].id
 					})
 				}
 			}

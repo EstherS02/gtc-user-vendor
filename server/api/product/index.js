@@ -22,6 +22,7 @@ router.post('/', auth.hasRole(roles['VENDOR']), multipartMiddleware, auth.hasPer
 router.post('/add-product', auth.hasRole(roles['VENDOR']), auth.hasPermission(), check.limitExceeds(), controller.addProduct);
 router.post('/edit-product', auth.hasRole(roles['VENDOR']), auth.hasPermission(), check.limitExceeds(), controller.editProduct);
 router.post('/import-product', auth.isAuthenticated(), controller.importProduct);
+router.put('/edit/:id', auth.hasRole(roles['VENDOR']), multipartMiddleware, auth.hasPermission(), controller.edit);
 router.put('/feature-one/:id', controller.featureOne);
 router.put('/feature-many', controller.featureMany);
 router.put('/discount/:product_id', auth.hasRole(roles['VENDOR']), controller.discountProduct)

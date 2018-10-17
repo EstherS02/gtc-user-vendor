@@ -3,14 +3,37 @@
 	$(document).ready(function() {
 		$("#shippingMethodLink").click(function(e) {
 			e.preventDefault();
-			window.location.href = "/order-checkout/shipping-method" + window.location.search;
+			$.ajax({
+				url: '/api/cart/validate',
+				type: 'POST',
+				success: function(data) {
+					window.location.href = "/order-checkout/shipping-method" + window.location.search;
+				},
+				error: function(error) {
+					redirectText = "click here to redirect to cart page";
+					auth.alertService(error.status, error.responseText, redirectText);
+				}
+			});
 		});
 		$("#paymentMethodLink").click(function(e) {
 			e.preventDefault();
-			window.location.href = "/order-checkout/payment-method" + window.location.search;
+			$.ajax({
+				url: '/api/cart/validate',
+				type: 'POST',
+				success: function(data) {
+					window.location.href = "/order-checkout/payment-method" + window.location.search;
+				},
+				error: function(error) {
+					redirectText = "click here to redirect to cart page";
+					auth.alertService(error.status, error.responseText, redirectText);
+				}
+			});
 		});
 	});
 </script>
+<div id="vendorAlert" tabindex="1">
+	<div class="gtc-container"></div>
+</div>
 <div class="wrapper-content">
 	<div class="container-sm">
 		<div class="title-header-1 gtc-p-l-r">
@@ -247,66 +270,76 @@
 
 	$('#stripe-card-transaction-form').submit(function(e) {
 		e.preventDefault();
-		$('#complete-order-submit').prop('disabled', true);
-		$('#complete-order-submit').css({
-			'cursor': "not-allowed"
-		});
-
-		if (!_.isUndefined($('select[name="payment_method_select_id"]').val()) &&
-			!_.isNull($('select[name="payment_method_select_id"]').val())) {
-
-			makePayment($('select[name="payment_method_select_id"]').val());
-			return;
-		}
-
-		let extraDetails = {
-			name: $('#stripe-card-transaction-form input[name=cardholder-name]').val(),
-		};
-		if (!$('#stripe-card-transaction-form input[name=cardholder-name]').val()) {
-			errorElement.text("Card Holder Name is required");
-			errorElement.css("display", "block");
-			errorElement.removeClass('alert-success').addClass('alert-danger');
-			$('#complete-order-submit').prop('disabled', false);
-			$('#complete-order-submit').css({
-				'cursor': "pointer"
-			});
-			return;
-		}
-
-		stripe.createToken(card, extraDetails).then(function(result) {
-			errorElement.css("display", "none");
-			if (result.error && result.error.message) {
-				errorElement.text(result.error.message);
-				errorElement.css("display", "block");
-				errorElement.removeClass('alert-success').addClass('alert-danger');
-				$('#complete-order-submit').prop('disabled', false);
+		$.ajax({
+			url: '/api/cart/validate',
+			type: 'POST',
+			success: function(data) {
+				$('#complete-order-submit').prop('disabled', true);
 				$('#complete-order-submit').css({
-					'cursor': "pointer"
+					'cursor': "not-allowed"
 				});
-				return;
-			}
 
-			$.ajax({
-				url: '/api/payment/card',
-				type: 'POST',
-				contentType: 'application/json',
-				dataType: "json",
-				data: JSON.stringify({
-					token: result.token,
-					isPrimary: false
-				}),
-				success: function(data) {
-					var paymentSettingId = data.id;
-					$('select[name="payment_method_select_id"]').val(paymentSettingId);
-					makePayment(paymentSettingId);
-				},
-				error: function(error) {
+				if (!_.isUndefined($('select[name="payment_method_select_id"]').val()) &&
+					!_.isNull($('select[name="payment_method_select_id"]').val())) {
+
+					makePayment($('select[name="payment_method_select_id"]').val());
+					return;
+				}
+
+				let extraDetails = {
+					name: $('#stripe-card-transaction-form input[name=cardholder-name]').val(),
+				};
+				if (!$('#stripe-card-transaction-form input[name=cardholder-name]').val()) {
+					errorElement.text("Card Holder Name is required");
+					errorElement.css("display", "block");
+					errorElement.removeClass('alert-success').addClass('alert-danger');
 					$('#complete-order-submit').prop('disabled', false);
 					$('#complete-order-submit').css({
 						'cursor': "pointer"
 					});
+					return;
 				}
-			});
+
+				stripe.createToken(card, extraDetails).then(function(result) {
+					errorElement.css("display", "none");
+					if (result.error && result.error.message) {
+						errorElement.text(result.error.message);
+						errorElement.css("display", "block");
+						errorElement.removeClass('alert-success').addClass('alert-danger');
+						$('#complete-order-submit').prop('disabled', false);
+						$('#complete-order-submit').css({
+							'cursor': "pointer"
+						});
+						return;
+					}
+
+					$.ajax({
+						url: '/api/payment/card',
+						type: 'POST',
+						contentType: 'application/json',
+						dataType: "json",
+						data: JSON.stringify({
+							token: result.token,
+							isPrimary: false
+						}),
+						success: function(data) {
+							var paymentSettingId = data.id;
+							$('select[name="payment_method_select_id"]').val(paymentSettingId);
+							makePayment(paymentSettingId);
+						},
+						error: function(error) {
+							$('#complete-order-submit').prop('disabled', false);
+							$('#complete-order-submit').css({
+								'cursor': "pointer"
+							});
+						}
+					});
+				});
+			},
+			error: function(error) {
+				redirectText = "click here to redirect to cart page";
+				auth.alertService(error.status, error.responseText, redirectText);
+			}
 		});
 	});
 

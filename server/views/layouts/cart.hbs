@@ -109,7 +109,7 @@
 	function editCoupon() {
 		$.ajax({
 			url: '/api/cart/cancel-coupon',
-			type: 'GET',
+			type: 'DELETE',
 			success: function(data, statusText, xhr) {
 				location.reload();
 			},
@@ -120,7 +120,16 @@
 	}
 
 	function orderCheckout() {
-		location.href = "/order-checkout/customer-information";
+		$.ajax({
+			url: '/api/cart/validate',
+			type: 'POST',
+			success: function(data) {
+				location.href = "/order-checkout/customer-information";
+			},
+			error: function(error) {
+				auth.alertService(error.status, error.responseText);
+			}
+		})
 	}
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}
 <div id="vendorAlert" tabindex="1">
