@@ -71,7 +71,7 @@ export function vendorQuestion(req, res) {
 	}
 	var vendorId = req.body.vendor_id;
 	var includeArr = [{
-		model: model['user'],
+		model: model['User'],
 		attributes: {
 			exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
 		}

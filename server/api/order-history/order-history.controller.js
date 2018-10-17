@@ -9,17 +9,59 @@ const _ = require('lodash');
 const carrierCode = require('../../config/carriers');
 const orderStatusCode = require('../../config/order_status');
 const sendEmail = require('../../agenda/send-email');
-var async = require('async');
+const async = require('async');
 const populate = require('../../utilities/populate');
 const orderItemStatus = require('../../config/order-item-status');
+const moment = require('moment');
+const numeral = require('numeral');
+const Handlebars = require('handlebars');
+
+var emailTemplateModel = "EmailTemplate";
 
 export function updateStatus(req, res) {
-	var paramsID = req.params.id;
-	var bodyParams = req.body;
-	var order_status;
-	var includeArr = ['User'];
-	var date = new Date();
-	var shippingInput = {};
+
+	var paramsID, order_status, date;
+	var bodyParams = {}, shippingInput = {};
+	var orderStatusIncludeArr = [];
+
+	paramsID = req.params.id;
+	bodyParams = req.body;
+	date = new Date();
+
+	orderStatusIncludeArr = [
+		{
+			model: model['User'],
+			where:{
+				status: statusCode.ACTIVE
+			},
+			attributes:['id', 'user_contact_email', 'first_name']
+		},
+		{
+			model: model['OrderItem'],
+			where:{
+				status: statusCode.ACTIVE
+			},
+			attributes:['id', 'product_id', 'quantity', 'final_price'],
+			include:[
+				{
+					model: model['Product'],
+					include: [
+						{ 
+							model: model['Vendor'],
+							attributes:['id', 'vendor_name'],
+						}
+					],
+					include: [
+						{ 
+							model: model['ProductMedia'],
+							attributes:['id', 'url'],
+						}
+					],
+					attributes:['id', 'vendor_id', 'product_name', 'product_slug'],
+				}
+			]
+		}
+	]
 
 	if (bodyParams.provider_name) {
 		shippingInput['provider_name'] = bodyParams.provider_name;
@@ -31,27 +73,22 @@ export function updateStatus(req, res) {
 		delete bodyParams.tracking_id;
 	}
 
-	if (bodyParams.order_status == orderStatusCode.CONFIRMEDORDER) {
-		order_status = 'confirmed';
+	if (bodyParams.order_status == orderStatusCode.CONFIRMEDORDER){
+		order_status = orderStatusCode.CONFIRMEDORDER;
 	}
 
-	if (bodyParams.order_status == orderStatusCode.PROCESSINGORDER) {
+	if (bodyParams.order_status == orderStatusCode.PROCESSINGORDER){
 		order_status = 'processed';
 	}
 
-	if (bodyParams.order_status == orderStatusCode.DISPATCHEDORDER) {
+	if (bodyParams.order_status == orderStatusCode.DISPATCHEDORDER){
 		order_status = 'dispatched';
 		bodyParams['shipped_on'] = date;
 	}
 
-	if (bodyParams.order_status == orderStatusCode.DELIVEREDORDER) {
+	if (bodyParams.order_status == orderStatusCode.DELIVEREDORDER){
 		order_status = 'delivered';
 		bodyParams['delivered_on'] = date;
-	}
-
-	if (bodyParams.order_status == orderStatusCode.RETURNEDORDER) {
-		order_status = 'returned';
-		bodyParams['returned_on'] = date;
 	}
 
 	bodyParams["last_updated_on"] = new Date();
@@ -63,68 +100,71 @@ export function updateStatus(req, res) {
 			.then(function(res) {
 				
 				bodyParams["shipping_id"] = res.id;
-				orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, function(response) {
+				orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, function(response) {
 					console.log(response);
 				});
 			}).catch(function(err) {
 				console.log(err);
-				orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, function(response) {
+				orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, function(response) {
 					console.log(response);
 				});
 			})
 	} else{
 		
-		orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, function(response) {
+		orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, function(response) {
 			console.log(response);
 		});
 	}
 	return res.status(201).send("Updated");
 }
 
-function orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, res) {
+function orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, res) {
 
-	service.findIdRow("Order", paramsID, includeArr)
-		.then(function(row) {
-			if (row) {
-				console.log(row);
+	service.findIdRow("Order", paramsID, orderStatusIncludeArr)
+		.then(function(updateOrder) {
+			if (updateOrder) {
 				delete bodyParams["id"];
 
 				service.updateRow("Order", bodyParams, paramsID)
 					.then(function(result) {
 						if (result) {
-							if (row.User.user_contact_email) {
-								var purchase_order_id = row.purchase_order_id;
-								var user_email = row.User.user_contact_email;
+							if (updateOrder.User.user_contact_email) {
 
-								var queryObjEmailTemplate = {};
-								var emailTemplateModel = "EmailTemplate";
-								queryObjEmailTemplate['name'] = config.email.templates.orderMail;
+								if(order_status == orderStatusCode.CONFIRMEDORDER){
+									orderConfirmedByVendorMail(updateOrder);
+								}else{
 
-								service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-									.then(function(response) {
-										if (response) {
-											var email = user_email;
-											var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
-											var body;
+									var order_id = updateOrder.id;
+									var user_email = updateOrder.User.user_contact_email;
 
-											body = response.body.replace('%ORDER_MSG%', order_status);
-											body = body.replace('%ORDER_TYPE%', 'Order Status');
-											body = body.replace('%ORDER_NUMBER%', purchase_order_id);
-											//body = body.replace('%LINK%', config.baseUrl + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
+									var queryObjEmailTemplate = {};
+									queryObjEmailTemplate['name'] = config.email.templates.orderMail;
 
-											sendEmail({
-												to: email,
-												subject: subject,
-												html: body
-											});
-											return result;
-										} else {
-											return result;
-										}
-									}).catch(function(error) {
-										console.log('Error :::', error);
-										return error;
-									});
+									service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+										.then(function(response) {
+											if (response) {
+												var email = user_email;
+												var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
+												var body;
+
+												body = response.body.replace('%ORDER_MSG%', order_status);
+												body = body.replace('%ORDER_TYPE%', 'Order Status');
+												body = body.replace('%ORDER_NUMBER%', order_id);
+												
+												sendEmail({
+													to: email,
+													subject: subject,
+													html: body
+												});
+												return result;
+											} else {
+												return result;
+											}
+										}).catch(function(error) {
+											console.log('Error :::', error);
+											return error;
+										});
+								}
 							} else {
 								return "Unable to sent";
 							}
@@ -142,6 +182,45 @@ function orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, res) 
 			console.log('Error :::', error);
 			return error;
 		});
+}
+
+function orderConfirmedByVendorMail(updateOrder){
+	var queryObjEmailTemplate = {}, data = {}, orderItems = [];
+	var email, subject, body, template, result;
+
+	queryObjEmailTemplate['name'] = config.email.templates.vendorOrderConformation;
+
+	service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+		.then(function(mailTemplate) {
+			if(mailTemplate){
+
+				orderItems = updateOrder.OrderItems;
+
+				email = updateOrder.User.user_contact_email;
+				subject = mailTemplate.subject;
+				body = mailTemplate.body.replace(/%CURRENCY%/g, '$');
+				body = body.replace('%USER_NAME%', updateOrder.User.first_name);
+				//body = body.replace(/%VENDOR_NAME%/g, orderItems[0].Product.Vendor.vendor_name);
+				body = body.replace(/%ORDER_ID%/g, updateOrder.id);
+				body = body.replace('%PLACED_ON%', moment(updateOrder.created_on).format('MMM D, Y'));
+				body = body.replace('%TOTAL_PRICE%', numeral(updateOrder.total_price).format('$' + '0,0.00'));
+
+				template = Handlebars.compile(body);
+				data = {
+					OrderItems: orderItems
+				};
+				result = template(data);
+
+				sendEmail({
+					to: email,
+					subject: subject,
+					html: result
+				});
+				return;
+			}
+		}).catch(function(error){
+			console.log("Error::",error);
+		})
 }
 
 export function vendorCancel(req, res) {
