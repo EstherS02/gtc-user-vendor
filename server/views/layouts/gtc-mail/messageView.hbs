@@ -79,11 +79,24 @@
 						</div>
 						<div class="content-body">
 							<div class="row">
-								<div class="col-md-7">
-									From:  {{message.fromUser.first_name}}
-									<br/> To:  me
-									<i class="fas fa-caret-down popupRefernece"></i>
-								</div>
+								{{#ifCond selectedPage '==' 'sent' }}
+									<div class="col-md-7">
+										To:  
+										<br/> From:  me
+										<i class="fas fa-caret-down popupRefernece"></i>
+									</div>
+								{{else ifCond selectedPage '==' 'drafts'}}
+									<div class="col-md-7"> 
+										From:  me
+										<i class="fas fa-caret-down popupRefernece"></i>
+									</div>
+								{{else}}
+									<div class="col-md-7">
+										From:  {{message.fromUser.first_name}}
+										<br/> To:  me
+										<i class="fas fa-caret-down popupRefernece"></i>
+									</div>
+								{{/ifCond}}
 								<div class="col-md-5">
 									<p class="pull-right">
 										{{formatTime message.created_on "MMM D, YYYY"}}
@@ -119,8 +132,13 @@
 					<div class="table-responsive">
 						<table>
 							<tr>
-								<td style="padding-right:8px;">from:</td>
-								<td>{{message.fromUser.first_name}}</td>
+								{{#ifCond selectedPage '==' 'sent' }}
+									<td style="padding-right:8px;">to:</td>
+									<td></td>
+								{{else}}
+									<td style="padding-right:8px;">from:</td>
+									<td>{{message.fromUser.first_name}}</td>
+								{{/ifCond}}
 							</tr>
 							<tr>
 								<td style="padding-right:8px;">date:</td>
