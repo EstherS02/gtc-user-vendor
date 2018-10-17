@@ -737,7 +737,7 @@ function usernotification(order, user) {
 
 export function makePlanPayment(req, res) {
 	var upgradingPlan, desc, convertMoment, start_date, end_date, vendorId;
-	var paymentBodyParam = {}, vendorPlanBodyParam = {}, userPlanBodyParam = {};
+	var paymentBodyParam = {}, vendorPlanBodyParam = {}, userPlanBodyParam = {},refundObj={};
 
 	vendorId = req.body.vendor_id;
 	upgradingPlan = req.body.plan_id;
@@ -782,7 +782,32 @@ export function makePlanPayment(req, res) {
 				if (req.user.user_contact_email) {
 					sendUpgrademail(req.body.plan_id, req.user);
 				}
-				return service.createRow('VendorPlan', vendorPlanBodyParam);
+				 service.createRow('VendorPlan', vendorPlanBodyParam).then(function(currentplanrow){
+					let includeArr = [];
+		         	refundObj = {
+					vendor_id: vendorId,	 
+				    status:status['ACTIVE'],
+				    id: {
+					$ne: currentplanrow.id
+				     },
+			       };
+			      var field = 'created_on';
+			       var order = "asc";
+			      service.findAllRows('VendorPlan', includeArr, refundObj, 0, null, field, order).then(function(successPromise){
+			      if (successPromise.count != "0") {
+				  let plandeactivestatus = {
+					status:status['INACTIVE'],
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				  };
+				   refundObj = {
+					vendor_id: vendorId,
+					id: {$ne: currentplanrow.id},
+				  };
+				  return service.updateManyRecord('VendorPlan', plandeactivestatus, refundObj);
+				}
+			  });
+				});
 			} else {
 				userPlanBodyParam = {
 					user_id: req.body.user_id,
