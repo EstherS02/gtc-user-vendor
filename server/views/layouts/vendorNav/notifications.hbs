@@ -18,6 +18,7 @@
 			}
 			$("#notificationCount").val(notificationCount);
 			$("#notificationCount").html(notificationCount);
+			alert($(this).data('message'));
 			document.getElementById("Subject").innerHTML = $(this).data('name');
 			document.getElementById("Message").innerHTML = $(this).data('message');
 			var id = $(this).data('id');

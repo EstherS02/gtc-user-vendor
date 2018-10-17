@@ -21,15 +21,15 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 		}
 	}
 	function CartUpdate(e) {
-		var dataInfo = {};
+		var cartInfo = {};
 		var quantity = 0;
 		var marketplace_id = $("#marketplaceId" + e).val();
 		var typecode = $('#typecode' + e).val();
 		console.log("marketplace_id",marketplace_id)
-		dataInfo.product_id = $("#product_id" + e).val();
-		dataInfo.product_quantity = quantity = $("#inputQuantity" + e).val();
-		dataInfo.cart_item_id = 0;
-		dataInfo.marketplace_id = marketplace_id;
+		cartInfo.product_id = $("#product_id" + e).val();
+		cartInfo.product_quantity = quantity = $("#inputQuantity" + e).val();
+		cartInfo.cart_item_id = 0;
+		cartInfo.marketplace_id = marketplace_id;
 		var vendor_id=$("#vendorId" + e).val();
 		var vendor_name = $("#vendorName" + e).val();
 		if (quantity) {
@@ -49,7 +49,7 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 function cartAPI(cartInfo) {
 			$.ajax({
 				type: "POST",
-				url: "/api/cart/add-cart/" + productSpecs.id,
+				url: "/api/cart/add-cart/" + cartInfo.product_id,
 				data: cartInfo,
 				success: function(response) {
 					location.reload();
