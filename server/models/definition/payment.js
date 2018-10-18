@@ -73,10 +73,25 @@ module.exports.initRelations = () => {
     const FeaturedProduct = model.FeaturedProduct;
     const OrderPayment = model.OrderPayment;
     const OrderPaymentEscrow = model.OrderPaymentEscrow;
-    const VendorPlan = model.VendorPlan;
-    const UserPlan = model.UserPlan;
+    const OrdersNew = model.OrdersNew;
     const ProductAdsSetting = model.ProductAdsSetting;
+    const UserPlan = model.UserPlan;
+    const VendorPlan = model.VendorPlan;
+    const Product = model.Product;
     const Order = model.Order;
+    const User = model.User;
+    const Shipping = model.Shipping;
+    const Address = model.Address;
+    const Country = model.Country;
+    const State = model.State;
+    const Vendor = model.Vendor;
+    const Plan = model.Plan;
+
+    Payment.hasMany(FeaturedProduct, {
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
 
     Payment.hasMany(OrderPayment, {
         foreignKey: 'payment_id',
@@ -90,22 +105,42 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Payment.hasMany(OrdersNew, {
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.hasMany(ProductAdsSetting, {
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.hasMany(UserPlan, {
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.hasMany(VendorPlan, {
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.belongsToMany(Product, {
+        through: FeaturedProduct,
+        foreignKey: 'payment_id',
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Payment.belongsToMany(Order, {
         through: OrderPayment,
         foreignKey: 'payment_id',
         otherKey: 'order_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Payment.hasOne(VendorPlan, {
-        foreignKey: 'payment_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Payment.hasOne(UserPlan, {
-        foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -118,15 +153,100 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Payment.hasOne(FeaturedProduct, {
+    Payment.belongsToMany(User, {
+        through: OrdersNew,
         foreignKey: 'payment_id',
+        otherKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Payment.hasOne(ProductAdsSetting, {
+    Payment.belongsToMany(Shipping, {
+        through: OrdersNew,
         foreignKey: 'payment_id',
+        otherKey: 'shipping_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
+
+    Payment.belongsToMany(Address, {
+        through: OrdersNew,
+        foreignKey: 'payment_id',
+        otherKey: 'shipping_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.belongsToMany(Address, {
+        through: OrdersNew,
+        foreignKey: 'payment_id',
+        otherKey: 'billing_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.belongsToMany(Product, {
+        through: ProductAdsSetting,
+        foreignKey: 'payment_id',
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.belongsToMany(Country, {
+        through: ProductAdsSetting,
+        foreignKey: 'payment_id',
+        otherKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.belongsToMany(State, {
+        through: ProductAdsSetting,
+        foreignKey: 'payment_id',
+        otherKey: 'state_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.belongsToMany(Vendor, {
+        through: ProductAdsSetting,
+        foreignKey: 'payment_id',
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.belongsToMany(User, {
+        through: UserPlan,
+        foreignKey: 'payment_id',
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.belongsToMany(Plan, {
+        through: UserPlan,
+        foreignKey: 'payment_id',
+        otherKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.belongsToMany(Vendor, {
+        through: VendorPlan,
+        foreignKey: 'payment_id',
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.belongsToMany(Plan, {
+        through: VendorPlan,
+        foreignKey: 'payment_id',
+        otherKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
 };

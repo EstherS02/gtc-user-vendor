@@ -400,7 +400,7 @@ export function product(req, res) {
 				vendorAvgRating['status'] = {
 					'$eq': status["ACTIVE"]
 				}
-				model['ProductRatings'].findAll({
+				model['ProductRating'].findAll({
 					where: vendorAvgRating,
 					attributes: [
 						[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
@@ -710,7 +710,7 @@ export function GetProductReview(req, res) {
 			vendorAvgRating['status'] = {
 				'$eq': status["ACTIVE"]
 			}
-			model['ProductRatings'].findAll({
+			model['ProductRating'].findAll({
 				where: vendorAvgRating,
 				attributes: [
 					[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']

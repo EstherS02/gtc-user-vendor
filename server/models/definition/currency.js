@@ -74,6 +74,7 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
     const Region = model.Region;
     const User = model.User;
+    const State = model.State;
     const Timezone = model.Timezone;
 
     Currency.hasMany(Country, {
@@ -108,6 +109,14 @@ module.exports.initRelations = () => {
         through: Vendor,
         foreignKey: 'currency_id',
         otherKey: 'base_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Currency.belongsToMany(State, {
+        through: Vendor,
+        foreignKey: 'currency_id',
+        otherKey: 'province_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

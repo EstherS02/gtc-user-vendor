@@ -6,92 +6,93 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         order_id: {
             type: DataTypes.BIGINT,
             field: 'order_id',
-            allowNull: false
+            allowNull: true
         },
         user_id: {
             type: DataTypes.BIGINT,
             field: 'user_id',
-            allowNull: false
+            allowNull: true
         },
         product_id: {
             type: DataTypes.BIGINT,
             field: 'product_id',
-            allowNull: false
+            allowNull: true
         },
         product_name: {
-            type: DataTypes.STRING(128),
+            type: DataTypes.STRING(255),
             field: 'product_name',
-            allowNull: false
+            allowNull: true
         },
         vendor_id: {
             type: DataTypes.BIGINT,
             field: 'vendor_id',
-            allowNull: false
-        },
-        final_price: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'final_price',
-            allowNull: false
-        },
-        order_item_status: {
-            type: DataTypes.INTEGER,
-            field: 'order_item_status',
-            allowNull: false
-        },
-        order_status: {
-            type: DataTypes.INTEGER,
-            field: 'order_status',
-            allowNull: false
+            allowNull: true
         },
         marketplace_id: {
             type: DataTypes.BIGINT,
             field: 'marketplace_id',
-            allowNull: false
+            allowNull: true
+        },
+        final_price: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'final_price',
+            allowNull: true
+        },
+        order_item_status: {
+            type: DataTypes.INTEGER,
+            field: 'order_item_status',
+            allowNull: true
+        },
+        order_status: {
+            type: DataTypes.INTEGER,
+            field: 'order_status',
+            allowNull: true
         },
         marketplace_name: {
-            type: DataTypes.STRING(128),
+            type: DataTypes.STRING(64),
             field: 'marketplace_name',
-            allowNull: false
+            allowNull: true
         },
         marketplace_type_id: {
             type: DataTypes.BIGINT,
             field: 'marketplace_type_id',
-            allowNull: false
+            allowNull: true
         },
         marketplace_type_name: {
-            type: DataTypes.STRING(128),
+            type: DataTypes.STRING(64),
             field: 'marketplace_type_name',
-            allowNull: false
+            allowNull: true
         },
         category_id: {
             type: DataTypes.BIGINT,
             field: 'category_id',
-            allowNull: false
+            allowNull: true
         },
         category_name: {
             type: DataTypes.STRING(128),
             field: 'category_name',
-            allowNull: false
+            allowNull: true
         },
         sub_category_id: {
             type: DataTypes.BIGINT,
             field: 'sub_category_id',
-            allowNull: false
+            allowNull: true
         },
         sub_category_name: {
             type: DataTypes.STRING(128),
             field: 'sub_category_name',
-            allowNull: false
-        },        
+            allowNull: true
+        },
         item_created_on: {
-            type: DataTypes.DATEONLY,
+            type: DataTypes.DATE,
             field: 'item_created_on',
-            allowNull: false
+            allowNull: true
         }
     }, {
         tableName: 'order_items_overview',

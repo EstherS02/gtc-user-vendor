@@ -136,12 +136,14 @@ module.exports.initRelations = () => {
     const CouponExcludedProduct = model.CouponExcludedProduct;
     const CouponProduct = model.CouponProduct;
     const Order = model.Order;
+    const OrdersItemsNew = model.OrdersItemsNew;
     const Vendor = model.Vendor;
     const Category = model.Category;
     const Product = model.Product;
     const User = model.User;
     const Shipping = model.Shipping;
     const Address = model.Address;
+    const OrdersNew = model.OrdersNew;
 
     Coupon.hasMany(CouponCategory, {
         foreignKey: 'coupon_id',
@@ -168,6 +170,12 @@ module.exports.initRelations = () => {
     });
 
     Coupon.hasMany(Order, {
+        foreignKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Coupon.hasMany(OrdersItemsNew, {
         foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -239,6 +247,22 @@ module.exports.initRelations = () => {
         through: Order,
         foreignKey: 'coupon_id',
         otherKey: 'billing_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Coupon.belongsToMany(OrdersNew, {
+        through: OrdersItemsNew,
+        foreignKey: 'coupon_id',
+        otherKey: 'order_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Coupon.belongsToMany(Product, {
+        through: OrdersItemsNew,
+        foreignKey: 'coupon_id',
+        otherKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

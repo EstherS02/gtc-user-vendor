@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'from_id',
             allowNull: false,
             references: {
-                model: 'user',
+                model: 'users',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         sent_at: {
             type: DataTypes.DATE,
             field: 'sent_at',
-            allowNull: true
+            allowNull: false
         },
         talk_status: {
             type: DataTypes.INTEGER,
@@ -38,23 +38,24 @@ module.exports = (sequelize, DataTypes) => {
         talk_thread_id: {
             type: DataTypes.BIGINT,
             field: 'talk_thread_id',
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'talk_thread',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-		},
-		is_read: {
-            type: DataTypes.INTEGER,
-            field: 'is_read',
-            allowNull: false
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
+        },
+        is_read: {
+            type: DataTypes.INTEGER,
+            field: 'is_read',
+            allowNull: false,
+            defaultValue: "0"
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -91,9 +92,15 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Talk = model.Talk; 
-    const TalkThread = model.TalkThread;
+    const Talk = model.Talk;
     const User = model.User;
+    const TalkThread = model.TalkThread;
+
+    Talk.belongsTo(User, {
+        foreignKey: 'from_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
 
     Talk.belongsTo(TalkThread, {
         foreignKey: 'talk_thread_id',
@@ -101,10 +108,4 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Talk.belongsTo(User, {
-        foreignKey: 'from_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
 };
-

@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         status: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
         },
@@ -48,12 +48,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'last_updated_on',
             allowNull: true
-        },
+        }
     }, {
         tableName: 'notification_settings',
         timestamps: false
     });
 };
+
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 

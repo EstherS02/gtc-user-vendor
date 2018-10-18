@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('TalkThreadUsers', {
+    return sequelize.define('TalkThreadUser', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'user_id',
             allowNull: false,
             references: {
-                model: 'talk_thread',
+                model: 'users',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -62,28 +62,29 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-            tableName: 'talk_thread_users',
-            timestamps: false
-        });
+        tableName: 'talk_thread_users',
+        timestamps: false
+    });
 };
 
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const TalkThreadUsers = model.TalkThreadUsers;
+    const TalkThreadUser = model.TalkThreadUser;
     const TalkThread = model.TalkThread;
     const User = model.User;
 
-    TalkThreadUsers.belongsTo(TalkThread, {
+    TalkThreadUser.belongsTo(TalkThread, {
         foreignKey: 'thread_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    TalkThreadUsers.belongsTo(User, {
+    TalkThreadUser.belongsTo(User, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
+
 };

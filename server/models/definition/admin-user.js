@@ -5,9 +5,8 @@ module.exports = (sequelize, DataTypes) => {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
-            allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            allowNull: true,
+            primaryKey: true
         },
         user_id: {
             type: DataTypes.BIGINT,

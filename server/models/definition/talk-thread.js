@@ -59,19 +59,37 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Talk = model.Talk;
     const TalkThread = model.TalkThread;
-    const TalkThreadUsers = model.TalkThreadUsers;
-
-    TalkThread.hasMany(TalkThreadUsers, {
-        foreignKey: 'thread_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
+    const Talk = model.Talk;
+    const TalkThreadUser = model.TalkThreadUser;
+    const User = model.User;
 
     TalkThread.hasMany(Talk, {
         foreignKey: 'talk_thread_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
+
+    TalkThread.hasMany(TalkThreadUser, {
+        foreignKey: 'thread_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    TalkThread.belongsToMany(User, {
+        through: Talk,
+        foreignKey: 'talk_thread_id',
+        otherKey: 'from_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    TalkThread.belongsToMany(User, {
+        through: TalkThreadUser,
+        foreignKey: 'thread_id',
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
 };

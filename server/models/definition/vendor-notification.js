@@ -62,13 +62,24 @@ module.exports = (sequelize, DataTypes) => {
 
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
-    const model = require('../index');
-    const Notification = model.VendorNotification;
-    const VendorNotificationSetting = model.VendorNotificationSetting;
 
-    Notification.hasMany(VendorNotificationSetting, {
+    const model = require('../index');
+    const VendorNotification = model.VendorNotification;
+    const VendorNotificationSetting = model.VendorNotificationSetting;
+    const Vendor = model.Vendor;
+
+    VendorNotification.hasMany(VendorNotificationSetting, {
         foreignKey: 'vendor_notification_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
+
+    VendorNotification.belongsToMany(Vendor, {
+        through: VendorNotificationSetting,
+        foreignKey: 'vendor_notification_id',
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
 };

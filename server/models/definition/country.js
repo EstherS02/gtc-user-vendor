@@ -97,6 +97,7 @@ module.exports.initRelations = () => {
     const MarketplaceType = model.MarketplaceType;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
+    const Payment = model.Payment;
 
     Country.hasMany(Address, {
         foreignKey: 'country_id',
@@ -222,13 +223,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-  /*   Country.belongsToMany(Product, {
+    Country.belongsToMany(Product, {
         through: ProductAdsSetting,
         foreignKey: 'country_id',
         otherKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    }); */
+    });
 
     Country.belongsToMany(State, {
         through: ProductAdsSetting,
@@ -238,10 +239,34 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Country.belongsToMany(Vendor, {
+        through: ProductAdsSetting,
+        foreignKey: 'country_id',
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Country.belongsToMany(Payment, {
+        through: ProductAdsSetting,
+        foreignKey: 'country_id',
+        otherKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Country.belongsToMany(User, {
         through: Vendor,
         foreignKey: 'base_location',
         otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Country.belongsToMany(State, {
+        through: Vendor,
+        foreignKey: 'base_location',
+        otherKey: 'province_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

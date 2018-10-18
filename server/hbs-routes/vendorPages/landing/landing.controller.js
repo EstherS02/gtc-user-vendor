@@ -159,7 +159,7 @@ export function vendor(req, res) {
 				'$eq': status["ACTIVE"]
 			}
 
-			model['ProductRatings'].findAll({
+			model['ProductRating'].findAll({
 				where: vendorAvgRating,
 				attributes: [
 					[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']

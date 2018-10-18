@@ -108,7 +108,7 @@ export function services(req, res) {
 					}
 					async.mapSeries(result.rows, function(aVendor, cb) {
 						vendorAvgRating['vendor_id'] = aVendor.id;
-						model['ProductRatings'].findOne({
+						model['ProductRating'].findOne({
 							where: vendorAvgRating,
 							attributes: [
 								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']

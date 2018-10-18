@@ -2,16 +2,12 @@
 
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('VendorUserProduct', {
-        product_count: {
-            type: DataTypes.BIGINT,
-            field: 'product_count',
-            allowNull: true
-        },
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         vendor_name: {
             type: DataTypes.STRING(64),
@@ -26,6 +22,16 @@ module.exports = (sequelize, DataTypes) => {
         url: {
             type: DataTypes.TEXT,
             field: 'url',
+            allowNull: true
+        },
+        origin_id: {
+            type: DataTypes.BIGINT,
+            field: 'origin_id',
+            allowNull: true
+        },
+        origin: {
+            type: DataTypes.STRING(128),
+            field: 'origin',
             allowNull: true
         },
         type: {
@@ -68,28 +74,23 @@ module.exports = (sequelize, DataTypes) => {
             field: 'role',
             allowNull: true
         },
-        origin: {
-            type: DataTypes.STRING(128),
-            field: 'origin',
-            allowNull: false
-        },
-        origin_id: {
-            type: DataTypes.BIGINT,
-            field: 'origin_id',
-            allowNull: false
-        },
         email_verified: {
             type: DataTypes.INTEGER,
             field: 'email_verified',
             allowNull: true
         },
-        sales_count: {
+        product_count: {
             type: DataTypes.BIGINT,
+            field: 'product_count',
+            allowNull: true
+        },
+        sales_count: {
+            type: DataTypes.DECIMAL(54),
             field: 'sales_count',
             allowNull: true
         },
         rating: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.DECIMAL(14, 4),
             field: 'rating',
             allowNull: true
         },

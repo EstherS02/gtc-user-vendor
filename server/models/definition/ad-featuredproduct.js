@@ -5,33 +5,28 @@ module.exports = (sequelize, DataTypes) => {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
-            allowNull: false,
+            allowNull: true,
             primaryKey: true
         },
         product_name: {
-            type: DataTypes.STRING(128),
+            type: DataTypes.STRING(255),
             field: 'product_name',
-            allowNull: false
+            allowNull: true
         },
         type: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.BIGINT,
             field: 'type',
-            allowNull: false
+            allowNull: true
         },
         start_date: {
             type: DataTypes.DATEONLY,
             field: 'start_date',
-            allowNull: false
+            allowNull: true
         },
         end_date: {
             type: DataTypes.DATEONLY,
             field: 'end_date',
             allowNull: true
-        },
-        status: {
-            type: DataTypes.INTEGER,
-            field: 'status',
-            allowNull: false
         },
         impression: {
             type: DataTypes.INTEGER,
@@ -41,6 +36,11 @@ module.exports = (sequelize, DataTypes) => {
         clicks: {
             type: DataTypes.INTEGER,
             field: 'clicks',
+            allowNull: true
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
             allowNull: true
         },
         created_by: {

@@ -25,6 +25,17 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        vendor_id: {
+            type: DataTypes.BIGINT,
+            field: 'vendor_id',
+            allowNull: true,
+            references: {
+                model: 'vendor',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
         position: {
             type: DataTypes.INTEGER,
             field: 'position',
@@ -96,8 +107,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'clicks',
             allowNull: true
-		},
-		payment_id: {
+        },
+        payment_id: {
             type: DataTypes.BIGINT,
             field: 'payment_id',
             allowNull: false,
@@ -145,18 +156,13 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const ProductAdsSetting = model.ProductAdsSetting;
     const Product = model.Product;
-    const Vendor = model.Vendor;
     const Country = model.Country;
-	const State = model.State;
-	const Payment = model.Payment;
+    const State = model.State;
+    const Vendor = model.Vendor;
+    const Payment = model.Payment;
 
     ProductAdsSetting.belongsTo(Product, {
         foreignKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-    ProductAdsSetting.belongsTo(Vendor, {
-        foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -171,9 +177,15 @@ module.exports.initRelations = () => {
         foreignKey: 'state_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-	});
-	
-	ProductAdsSetting.belongsTo(Payment, {
+    });
+
+    ProductAdsSetting.belongsTo(Vendor, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    ProductAdsSetting.belongsTo(Payment, {
         foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

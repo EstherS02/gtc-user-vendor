@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         role: {
             type: DataTypes.INTEGER,
@@ -42,8 +43,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'user_status',
             allowNull: true
-		},
-		order_status: {
+        },
+        order_status: {
             type: DataTypes.INTEGER,
             field: 'order_status',
             allowNull: true

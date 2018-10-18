@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'provider_name',
             allowNull: true
         },
-		tracking_id: {
+        tracking_id: {
             type: DataTypes.STRING(64),
             field: 'tracking_id',
             allowNull: true
@@ -61,10 +61,19 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const Shipping = model.Shipping;
     const Order = model.Order;
+    const OrdersNew = model.OrdersNew;
     const User = model.User;
     const Address = model.Address;
+    const Coupon = model.Coupon;
+    const Payment = model.Payment;
 
     Shipping.hasMany(Order, {
+        foreignKey: 'shipping_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Shipping.hasMany(OrdersNew, {
         foreignKey: 'shipping_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -88,6 +97,46 @@ module.exports.initRelations = () => {
 
     Shipping.belongsToMany(Address, {
         through: Order,
+        foreignKey: 'shipping_id',
+        otherKey: 'billing_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Shipping.belongsToMany(Coupon, {
+        through: Order,
+        foreignKey: 'shipping_id',
+        otherKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Shipping.belongsToMany(User, {
+        through: OrdersNew,
+        foreignKey: 'shipping_id',
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Shipping.belongsToMany(Payment, {
+        through: OrdersNew,
+        foreignKey: 'shipping_id',
+        otherKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Shipping.belongsToMany(Address, {
+        through: OrdersNew,
+        foreignKey: 'shipping_id',
+        otherKey: 'shipping_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Shipping.belongsToMany(Address, {
+        through: OrdersNew,
         foreignKey: 'shipping_id',
         otherKey: 'billing_address_id',
         onDelete: 'NO ACTION',

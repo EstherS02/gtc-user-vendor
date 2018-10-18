@@ -80,7 +80,6 @@ module.exports.initRelations = () => {
     const Country = model.Country;
     const Order = model.Order;
     const Product = model.Product;
-    const Coupon = model.Coupon;
 
     Tax.hasMany(OrderItem, {
         foreignKey: 'tax_id',
@@ -109,13 +108,5 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-   /* Tax.belongsToMany(Coupon, {
-        through: OrderItem,
-        foreignKey: 'tax_id',
-        otherKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
 
 };

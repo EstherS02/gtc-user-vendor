@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(128),
             field: 'email',
             allowNull: false
-		},
-		user_contact_email: {
+        },
+        user_contact_email: {
             type: DataTypes.STRING(128),
             field: 'user_contact_email',
             allowNull: true
@@ -53,11 +53,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
-        },
-        availability_status: {
-            type: DataTypes.INTEGER,
-            field: 'availability_status',
-            allowNull: true
         },
         salt: {
             type: DataTypes.STRING(128),
@@ -115,9 +110,15 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         stripe_customer_id: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             field: 'stripe_customer_id',
             allowNull: true
+        },
+        availability_status: {
+            type: DataTypes.INTEGER,
+            field: 'availability_status',
+            allowNull: true,
+            defaultValue: "0"
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -155,22 +156,25 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const User = model.User;
-    const UserPlan = model.UserPlan;
     const Address = model.Address;
     const Admin = model.Admin;
     const Cart = model.Cart;
+    const DiscussionBoardPost = model.DiscussionBoardPost;
     const DiscussionBoardPostComment = model.DiscussionBoardPostComment;
     const DiscussionBoardPostLike = model.DiscussionBoardPostLike;
     const Mail = model.Mail;
+    const Notification = model.Notification;
     const Order = model.Order;
+    const OrdersNew = model.OrdersNew;
     const PaymentSetting = model.PaymentSetting;
     const Review = model.Review;
     const Subscription = model.Subscription;
     const Talk = model.Talk;
-    const TalkThreadUsers = model.TalkThreadUsers;
+    const TalkThreadUser = model.TalkThreadUser;
     const Ticket = model.Ticket;
     const TicketThread = model.TicketThread;
     const UserMail = model.UserMail;
+    const UserPlan = model.UserPlan;
     const UserToken = model.UserToken;
     const Vendor = model.Vendor;
     const VendorFollower = model.VendorFollower;
@@ -179,13 +183,14 @@ module.exports.initRelations = () => {
     const Country = model.Country;
     const State = model.State;
     const Product = model.Product;
-    const DiscussionBoardPost = model.DiscussionBoardPost;
     const Shipping = model.Shipping;
-    const TalkSetting = model.TalkSetting;
+    const Coupon = model.Coupon;
+    const Payment = model.Payment;
+    const TalkThread = model.TalkThread;
+    const Plan = model.Plan;
     const Appclient = model.Appclient;
     const Currency = model.Currency;
     const Timezone = model.Timezone;
-    const Notification = model.Notification;
 
     User.hasMany(Address, {
         foreignKey: 'user_id',
@@ -235,7 +240,19 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    User.hasMany(Notification, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     User.hasMany(Order, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.hasMany(OrdersNew, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -265,7 +282,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    User.hasMany(TalkThreadUsers, {
+    User.hasMany(TalkThreadUser, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -284,6 +301,12 @@ module.exports.initRelations = () => {
     });
 
     User.hasMany(UserMail, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.hasMany(UserPlan, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -319,17 +342,6 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    User.hasMany(Notification, {
-        foreignKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-    User.hasMany(UserPlan, {
-        foreignKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
     User.belongsToMany(Country, {
         through: Address,
         foreignKey: 'user_id',
@@ -350,6 +362,14 @@ module.exports.initRelations = () => {
         through: Cart,
         foreignKey: 'user_id',
         otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(Vendor, {
+        through: DiscussionBoardPost,
+        foreignKey: 'user_id',
+        otherKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -412,6 +432,46 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    User.belongsToMany(Coupon, {
+        through: Order,
+        foreignKey: 'user_id',
+        otherKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(Payment, {
+        through: OrdersNew,
+        foreignKey: 'user_id',
+        otherKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(Shipping, {
+        through: OrdersNew,
+        foreignKey: 'user_id',
+        otherKey: 'shipping_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(Address, {
+        through: OrdersNew,
+        foreignKey: 'user_id',
+        otherKey: 'shipping_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(Address, {
+        through: OrdersNew,
+        foreignKey: 'user_id',
+        otherKey: 'billing_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     User.belongsToMany(Product, {
         through: Review,
         foreignKey: 'user_id',
@@ -428,30 +488,21 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-   /* User.belongsToMany(TalkSetting, {
+    User.belongsToMany(TalkThread, {
         through: Talk,
         foreignKey: 'from_id',
-        otherKey: 'talk_setting_id',
+        otherKey: 'talk_thread_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
-    // User.belongsToMany(User, {
-    //     as: 'fromUser',
-    //     through: Talk,
-    //     foreignKey: 'from_id',
-    //     // otherKey: 'to_id',
-    //     onDelete: 'NO ACTION',
-    //     onUpdate: 'NO ACTION'
-    // });
-
-  /*  User.belongsToMany(TalkSetting, {
-        through: Talk,
-        foreignKey: 'to_id',
-        otherKey: 'talk_setting_id',
+    User.belongsToMany(TalkThread, {
+        through: TalkThreadUser,
+        foreignKey: 'user_id',
+        otherKey: 'thread_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
     User.belongsToMany(Ticket, {
         through: TicketThread,
@@ -469,6 +520,22 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    User.belongsToMany(Plan, {
+        through: UserPlan,
+        foreignKey: 'user_id',
+        otherKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(Payment, {
+        through: UserPlan,
+        foreignKey: 'user_id',
+        otherKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     User.belongsToMany(Appclient, {
         through: UserToken,
         foreignKey: 'user_id',
@@ -481,6 +548,14 @@ module.exports.initRelations = () => {
         through: Vendor,
         foreignKey: 'user_id',
         otherKey: 'base_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(State, {
+        through: Vendor,
+        foreignKey: 'user_id',
+        otherKey: 'province_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
