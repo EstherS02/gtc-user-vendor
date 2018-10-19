@@ -221,23 +221,10 @@
 	</div>
 </div>
 <script src="https://js.stripe.com/v3/"></script>
-<script>
-	var vendorArray = [];
-	var vendorArray1;
-	var cartItems = {{{ DisplayJSON cart.marketplace_products }}}
-	$(document).ready(function() {
-
-		for (var key in cartItems) {
-			var productsArray = cartItems[key].products;
-			for (var i = 0; i < productsArray.length; i++) {
-				vendorArray.push(productsArray[i].Product.Vendor.id);
-			}
-		}
-		vendorArray = _.uniq(vendorArray);
-		vendorArray1 = vendorArray.join(',');
-	});
-
+<script type="text/javascript">
 	var stripe = Stripe('{{stripePublishableKey}}');
+	var errorElement = $('#stripe-error-validation');
+
 	var elements = stripe.elements({
 		fonts: [{
 			cssSrc: 'https://fonts.googleapis.com/css?family=Roboto:400,700',
@@ -266,10 +253,9 @@
 
 	card.mount('#gtc-stripe-card-element');
 
-	var errorElement = $('#stripe-error-validation');
-
 	$('#stripe-card-transaction-form').submit(function(e) {
 		e.preventDefault();
+
 		$.ajax({
 			url: '/api/cart/validate',
 			type: 'POST',
@@ -279,9 +265,7 @@
 					'cursor': "not-allowed"
 				});
 
-				if (!_.isUndefined($('select[name="payment_method_select_id"]').val()) &&
-					!_.isNull($('select[name="payment_method_select_id"]').val())) {
-
+				if (!_.isUndefined($('select[name="payment_method_select_id"]').val()) && !_.isNull($('select[name="payment_method_select_id"]').val())) {
 					makePayment($('select[name="payment_method_select_id"]').val());
 					return;
 				}
@@ -289,6 +273,7 @@
 				let extraDetails = {
 					name: $('#stripe-card-transaction-form input[name=cardholder-name]').val(),
 				};
+
 				if (!$('#stripe-card-transaction-form input[name=cardholder-name]').val()) {
 					errorElement.text("Card Holder Name is required");
 					errorElement.css("display", "block");
@@ -314,7 +299,7 @@
 					}
 
 					$.ajax({
-						url: '/api/payment/card',
+						url: '/api/payment/card', 
 						type: 'POST',
 						contentType: 'application/json',
 						dataType: "json",
@@ -350,7 +335,7 @@
 			contentType: 'application/json',
 			dataType: "json",
 			data: JSON.stringify({
-				paymentSettingId: paymentSettingId,
+				payment_setting_id: paymentSettingId,
 				selected_billing_address_id: $('input[name="selected_billing_address_id"]').val(),
 				selected_shipping_address_id: $('input[name="selected_shipping_address_id"]').val()
 			}),
@@ -359,9 +344,9 @@
 				errorElement.css("display", "block");
 				errorElement.removeClass('alert-danger').addClass('alert-success');
 
-				setTimeout(function() {
+				/*setTimeout(function() {
 					window.location = '/order-checkout/confirmation?key=' + vendorArray1;
-				}, 1000);
+				}, 1000);*/
 			},
 			error: function(error) {
 				$('#complete-order-submit').prop('disabled', false);
@@ -371,4 +356,5 @@
 			}
 		});
 	}
-</script> {{> footer/bottom-footer}}
+</script>
+{{> footer/bottom-footer}}

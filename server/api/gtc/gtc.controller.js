@@ -9,6 +9,7 @@ const moment = require('moment');
 
 const service = require('../service');
 const productService = require('../product/product.service');
+const cartService = require("../cart/cart.service");
 const reportsService = require('../reports/reports.service');
 const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
@@ -19,17 +20,12 @@ const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
 export function indexExample(req, res) {
-	var serviceQueryParams = {};
-
-	serviceQueryParams['start_date'] = new Date(req.query.start_date);
-	serviceQueryParams['end_date'] = new Date(req.query.end_date);
-
-	reportsService.AccountingReport(req.user.Vendor.id, serviceQueryParams)
+	cartService.cartCalculation(req.user.id, req, res)
 		.then((response) => {
 			return res.status(200).send(response);
 		})
 		.catch((error) => {
-			console.log("index Error :::", error);
+			console.log("indexExample Error:::", error);
 			return res.status(500).send(error);
 		});
 }

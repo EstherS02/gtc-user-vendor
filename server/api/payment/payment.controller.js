@@ -8,6 +8,7 @@ const Handlebars = require('handlebars');
 const populate = require('../../utilities/populate');
 const status = require('../../config/status');
 const orderStatus = require('../../config/order_status');
+const orderStatusNew = require("../../config/order-item-new-status");
 const paymentMethod = require('../../config/payment-method');
 const marketPlaceCode = require('../../config/marketplace');
 const _ = require('lodash');
@@ -26,139 +27,154 @@ const stripe = require('../../payment/stripe.payment');
 
 const CURRENCY = 'usd';
 
-export function makePayment(req, res) {
-	res.clearCookie('applied_coupon');
-	let user = req.user;
-	let paymentSettingId = req.body.paymentSettingId;
+export async function makePayment(req, res) {
+	var vendorArray = [];
+	var cartItems = [];
+	var cartEmptyPromises = [];
+	var orderItemsPromises = [];
+	var vendorOrderPromises = [];
+	var productQuantityPromises = [];
+	const cartModelName = "Cart";
+	const productModelName = "Product";
+	const paymentModelName = "Payment";
+	const orderModelName = "OrdersNew";
+	const vendorOrderModelName = "VendorOrder";
+	const orderItemModelName = "OrdersItemsNew";
+	const paymentSettingModelName = "PaymentSetting";
 
-	var checkoutObj;
+	req.checkBody('payment_setting_id', 'Missing Query Param').notEmpty();
+	req.checkBody('selected_billing_address_id', 'Missing Query Param').notEmpty();
+	req.checkBody('selected_shipping_address_id', 'Missing Query Param').notEmpty();
 
-	var paymentSetting;
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
 
-	var createdOrders;
+	try {
+		const paymentSetting = await service.findOneRow(paymentSettingModelName, {
+			id: req.body.payment_setting_id,
+			user_id: req.user.id
+		});
 
-	var orderIdStore = [];
+		if (paymentSetting) {
+			const cartResult = await cartService.cartCalculation(req.user.id, req, res);
 
-	processCheckout(req)
-		.then(checkoutObjResult => {
-			checkoutObj = checkoutObjResult;
-			return service.findOneRow('PaymentSetting', {
-				id: paymentSettingId,
-				user_id: user.id
-			}, []);
-		}).then(paymentSettingResult => {
-			paymentSetting = paymentSettingResult;
-
-			var ordersByVendor = checkoutObj.ordersByVendor;
-			var orderPromises = [];
-
-			_.forOwn(ordersByVendor, function(order, vendorId) {
-				orderPromises.push(createOrder(order));
-			});
-
-			return Promise.all(orderPromises);
-
-		}).then(ordersWithItems => {
-			createdOrders = ordersWithItems;
-			var orderIds = [];
-			for (var i = 0; i < ordersWithItems.length; i++) {
-				orderIds.push(ordersWithItems[i].order.id);
+			for (var marketplace in cartResult.marketplace_products) {
+				if (cartResult.marketplace_products.hasOwnProperty(marketplace)) {
+					cartItems = await cartItems.concat(cartResult.marketplace_products[marketplace].products);
+				}
 			}
-			console.log("stripe calling");
-			let card_details = JSON.parse(paymentSetting.card_details);
-			var desc = "GTC ORDER";
+
 			var metadata = {};
-			metadata.orders = JSON.stringify(orderIds);
-			console.log("metadata", metadata);
-			let amt = checkoutObj.grand_total;
-			return stripe.chargeCustomerCard(user.stripe_customer_id, card_details.id, amt, desc, CURRENCY, metadata);
-		}).then(charge => {
-			console.log("charge", charge);
-			var paymentModel = {
+			var description = "GTC ORDER";
+			let amount = cartResult.grand_total_with_discounted_amount;
+			let cardDetails = JSON.parse(paymentSetting.card_details);
+
+			const charge = await stripe.chargeCustomerCard(req.user.stripe_customer_id, cardDetails.id, amount, description, config.order.currency, metadata);
+			const newPayment = await service.createRow(paymentModelName, {
 				date: new Date(charge.created),
 				amount: charge.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
 				payment_response: JSON.stringify(charge)
-			};
-			return service.createRow('Payment', paymentModel);
-		}).then(paymentRow => {
-			let orderPayments = [];
-			for (let i = 0; i < createdOrders.length; i++) {
-				var orderPaymentObj = {
-					order_id: createdOrders[i].order.id,
-					payment_id: paymentRow.id,
-					order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT'],
-					status: status['ACTIVE'],
-					created_on: new Date(),
-					created_by: req.user.first_name
-				}
-				orderPayments.push(service.createRow('OrderPayment', orderPaymentObj));
-			}
-			return Promise.all(orderPayments);
-		}).then(orderPaymentRows => {
-			let statusPromises = [];
-			for (var i = 0; i < createdOrders.length; i++) {
-				createdOrders[i].order.order_status = orderStatus['NEWORDER'];
-				// createdOrders[i].order.gtc_fees = 1.00;
-				orderIdStore.push(createdOrders[i].order.id);
-				statusPromises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
-			}
-			return Promise.all(statusPromises);
-		}).then(orderUpdatedRows => {
-			let quantityPromises = [];
-			for (var i = 0; i < createdOrders.length; i++) {
-
-				for (var j = 0; j < createdOrders[i].items.length; j++) {
-					quantityPromises.push(updateQuantity(createdOrders[i].items[j].product_id, createdOrders[i].items[j].quantity));
-				}
-			}
-			return Promise.all(quantityPromises);
-		}).then(productQuantityUpdatedRow => {
-			let subscribePromises = [];
-			for (var i = 0; i < createdOrders.length; i++) {
-
-				for (var j = 0; j < createdOrders[i].items.length; j++) {
-					subscribePromises.push(updateSubscription(createdOrders[i].order, createdOrders[i].items[j]));
-				}
-			}
-			return Promise.all(subscribePromises);
-		})
-		.then(subscriptionRow => {
-			let clearCart = [];
-			let allCartItems = checkoutObj.cartItems.rows;
-			for (let j = 0; j < allCartItems.length; j++) {
-				clearCart.push(allCartItems[j].id)
-			}
-			if (req.user.user_contact_email) {
-				sendOrderMail(orderIdStore, req);
-			}
-			service.destroyManyRow('Cart', clearCart).then(clearedCartRow => {
-				if (!(_.isNull(clearedCartRow))) {
-					return res.status(200).send({
-						createdOrders: createdOrders
-					});
-				} else return res.status(500).send(err);
 			});
-		}).catch(err => {
-			console.log("err3", err);
-			if (createdOrders && createdOrders.length > 0) {
-				var promises = [];
-				for (var i = 0; i < createdOrders.length; i++) {
-					createdOrders[i].order.order_status = orderStatus['FAILEDORDER'];
-					createdOrders[i].order.last_updated_on = new Date();
-					// createdOrders[i].order.gtc_fees = 1.00;
-					promises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
+
+			const newOrder = await service.createRow(orderModelName, {
+				user_id: req.user.id,
+				invoice_id: uuidv1(),
+				purchase_order_id: "PO-" + uuidv1(),
+				po_number: null,
+				total_order_items: cartResult.total_items,
+				total_price: newPayment.amount,
+				ordered_date: new Date(),
+				payment_id: newPayment.id,
+				shipping_id: null,
+				shipping_address_id: req.body.selected_shipping_address_id,
+				billing_address_id: req.body.selected_billing_address_id,
+				status: status['ACTIVE'],
+				created_by: req.user.first_name,
+				created_on: new Date()
+			});
+
+			await Promise.all(cartItems.map(async (cartItem) => {
+				var newProductItem = {};
+
+				newProductItem['order_id'] = newOrder.id;
+				newProductItem['product_id'] = cartItem.product_id;
+				newProductItem['quantity'] = cartItem.quantity;
+				newProductItem['price'] = cartItem.total_price;
+				newProductItem['shipping_cost'] = 0;
+				newProductItem['gtc_fees'] = (cartItem.total_price / 100 * config.order.gtc_fees).toFixed(2);
+				if (cartItem.Product.marketplace_id == marketPlaceCode['SERVICE']) {
+					newProductItem['plan_fees'] = (cartItem.total_price / 100 * config.order.service_fee).toFixed(2);
+				} else {
+					newProductItem['plan_fees'] = 0;
 				}
-				Promise.all(promises).then(result => {
-					return res.status(500).send(err);
-				}).catch(error => {
-					return res.status(500).send(err);
-				});
-			} else {
-				return res.status(500).send(err);
-			}
-		});
+				if (cartItem.Product.marketplace_id == marketPlaceCode['LIFESTYLE']) {
+					newProductItem['plan_fees'] = (cartItem.total_price / 100 * config.order.lifestyle_fee).toFixed(2);
+				} else {
+					newProductItem['plan_fees'] = 0;
+				}
+				newProductItem['is_coupon_applied'] = cartItem.is_coupon_applied ? 1 : 0;
+				if (newProductItem['is_coupon_applied']) {
+					newProductItem['coupon_id'] = cartResult.coupon_id;
+					newProductItem['coupon_amount'] = parseFloat(cartResult.discount_amount);
+				} else {
+					newProductItem['coupon_amount'] = 0;
+				}
+				newProductItem['is_on_sale_item'] = 0;
+				newProductItem['final_price'] = (parseFloat(newProductItem['price']) - (parseFloat(newProductItem['gtc_fees']) + parseFloat(newProductItem['plan_fees']) + parseFloat(newProductItem['coupon_amount'])));
+				newProductItem['is_on_sale_item'] = cartItem.Product.is_exclusive_sale ? 1 : 0;
+				if (newProductItem['is_on_sale_item']) {
+					newProductItem['discount_amount'] = cartItem.Product.discount;
+				}
+				newProductItem['order_item_status'] = orderStatusNew['ORDER_INITIATED'];
+				newProductItem['status'] = status['ACTIVE'];
+				newProductItem['created_by'] = req.user.first_name;
+				newProductItem['created_on'] = new Date();
+				orderItemsPromises.push(service.createRow(orderItemModelName, newProductItem));
+
+				if (vendorArray.indexOf(cartItem.Product.vendor_id) == -1) {
+					vendorArray.push(cartItem.Product.vendor_id);
+					vendorOrderPromises.push(service.createRow(vendorOrderModelName, {
+						order_id: newOrder.id,
+						vendor_id: cartItem.Product.vendor_id,
+						status: status['ACTIVE'],
+						created_by: req.user.first_name,
+						created_on: new Date()
+					}));
+				}
+
+				productQuantityPromises.push(model[productModelName].decrement({
+					'quantity_available': cartItem.quantity
+				}, {
+					where: {
+						id: cartItem.product_id
+					}
+				}));
+
+				cartEmptyPromises.push(service.updateRecordNew(cartModelName, {
+					status: status['DELETED'],
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				}, {
+					id: cartItem.id
+				}));
+			}));
+			await Promise.all(orderItemsPromises);
+			await Promise.all(vendorOrderPromises);
+			await Promise.all(productQuantityPromises);
+			await Promise.all(cartEmptyPromises);
+			return res.status(200).send("Success");
+		} else {
+			return res.status(404).send("Payment card details not found");
+		}
+	} catch (error) {
+		console.log("makePayment Error:::", error);
+		return res.status(500).send(error);
+	}
 }
 
 function createOrder(orderWithItems) {
@@ -256,113 +272,6 @@ function updateSubscription(order, item) {
 		})
 }
 
-function processCheckout(req) {
-	return new Promise((resolve, reject) => {
-		var products = [];
-		cartService.cartCalculation(req.user.id, req)
-			.then((cartResult) => {
-				_.forOwn(cartResult['marketplace_products'], function(element) {
-
-					_.forOwn(element.products, function(newElement) {
-						products.push(newElement);
-					})
-
-				});
-
-				var seperatedItemsByVendor = _.groupBy(products, "Product.Vendor.id");
-				var totalPriceByVendor = {};
-				var ordersByVendor = {};
-				var checkoutObj = {};
-				totalPriceByVendor['grandTotal'] = 0;
-				var user_id = req.user.id
-				_.forOwn(seperatedItemsByVendor, function(itemsValue, vendorId) {
-					ordersByVendor[vendorId] = {};
-
-					totalPriceByVendor[vendorId] = {};
-					totalPriceByVendor[vendorId]['price'] = 0;
-					totalPriceByVendor[vendorId]['shipping'] = 0;
-					totalPriceByVendor[vendorId]['total'] = 0;
-					var gtc_fees = 0;
-					var plan_fees = 0;
-					var vendor_pay = 0;
-
-					for (var i = 0; i < itemsValue.length; i++) {
-
-						if ((vendorId == itemsValue[i].Product.Vendor.id)) {
-
-							var order = ordersByVendor[vendorId];
-							if (Object.keys(order).length == 0) {
-								// create order
-								order['user_id'] = user_id;
-								order['ordered_date'] = new Date();
-								order['order_status'] = orderStatus['NEWORDER'];
-								order['status'] = status['ACTIVE'];
-								order['invoice_id'] = uuidv1();
-								order['purchase_order_id'] = 'PO-' + uuidv1();
-								order['created_by'] = req.user.first_name;
-								order['created_on'] = new Date();
-								order['billing_address_id'] = req.body.selected_billing_address_id;
-								order['shipping_address_id'] = req.body.selected_shipping_address_id;
-
-								order['items'] = [];
-							}
-							// var calulatedSum = 0;//(itemsValue[i].quantity * itemsValue[i].Product.price);
-
-							var calulatedShippingSum = 0; //(itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
-
-
-							if (parseFloat(itemsValue[i].Product.product_discounted_price)) {
-								var calulatedSum = (parseFloat(itemsValue[i].Product.product_discounted_price) * parseFloat(itemsValue[i].quantity)).toFixed(2);
-								totalPriceByVendor[vendorId]['total'] = (parseFloat(itemsValue[i].Product.product_discounted_price) + totalPriceByVendor[vendorId]['shipping']).toFixed(2);
-
-							} else {
-								var calulatedSum = itemsValue[i].Product.price * itemsValue[i].quantity;
-							}
-							totalPriceByVendor[vendorId]['price'] = parseFloat(parseFloat(totalPriceByVendor[vendorId]['price']) + parseFloat(calulatedSum)).toFixed(2);
-							totalPriceByVendor[vendorId]['total'] = totalPriceByVendor[vendorId]['price'] + totalPriceByVendor[vendorId]['shipping'];
-							// totalPriceByVendor[vendorId]['shipping'] = totalPriceByVendor[vendorId]['shipping'] + calulatedShippingSum;
-
-							gtc_fees = parseFloat(gtc_fees) + (parseFloat(totalPriceByVendor[vendorId]['price']) * config.fee.gtc_fees);
-							if ((itemsValue[i].Product.marketplace_id == marketPlaceCode.LIFESTYLE) || (itemsValue[i].Product.marketplace_id == marketPlaceCode.SERVICE)) {
-								plan_fees = parseFloat(plan_fees) + (parseFloat(totalPriceByVendor[vendorId]['price']) * config.fee.plan_fees);
-							}
-							vendor_pay = (parseFloat(totalPriceByVendor[vendorId]['price']) - parseFloat(gtc_fees) - parseFloat(plan_fees));
-
-							var final_price = parseFloat(totalPriceByVendor[vendorId]['price'] + calulatedShippingSum).toFixed(2);
-							var orderItem = {
-								product_id: itemsValue[i].Product.id,
-								quantity: itemsValue[i].quantity,
-								subtotal: totalPriceByVendor[vendorId]['price'], //calulatedSum,
-								shipping_total: calulatedShippingSum,
-								final_price: final_price,
-								status: status['ACTIVE']
-							};
-
-							order['total_price'] = parseFloat(totalPriceByVendor[vendorId]['total']);
-							order['items'].push(orderItem);
-							order['gtc_fees'] = gtc_fees;
-							order['plan_fees'] = plan_fees;
-							order['vendor_pay'] = parseFloat(vendor_pay);
-						}
-
-					}
-					totalPriceByVendor['grandTotal'] = parseFloat(parseFloat(totalPriceByVendor['grandTotal']) + parseFloat(totalPriceByVendor[vendorId]['total'])).toFixed(2);
-
-				});
-				cartResult.ordersByVendor = ordersByVendor;
-				cartResult.totalPriceByVendor = totalPriceByVendor;
-				cartResult.cartItems = [];
-				cartResult.cartItems.rows = products;
-				cartResult.cartItems.count = products.length;
-				return resolve(cartResult);
-
-			}).catch(function(error) {
-				console.log('Error:::', error);
-				return reject(error);
-			});
-	});
-}
-
 export function createCard(req, res) {
 	let user = req.user;
 	var paymentSetting;
@@ -371,31 +280,26 @@ export function createCard(req, res) {
 			.then(customer => {
 				user.stripe_customer_id = customer.id;
 				let card = customer.sources.data[0];
-				//console.log(card);
 				return savePaymentSetting(user, card, req.body.isPrimary);
 			}).then(paymentSettingRes => {
-				//console.log(paymentSetting);
 				paymentSetting = paymentSettingRes;
 				return service.updateRow('User', user, user.id);
 			}).then(result => {
-				//console.log(result);
 				return res.status(200).send(paymentSetting);
-			}).catch(err => {
-				console.log(err);
-				return res.status(500).send(err);
+			}).catch((error) => {
+				console.log("createCustomer Error:::", error);
+				return res.status(500).send(error);
 			});
 	} else {
 		stripe.addCard(user.stripe_customer_id, req.body.token.id, req.body.isPrimary)
 			.then(card => {
-				//console.log("card", card);
 				return savePaymentSetting(user, card, req.body.isPrimary);
 			}).then(result => {
-				//console.log("result", result);
 				paymentSetting = result;
 				return res.status(200).send(paymentSetting);
-			}).catch(err => {
-				console.log("err", err);
-				return res.status(500).send(err);
+			}).catch((error) => {
+				console.log("addCard Error:::", error);
+				return res.status(500).send(error);
 			});
 	}
 }
@@ -410,7 +314,6 @@ function savePaymentSetting(user, card, isPrimary) {
 		isPrimary: isPrimary,
 		card_details: JSON.stringify(card)
 	};
-
 	return service.createRow('PaymentSetting', paymentSetting);
 }
 
@@ -605,7 +508,7 @@ export function sendOrderMail(orderIdStore, req) { //export function sendOrderMa
 							var body;
 							var total = 0;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
-							body = body.replace(/%Path%/g,'https://gtc.ibcpods.com');// req.protocol + '://' + req.get('host'));
+							body = body.replace(/%Path%/g, 'https://gtc.ibcpods.com'); // req.protocol + '://' + req.get('host'));
 							body = body.replace(/%currency%/g, '$');
 							body = body.replace('%UserName%', user.first_name)
 							_.forOwn(OrderList.rows, function(orders) {
@@ -633,12 +536,12 @@ export function sendOrderMail(orderIdStore, req) { //export function sendOrderMa
 			}
 			return;
 		}
-
 	}).catch(function(error) {
 		console.log('Error :::', error);
 		return;
 	});
 }
+
 export function vendorMail(OrderList, user) {
 	var orderNew = [];
 	var notification = [];
@@ -715,23 +618,22 @@ function usernotification(order, user) {
 	var queryObjNotification = {};
 	var NotificationTemplateModel = 'NotificationSetting';
 	queryObjNotification['code'] = config.notification.templates.orderDetail;
-	var orderEle='';
+	var orderEle = '';
 	service.findOneRow(NotificationTemplateModel, queryObjNotification)
 		.then(function(response) {
 			var bodyParams = {};
-			console.log("-----------------------",order)
 			_.forOwn(order.rows, function(orders) {
-				if(orderEle.length>0){
-				orderEle = `, <a href="https://gtc.ibcpods.com/order-history/"`+orders.id+`>#`+orders.id+`</a>`;	
+				if (orderEle.length > 0) {
+					orderEle = `, <a href="https://gtc.ibcpods.com/order-history/"` + orders.id + `>#` + orders.id + `</a>`;
 				}
-				orderEle = `<a href="https://gtc.ibcpods.com/order-history/"`+orders.id+`>#`+orders.id+`</a>`;
+				orderEle = `<a href="https://gtc.ibcpods.com/order-history/"` + orders.id + `>#` + orders.id + `</a>`;
 			});
 			bodyParams.user_id = user.id;
 			bodyParams.description = response.description
 			bodyParams.description = bodyParams.description.replace('%Firstname%', user.first_name);
 			bodyParams.description = bodyParams.description.replace('%LastName%', user.last_name);
-			bodyParams.description = bodyParams.description.replace('%orderEle%',orderEle);
-			bodyParams.description = bodyParams.description.replace('%url%',orderEle);
+			bodyParams.description = bodyParams.description.replace('%orderEle%', orderEle);
+			bodyParams.description = bodyParams.description.replace('%url%', orderEle);
 			bodyParams.name = response.name;
 			bodyParams.code = response.code;
 			bodyParams.is_read = 1;
@@ -747,7 +649,10 @@ function usernotification(order, user) {
 
 export function makePlanPayment(req, res) {
 	var upgradingPlan, desc, convertMoment, start_date, end_date, vendorId;
-	var paymentBodyParam = {}, vendorPlanBodyParam = {}, userPlanBodyParam = {},refundObj={};
+	var paymentBodyParam = {},
+		vendorPlanBodyParam = {},
+		userPlanBodyParam = {},
+		refundObj = {};
 
 	vendorId = req.body.vendor_id;
 	upgradingPlan = req.body.plan_id;
@@ -757,27 +662,27 @@ export function makePlanPayment(req, res) {
 	end_date = moment().add(28, 'd').toDate();
 
 	stripe.chargeCustomerCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY)
-	.then(function(paymentResponse){
-		if(paymentResponse.paid){
-			paymentBodyParam = {
-				date: new Date(paymentResponse.created),
-				amount: paymentResponse.amount / 100.0,
-				payment_method: paymentMethod['STRIPE'],
-				status: status['ACTIVE'],
-				payment_response: JSON.stringify(paymentResponse),
-				created_by: req.user.first_name,
-				created_on: new Date()
+		.then(function(paymentResponse) {
+			if (paymentResponse.paid) {
+				paymentBodyParam = {
+					date: new Date(paymentResponse.created),
+					amount: paymentResponse.amount / 100.0,
+					payment_method: paymentMethod['STRIPE'],
+					status: status['ACTIVE'],
+					payment_response: JSON.stringify(paymentResponse),
+					created_by: req.user.first_name,
+					created_on: new Date()
 
-			};
-			return service.createRow('Payment', paymentBodyParam);
-		}else{
-			return res.status(200).send({
-				"message": "ERROR",
-				"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes"
-			});
-		}
-	}).then(function(paymentRow) {
-			if((vendorId != 0 && upgradingPlan != 5)) {
+				};
+				return service.createRow('Payment', paymentBodyParam);
+			} else {
+				return res.status(200).send({
+					"message": "ERROR",
+					"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes"
+				});
+			}
+		}).then(function(paymentRow) {
+			if ((vendorId != 0 && upgradingPlan != 5)) {
 				vendorPlanBodyParam = {
 					vendor_id: vendorId,
 					plan_id: req.body.plan_id,
@@ -792,31 +697,33 @@ export function makePlanPayment(req, res) {
 				if (req.user.user_contact_email) {
 					sendUpgrademail(req.body.plan_id, req.user);
 				}
-				 service.createRow('VendorPlan', vendorPlanBodyParam).then(function(currentplanrow){
+				service.createRow('VendorPlan', vendorPlanBodyParam).then(function(currentplanrow) {
 					let includeArr = [];
-		         	refundObj = {
-					vendor_id: vendorId,	 
-				    status:status['ACTIVE'],
-				    id: {
-					$ne: currentplanrow.id
-				     },
-			       };
-			      var field = 'created_on';
-			       var order = "asc";
-			      service.findAllRows('VendorPlan', includeArr, refundObj, 0, null, field, order).then(function(successPromise){
-			      if (successPromise.count != "0") {
-				  let plandeactivestatus = {
-					status:status['INACTIVE'],
-					last_updated_by: req.user.first_name,
-					last_updated_on: new Date()
-				  };
-				   refundObj = {
-					vendor_id: vendorId,
-					id: {$ne: currentplanrow.id},
-				  };
-				  return service.updateManyRecord('VendorPlan', plandeactivestatus, refundObj);
-				}
-			  });
+					refundObj = {
+						vendor_id: vendorId,
+						status: status['ACTIVE'],
+						id: {
+							$ne: currentplanrow.id
+						},
+					};
+					var field = 'created_on';
+					var order = "asc";
+					service.findAllRows('VendorPlan', includeArr, refundObj, 0, null, field, order).then(function(successPromise) {
+						if (successPromise.count != "0") {
+							let plandeactivestatus = {
+								status: status['INACTIVE'],
+								last_updated_by: req.user.first_name,
+								last_updated_on: new Date()
+							};
+							refundObj = {
+								vendor_id: vendorId,
+								id: {
+									$ne: currentplanrow.id
+								},
+							};
+							return service.updateManyRecord('VendorPlan', plandeactivestatus, refundObj);
+						}
+					});
 				});
 			} else {
 				userPlanBodyParam = {
@@ -834,7 +741,8 @@ export function makePlanPayment(req, res) {
 			}
 		}).then(function(updatedPlanRow) {
 			if (vendorId != 0) {
-				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
+				var productDeactivateQueryObj = {},
+					productDeactivateBodyParam = {};
 
 				productDeactivateQueryObj = {
 					vendor_id: vendorId,
@@ -849,7 +757,8 @@ export function makePlanPayment(req, res) {
 			}
 		}).then(function(deactivatedProducts) {
 			if (vendorId != 0) {
-				var productActivateQueryObj = {}, productActivateBodyParam = {};
+				var productActivateQueryObj = {},
+					productActivateBodyParam = {};
 
 				productActivateQueryObj.vendor_id = vendorId;
 				productActivateQueryObj.status = status["GTC_INACTIVE"];
@@ -944,7 +853,7 @@ export function refundOrder(req, res) {
 	refundAmt = req.body.total_refund;
 	let includeArray = [];
 	includeArray = populate.populateData("Payment");
-	
+
 	let orderPaymentQueryObj = {
 		order_id: order_id,
 		order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT']
