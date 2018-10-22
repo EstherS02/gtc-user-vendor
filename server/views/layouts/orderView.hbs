@@ -350,7 +350,7 @@
 								<div class="form-group">
 									<div class="input-group">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status"	>
-											<option disabled selected>{{objectKey orderStatusCode order.order_status}}</option>
+											<option>{{objectKey orderStatusCode order.order_status}}</option>
 											{{#each orderStatusCode}}
 												{{#ifCond this "!=" ../orderStatusCode.CANCELLEDORDER}}
 													{{#ifCond this "!=" ../orderStatusCode.FAILEDORDER}}

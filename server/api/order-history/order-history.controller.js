@@ -12,6 +12,8 @@ const sendEmail = require('../../agenda/send-email');
 const async = require('async');
 const populate = require('../../utilities/populate');
 const orderItemStatus = require('../../config/order-item-status');
+const addressCode = require('../../config/address');
+const trackingUrlCode = require('../../config/tracking-url');
 const moment = require('moment');
 const numeral = require('numeral');
 const Handlebars = require('handlebars');
@@ -49,9 +51,7 @@ export function updateStatus(req, res) {
 						{ 
 							model: model['Vendor'],
 							attributes:['id', 'vendor_name'],
-						}
-					],
-					include: [
+						},
 						{ 
 							model: model['ProductMedia'],
 							attributes:['id', 'url'],
@@ -60,7 +60,7 @@ export function updateStatus(req, res) {
 					attributes:['id', 'vendor_id', 'product_name', 'product_slug'],
 				}
 			]
-		}
+		},		
 	]
 
 	if (bodyParams.provider_name) {
@@ -77,17 +77,13 @@ export function updateStatus(req, res) {
 		order_status = orderStatusCode.CONFIRMEDORDER;
 	}
 
-	if (bodyParams.order_status == orderStatusCode.PROCESSINGORDER){
-		order_status = 'processed';
-	}
-
 	if (bodyParams.order_status == orderStatusCode.DISPATCHEDORDER){
-		order_status = 'dispatched';
+		order_status = orderStatusCode.DISPATCHEDORDER;
 		bodyParams['shipped_on'] = date;
 	}
 
 	if (bodyParams.order_status == orderStatusCode.DELIVEREDORDER){
-		order_status = 'delivered';
+		order_status = orderStatusCode.DELIVEREDORDER;
 		bodyParams['delivered_on'] = date;
 	}
 
@@ -119,6 +115,7 @@ export function updateStatus(req, res) {
 }
 
 function orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, res) {
+	console.log(paramsID, orderStatusIncludeArr, bodyParams, order_status)
 
 	service.findIdRow("Order", paramsID, orderStatusIncludeArr)
 		.then(function(updateOrder) {
@@ -132,42 +129,15 @@ function orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_st
 
 								if(order_status == orderStatusCode.CONFIRMEDORDER){
 									orderConfirmedByVendorMail(updateOrder);
-								}else{
-
-									var order_id = updateOrder.id;
-									var user_email = updateOrder.User.user_contact_email;
-
-									var queryObjEmailTemplate = {};
-									queryObjEmailTemplate['name'] = config.email.templates.orderMail;
-
-									service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-										.then(function(response) {
-											if (response) {
-												var email = user_email;
-												var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
-												var body;
-
-												body = response.body.replace('%ORDER_MSG%', order_status);
-												body = body.replace('%ORDER_TYPE%', 'Order Status');
-												body = body.replace('%ORDER_NUMBER%', order_id);
-												
-												sendEmail({
-													to: email,
-													subject: subject,
-													html: body
-												});
-												return result;
-											} else {
-												return result;
-											}
-										}).catch(function(error) {
-											console.log('Error :::', error);
-											return error;
-										});
+								}else if(order_status == orderStatusCode.DISPATCHEDORDER){
+									orderShippedByVendorMail(updateOrder);
+								}else if(order_status == orderStatusCode.DELIVEREDORDER){
+									orderDeliveredMail(updateOrder);
 								}
 							} else {
 								return "Unable to sent";
 							}
+							return;
 						} else {
 							return null;
 						}
@@ -200,9 +170,9 @@ function orderConfirmedByVendorMail(updateOrder){
 				subject = mailTemplate.subject;
 				body = mailTemplate.body.replace(/%CURRENCY%/g, '$');
 				body = body.replace('%USER_NAME%', updateOrder.User.first_name);
-				//body = body.replace(/%VENDOR_NAME%/g, orderItems[0].Product.Vendor.vendor_name);
+				body = body.replace(/%VENDOR_NAME%/g,updateOrder.OrderItems[0].Product.Vendor.vendor_name);
 				body = body.replace(/%ORDER_ID%/g, updateOrder.id);
-				body = body.replace('%PLACED_ON%', moment(updateOrder.created_on).format('MMM D, Y'));
+				body = body.replace('%PLACED_ON%', moment(updateOrder.ordered_date).format('MMM D, Y'));
 				body = body.replace('%TOTAL_PRICE%', numeral(updateOrder.total_price).format('$' + '0,0.00'));
 
 				template = Handlebars.compile(body);
@@ -221,6 +191,173 @@ function orderConfirmedByVendorMail(updateOrder){
 		}).catch(function(error){
 			console.log("Error::",error);
 		})
+}
+
+function orderShippedByVendorMail(updateOrder){
+	var queryObjEmailTemplate = {}, order = {}, orderIncludeArr=[];
+	var email, subject, body, trackingUrl, totalItems;
+
+	totalItems = updateOrder.OrderItems.length;
+
+	queryObjEmailTemplate['name'] = config.email.templates.vendorOrderShipped;
+
+	orderIncludeArr = [
+		{
+			model: model['Shipping'],
+			where:{
+				status: statusCode.ACTIVE
+			}
+		},
+		{
+			model: model['Address'],
+			as: 'shippingAddress',
+			where:{
+				status: statusCode.ACTIVE
+			},
+			include: [
+				{ 
+					model: model['State'],
+					attributes:['id', 'name'],
+					where:{
+						status: statusCode.ACTIVE
+					}
+				},
+				{ 
+					model: model['Country'],
+					attributes:['id', 'name'],
+					where:{
+					status: statusCode.ACTIVE
+					}
+				}
+			],
+		},
+		{
+			model: model['Address'],
+			as: 'billingAddress',
+			where:{
+				status: statusCode.ACTIVE
+			},
+			include: [
+				{ 
+					model: model['State'],
+					attributes:['id', 'name'],
+					where:{
+						status: statusCode.ACTIVE
+					}
+				},
+				{ 
+					model: model['Country'],
+					attributes:['id', 'name'],
+					where:{
+					status: statusCode.ACTIVE
+					}
+				}
+			],
+		}
+	];
+	return service.findIdRow('Order', updateOrder.id,orderIncludeArr)
+	.then(function(Order){
+		order = Order;
+		return service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+	}).then(function(mailTemplate){
+
+		trackingUrl = (_.invert(trackingUrlCode))[order.Shipping.provider_name]+'/'+ order.Shipping.tracking_id;
+
+		email = updateOrder.User.user_contact_email;
+		subject = mailTemplate.subject.replace('%ORDER_ID%',updateOrder.id);
+		body = mailTemplate.body.replace('%USER_NAME%', updateOrder.User.first_name);
+		body = body.replace(/%VENDOR_NAME%/g, updateOrder.OrderItems[0].Product.Vendor.vendor_name);
+		body = body.replace('%ORDER_ID%',updateOrder.id);
+		body = body.replace('%ORDERED_DATE%', moment(updateOrder.ordered_date).format('MMM D, Y'));
+		body = body.replace('%SHIPPED_DATE%', moment(order.shipped_on).format('MMM D, Y'));
+		body = body.replace('%TOTAL_CHARGE%', numeral(updateOrder.total_price).format('$' + '0,0.00'));
+		body = body.replace('%SHIPPING_METHOD%', 'Standard Shipping');
+		body = body.replace('%SHIPPING_ADDRESS_LINE1%', order.shippingAddress.address_line1);
+		body = body.replace('%SHIPPING_ADDRESS_LINE2%', order.shippingAddress.address_line2);
+		body = body.replace('%SHIPPING_CITY%', order.shippingAddress.city);
+		body = body.replace('%SHIPPING_STATE%', order.shippingAddress.State.name);
+		body = body.replace('%SHIPPING_COUNTRY%', order.shippingAddress.Country.name);
+		body = body.replace('%BILLING_ADDRESS_LINE1%', order.billingAddress.address_line1);
+		body = body.replace('%BILLING_ADDRESS_LINE2%', order.billingAddress.address_line2);
+		body = body.replace('%BILLING_CITY%', order.billingAddress.city);
+		body = body.replace('%BILLING_STATE%', order.billingAddress.State.name);
+		body = body.replace('%BILLING_COUNTRY%', order.billingAddress.Country.name);
+		body = body.replace('%TRACKING_URL%', trackingUrl);
+		body = body.replace('%TOTAL_ITEM%', totalItems);
+
+		sendEmail({
+			to: email,
+			subject: subject,
+			html: body
+		});
+		return;
+	}).catch(function(error){
+		console.log("Error::",error);
+		return;
+	})
+}
+
+function orderDeliveredMail(updateOrder){
+
+	var queryObjEmailTemplate = {}, orderIncludeArr=[],order={};
+	var email, subject, body;
+
+	queryObjEmailTemplate['name'] = config.email.templates.orderDelivered;
+
+	orderIncludeArr = [
+
+		{
+			model: model['Address'],
+			as: 'shippingAddress',
+			where:{
+				status: statusCode.ACTIVE
+			},
+			include: [
+				{ 
+					model: model['State'],
+					attributes:['id', 'name'],
+					where:{
+						status: statusCode.ACTIVE
+					}
+				},
+				{ 
+					model: model['Country'],
+					attributes:['id', 'name'],
+					where:{
+					status: statusCode.ACTIVE
+					}
+				}
+			],
+		}
+	];
+
+	return service.findIdRow('Order', updateOrder.id,orderIncludeArr)
+	.then(function(Order){
+		order = Order;
+		return service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+	}).then(function(mailTemplate){
+
+		email = updateOrder.User.user_contact_email;
+		subject = mailTemplate.subject.replace('%ORDER_ID%',updateOrder.id);
+		body = mailTemplate.body.replace('%USER_NAME%', updateOrder.User.first_name);
+		body = body.replace('%ORDER_ID%', updateOrder.id);
+		body = body.replace('%DELIVERED_DATE%', moment(order.delivered_on).format('MMM D, Y'));
+		body = body.replace('%ADDRESS_LINE1%', order.shippingAddress.address_line1);
+		body = body.replace('%ADDRESS_LINE2%', order.shippingAddress.address_line2);
+		body = body.replace('%CITY%', order.shippingAddress.city);
+		body = body.replace('%STATE%', order.shippingAddress.State.name);
+		body = body.replace('%COUNTRY%', order.shippingAddress.Country.name);
+
+		sendEmail({
+			to: email,
+			subject: subject,
+			html: body
+		});
+		return;
+	}).catch(function(error){
+		console.log("Error::",error);
+		return;
+	})
 }
 
 export function vendorCancel(req, res) {
