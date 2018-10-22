@@ -22,13 +22,53 @@ var emailTemplateModel = "EmailTemplate";
 
 export function updateStatus(req, res) {
 
-	var paramsID, order_status, date;
+	var paramsID, date;
 	var bodyParams = {}, shippingInput = {};
-	var orderStatusIncludeArr = [];
 
 	paramsID = req.params.id;
 	bodyParams = req.body;
 	date = new Date();
+
+	if (bodyParams.provider_name) {
+		shippingInput['provider_name'] = bodyParams.provider_name;
+		delete bodyParams.provider_name;
+	}
+
+	if (bodyParams.tracking_id) {
+		shippingInput['tracking_id'] = bodyParams.tracking_id;
+		delete bodyParams.tracking_id;
+	}
+
+	if (bodyParams.order_status == orderStatusCode.DISPATCHEDORDER){
+		bodyParams['shipped_on'] = date;
+	}
+
+	if (bodyParams.order_status == orderStatusCode.DELIVEREDORDER){
+		bodyParams['delivered_on'] = date;
+	}
+
+	bodyParams["last_updated_by"] = req.user.Vendor.vendor_name;
+	bodyParams["last_updated_on"] = new Date();
+
+	if (shippingInput.provider_name) {
+
+		shippingInput['status'] = statusCode.ACTIVE;
+		service.createRow('Shipping', shippingInput)
+			.then(function(res) {
+				
+				bodyParams["shipping_id"] = res.id;
+				return orderStatusUpdate(paramsID, bodyParams);
+			}).catch(function(error) {
+				return orderStatusUpdate(paramsID, bodyParams);
+			})
+	} else{
+		orderStatusUpdate(paramsID, bodyParams);
+	}
+	return res.status(201).send("Updated");
+}
+
+function orderStatusUpdate(paramsID, bodyParams) {
+	var orderStatusIncludeArr = [], updateOrder = {};
 
 	orderStatusIncludeArr = [
 		{
@@ -63,95 +103,32 @@ export function updateStatus(req, res) {
 		},		
 	]
 
-	if (bodyParams.provider_name) {
-		shippingInput['provider_name'] = bodyParams.provider_name;
-		delete bodyParams.provider_name;
-	}
+	return service.findIdRow("Order", paramsID, orderStatusIncludeArr)
+		.then(function(Order){
+			updateOrder = Order;
+			delete bodyParams['id'];
+			return service.updateRow("Order", bodyParams, paramsID);
 
-	if (bodyParams.tracking_id) {
-		shippingInput['tracking_id'] = bodyParams.tracking_id;
-		delete bodyParams.tracking_id;
-	}
-
-	if (bodyParams.order_status == orderStatusCode.CONFIRMEDORDER){
-		order_status = orderStatusCode.CONFIRMEDORDER;
-	}
-
-	if (bodyParams.order_status == orderStatusCode.DISPATCHEDORDER){
-		order_status = orderStatusCode.DISPATCHEDORDER;
-		bodyParams['shipped_on'] = date;
-	}
-
-	if (bodyParams.order_status == orderStatusCode.DELIVEREDORDER){
-		order_status = orderStatusCode.DELIVEREDORDER;
-		bodyParams['delivered_on'] = date;
-	}
-
-	bodyParams["last_updated_on"] = new Date();
-
-	if (shippingInput.provider_name) {
-
-		shippingInput['status'] = statusCode.ACTIVE;
-		service.createRow('Shipping', shippingInput)
-			.then(function(res) {
-				
-				bodyParams["shipping_id"] = res.id;
-				orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, function(response) {
-					console.log(response);
-				});
-			}).catch(function(err) {
-				console.log(err);
-				orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, function(response) {
-					console.log(response);
-				});
-			})
-	} else{
-		
-		orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, function(response) {
-			console.log(response);
-		});
-	}
-	return res.status(201).send("Updated");
-}
-
-function orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, res) {
-	console.log(paramsID, orderStatusIncludeArr, bodyParams, order_status)
-
-	service.findIdRow("Order", paramsID, orderStatusIncludeArr)
-		.then(function(updateOrder) {
-			if (updateOrder) {
-				delete bodyParams["id"];
-
-				service.updateRow("Order", bodyParams, paramsID)
-					.then(function(result) {
-						if (result) {
-							if (updateOrder.User.user_contact_email) {
-
-								if(order_status == orderStatusCode.CONFIRMEDORDER){
-									orderConfirmedByVendorMail(updateOrder);
-								}else if(order_status == orderStatusCode.DISPATCHEDORDER){
-									orderShippedByVendorMail(updateOrder);
-								}else if(order_status == orderStatusCode.DELIVEREDORDER){
-									orderDeliveredMail(updateOrder);
-								}
-							} else {
-								return "Unable to sent";
-							}
-							return;
-						} else {
-							return null;
-						}
-					}).catch(function(error) {
-						console.log('Error:::', error);
-						return error;
-					})
-			}else{
-				return null;
+		}).then(function(updatedOrder){
+			if (updatedOrder) {
+				if (updateOrder.User.user_contact_email) {
+					if(bodyParams.order_status == orderStatusCode.CONFIRMEDORDER){
+						orderConfirmedByVendorMail(updateOrder);
+						return;
+					}else if(bodyParams.order_status == orderStatusCode.DISPATCHEDORDER){
+						orderShippedByVendorMail(updateOrder);
+						return;
+					}else if(bodyParams.order_status == orderStatusCode.DELIVEREDORDER){
+						orderDeliveredMail(updateOrder);
+						return;
+					}
+				}
 			}
+			return;
 		}).catch(function(error) {
 			console.log('Error :::', error);
 			return error;
-		});
+		})
 }
 
 function orderConfirmedByVendorMail(updateOrder){
@@ -160,9 +137,8 @@ function orderConfirmedByVendorMail(updateOrder){
 
 	queryObjEmailTemplate['name'] = config.email.templates.vendorOrderConformation;
 
-	service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+	return service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 		.then(function(mailTemplate) {
-			if(mailTemplate){
 
 				orderItems = updateOrder.OrderItems;
 
@@ -187,9 +163,9 @@ function orderConfirmedByVendorMail(updateOrder){
 					html: result
 				});
 				return;
-			}
 		}).catch(function(error){
 			console.log("Error::",error);
+			return;
 		})
 }
 
@@ -206,7 +182,8 @@ function orderShippedByVendorMail(updateOrder){
 			model: model['Shipping'],
 			where:{
 				status: statusCode.ACTIVE
-			}
+			},
+			attributes:['id', 'provider_name', 'tracking_id']
 		},
 		{
 			model: model['Address'],
@@ -230,6 +207,7 @@ function orderShippedByVendorMail(updateOrder){
 					}
 				}
 			],
+			attributes:['id', 'address_line1', 'address_line2','province_id','country_id', 'city']
 		},
 		{
 			model: model['Address'],
@@ -253,6 +231,7 @@ function orderShippedByVendorMail(updateOrder){
 					}
 				}
 			],
+			attributes:['id', 'address_line1', 'address_line2','province_id','country_id', 'city']
 		}
 	];
 	return service.findIdRow('Order', updateOrder.id,orderIncludeArr)
