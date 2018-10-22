@@ -719,7 +719,6 @@ function usernotification(order, user) {
 	service.findOneRow(NotificationTemplateModel, queryObjNotification)
 		.then(function(response) {
 			var bodyParams = {};
-			console.log("-----------------------",order)
 			_.forOwn(order.rows, function(orders) {
 				if(orderEle.length>0){
 				orderEle = `, <a href="https://gtc.ibcpods.com/order-history/"`+orders.id+`>#`+orders.id+`</a>`;	
@@ -729,7 +728,7 @@ function usernotification(order, user) {
 			bodyParams.user_id = user.id;
 			bodyParams.description = response.description
 			bodyParams.description = bodyParams.description.replace('%Firstname%', user.first_name);
-			bodyParams.description = bodyParams.description.replace('%LastName%', user.last_name);
+			// bodyParams.description = bodyParams.description.replace('%LastName%', user.last_name);
 			bodyParams.description = bodyParams.description.replace('%orderEle%',orderEle);
 			bodyParams.description = bodyParams.description.replace('%url%',orderEle);
 			bodyParams.name = response.name;
