@@ -552,10 +552,10 @@ export function deleteCard(req, res) {
 		});
 }
 
-export function sendOrderMail(orderIdStore, req) { //export function sendOrderMail(req,res) {
+export function sendOrderMail(orderIdStore, req) { // export function sendOrderMail(req,res) {//
 	var user = {};
 	user = req.user;
-	var orderIdStore = orderIdStore;
+	var orderIdStore = orderIdStore;//[763,764];//
 	var includeArr = [{
 		model: model['OrderItem'],
 		include: [{
@@ -609,11 +609,16 @@ export function sendOrderMail(orderIdStore, req) { //export function sendOrderMa
 							body = body.replace(/%currency%/g, '$');
 							body = body.replace('%UserName%', user.first_name)
 							_.forOwn(OrderList.rows, function(orders) {
+								_.forOwn(orders.OrderItems,function(orderEle){
+								orderEle.final_price = numeral(orderEle.final_price).format('$' + '0,0.00');
+								orders.total_price = numeral(orders.total_price).format('$' + '0,0.00');
+								})
 								body = body.replace('%placed_on%', moment(orders.created_on).format('MMM D, Y'));
+
 								total = total + orders.total_price;
 								orderNew.push(orders);
 							});
-							body = body.replace('%Total_Price%', numeral(total).format('$' + '0,0.00'))
+
 							var template = Handlebars.compile(body);
 							var data = {
 								order: orderNew
@@ -661,16 +666,14 @@ function sendVendorEmail(order, user) {
 				var subject = response.subject.replace('%ORDER_TYPE%', 'New Order');
 				var body;
 				body = response.body.replace('%ORDER_TYPE%', 'New Order');
+				body = body.replace(/%currency%/g, '$');
 				body = body.replace(/%Path%/g, 'https://gtc.ibcpods.com'); //req.protocol + '://' + req.get('host'));
 				body = body.replace('%VendorName%', order.OrderItems[0].Product.Vendor.vendor_name);
-				body = body.replace(/%currency%/g, '$');
-
-				_.forOwn(order, function(orders) {
-
+				_.forOwn(order.OrderItems, function(orders) {
 					body = body.replace('%placed_on%', moment(new Date()).format('MMM D, Y'));
-					body = body.replace('%Total_Price%', numeral(order.vendor_pay).format('$' + '0,0.00'))
+					body = body.replace('%Total_Price%', numeral(order.total_price).format('$' + '0,0.00'))
+					orders.final_price = numeral(orders.final_price).format('0,0.00');
 					orderNew.push(orders);
-
 				});
 				var template = Handlebars.compile(body);
 				var data = {
