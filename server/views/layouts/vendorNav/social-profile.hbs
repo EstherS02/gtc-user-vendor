@@ -5,6 +5,7 @@
             '<i class="fas fa-check-circle"></i>' + '</div>'
         var domElement2 = '<div class="col-md-4 text_red_color social_check">' +
             '<i class="fas fa-exclamation-circle"></i>' + '</div>'
+		 var domElement3 = ''
 
         $('#facebook_url').change(function (e) {
             var value = $('#facebook_url').val();
@@ -13,6 +14,8 @@
             {
 				if (/^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value))
 					$("#facebook_append").html(domElement1); 
+				else if(value == '')
+					$("#facebook_append").html(domElement3);
 				else
 					$("#facebook_append").html(domElement2);
             }    
@@ -25,6 +28,8 @@
             {
           	 	if (/^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value))
             		$("#twitter_append").html(domElement1);
+				else if(value == '')
+					$("#twitter_append").html(domElement3);
                	else
                		$("#twitter_append").html(domElement2);
             }    
@@ -37,6 +42,8 @@
             {
            		if (/^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value))
                		$("#google_append").html(domElement1);
+				else if(value == '')
+					$("#google_append").html(domElement3);
            	    else
                		$("#google_append").html(domElement2);
             }    
@@ -49,6 +56,8 @@
             {
            		if (/(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value))
             		$("#linkedin_append").html(domElement1); 
+				else if(value == '')
+					$("#linkedin_append").html(domElement3);
            		else
                 	$("#linkedin_append").html(domElement2);
             }    
@@ -61,6 +70,8 @@
 			{
             	if (/^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value))
             		$("#youtube_append").html(domElement1);
+				else if(value == '')
+					$("#youtube_append").html(domElement3);
             	else
                		$("#youtube_append").html(domElement2);  
             }    
@@ -73,6 +84,8 @@
             {
            		if (/^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value))
                 	$("#instagram_append").html(domElement1);    
+				else if(value == '')
+					$("#instagram_append").html(domElement3);
           		else                 
                		$("#instagram_append").html(domElement2);
             }    
@@ -85,6 +98,8 @@
             {
            		if (/^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value))
                		$("#flickr_append").html(domElement1);
+				else if(value == '')
+					$("#flickr_append").html(domElement3);
             	else
                		$("#flickr_append").html(domElement2);    
             }
@@ -103,110 +118,102 @@
                     type: 'PUT',
                     data: formInput,
                     success: function (updateData) {
-                        ouputPopup("Profile Setting Updated Successfully");
+                        $('#gtc-social-profile').removeClass('alert-danger').addClass('alert-success');
+						$('#gtc-social-profile .cart-message').text("Profile Updated Successfully");
+						$("#gtc-social-profile").fadeTo(2000, 3000).slideUp(500, function() {
+							$("#gtc-social-profile").slideUp(500);
+							location.reload(true);
+						});
                     },
             		error: function (error) {
-              		  ouputErrorPopup(error);
-           		}
-        });
-    }
+              		    $('#gtc-social-profile').removeClass('alert-success').addClass('alert-danger');
+						$('#gtc-social-profile .cart-message').text(data);
+						$("#gtc-social-profile").fadeTo(2000, 3000).slideUp(500, function() {
+							$("#gtc-social-profile").slideUp(500);
+							location.reload(true);
+						});
+           			}
+       			});
+    		}
         });
  
-  $("#socialProfileForm").validate({
-        rules: {
-            facebook_url: {
-               fbValidation: true
-            },
-            google_plus_url: {
-                gplusValidation: true
-            },
-            twitter_url: {
-                twitterValidation: true
-            },
-            linkedin_url: {
-                linkedinValidation: true
-            },
-            youtube_url: {
-                utubeValidation: true
-            },
-           instagram_url: {
-                instagramValidation: true
-            },
-            flickr_url: {
-                flickrValidation: true
-            }
-        },
-        messages: {
-            facebook_url: "Please enter valid facebook url",
-            google_plus_url: "Please enter valid google url",
-            twitter_url: "Please enter valid twitter url",
-            linkedin_url: "Please enter valid linked url",
-            youtube_url: "Please enter valid youtube url",
-            instagram_url: "Please enter valid instagram url",
-            flickr_url: "Please enter valid flickr url"
-        }
-    });
+		$("#socialProfileForm").validate({
+			rules: {
+				facebook_url: {
+				fbValidation: true
+				},
+				google_plus_url: {
+					gplusValidation: true
+				},
+				twitter_url: {
+					twitterValidation: true
+				},
+				linkedin_url: {
+					linkedinValidation: true
+				},
+				youtube_url: {
+					utubeValidation: true
+				},
+			instagram_url: {
+					instagramValidation: true
+				},
+				flickr_url: {
+					flickrValidation: true
+				}
+			},
+			messages: {
+				facebook_url:'',
+				google_plus_url:'',
+				twitter_url:'',
+				linkedin_url:'',
+				youtube_url:'',
+				instagram_url:'',
+				flickr_url:''
+			}
+		});
 
-    $.validator.addMethod("fbValidation",
-        function (value, element) {
-            if(value!='') {return /^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value);}
-            else{return true;}
-           });
+		$.validator.addMethod("fbValidation",
+			function (value, element) {
+				if(value!='') {return /^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value);}
+				else{return true;}
+			});
 
-    $.validator.addMethod("gplusValidation",
-        function (value, element) {
-            if(value!=''){return /^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value);}
-            else {return true;}
-         });
+		$.validator.addMethod("gplusValidation",
+			function (value, element) {
+				if(value!=''){return /^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value);}
+				else {return true;}
+			});
 
-    $.validator.addMethod("twitterValidation",
-        function (value, element) {
-            if(value!=''){return /^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value);}
-            else{return true;}
-        });
-    $.validator.addMethod("linkedinValidation",
-        function (value, element) {
-            if(value!=''){return /(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value);}
-            else{return true;}
-                      
-        });
-    $.validator.addMethod("utubeValidation",
-        function (value, element) {
-            if(value!=''){return /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value);}
-            else{return true;}
-           });
-    $.validator.addMethod("instagramValidation",
-        function (value, element) {
-            if(value!='') {return /^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value);}
-            else{return true;}
-            
-        });
-    $.validator.addMethod("flickrValidation",
-        function (value, element) {
-            if(value!=''){return /^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value);}
-            else{return true;}
-        });      
-    });
-
-    function ouputPopup(data) {
-        $('#gtc-social-profile').prop('disabled', false);
-        $('#gtc-social-profile').removeClass('alert-danger').addClass('alert-success');
-        $('#gtc-social-profile .cart-message').text(data);
-        $("#gtc-social-profile").fadeTo(2000, 500).slideUp(500, function () {
-            $("#gtc-social-profile").slideUp(1000);
-			location.reload();
-        });
+		$.validator.addMethod("twitterValidation",
+			function (value, element) {
+				if(value!=''){return /^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value);}
+				else{return true;}
+			});
+		$.validator.addMethod("linkedinValidation",
+			function (value, element) {
+				if(value!=''){return /(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value);}
+				else{return true;}
+			});
+		$.validator.addMethod("utubeValidation",
+			function (value, element) {
+				if(value!=''){return /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value);}
+				else{return true;}
+			});
+		$.validator.addMethod("instagramValidation",
+			function (value, element) {
+				if(value!='') {return /^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value);}
+				else{return true;}
+				
+			});
+		$.validator.addMethod("flickrValidation",
+			function (value, element) {
+				if(value!=''){return /^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value);}
+				else{return true;}
+			});      
+		});
     }
-    function ouputErrorPopup(data) {
-        $('#gtc-social-profile').prop('disabled', false);
-        $('#gtc-social-profile').removeClass('alert-success').addClass('alert-danger');
-        $('#gtc-social-profile .cart-message').text(data);
-        $("#gtc-social-profile").fadeTo(7000, 500).slideUp(500, function () {
-            $("#gtc-social-profile").slideUp(500);
-        });
-    }
-
 </script> 
+
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
     <div class="gtc-container">
@@ -407,11 +414,11 @@
                                 <hr/>
 								<div class="row">
 									<div class="col-md-12">
-										<button class="ladda-button btn update-btn btn-small btn-muted" type="submit" data-style="expand-left">
+										<button class="btn update-btn btn-small btn-muted" type="submit" data-style="expand-left">
 											<span class="ladda-label">UPDATE</span>
 											<span class="ladda-spinner"></span>
 										</button>
-										<button class="ladda-button btn btn-small btn-muted" type="reset" data-style="expand-left" onclick="location.href='/social-profile'">
+										<button class="btn btn-small btn-muted" type="reset" data-style="expand-left" onclick="location.href='/social-profile'">
 											<span class="ladda-label">CANCEL</span>
 											<span class="ladda-spinner"></span>
 										</button>
