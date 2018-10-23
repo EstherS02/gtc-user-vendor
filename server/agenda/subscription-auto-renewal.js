@@ -84,7 +84,7 @@ function subscriptionOrder(eachSubscription) {
 	subscribedProduct = eachSubscription.Product;
 	subscriptionOrderQueryObj = {
 		user_id: eachSubscription.user_id,
-		order_status: orderStatusCode['DELIVEREDORDER'],
+		//order_status: orderStatusCode['DELIVEREDORDER'],
 		status: statusCode["ACTIVE"]
 	}
 
@@ -248,8 +248,8 @@ function subscriptionOrder(eachSubscription) {
 							.then(function(updatedRow){
 								console.log("updatedRow",updatedRow);
 								return Promise.reject(error);
-							}).catch(function(err){
-								console.log("updatedRow",updatedRow);
+							}).catch(function(error){
+								console.log("Error",error);
 								return Promise.reject(error);
 							})
 					});

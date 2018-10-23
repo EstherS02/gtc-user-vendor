@@ -98,7 +98,7 @@ function checkpaymentEscrow(order) {
                 return;
             } else {
 				vendorPay = order.Order.vendor_pay;
-				stripeOrPaypalFees = orderTotal* 0.1;
+				stripeOrPaypalFees = order.Order.total_price* 0.1;
 			
 				payoutAmount = vendorPay - stripeOrPaypalFees;
 
