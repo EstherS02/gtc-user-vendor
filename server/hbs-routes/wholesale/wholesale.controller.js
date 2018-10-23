@@ -12,6 +12,7 @@ const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const marketplace_type = require('../../config/marketplace_type');
 const productService = require('../../api/product/product.service');
+const featureStatus = require("../../config/position");
 
 const async = require('async');
 
@@ -139,25 +140,23 @@ export function wholesale(req, res) {
 		},
 		featuredProducts: function(callback) {
 			delete queryObj['marketplace_type_id'];
-			queryObj['featured_position_wholesale_landing'] = 1;
+			queryObj['feature_status'] = featureStatus['WholesaleLanding'];
 			queryObj['is_featured_product'] = 1;
 			queryObj['marketplace_id'] = 1;
-
 			limit = 6;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, queryObj, limit, order)
-				.then(function(response) {
-					return callback(null, response.rows);
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+				.then(function(results) {
+					console.log("-------------------==================",results)
+					return callback(null, results);
 				}).catch(function(error) {
-					console.log('Error::', error);
+					console.log('Error :::', error);
 					return callback(null);
 				});
+
 		},
 		country: function(callback) {
 			delete queryObj['marketplace_id'];
-			delete queryObj['featured_position_wholesale_landing'];
+			delete queryObj['feature_status'];
 			delete queryObj['is_featured_product'];
 			limit = null;
 			service.findRows(countryModel, queryObj, offset, limit, field, order)
