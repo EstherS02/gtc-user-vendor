@@ -286,6 +286,7 @@ export async function edit(req, res) {
 	}
 
 	if (req.body.exclusive_sale == 1) {
+		req.body.exclusive_offer = parseInt(req.body.exclusive_offer);
 		req.checkBody('exclusive_start_date', 'Missing Query Param').notEmpty();
 		req.checkBody('exclusive_end_date', 'Missing Query Param').notEmpty();
 		req.checkBody('exclusive_offer', 'Missing Query Param').notEmpty().isInt({
