@@ -688,20 +688,34 @@
 																	{{/ifCond}}
 																	{{#ifCond this.MarketplaceType.id '==' 3}}
 																		<h4>MOQ : {{this.moq}}</h4>
+																			{{#if ../LoggedInUser.email}}
 																		<a href="vendor/{{this.Vendor.id}}">
 																			<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)"
 																			title="{{this.product_name}}" style="border-radius:50%">
 																		</a>
+																		{{else}}
+																		<a href="javascript:;">
+																			<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)"
+																			title="{{this.product_name}}" style="border-radius:50%">
+																		</a>
+																		{{/if}}
 																		{{#if this.product_discounted_price}}
 																			<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
 																		{{/if}}
 																	{{/ifCond}}
 																	{{#ifCond this.MarketplaceType.id '==' 4}}
 																		<h4>MOQ : {{this.moq}}</h4>
+																		{{#if ../LoggedInUser.email}}
 																		<a href="vendor/{{this.Vendor.id}}">
 																			<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)"
 																			title="{{this.product_name}}" style="border-radius:50%;">
 																		</a>
+																		{{else}}
+																		<a href="javascript:;">
+																			<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)"
+																			title="{{this.product_name}}" style="border-radius:50%">
+																		</a>
+																		{{/if}}
 																		{{#if this.product_discounted_price}}
 																			<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
 																		{{/if}}
