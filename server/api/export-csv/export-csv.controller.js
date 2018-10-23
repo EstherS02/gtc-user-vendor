@@ -11,6 +11,8 @@ const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const position = require('../../config/position');
 const populate = require('../../utilities/populate')
+const ReportService = require('../../utilities/reports');
+const moment = require('moment');
 const model = require('../../sqldb/model-connect');
 const async=require('async');
 const Json2csvParser = require('json2csv').Parser;
@@ -316,6 +318,85 @@ exports.salesHistoryexportcsv =function(req,res)
 	}
    
 };
+//starts export csv report-performance//
+exports.reportperformanceexportcsv =function(req,res)
+{
+	var offset, limit, field, order;
+	var queryObj = {};
+	var LoggedInUser = {};
+	var bottomCategory = {};
+	var categoryModel = "Category";
+	var lhsBetween = [];
+	var rhsBetween = [];
+	var queryURI = {};
 
-// ends export csv sales-history//
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 25;
+	field = 'id';
+	order = 'asc';
+	var productModel = "MarketplaceProduct";
+
+	if (req.user)
+		LoggedInUser = req.user;
+
+	let user_id = LoggedInUser.id;
+
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("MM/DD/YYYY"), moment(req.query.lhs_to).format("MM/DD/YYYY"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("MM/DD/YYYY"), moment(req.query.rhs_to).format("MM/DD/YYYY"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
+	}
+
+	queryURI['offset'] = offset;
+	queryURI['limit'] = limit;
+	queryURI['lhs_from'] = lhsBetween[0];
+	queryURI['lhs_to'] = lhsBetween[1];
+	queryURI['rhs_from'] = rhsBetween[0];
+	queryURI['rhs_to'] = rhsBetween[1];
+	queryURI['compare'] = 'true';
+	let performanceQueryObj = {};
+	performanceQueryObj.vendor_id = req.body.vendor_id;
+
+	if (req.query.compare) {
+		performanceQueryObj.compare = req.query.compare;
+		queryURI['compare'] = req.query.compare;
+	}
+
+	ReportService.exportperformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset).then(function (results){
+		for(let value of results.lhs_result)
+		{
+				   	  
+			   value.total_sales =((value.total_sales) > 0) ? (parseFloat(value.total_sales)).toFixed(2) : 0;
+			   value.vendor_fee =((value.vendor_fee) > 0) ? (parseFloat(value.vendor_fee)).toFixed(2) : 0;
+			   value.gtc_fees =((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+
+
+			
+			
+		}
+		    var fields = [];
+			fields = _.map(results.lhs_result, 'columnName');
+			fields.push('product_name','marketplace_name','total_sales','vendor_fee','gtc_fees');
+			const opts = {
+					fields
+			};
+			const parser = new Json2csvParser(results);
+			const csv = parser.parse(results.lhs_result);
+			res.write(csv);
+			res.end();
+			return;
+	}).catch((err) => {
+		console.log('performance err', err);
+		res.status(500).send("Internal server error");
+		return
+	});
+
+};
+
+// ends export csv report-performance//
 

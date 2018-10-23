@@ -43,10 +43,10 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 				window.location.href = "/upgradeplan";
 			}
 		} else {
-			alert("Please enter the Quantity.")
+			$('#enterQuantity').modal('show');		
 		}
 	}
-function cartAPI(cartInfo) {
+	function cartAPI(cartInfo) {
 			$.ajax({
 				type: "POST",
 				url: "/api/cart/add-cart/" + cartInfo.product_id,
@@ -196,7 +196,7 @@ function cartAPI(cartInfo) {
 																<input type="hidden" name="marketplace_id" id="marketplaceId{{this.id}}" value={{this.Product.marketplace_id}}>
 																<input type="hidden" name="marketplace_type_id" id="typecode{{this.id}}" value={{this.Product.marketplace_type_id}}>
 																<a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">
-																<img src="{{this.Product.ProductMedia.[0].url}}" style="width: 30px;" />
+																<img src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" style="width: 30px;" />
 																{{this.Product.product_name}}</a>
 															</td>
 															<td class="text_blue_color">
@@ -275,6 +275,21 @@ function cartAPI(cartInfo) {
 						</div>
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="enterQuantity" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="container">
+					<p>Please enter quantity.</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+					<b>OK</button>
 			</div>
 		</div>
 	</div>
