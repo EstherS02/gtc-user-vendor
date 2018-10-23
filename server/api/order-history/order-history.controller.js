@@ -19,6 +19,7 @@ const numeral = require('numeral');
 const Handlebars = require('handlebars');
 
 var emailTemplateModel = "EmailTemplate";
+var notificationTemplateModel = 'NotificationSetting';
 
 export function updateStatus(req, res) {
 
@@ -100,7 +101,7 @@ function orderStatusUpdate(paramsID, bodyParams) {
 					attributes:['id', 'vendor_id', 'product_name', 'product_slug'],
 				}
 			]
-		},		
+		}		
 	]
 
 	return service.findIdRow("Order", paramsID, orderStatusIncludeArr)
@@ -140,29 +141,47 @@ function orderConfirmedByVendorMail(updateOrder){
 	return service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 		.then(function(mailTemplate) {
 
-				orderItems = updateOrder.OrderItems;
+			orderItems = updateOrder.OrderItems;
 
-				email = updateOrder.User.user_contact_email;
-				subject = mailTemplate.subject;
-				body = mailTemplate.body.replace(/%CURRENCY%/g, '$');
-				body = body.replace('%USER_NAME%', updateOrder.User.first_name);
-				body = body.replace(/%VENDOR_NAME%/g,updateOrder.OrderItems[0].Product.Vendor.vendor_name);
-				body = body.replace(/%ORDER_ID%/g, updateOrder.id);
-				body = body.replace('%PLACED_ON%', moment(updateOrder.ordered_date).format('MMM D, Y'));
-				body = body.replace('%TOTAL_PRICE%', numeral(updateOrder.total_price).format('$' + '0,0.00'));
+			email = updateOrder.User.user_contact_email;
+			subject = mailTemplate.subject;
+			body = mailTemplate.body.replace(/%CURRENCY%/g, '$');
+			body = body.replace('%USER_NAME%', updateOrder.User.first_name);
+			body = body.replace(/%VENDOR_NAME%/g,updateOrder.OrderItems[0].Product.Vendor.vendor_name);
+			body = body.replace(/%ORDER_ID%/g, updateOrder.id);
+			body = body.replace('%PLACED_ON%', moment(updateOrder.ordered_date).format('MMM D, Y'));
+			body = body.replace('%TOTAL_PRICE%', numeral(updateOrder.total_price).format('$' + '0,0.00'));
 
-				template = Handlebars.compile(body);
-				data = {
-					OrderItems: orderItems
-				};
-				result = template(data);
+			template = Handlebars.compile(body);
+			data = {
+				OrderItems: orderItems
+			};
+			result = template(data);
 
-				sendEmail({
-					to: email,
-					subject: subject,
-					html: result
-				});
-				return;
+			sendEmail({
+				to: email,
+				subject: subject,
+				html: result
+			});
+			var notificationQueryObj ={};
+			notificationQueryObj['code'] = config.notification.templates.orderStatus;
+
+			return service.findOneRow(notificationTemplateModel, notificationQueryObj);
+		}).then(function(notificationTemplate){
+			var description, notificationBodyParam = {};
+			description = notificationTemplate.description.replace(/%ORDER_ID%/g,updateOrder.id);
+			description = description.replace('%ORDER_STATUS%', 'Confirmed by seller');
+
+			notificationBodyParam.user_id = updateOrder.User.id;
+			notificationBodyParam.description = description;
+			notificationBodyParam.name = notificationTemplate.name;
+			notificationBodyParam.code = notificationTemplate.code;
+			notificationBodyParam.is_read = 1;
+			notificationBodyParam.status = statusCode.ACTIVE;
+			notificationBodyParam.created_on = new Date();
+			notificationBodyParam.created_by = updateOrder.OrderItems[0].Product.Vendor.vendor_name;
+
+			return service.createRow('Notification', notificationBodyParam);
 		}).catch(function(error){
 			console.log("Error::",error);
 			return;
@@ -269,7 +288,27 @@ function orderShippedByVendorMail(updateOrder){
 			subject: subject,
 			html: body
 		});
-		return;
+
+		var notificationQueryObj ={};
+		notificationQueryObj['code'] = config.notification.templates.orderStatus;
+
+		return service.findOneRow(notificationTemplateModel, notificationQueryObj);
+	}).then(function(notificationTemplate){
+		
+		var description, notificationBodyParam = {};
+		description = notificationTemplate.description.replace(/%ORDER_ID%/g,updateOrder.id);
+		description = description.replace('%ORDER_STATUS%', 'Shipped');
+
+		notificationBodyParam.user_id = updateOrder.User.id;
+		notificationBodyParam.description = description;
+		notificationBodyParam.name = notificationTemplate.name;
+		notificationBodyParam.code = notificationTemplate.code;
+		notificationBodyParam.is_read = 1;
+		notificationBodyParam.status = statusCode.ACTIVE;
+		notificationBodyParam.created_on = new Date();
+		notificationBodyParam.created_by = updateOrder.OrderItems[0].Product.Vendor.vendor_name;
+
+		return service.createRow('Notification', notificationBodyParam);
 	}).catch(function(error){
 		console.log("Error::",error);
 		return;
@@ -284,7 +323,6 @@ function orderDeliveredMail(updateOrder){
 	queryObjEmailTemplate['name'] = config.email.templates.orderDelivered;
 
 	orderIncludeArr = [
-
 		{
 			model: model['Address'],
 			as: 'shippingAddress',
@@ -332,7 +370,25 @@ function orderDeliveredMail(updateOrder){
 			subject: subject,
 			html: body
 		});
-		return;
+		var notificationQueryObj ={};
+		notificationQueryObj['code'] = config.notification.templates.orderStatus;
+
+		return service.findOneRow(notificationTemplateModel, notificationQueryObj);
+	}).then(function(notificationTemplate){
+		var description, notificationBodyParam = {};
+		description = notificationTemplate.description.replace(/%ORDER_ID%/g,updateOrder.id);
+		description = description.replace('%ORDER_STATUS%', 'Delivered');
+
+		notificationBodyParam.user_id = updateOrder.User.id;
+		notificationBodyParam.description = description;
+		notificationBodyParam.name = notificationTemplate.name;
+		notificationBodyParam.code = notificationTemplate.code;
+		notificationBodyParam.is_read = 1;
+		notificationBodyParam.status = statusCode.ACTIVE;
+		notificationBodyParam.created_on = new Date();
+		notificationBodyParam.created_by = updateOrder.OrderItems[0].Product.Vendor.vendor_name;
+
+		return service.createRow('Notification', notificationBodyParam);
 	}).catch(function(error){
 		console.log("Error::",error);
 		return;
@@ -452,7 +508,6 @@ export function returnRequest(req, res) {
 									id: req.body.order_id
 								};
 								service.updateRecord('Order', OrderItem, refundObj);
-
 							}
 
 							if(item.Product.Vendor.User.user_contact_email){
@@ -513,9 +568,8 @@ function returnRequestnotification(refundOrderitemsID, user) {
 		if (OrderRefundList) {
 			var orderRefundList = OrderRefundList.rows;
 			var queryObjNotification = {};
-	        var NotificationTemplateModel = 'NotificationSetting';
 	        queryObjNotification['code'] = config.notification.templates.refundRequest;
-	        service.findOneRow(NotificationTemplateModel, queryObjNotification)
+	        service.findOneRow(notificationTemplateModel, queryObjNotification)
 		    .then(function(response) {
 			var bodyParams = {};
 			bodyParams.user_id = user.id;

@@ -65,7 +65,11 @@ export function viewListings(req, res) {
 	if (req.query.status) {
 		queryURI['status'] = req.query.status;
 		queryParams['status'] = statusCode[req.query.status]
-	} 
+	}else{
+		queryParams['status'] = {
+			'$ne': statusCode["DELETED"]
+		}
+	}
 
 	async.series({
 		cartInfo: function(callback) {

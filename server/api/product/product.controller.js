@@ -247,7 +247,7 @@ export async function create(req, res) {
 			Promise.all(ProductAttributePromises);
 			return res.status(201).send(newProduct);
 		} else {
-			return res.status(409).send("Stack keep unit already exists.");
+			return res.status(409).send("Stock keeping unit already exists.");
 		}
 	} catch (error) {
 		console.log('create Product Error:::', error);
@@ -371,13 +371,13 @@ export async function edit(req, res) {
 				Promise.all(ProductAttributePromises);
 				return res.status(200).send(product);
 			} else {
-				return res.status(409).send("Stack keep unit already exists.");
+				return res.status(409).send("Stock keeping unit already exists.");
 			}
 		} else {
-			return res.status(404).status("product not found.");
+			return res.status(404).status("Product not found.");
 		}
 	} catch (error) {
-		console.log('edit Product Error:::', error);
+		console.log('Edit Product Error:::', error);
 		return res.status(500).send(error);
 	}
 }
