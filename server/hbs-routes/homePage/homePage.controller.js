@@ -12,6 +12,7 @@ const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
 const marketplace_type = require('../../config/marketplace_type');
 const productService = require('../../api/product/product.service');
+const featureStatus = require("../../config/position");
 
 export function homePage(req, res) {
 	var productModel = "MarketplaceProduct";
@@ -144,17 +145,14 @@ export function homePage(req, res) {
 		},
 		featuredProducts: function(callback) {
 			delete queryObj['marketplace_id'];
-			queryObj['featured_position_homepage'] = 1;
+			queryObj['feature_status'] = featureStatus['HomePage'];
 			queryObj['is_featured_product'] = 1;
 			limit = 6;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, queryObj, limit, order)
-				.then(function(response) {
-					return callback(null, response.rows);
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+				.then(function(results) {
+					return callback(null, results);
 				}).catch(function(error) {
-					console.log('Error::', error);
+					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
