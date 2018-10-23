@@ -80,9 +80,9 @@ i.fas.fa-exclamation-circle {
   line-height: 1.5;
 }*/
 
-.text-primary {
+/*.text-primary {
   color: #cd8005 !important;
-}
+}*/
 
 .custom-section {
   margin-bottom: 0;
@@ -350,9 +350,9 @@ i.fas.fa-exclamation-circle {
   background-image: none;
 }
 
-a:hover {
+/*a:hover {
   text-decoration: none;
-}
+}*/
 
 .social-links {
   background-color: #154980;

@@ -90,6 +90,9 @@
 .font-lg {
 	font-size: 1em;
 }
+.gtc-text-primary {
+	color: #336699;
+}
 .text-navy {
 	color: #1ab394 !important;
 }
@@ -807,9 +810,10 @@ table.shoping-cart-table tr td {
 	height: 100%;
 }
 table.shoping-cart-table tr td div.product-middle-col h3 {
-	font-size: 1em;
+	font-size: 1.063em;
 	margin-bottom: 5px;
 	display: -webkit-box;
+	font-weight: normal;
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
@@ -819,9 +823,9 @@ table.shoping-cart-table > tbody > tr > td {
 	padding: 5px !important;
 }
 div.product-middle-col .row {
-	font-size: 0.75em;
-	font-weight: 300;
-	font-family: 'Roboto', sans-serif;
+	font-size: 0.813em;
+	font-weight: thin;
+	font-family: 'Roboto';
 	color: #5f6066;
 	line-height: 1.6;
 }
@@ -1051,6 +1055,6 @@ input[type=number]::-webkit-outer-spin-button {
 .pagination>li>a,
 .pagination>li>span { border-radius: 50% !important;margin: 0 5px;}
 .product-right-col img {
-    max-width: 100%;
-    /*height: 100%;*/
+	max-width: 100%;
+	/*height: 100%;*/
 }
