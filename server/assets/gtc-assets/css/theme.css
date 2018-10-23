@@ -69,6 +69,27 @@
 .col-12-12 {
 	max-width: 100%;
 }
+.font-xxs {
+	font-size: 0.563em;
+}
+.font-xs {
+	font-size: 0.625em;
+}
+.font-sm1 {
+	font-size: 0.688em;	
+}
+.font-sm2 {
+	font-size: 0.75em;
+}
+.font-md1 {
+	font-size: 0.813em;
+}
+.font-md2 {
+	font-size: 0.875em;
+}
+.font-lg {
+	font-size: 1em;
+}
 .text-navy {
 	color: #1ab394 !important;
 }
@@ -89,9 +110,6 @@
 }
 .text-muted {
 	color: #888888 !important;
-}
-.text-white {
-	color: #ffffff;
 }
 .text-lighter {
 	font-weight: lighter !important;
@@ -327,7 +345,7 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 	border-radius: 1.25rem !important;
 }
 .form-control-border {
-	border: 2px solid #f49d3f !important;
+	border: 3px solid #fea534 !important;
 }
 .fa-circle-bg {
 	color: #DDDDDF;

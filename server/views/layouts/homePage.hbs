@@ -20,19 +20,18 @@
 		<div class="gtc-container banner-padding">
 			<div class="row">
 				<div class="col-md-7">
-
 					<div class="row">
-						<div class="col-md-4 offset-md-7">
-							<div class="home-banner-right m-t">
+						<div class="col-md-4 offset-md-7 align-items-center">
+							<div class="home-banner-right">
 								<h4>What is Geo-Locate</h4>
 								<p>Find products close to home, or nearby you target market with Lorem ipsum dolor sholt.</p>
 								<h1 class="text-marketplace-1">GIVE IT A TRY!:</h1>
 								<form id="geoLocateForm" class="geo-locate-form">
-									<div class="form-group m-b-xs">
+									<div class="form-group m-b-sm">
 										<input type="text" id="origin" name="origin" class="form-control-customized form-control-sm rounded"
 										 placeholder="Location (eg Calgary, AB)" required="true">
 									</div>
-									<div class="form-group m-b-xs">
+									<div class="form-group m-b-sm">
 										<div class="select-container">
 											<select class="form-control-customized form-control-sm rounded">
 												<option disabled selected>Category</option>
@@ -42,8 +41,8 @@
 											</select>
 										</div>
 									</div>
-									<div class="form-group m-b-xs">
-										<input type="email" id="keyword" name="keyword" class="form-control-customized form-control-sm rounded"
+									<div class="form-group m-b-sm">
+										<input type="text" id="keyword" name="keyword" class="form-control-customized form-control-sm rounded"
 										 placeholder="Keyword (eg Spoiler)" required="true">
 									</div>
 									<div class="form-group">
@@ -96,15 +95,15 @@
 											<form id="signUpForm" class="form">
 												<div class="row">
 													<div class="col">
-														<div class="form-group m-b-xs">
+														<div class="form-group m-b-sm">
 															<input type="email" id="inputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border"
 															 placeholder="Email" required="true">
 														</div>
-														<div class="form-group m-b-xs">
+														<div class="form-group m-b-sm">
 															<input type="text" id="inputFirstname" name="first_name" class="form-control-customized form-control-sm rounded form-control-border"
 															 placeholder="First Name" required="true">
 														</div>
-														<div class="form-group m-b-xs">
+														<div class="form-group m-b-sm">
 															<input type="password" id="inputPassword" name="password" class="form-control-customized form-control-sm rounded form-control-border"
 															 placeholder="Password" required="true">
 														</div>
@@ -112,12 +111,13 @@
 															<div class="customCheckbox">
 																<input type="checkbox" id="inputTerms" class="customCheckboxInput" />
 																<label class="checkbox-b" for="inputTerms"></label>
-																<small class="m-l-xs">Accept terms and conditions</small>
+																<small class="m-l-sm font-sm1">Accept terms and conditions</small>
 															</div>
 														</div>
 														<div class="form-group">
-															<button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger"><strong>CREATE ACCOUNT
-																	<i id="loadingSpinnersignUp" class="fa fa fa-spinner fa-spin m-l-xs"></i></strong></button>
+															<button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger">
+																<strong>CREATE ACCOUNT<i id="loadingSpinnersignUp" class="fa fa fa-spinner fa-spin m-l-xs"></i></strong>
+															</button>
 														</div>
 													</div>
 												</div>
@@ -714,51 +714,79 @@
 		</div>
 	</div>
 </div>
-
-<div class="jumbotron text-center why_global" style="margin-bottom:0">
-	<h1>So why use Global Trade Connect?</h1>
-	<div class="container clearfix">
-		<div class="row">
-			<div class="col-md-3 why_global1">
-				<div class="why_pws">
-					<h1>32,871+</h1>
-					<h6>PRIVATE WHOLESALE</h6>
-					<p>Broadcast real-time inventory & request of
-						<span class="why_pws_span">what you want</span> to buy or sell</p>
+<div class="home-bottom-banner-1">
+	<div class="gtc-container py-xl-5">
+		<h1 class="text-center">So why use Global Trade Connect?</h1>
+	</div>
+	<div class="gtc-container py-lg-3">
+		<div class="row justify-content-center">
+			<div class="col-md-2 col-sm-3">
+				<div class="progress yellow">
+					<span class="progress-left">
+						<span class="progress-bar"></span>
+					</span>
+					<span class="progress-right">
+						<span class="progress-bar"></span>
+					</span>
+					<div class="progress-value">
+						<span>32,871+</span><br/>
+						<span>Products Listed</span>
+					</div>
 				</div>
+				<p class="text-white text-center progress-texts mt-3">PRIVATE WHOLESALE</p>
+				<p class="text-center text-white font-md2">Broadcast rea-time inventory & requests of what you want buy or sale.</p>
 			</div>
-			<div class="col-md-3 why_global1">
-				<div class="why_pws1">
-					<h1>127,331+</h1>
-					<h6>PUBLIC SALE</h6>
-					<p>Sell your single SKU to
-						<b>volume Based</b> Products &amp; Commodities to the open market</p>
+			<div class="col-md-2 col-sm-3">
+				<div class="progress blue">
+					<span class="progress-left">
+						<span class="progress-bar"></span>
+					</span>
+					<span class="progress-right">
+						<span class="progress-bar"></span>
+					</span>
+					<div class="progress-value">32,871+</div>
 				</div>
+				<p class="text-white text-center progress-texts mt-3">PUBLIC SALE</p>
+				<p class="text-center text-white font-md2">Sell your single SKU to <b>volume based</b> products & commodities to the open market!</p>
 			</div>
-			<div class="col-md-3 why_global1">
-				<div class="why_pws2">
-					<h1>23,002+</h1>
-					<h6>SECURED &amp; SUPERPOWERED</h6>
-					<p>Get your Global Trade Connect digital profile storefront &amp; warehouse
-						<b>The last profile page you will ever need!</b>
-					</p>
+			<div class="col-md-2 col-sm-3">
+				<div class="progress white">
+					<span class="progress-left">
+						<span class="progress-bar"></span>
+					</span>
+					<span class="progress-right">
+						<span class="progress-bar"></span>
+					</span>
+					<div class="progress-value">32,871+</div>
 				</div>
+				<p class="text-white text-center progress-texts mt-3">SECURED & SUPERPOWERED</p>
+				<p class="text-center text-white font-md2">Get your Global Trade Connect digital profile, storefront & warehouse. <b>The last profile page you will ever need.</b></p>
 			</div>
-			<div class="col-md-3 why_global1">
-				<div class="why_pws3">
-					<h1>$1.28M+</h1>
-					<h6>SERVICE MARKET</h6>
-					<p>List the services you provide &amp;
-						<span class="why_pws3_span">let people you know</span> what and where you offer it.</p>
+			<div class="col-md-2 col-sm-3">
+				<div class="progress green">
+					<span class="progress-left">
+						<span class="progress-bar"></span>
+					</span>
+					<span class="progress-right">
+						<span class="progress-bar"></span>
+					</span>
+					<div class="progress-value">32,871+</div>
 				</div>
+				<p class="text-white text-center progress-texts mt-3">SERVICE MARKET</p>
+				<p class="text-center text-white font-md2">List the services you provide & <strong>let people you know what and where you offer it.</strong></p>
 			</div>
-			<div class="col-md-3 why_global1">
-				<div class="why_pws4">
-					<h1>7499+</h1>
-					<h6>LIFESTYLE SUBSCRIPTIONS</h6>
-					<p>Selling items on a
-						<span class="why_pws4_span">monthly basis is fun,</span> now you have a place to share it.</p>
+			<div class="col-md-2 col-sm-3">
+				<div class="progress red">
+					<span class="progress-left">
+						<span class="progress-bar"></span>
+					</span>
+					<span class="progress-right">
+						<span class="progress-bar"></span>
+					</span>
+					<div class="progress-value">32,871+</div>
 				</div>
+				<p class="text-white text-center progress-texts mt-3">LIFESTYLE SUBSCRIPTIONS</p>
+				<p class="text-center text-white font-md2">Selling items on a <strong>monthly basis is fun</strong>, now you have a place to share it.</p>
 			</div>
 		</div>
 	</div>
@@ -859,12 +887,6 @@
 															<div class="row no-margins">
 																<div class="col-md-12 col-12 no-padding">
 																	<h2 class="text-red price">{{currency this.product_price '$'}}</h2>
-																	{{!-- {{#if this.product_discounted_price}}
-																		<h2 class="text-red price">{{currency this.product_discounted_price '$'}}</h2>
-																		<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
-																	{{else}}
-																		<h2 class="text-red price">{{currency this.price '$'}}</h2>
-																	{{/if}} --}}
 																</div>
 																<div class="col-md-4 col-4 no-padding">
 																	<span>Origin</span>
@@ -906,9 +928,21 @@
 		</div>
 	</div>
 </div>
+{{!-- <div class="home-bottom-banner-2">
+	<div class="row no-margins">
+		<div class="col-1-5">
+			<img src="img/promo.jpg">
+		</div>
+		<div class="col-2-5 left1 py-xl-5">
+			<h1 class="text-center text-white">The #1 marketing platform® for generating more sales.</h1>
+		</div>
+		<div class="col-2-5 right1">
+			<h1>Hello world</h1>
+		</div>
+	</div>
+</div> --}}
 
-
-<section>
+{{!-- <section>
 	<div class="" style="margin-bottom:0">
 		<div class="container-fluid">
 			<div class="row common_padding">
@@ -927,7 +961,7 @@
 			</div>
 		</div>
 	</div>
-</section>
+</section> --}}
 
 <section>
 	<div class="jumbotron box_11" style="margin-bottom:0">
