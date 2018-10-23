@@ -5,7 +5,6 @@ const statusCode = require('../config/status');
 const service = require('../api/service');
 const _ = require('lodash');
 const stripe = require('../payment/stripe.payment');
-const sendEmail = require('./send-email');
 const populate = require('../utilities/populate');
 const paymentMethod = require('../config/payment-method');
 const gtcPlan = require('../config/gtc-plan');
@@ -163,8 +162,10 @@ function updatePrimaryCardMail(vendorPlan) {
 	var vendor = vendorPlan.Vendor;
 	
 	var emailTemplateQueryObj = {};
+	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.autoRenewalNoPrimaryCard;
+	var agenda = require('../../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
@@ -178,12 +179,15 @@ function updatePrimaryCardMail(vendorPlan) {
 				body = body.replace('%PLAN_NAME%', vendorPlan.Plan.name);
 				body = body.replace('%EXPIRED_DATE%', vendorPlan.end_date);
 
-                sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
-                });
-                return;
+                mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
             } else {
                 return;
             }
@@ -199,8 +203,10 @@ function autoRenewalMail(vendorPlan, chargedAmount){
 	var vendor = vendorPlan.Vendor;
 	
 	var emailTemplateQueryObj = {};
+	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.planAutoRenewal;
+	var agenda = require('../../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
@@ -216,12 +222,15 @@ function autoRenewalMail(vendorPlan, chargedAmount){
 				body = body.replace('%CURRENT_DATE%', currentDate);
 				body = body.replace('%AMOUNT%', chargedAmount);
 
-                sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
-                });
-                return;
+                mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
             } else {
                 return;
             }
@@ -237,9 +246,11 @@ function planDeactivated(vendorPlan){
 	var vendor = vendorPlan.Vendor;
 	
 	var emailTemplateQueryObj = {};
+	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
 	emailTemplateQueryObj['name'] = config.email.templates.planExpired;
-	
+	var agenda = require('../../app').get('agenda');
+
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
             if (response) {
@@ -252,12 +263,15 @@ function planDeactivated(vendorPlan){
 				body = body.replace('%PLAN_NAME%', vendorPlan.Plan.name);
 				body = body.replace('%EXPIRED_DATE%', vendorPlan.end_date);
 
-                sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
-                });
-                return;
+                mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
             } else {
                 return;
             }

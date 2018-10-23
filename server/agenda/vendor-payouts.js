@@ -8,7 +8,6 @@ const paymentType = require('../config/order-payment-type');
 const moment = require('moment');
 const _ = require('lodash');
 const stripe = require('../payment/stripe.payment');
-const sendEmail = require('./send-email');
 const populate = require('../utilities/populate');
 const paymentMethod = require('../config/payment-method');
 const escrowAction = require('../config/escrow-action');
@@ -217,10 +216,12 @@ function createPaymentRow(paymentObj) {
 
 function stripeConnectMail(vendor) {
 
-    var emailTemplateQueryObj = {};
+	var emailTemplateQueryObj = {};
+	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.stripeConnectEmail;
-
+	var agenda = require('../../app').get('agenda');
+	
     return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
             if (response) {
@@ -230,12 +231,15 @@ function stripeConnectMail(vendor) {
                 var subject = response.subject;
                 var body = response.body.replace('%USERNAME%', username);
 
-                sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
-                });
-                return;
+                mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
             } else {
                 return;
             }
@@ -248,8 +252,10 @@ function stripeConnectMail(vendor) {
 
 function payoutMail(vendor, payoutOrder, payoutAmount) {
 
-    var emailTemplateQueryObj = {};
+	var emailTemplateQueryObj = {};
+	var mailArray = [];
     emailTemplateQueryObj['name'] = config.email.templates.payoutMail;
+	var agenda = require('../../app').get('agenda');
 
     return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
@@ -266,12 +272,15 @@ function payoutMail(vendor, payoutOrder, payoutAmount) {
                 body = body.replace('%CURRENCY%', CURRENCY);
                 body = body.replace('%CREATED_DATE%', date);
 
-                sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
-                });
-                return;
+                mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
             } else {
                 return;
             }
