@@ -15,7 +15,7 @@ const moment = require('moment');
 const ORDER_ITEM_STATUS = require('../../config/order-item-status');
 const ORDER_PAYMENT_TYPE = require('../../config/order-payment-type');
 const uuidv1 = require('uuid/v1');
-const sendEmail = require('../../agenda/send-email');
+const sendEmail = require('../../agenda/send-email-new');
 var notificationService = require('../../api/notification/notification.service')
 const numeral = require('numeral');
 const durationCode = require('../../config/duration-unit');
@@ -900,6 +900,7 @@ function sendUpgrademail(plan_id, user) {
 	let upgradePlanModel = {
 		id: plan_id
 	}
+	var agenda = require('../../app').get('agenda');
 	return service.findRow('Plan', upgradePlanModel, includeArray)
 		.then(upgradeplandetails => {
 			var upgradeplanobj = upgradeplandetails;
@@ -915,11 +916,16 @@ function sendUpgrademail(plan_id, user) {
 					body = body.replace('%first_name%', user.first_name);
 					body = body.replace('%name%', upgradeplanobj.name);
 					body = body.replace('%cost%', numeral(upgradeplanobj.cost).format('0,0.00'));
-					sendEmail({
+					var mailArray = [];
+					mailArray.push({
 						to: email,
 						subject: subject,
 						html: body
 					});
+					agenda.now(config.jobs.email, {
+						mailArray: mailArray
+					});
+					return;
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return;
