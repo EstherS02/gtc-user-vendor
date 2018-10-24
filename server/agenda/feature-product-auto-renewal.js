@@ -6,7 +6,6 @@ const service = require('../api/service');
 const moment = require('moment');
 const _ = require('lodash');
 const stripe = require('../payment/stripe.payment');
-const sendEmail = require('./send-email');
 const paymentMethod = require('../config/payment-method');
 
 const CURRENCY = 'usd';
@@ -162,8 +161,10 @@ function FeatureAutoRenewal(eachFeature){
 
 function featureRenewalMail(eachFeature){
 	var emailTemplateQueryObj = {};
+	var mailArray = [];
     emailTemplateQueryObj['name'] = config.email.templates.featureProductAutoRenewal;
 
+	var agenda = require('../../app').get('agenda');
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
 		.then(function (response) {
 			if (response) {
@@ -175,13 +176,15 @@ function featureRenewalMail(eachFeature){
 				body = body.replace('%AMOUNT%', eachFeature.Payment.amount);
 				body = body.replace('%CURRENT_DATE%', current_date);
 					
-				sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
+				mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
 				});
-				
-                return;
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
 			}else{
 				return;
 			}

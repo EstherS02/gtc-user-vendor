@@ -10,7 +10,6 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const verificationStatus = require('../../config/verification_status');
-const position = require('../../config/position');
 const service = require('../../api/service');
 const categoryService = require('../../api/category/category.service');
 const sequelize = require('sequelize');

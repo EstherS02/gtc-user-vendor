@@ -8,7 +8,6 @@ const statusCode = require('../../config/status');
 const _ = require('lodash');
 const carrierCode = require('../../config/carriers');
 const orderStatusCode = require('../../config/order_status');
-const sendEmail = require('../../agenda/send-email');
 const async = require('async');
 const populate = require('../../utilities/populate');
 const orderItemStatus = require('../../config/order-item-status');
@@ -133,10 +132,12 @@ function orderStatusUpdate(paramsID, bodyParams) {
 }
 
 function orderConfirmedByVendorMail(updateOrder){
-	var queryObjEmailTemplate = {}, data = {}, orderItems = [];
+	var queryObjEmailTemplate = {}, data = {};
+	var mailArray = [], orderItems = [];
 	var email, subject, body, template, result;
 
 	queryObjEmailTemplate['name'] = config.email.templates.vendorOrderConformation;
+	var agenda = require('../../app').get('agenda');
 
 	return service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 		.then(function(mailTemplate) {
@@ -158,10 +159,13 @@ function orderConfirmedByVendorMail(updateOrder){
 			};
 			result = template(data);
 
-			sendEmail({
+			mailArray.push({
 				to: email,
 				subject: subject,
 				html: result
+			});
+			agenda.now(config.jobs.email, {
+				mailArray: mailArray
 			});
 			var notificationQueryObj ={};
 			notificationQueryObj['code'] = config.notification.templates.orderStatus;
@@ -258,7 +262,8 @@ function orderShippedByVendorMail(updateOrder){
 		order = Order;
 		return service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 	}).then(function(mailTemplate){
-
+		var agenda = require('../../app').get('agenda');
+		var mailArray = [];
 		trackingUrl = (_.invert(trackingUrlCode))[order.Shipping.provider_name]+'/'+ order.Shipping.tracking_id;
 
 		email = updateOrder.User.user_contact_email;
@@ -283,10 +288,13 @@ function orderShippedByVendorMail(updateOrder){
 		body = body.replace('%TRACKING_URL%', trackingUrl);
 		body = body.replace('%TOTAL_ITEM%', totalItems);
 
-		sendEmail({
+		mailArray.push({
 			to: email,
 			subject: subject,
 			html: body
+		});
+		agenda.now(config.jobs.email, {
+			mailArray: mailArray
 		});
 
 		var notificationQueryObj ={};
@@ -353,7 +361,9 @@ function orderDeliveredMail(updateOrder){
 		order = Order;
 		return service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 	}).then(function(mailTemplate){
-
+		var agenda = require('../../app').get('agenda');
+		var mailArray = []
+		
 		email = updateOrder.User.user_contact_email;
 		subject = mailTemplate.subject.replace('%ORDER_ID%',updateOrder.id);
 		body = mailTemplate.body.replace('%USER_NAME%', updateOrder.User.first_name);
@@ -365,11 +375,15 @@ function orderDeliveredMail(updateOrder){
 		body = body.replace('%STATE%', order.shippingAddress.State.name);
 		body = body.replace('%COUNTRY%', order.shippingAddress.Country.name);
 
-		sendEmail({
+		mailArray.push({
 			to: email,
 			subject: subject,
 			html: body
 		});
+		agenda.now(config.jobs.email, {
+			mailArray: mailArray
+		});
+
 		var notificationQueryObj ={};
 		notificationQueryObj['code'] = config.notification.templates.orderStatus;
 
@@ -425,6 +439,9 @@ export function vendorCancel(req, res) {
 						service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 							.then(function(response) {
 								if (response) {
+									
+									var agenda = require('../../app').get('agenda');
+									var mailArray = [];
 									var email = user_email;
 									reason_for_cancellation = bodyParams.reason_for_cancellation;
 									var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
@@ -438,10 +455,13 @@ export function vendorCancel(req, res) {
 
 									//body = body.replace('%LINK%', config.baseUrl + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
 
-									sendEmail({
+									mailArray.push({
 										to: email,
 										subject: subject,
 										html: body
+									});
+									agenda.now(config.jobs.email, {
+										mailArray: mailArray
 									});
 									return res.status(201).send(response);
 								} else {
@@ -520,6 +540,8 @@ export function returnRequest(req, res) {
 								reason_for_return = req.body.reason_for_return;
 								email = item.Product.Vendor.User.user_contact_email;
 								returnRequestnotification(req.params.id,req.user);
+								var agenda = require('../../app').get('agenda');
+
 								service.findOneRow(emailTemplateModel, emailTemplateQueryObj)
 									.then(function(template) {
 										var mailBody;
@@ -532,11 +554,16 @@ export function returnRequest(req, res) {
 										mailBody = mailBody.replace('%USER%', user_name);
 										mailBody = mailBody.replace('%REASON_FOR_RETURN%', reason_for_return);
 
-										sendEmail({
+										var mailArray = [];
+										mailArray.push({
 											to: email,
 											subject: subject,
 											html: mailBody
 										});
+										agenda.now(config.jobs.email, {
+											mailArray: mailArray
+										});
+
 										return res.status(201).send("Return Request Email Sent");
 
 									}).catch(function(error) {

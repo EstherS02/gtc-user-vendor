@@ -20,11 +20,6 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        position: {
-            type: DataTypes.STRING(45),
-            field: 'position',
-            allowNull: true
-        },
         start_date: {
             type: DataTypes.DATEONLY,
             field: 'start_date',

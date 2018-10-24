@@ -4,15 +4,15 @@
 </script>
 
 <script type="text/javascript">
-		$(document).ready(function() {
-			$("li .previous").click(function(){
-				console.log("previous")
-			})
+	$(document).ready(function() {
+		$("li .previous").click(function() {
+			console.log("previous")
+		})
 
-				$("li .next").click(function(){
-				console.log("previous")
-			})
-		});
+		$("li .next").click(function() {
+			console.log("previous")
+		})
+	});
 	$(document).ready(function() {
 		$("a[title='seller']").click(function() {
 			if (userInfo.email) { } else {
@@ -27,7 +27,7 @@
 		x = 300;
 		$('#category li:lt(' + x + ')').show();
 		$("#showLess").hide();
-	
+
 		$('#loadMore').click(function() {
 			x = (x + (size_li - x) <= size_li) ? x + (size_li - x) : size_li;
 			$('#category li:lt(' + x + ')').show();
@@ -101,7 +101,7 @@
 		var key = 'is_featured_product';
 		location.href = url.replace(new RegExp(key + "=\\w+"), "").replace("?&", "?").replace("&&", "&").replace("& ", "");
 	}
-</script> 
+</script>
 <style>
 	#category li {
 		display: none;
@@ -214,8 +214,8 @@
 		<div class="col-md-3 search-list-left" id="menu">
 			<h5 class="right-header-sm" style="margin-top:10px">FILTER BY CATEGORY</h5>
 			<p class="right-header-xs bg{{queryURI.marketplace}}">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
-			{{!-- <ul class="right-list-view category-fixed" id="category">  removing scrollbar--}} 
-				<ul class="right-list-view" id="category">
+			{{!-- <ul class="right-list-view category-fixed" id="category">  removing scrollbar--}}
+			<ul class="right-list-view" id="category">
 
 				{{!-- {{#each categoriesWithCount.rows}}
 				<li>
@@ -576,7 +576,9 @@
 														{{#ifCond this.Marketplace.id '!=' 1}}
 															{{#if this.product_discounted_price}}
 																<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
-																<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+																<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;
+																	<strong>SAVE ${{this.discount}}</strong>
+																</small>
 															{{else}}
 																<h2 class="price-flag">{{currency this.price '$'}}</h2>
 															{{/if}}
@@ -615,13 +617,14 @@
 														</td>
 														<td class="col-7">
 															<div class="product-middle-col">
-																<h3>{{#if ../selectedMarketPlaceType}}
-																		<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag" {{else}} class="text-black" {{/if}}
-																		title="{{this.product_name}}">
-																		{{../selectedMarketPlaceType.code}} - {{this.product_name}}</a>
+																<h3>
+																	{{#if ../selectedMarketPlaceType}}
+																		<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag"
+																		 {{else}} class="text-black" {{/if}} title="{{this.product_name}}">
+																			{{../selectedMarketPlaceType.code}} - {{this.product_name}}</a>
 																	{{else}}
 																		<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-black" title="{{this.product_name}}">
-																		{{this.product_name}}</a>
+																			{{this.product_name}}</a>
 																	{{/if}}
 																</h3>
 																<div class="row no-margins">
@@ -649,24 +652,24 @@
 																		{{/if}}
 																	</div>
 																	{{#ifCond this.MarketplaceType.id '==' 3}}
-																	<div class="col-md-4 col-4 no-padding">
-																		<span>Seller Rating</span>
-																	</div>
-																	<div class="col-md-7 col-7 no-padding overflow-txt">
-																		<a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-																			{{starCount product_rating}}
-																		</a>
-																	</div>
+																		<div class="col-md-4 col-4 no-padding">
+																			<span>Seller Rating</span>
+																		</div>
+																		<div class="col-md-7 col-7 no-padding overflow-txt">
+																			<a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+																				{{starCount product_rating}}
+																			</a>
+																		</div>
 																	{{/ifCond}}
 																	{{#ifCond this.MarketplaceType.id '==' 4}}
-																	<div class="col-md-4 col-4 no-padding">
-																		<span>Seller Rating</span>
-																	</div>
-																	<div class="col-md-7 col-7 no-padding overflow-txt">
-																		<a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-																			{{starCount product_rating}}
-																		</a>
-																	</div>
+																		<div class="col-md-4 col-4 no-padding">
+																			<span>Seller Rating</span>
+																		</div>
+																		<div class="col-md-7 col-7 no-padding overflow-txt">
+																			<a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+																				{{starCount product_rating}}
+																			</a>
+																		</div>
 																	{{/ifCond}}
 																</div>
 															</div>
@@ -688,19 +691,21 @@
 																	{{/ifCond}}
 																	{{#ifCond this.MarketplaceType.id '==' 3}}
 																		<h4>MOQ : {{this.moq}}</h4>
-																		<a href="vendor/{{this.Vendor.id}}">
+
+																		<a {{#if ../LoggedInUser.email}} href="vendor/{{this.Vendor.id}}" {{else}} href="/login" {{/if}}>
 																			<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)"
-																			title="{{this.product_name}}" style="border-radius:50%">
+																			 title="{{this.product_name}}" style="border-radius:50%">
 																		</a>
+
 																		{{#if this.product_discounted_price}}
 																			<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
 																		{{/if}}
 																	{{/ifCond}}
 																	{{#ifCond this.MarketplaceType.id '==' 4}}
 																		<h4>MOQ : {{this.moq}}</h4>
-																		<a href="vendor/{{this.Vendor.id}}">
+																		<a {{#if ../LoggedInUser.email}} href="vendor/{{this.Vendor.id}}" {{else}} href="/login" {{/if}}>
 																			<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)"
-																			title="{{this.product_name}}" style="border-radius:50%;">
+																			 title="{{this.product_name}}" style="border-radius:50%;">
 																		</a>
 																		{{#if this.product_discounted_price}}
 																			<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
@@ -710,22 +715,24 @@
 																{{#ifCond this.Marketplace.id '!=' 1}}
 																	{{#if this.product_discounted_price}}
 																		<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
-																		<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+																		<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;
+																			<strong>SAVE ${{this.discount}}</strong>
+																		</small>
 																	{{else}}
 																		<h2 class="price-flag">{{currency this.price '$'}}</h2>
 																	{{/if}}
 																{{/ifCond}}
 																{{#ifCond this.MarketplaceType.id '==' 3}}
-																{{else ifCond this.MarketplaceType.id '==' 4}}
-																{{else}}
-																<div class="prc-bottom">
-																	<p>Seller Rating</p>
-																	<div class="p-rating pull-right">
-																		<a href="{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-																			{{starCount product_rating}}
-																		</a>
-																	</div>
-																</div> 
+																	{{else ifCond this.MarketplaceType.id '==' 4}}
+				{{else}}
+					<div class="prc-bottom">
+						<p>Seller Rating</p>
+						<div class="p-rating pull-right">
+							<a href="{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+								{{starCount product_rating}}
+							</a>
+						</div>
+					</div>
 																{{/ifCond}}
 															</div>
 														</td>
@@ -756,7 +763,8 @@
 								<ul class="pagination justify-content-center">
 									{{#unless startFromFirstPage}}
 										<li class="page-item-prev" style="margin-left:-391px;">
-											<a  href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}"><i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+											<a href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">
+												<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 										</li>
 									{{/unless}}
 
@@ -768,7 +776,9 @@
 
 									{{#unless endAtLastPage}}
 										<li class="page-item-next" style="margin-right:-391px;">
-											<a href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;<i class="fa fa-angle-double-right"></i></a>
+											<a href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
+												<i class="fa fa-angle-double-right"></i>
+											</a>
 										</li>
 									{{/unless}}
 

@@ -5,14 +5,12 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
-const position = require('../../config/position');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const productService = require('../../api/product/product.service');
 const cartService = require('../../api/cart/cart.service');
 const _ = require('lodash');
 const async = require('async');
-const featureStatus = require("../../config/position");
 import series from 'async/series';
 
 export function lifestyle(req, res) {
@@ -70,8 +68,10 @@ export function lifestyle(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
-			queryObj['feature_status'] = featureStatus['LifestyleLanding'];
+			queryObj['feature_status'] = status['ACTIVE'];
 			queryObj['is_featured_product'] = 1;
+			queryObj['position_service_landing'] = status['ACTIVE'];
+
 			limit = 6;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 				.then(function(results) {
@@ -83,8 +83,10 @@ export function lifestyle(req, res) {
 				});
 		},
 		lifestyleMarketplace: function(callback) {
-			delete queryObj['featured_position_subscription_landing'];
+			delete queryObj['feature_status'];
 			delete queryObj['is_featured_product'];
+			delete queryObj['position_service_landing'];
+
 			queryObj['marketplace_id'] = marketplace['LIFESTYLE'];
 			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(lifestyleMarketplace) {

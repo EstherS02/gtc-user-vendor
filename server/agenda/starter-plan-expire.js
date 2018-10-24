@@ -4,7 +4,6 @@ const config = require('../config/environment');
 const statusCode = require('../config/status');
 const service = require('../api/service');
 const _ = require('lodash');
-const sendEmail = require('./send-email');
 const gtcPlan = require('../config/gtc-plan');
 
 var currentDate = new Date();
@@ -87,8 +86,10 @@ function planExpiredMail(eachVendor){
 	var vendor = eachVendor.Vendor;
 	
 	var emailTemplateQueryObj = {};
+	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.starterPlanExpire;
+	var agenda = require('../../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
@@ -101,12 +102,15 @@ function planExpiredMail(eachVendor){
 				body = body.replace('%USERNAME%', vendor.vendor_name);
 				body = body.replace('%EXPIRED_DATE%', eachVendor.end_date);
 
-                sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
-                });
-                return;
+                mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
             } else {
                 return;
             }

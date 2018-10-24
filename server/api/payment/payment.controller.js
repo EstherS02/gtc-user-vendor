@@ -15,7 +15,7 @@ const moment = require('moment');
 const ORDER_ITEM_STATUS = require('../../config/order-item-status');
 const ORDER_PAYMENT_TYPE = require('../../config/order-payment-type');
 const uuidv1 = require('uuid/v1');
-const sendEmail = require('../../agenda/send-email-new');
+const sendEmail = require('../../agenda/send-email');
 var notificationService = require('../../api/notification/notification.service')
 const numeral = require('numeral');
 const durationCode = require('../../config/duration-unit');
@@ -1071,6 +1071,8 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 			var queryObjEmailTemplate = {};
 			var emailTemplateModel = 'EmailTemplate';
 			queryObjEmailTemplate['name'] = config.email.templates.refundRequest;
+			var agenda = require('../../app').get('agenda');
+			
 			service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 				.then(function(response) {
 					var email = vendor_email;
@@ -1090,10 +1092,14 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 						order: orderNew
 					};
 					var result = template(data);
-					sendEmail({
+					var mailArray = [];
+					mailArray.push({
 						to: email,
 						subject: subject,
 						html: result
+					});
+					agenda.now(config.jobs.email, {
+						mailArray: mailArray
 					});
 				}).catch(function(error) {
 					console.log('Error :::', error);
