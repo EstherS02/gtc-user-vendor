@@ -11,6 +11,7 @@ const cartService = require('../../api/cart/cart.service');
 const service = require('../../api/service');
 const async = require('async');
 const productService = require('../../api/product/product.service');
+const featureStatus = require("../../config/position");
 
 export function services(req, res) {
 	var categoryModel = "Category";
@@ -66,17 +67,15 @@ export function services(req, res) {
 				});
 		},
 		featuredService: function(callback) {
-			queryObj['featured_position_service_landing'] = 1;
+			queryObj['feature_status'] = featureStatus['ServiceLanding'];
 			queryObj['is_featured_product'] = 1;
-			var featureLimit = 6;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, queryObj, featureLimit, order)
-				.then(function(response) {
-					return callback(null, response.rows);
+			limit = 6;
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+				.then(function(results) {
+					console.log("-------------------==================",results)
+					return callback(null, results);
 				}).catch(function(error) {
-					console.log('Error::', error);
+					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
