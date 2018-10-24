@@ -8,8 +8,9 @@ const marketplace = require('../../config/marketplace');
 const service = require('../../api/service');
 const cartService = require('../../api/cart/cart.service');
 const vendorPlan = require('../../config/gtc-plan');
+const addressCode = require('../../config/address');
 
-let openIdConnect = paypal.openIdConnect;
+var openIdConnect = paypal.openIdConnect;
 
 paypal.configure({
 	'mode': config.payPalOAuth.payPalMode,
@@ -19,21 +20,20 @@ paypal.configure({
 });
 
 export function billingSettings(req, res) {
-	var LoggedInUser = {};
-	var bottomCategory = {};
-	var categoryModel = "Category";
-	var paymentSettingModel = "PaymentSetting";
-	var billingAddressModel = "Address";
+	
+	var LoggedInUser = {}, bottomCategory = {}, queryObjCategory = {};
+	var user_id;
 
 	if (req.user)
 		LoggedInUser = req.user;
 
-	let user_id = LoggedInUser.id;
+	user_id = LoggedInUser.id;
 
 	let payPalOAuthUrl = openIdConnect.authorizeUrl({
 		'scope': config.payPalOAuth.scope
 	});
-	var queryObjCategory = {
+
+	queryObjCategory = {
 		status: status['ACTIVE']
 	};
 
@@ -52,15 +52,17 @@ export function billingSettings(req, res) {
 		},
 		categories: function(callback) {
 			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
 
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
@@ -73,13 +75,14 @@ export function billingSettings(req, res) {
 		},
 		cards: function(callback) {
 			var includeArr = [];
-			const offset = 0;
-			const limit = null;
-			const field = "id";
-			const order = "asc";
+			var offset, limit, field, order;
+			offset = 0;
+			limit = null;
+			field = "id";
+			order = "asc";
 			queryObjCategory.user_id = req.user.id;
 
-			service.findAllRows(paymentSettingModel, includeArr, queryObjCategory, offset, limit, field, order)
+			service.findAllRows('PaymentSetting', includeArr, queryObjCategory, offset, limit, field, order)
 				.then(function(paymentSetting) {
 					var paymentSettings = paymentSetting.rows;
 					return callback(null, paymentSettings);
@@ -90,14 +93,15 @@ export function billingSettings(req, res) {
 		},
 		billingAddress: function(callback) {
 			var includeArr = [];
-			const offset = 0;
-			const limit = null;
-			const field = "id";
-			const order = "asc";
+			var offset, limit, field, order;
+			offset = 0;
+			limit = null;
+			field = "id";
+			order = "asc";
 			queryObjCategory.user_id = req.user.id;
-			queryObjCategory.address_type = 1;
+			queryObjCategory.address_type = addressCode.BILLINGADDRESS;
 
-			service.findAllRows(billingAddressModel, includeArr, queryObjCategory, offset, limit, field, order)
+			service.findAllRows('Address', includeArr, queryObjCategory, offset, limit, field, order)
 				.then(function(billingAddressdetails) {
 					var billingAddressdetails = billingAddressdetails.rows;
 					return callback(null, billingAddressdetails);

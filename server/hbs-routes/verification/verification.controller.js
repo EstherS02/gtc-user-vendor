@@ -2,15 +2,11 @@
 
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
-const sequelize = require('sequelize');
-const moment = require('moment');
-import series from 'async/series';
-var async = require('async');
+const async = require('async');
 const verificationStatus = require('../../config/verification_status');
 const vendorPlan = require('../../config/gtc-plan');
 

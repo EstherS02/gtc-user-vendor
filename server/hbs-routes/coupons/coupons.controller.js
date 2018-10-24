@@ -11,24 +11,18 @@ const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
 
 export function coupons(req, res) {
-	var LoggedInUser = {};
+	var LoggedInUser = {}, queryPaginationObj = {}, queryURI = {}, queryObj = {}, bottomCategory = {};
+	var user_id, field, order, offset, limit;
 
 	if (req.user)
 		LoggedInUser = req.user;
 
-	var queryPaginationObj = {};
-	var queryURI = {};
+	user_id = LoggedInUser.id;
 
-	let user_id = LoggedInUser.id;
-
-	var field = 'id';
-	var order = "desc";
-	var offset = 0;
-	var limit = 10;
-	var queryObj = {};
-	var bottomCategory = {};
-	var couponModel = 'Coupon';
-	var categoryModel = "Category";
+	field = 'id';
+	order = "desc";
+	offset = 0;
+	limit = 10;
 
 
 	if (typeof req.query.limit !== 'undefined') {
@@ -90,7 +84,7 @@ export function coupons(req, res) {
 				}
 			},
 			Coupons: function(callback) {
-				service.findRows(couponModel, queryObj, offset, limit, field, order)
+				service.findRows('Coupon', queryObj, offset, limit, field, order)
 					.then(function(response) {
 						return callback(null, response);
 
@@ -100,17 +94,18 @@ export function coupons(req, res) {
 					});
 			},
 			categories: function(callback) {
-				var categoryModel = "Category";
 				var includeArr = [];
-				const categoryOffset = 0;
-				const categoryLimit = null;
-				const categoryField = "id";
-				const categoryOrder = "asc";
-				const categoryQueryObj = {};
-
+				var categoryOffset, categoryLimit, categoryField, categoryOrder;
+				var categoryQueryObj = {};
+	
+				categoryOffset = 0;
+				categoryLimit = null;
+				categoryField = "id";
+				categoryOrder = "asc";
+				
 				categoryQueryObj['status'] = status["ACTIVE"];
-
-				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+	
+				service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {
 						var categories = category.rows;
 						bottomCategory['left'] = categories.slice(0, 8);
@@ -120,7 +115,7 @@ export function coupons(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
-			}
+			},
 
 		},
 		function(err, results) {
@@ -162,7 +157,6 @@ export function addCoupon(req, res) {
 	let user_id = LoggedInUser.id;
 
 	var productModel = "Product";
-	var categoryModel = "Category";
 
 	var offset, limit, field, order;
 	var productQueryObj = {};
@@ -199,17 +193,18 @@ export function addCoupon(req, res) {
 				});
 		},
 		categories: function(callback) {
-			var categoryModel = "Category";
 			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
 
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
@@ -219,7 +214,7 @@ export function addCoupon(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		}
+		},
 
 	}, function(err, results) {
 		if (!err) {
@@ -254,7 +249,6 @@ export function editCoupons(req, res) {
 	var offset, limit, field, order;
 
 	var modelName = "Coupon";
-	var categoryModel = "Category";
 
 	queryObj['id'] = req.query.id;
 	queryObj['vendor_id'] = req.user.Vendor.id;
@@ -305,15 +299,17 @@ export function editCoupons(req, res) {
 		},
 		categories: function(callback) {
 			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
 
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);

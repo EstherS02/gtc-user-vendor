@@ -17,16 +17,10 @@ var url = require('url');
 
 export function addProduct(req, res) {
 
-	var categoryModel, countryModel, marketplaceTypeModel, productModel, paymentSettingModel, editProductId;
+	var editProductId;
 	var queryObj = {}, LoggedInUser = {}, bottomCategory = {}, cardQueryObj, productIncludeArr = [];
 
 	var offset, limit, field, order, type;
-
-	categoryModel = 'Category';
-	countryModel = 'Country';
-	marketplaceTypeModel = 'MarketplaceType';
-	productModel = 'Product';
-	paymentSettingModel = 'PaymentSetting';
 
 	type = req.params.type;
 
@@ -67,15 +61,17 @@ export function addProduct(req, res) {
 		},
 		categories: function(callback) {
 			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
 
-			categoryQueryObj['status'] = statusCode["ACTIVE"];
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
+			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
@@ -87,7 +83,7 @@ export function addProduct(req, res) {
 				});
 		},
 		country: function(callback) {
-			service.findRows(countryModel, queryObj, offset, limit, field, order)
+			service.findRows('Country', queryObj, offset, limit, field, order)
 				.then(function(country) {
 					return callback(null, country.rows);
 
@@ -97,7 +93,7 @@ export function addProduct(req, res) {
 				});
 		},
 		marketplaceType: function(callback) {
-			service.findRows(marketplaceTypeModel, queryObj, offset, limit, field, order)
+			service.findRows('MarketplaceType', queryObj, offset, limit, field, order)
 				.then(function(marketplaceType) {
 					return callback(null, marketplaceType.rows);
 
@@ -107,7 +103,7 @@ export function addProduct(req, res) {
 				});
 		},
 		editProduct: function(callback) {
-			service.findIdRow(productModel, editProductId, productIncludeArr)
+			service.findIdRow('Product', editProductId, productIncludeArr)
 				.then(function(editProduct) {
 					return callback(null, editProduct);
 
@@ -118,7 +114,7 @@ export function addProduct(req, res) {
 		},
 		cardDetails: function(callback){
 			
-			service.findAllRows(paymentSettingModel, [], cardQueryObj, offset, limit, field, order)
+			service.findAllRows('PaymentSetting', [], cardQueryObj, offset, limit, field, order)
 				.then(function(paymentSetting) {
 
 					return callback(null, paymentSetting.rows);

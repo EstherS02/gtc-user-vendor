@@ -2,7 +2,6 @@
 
 const _ = require('lodash');
 const async = require('async');
-
 const model = require('../../../sqldb/model-connect');
 const status = require('../../../config/status');
 const marketplace = require('../../../config/marketplace');
@@ -10,9 +9,8 @@ const service = require('../../../api/service');
 const cartService = require('../../../api/cart/cart.service');
 
 export function confirmation(req, res) {
-	var LoggedInUser = {};
-	var bottomCategory = {};
-
+	var LoggedInUser = {}, bottomCategory = {};
+	var user_id;
 
 	if (req.user) {
 		LoggedInUser = req.user;
@@ -21,7 +19,7 @@ export function confirmation(req, res) {
 	var string = req.query.key;
 	var array = string.split(",").map(Number);
 	var vendorID = array; 
-	let user_id = LoggedInUser.id;
+	user_id = LoggedInUser.id;
 
 	async.series({
 			cartInfo: function(callback) {
@@ -37,16 +35,18 @@ export function confirmation(req, res) {
 				}
 			},
 			categories: function(callback) {
-				var categoryModel = "Category";
 				var includeArr = [];
-				const categoryOffset = 0;
-				const categoryLimit = null;
-				const categoryField = "id";
-				const categoryOrder = "asc";
-				const categoryQueryObj = {};
+				var categoryOffset, categoryLimit, categoryField, categoryOrder;
+				var categoryQueryObj = {};
+	
+				categoryOffset = 0;
+				categoryLimit = null;
+				categoryField = "id";
+				categoryOrder = "asc";
+				
 				categoryQueryObj['status'] = status["ACTIVE"];
-
-				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+	
+				service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {
 						var categories = category.rows;
 						bottomCategory['left'] = categories.slice(0, 8);
@@ -58,8 +58,8 @@ export function confirmation(req, res) {
 					});
 			},
 			vendors: function(callback) {
-				var vendorModel = "Vendor";
-				var vendorIncludeArr = [{
+				var queryObj = {}, vendorIncludeArr = [];
+				vendorIncludeArr = [{
 					model: model['VendorFollower'],
 					where: {
 						user_id: req.user.id,
@@ -67,10 +67,10 @@ export function confirmation(req, res) {
 					},
 					required: false
 				}];
-				var queryObj = {
+				queryObj = {
 					id: vendorID
 				};
-				service.findRows(vendorModel, queryObj, 0, null, 'created_on', 'asc', vendorIncludeArr)
+				service.findRows('Vendor', queryObj, 0, null, 'created_on', 'asc', vendorIncludeArr)
 					.then(function(response) {
 						return callback(null, response);
 					}).catch(function(error) {

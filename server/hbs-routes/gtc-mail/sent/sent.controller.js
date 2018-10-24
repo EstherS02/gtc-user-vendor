@@ -17,14 +17,15 @@ export function sent(req, res) {
 	var LoggedInUser = {},
 		queryPaginationObj = {},
 		bottomCategory = {},
+		queryObj = {},
 		queryURI = {};
+
 	var offset, limit, field, order, page, maxSize, includeArray = [];
 
 	offset = 0;
 	limit = null;
 	field = "created_on";
 	order = "desc";
-	var mailModel = 'UserMail';
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -40,7 +41,6 @@ export function sent(req, res) {
 	delete req.query.page;
 
 	offset = (page - 1) * limit;
-
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -68,16 +68,17 @@ export function sent(req, res) {
 			},
 			categories: function(callback) {
 				var includeArr = [];
-				const categoryOffset = 0;
-				const categoryLimit = null;
-				const categoryField = "id";
-				const categoryOrder = "asc";
-				var categoryModel = "Category";
-				const categoryQueryObj = {};
-
-				categoryQueryObj['status'] = statusCode["ACTIVE"];
-
-				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				var categoryOffset, categoryLimit, categoryField, categoryOrder;
+				var categoryQueryObj = {};
+	
+				categoryOffset = 0;
+				categoryLimit = null;
+				categoryField = "id";
+				categoryOrder = "asc";
+				
+				categoryQueryObj['status'] = status["ACTIVE"];
+	
+				service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {
 						var categories = category.rows;
 						bottomCategory['left'] = categories.slice(0, 8);
@@ -103,7 +104,7 @@ export function sent(req, res) {
 					}],
 				}];
 
-				service.findRows(mailModel, queryObj, offset, limit, field, order, includeArray)
+				service.findRows('UserMail', queryObj, offset, limit, field, order, includeArray)
 					.then(function(mail) {
 						return callback(null, mail);
 

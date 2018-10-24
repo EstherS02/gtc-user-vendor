@@ -2,24 +2,19 @@
 const sequelize = require('sequelize');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const productService = require('../../api/product/product.service');
 const cartService = require('../../api/cart/cart.service');
-const _ = require('lodash');
 const async = require('async');
-import series from 'async/series';
 
 export function lifestyle(req, res) {
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var offset, limit, field, order;
-	var queryObj = {};
-	var LoggedInUser = {};
-	var bottomCategory = {};
+	var queryObj = {}, LoggedInUser = {}, bottomCategory = {};
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
 		LoggedInUser = req.gtcGlobalUserObj;
@@ -47,15 +42,17 @@ export function lifestyle(req, res) {
 		},
 		categories: function(callback) {
 			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
 
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
@@ -74,7 +71,6 @@ export function lifestyle(req, res) {
 			limit = 6;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 				.then(function(results) {
-					console.log("-------------------==================",results)
 					return callback(null, results);
 				}).catch(function(error) {
 					console.log('Error :::', error);
