@@ -100,6 +100,15 @@
 		line-height: 185px;
 		font-size: 38px;
 	}
+	.home-bottom-banner-3 .coming-soon {
+		display: block;
+	    margin-left: auto;
+	    margin-right: auto;
+	    width: 50%;
+	}
+	.home-bottom-banner-2 .content {
+		padding: 30px;
+	}
 }
 
 @media (min-width: 768px) {
@@ -152,6 +161,16 @@
 	.progress .progress-value {
 		line-height: 185px;
 		font-size: 38px;
+	}
+	.home-bottom-banner-2 .home-ad {
+		height: 424px;
+		width: 100%;
+	}
+	.home-bottom-banner-3 .coming-soon {
+		float: right;
+	}
+	.home-bottom-banner-2 .content {
+		padding: 70px;
 	}
 }
 
@@ -644,6 +663,10 @@
 	}
 	.home-bottom-banner-2 .left1 {
 		padding: 0 105px;
+	}
+	.home-bottom-banner-2 .home-ad {
+		height: 460px;
+    	width: 100%
 	}
 }
 
