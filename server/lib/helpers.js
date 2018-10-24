@@ -82,10 +82,39 @@ Handlebars.registerHelper('ifCond', function(v1, operator, v2, options) {
             return (v1 >= v2) ? options.fn(this) : options.inverse(this);
         case '&&':
             return (v1 && v2) ? options.fn(this) : options.inverse(this);
-        case '||':
+        case 'or':
             return (v1 || v2) ? options.fn(this) : options.inverse(this);
         default:
             return options.inverse(this);
+    }
+});
+
+//HELPER TO HANDLE NESTED OPERATIONS
+
+Handlebars.registerHelper({
+    eq: function (v1, v2) {
+        return v1 === v2;
+    },
+    ne: function (v1, v2) {
+        return v1 !== v2;
+    },
+    lt: function (v1, v2) {
+        return v1 < v2;
+    },
+    gt: function (v1, v2) {
+        return v1 > v2;
+    },
+    lte: function (v1, v2) {
+        return v1 <= v2;
+    },
+    gte: function (v1, v2) {
+        return v1 >= v2;
+    },
+    and: function () {
+        return Array.prototype.slice.call(arguments).every(Boolean);
+    },
+    or: function () {
+        return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
     }
 });
 
