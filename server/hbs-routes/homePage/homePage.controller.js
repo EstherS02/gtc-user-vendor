@@ -143,8 +143,9 @@ export function homePage(req, res) {
 		},
 		featuredProducts: function(callback) {
 			delete queryObj['marketplace_id'];
-			queryObj['feature_status'] = status['ACTIVE'];
-			queryObj['featured_position_homepage']=1;
+			// queryObj['featured_position_homepage']=1;
+			queryObj['position']='position_homepage';
+
 			queryObj['is_featured_product'] = 1;
 			limit = 6;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)

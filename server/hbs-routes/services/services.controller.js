@@ -65,7 +65,7 @@ export function services(req, res) {
 				});
 		},
 		featuredService: function(callback) {
-			queryObj['feature_status'] = status['A'];
+			queryObj['position'] = 'position_service_landing';
 			queryObj['is_featured_product'] = 1;
 			limit = 6;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
@@ -78,7 +78,7 @@ export function services(req, res) {
 				});
 		},
 		serviceMarketplace: function(callback) {
-			delete queryObj['featured_position_service_landing'];
+			delete queryObj['position'];
 			delete queryObj['is_featured_product'];
 			queryObj['marketplace_id'] = marketplace['SERVICE'];
 			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)

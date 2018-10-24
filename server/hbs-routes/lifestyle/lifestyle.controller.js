@@ -68,9 +68,8 @@ export function lifestyle(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
-			queryObj['feature_status'] = status['ACTIVE'];
 			queryObj['is_featured_product'] = 1;
-			queryObj['position_service_landing'] = status['ACTIVE'];
+			queryObj['position'] = 'position_subscription_landing';
 
 			limit = 6;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
@@ -83,9 +82,8 @@ export function lifestyle(req, res) {
 				});
 		},
 		lifestyleMarketplace: function(callback) {
-			delete queryObj['feature_status'];
 			delete queryObj['is_featured_product'];
-			delete queryObj['position_service_landing'];
+			delete queryObj['position'];
 
 			queryObj['marketplace_id'] = marketplace['LIFESTYLE'];
 			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
