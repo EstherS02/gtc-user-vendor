@@ -2,16 +2,14 @@
 
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const productService = require('../../api/product/product.service');
 const populate = require('../../utilities/populate');
 const service = require('../../api/service');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
-const sequelize = require('sequelize');
 const moment = require('moment');
-var async = require('async');
+const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 
 export function upgradeplan(req, res) {

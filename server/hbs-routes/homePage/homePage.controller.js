@@ -3,7 +3,6 @@
 const _ = require('lodash');
 var async = require('async');
 const sequelize = require('sequelize');
-
 const service = require('../../api/service');
 const cartService = require('../../api/cart/cart.service');
 const status = require('../../config/status');

@@ -1,6 +1,5 @@
 'use strict';
 const sequelize = require('sequelize');
-
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');

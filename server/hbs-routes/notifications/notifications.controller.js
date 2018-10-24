@@ -2,10 +2,9 @@
 
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
-var async = require('async');
+const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 const mailStatus = require('../../config/mail-status');
 const cartService = require('../../api/cart/cart.service');

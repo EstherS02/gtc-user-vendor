@@ -2,7 +2,6 @@
 
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const providersCode = require('../../config/providers');
 const addressCode = require('../../config/address');
@@ -15,14 +14,18 @@ const marketplace = require('../../config/marketplace');
 
 export function userProfile(req, res) {
 
-	var vendorModel = "Vendor";
-	var UserModel = "User"
-	var addressModel = "Address";
-	var countryModel = "Country";
-	var categoryModel = "Category";
-	var vendorIncludeArr = [];
-	var addressIncludeArr = [];
+	var vendorModel, UserModel, addressModel, countryModel, categoryModel;
+	var vendorIncludeArr = [], addressIncludeArr = [];
 	var bottomCategory = {};
+
+	vendorModel = "Vendor";
+	UserModel = "User"
+	addressModel = "Address";
+	countryModel = "Country";
+	categoryModel = "Category";
+	vendorIncludeArr = [];
+	addressIncludeArr = [];
+	bottomCategory = {};
 
 	vendorIncludeArr = populate.populateData('User');
 	addressIncludeArr = populate.populateData('Country,State');
