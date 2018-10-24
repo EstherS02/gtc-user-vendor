@@ -146,7 +146,7 @@
                         <td class="col-3">
                           <div class="product-left-col">
                             <a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-                              <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                              <img class="object-fit" onError="imgError(this)" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
                             </a>
                           </div>
                         </td>

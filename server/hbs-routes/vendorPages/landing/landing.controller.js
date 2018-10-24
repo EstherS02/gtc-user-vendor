@@ -10,7 +10,10 @@ const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
-const async = require('async');
+const productService = require('../../../api/product/product.service');
+const moment = require('moment');
+import series from 'async/series';
+var async = require('async');
 
 export function vendor(req, res) {
 	var LoggedInUser = {};
@@ -66,12 +69,13 @@ export function vendor(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
+			queryObj['position'] = 'position_profilepage';
 			queryObj['is_featured_product'] = 1;
-			limit = 1;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
-				.then(function(featuredProducts) {
-					return callback(null, featuredProducts.rows);
-
+			// queryObj['vendor_id'] = LoggedInUser.Vendor.id
+			limit = 2;
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+				.then(function(results) {
+					return callback(null, results);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
