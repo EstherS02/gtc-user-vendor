@@ -37,7 +37,6 @@ export function index(req, res) {
 	var marketPlaceModel = "Marketplace";
 	var productModel = "MarketplaceProduct";
 	var marketPlaceTypeModel = "MarketplaceType";
-
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
 		LoggedInUser = req.gtcGlobalUserObj;
 	}
@@ -107,6 +106,8 @@ export function index(req, res) {
 		isFeaturedProduct = true;
 		queryURI['is_featured_product'] = parseInt(req.query.is_featured_product);
 		productQueryParams['is_featured_product'] = parseInt(req.query.is_featured_product);
+		productQueryParams['feature_status'] = status['ACTIVE'];
+		productQueryParams['position_searchresult'] = status['ACTIVE'];
 		productCountCategory['is_featured_product'] = parseInt(req.query.is_featured_product);
 	}
 
@@ -244,15 +245,13 @@ export function index(req, res) {
 		},
 		topProducts: function(callback) {
 			productQueryParams['is_featured_product'] = 1;
-			var topLimit = 3;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, productQueryParams, topLimit, order)
-				.then(function(response) {
-					return callback(null, response);
+			productQueryParams['feature_status'] = status['ACTIVE'];
+			productQueryParams['position_searchresult'] = status['ACTIVE'];
+			productService.queryAllProducts(LoggedInUser.id, productQueryParams, 0, 3)
+				.then(function(results) {
+					return callback(null, results);
 				}).catch(function(error) {
-					console.log('Error::', error);
+					console.log('Error :::', error);
 					return callback(null);
 				});
 		},

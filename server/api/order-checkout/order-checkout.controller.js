@@ -9,7 +9,6 @@ const discount = require('../../config/discount');
 const _ = require('lodash');
 const moment = require('moment');
 const ADDRESS_TYPE = require('../../config/address');
-const sendEmail = require('../../agenda/send-email');
 
 export function addCustomerInformation(req, res) {
 

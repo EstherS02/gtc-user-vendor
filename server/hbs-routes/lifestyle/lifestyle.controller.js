@@ -5,7 +5,6 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
-const position = require('../../config/position');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const productService = require('../../api/product/product.service');
@@ -69,23 +68,25 @@ export function lifestyle(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
-			queryObj['featured_position_subscription_landing'] = 1;
+			queryObj['feature_status'] = status['ACTIVE'];
 			queryObj['is_featured_product'] = 1;
-			var featureLimit = 6;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, queryObj, featureLimit, order)
-				.then(function(response) {
-					return callback(null, response.rows);
+			queryObj['position_service_landing'] = status['ACTIVE'];
+
+			limit = 6;
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+				.then(function(results) {
+					console.log("-------------------==================",results)
+					return callback(null, results);
 				}).catch(function(error) {
-					console.log('Error::', error);
+					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
 		lifestyleMarketplace: function(callback) {
-			delete queryObj['featured_position_subscription_landing'];
+			delete queryObj['feature_status'];
 			delete queryObj['is_featured_product'];
+			delete queryObj['position_service_landing'];
+
 			queryObj['marketplace_id'] = marketplace['LIFESTYLE'];
 			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(lifestyleMarketplace) {

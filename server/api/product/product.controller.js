@@ -23,7 +23,6 @@ const mws = require('mws-advanced');
 const _ = require('lodash');
 const stripe = require('../../payment/stripe.payment');
 const paymentMethod = require('../../config/payment-method');
-const sendEmail = require('../../agenda/send-email');
 const durationUnitCode = require('../../config/duration-unit');
 
 export function productView(req, res) {
@@ -1245,6 +1244,7 @@ function sentMailToFollowers(eachVendorFollower, createdProduct, marketplaceCode
 	var emailTemplateQueryObj = {};
 	emailTemplateQueryObj['name'] = config.email.templates.newProductAnnouncementMail;
 
+	var agenda = require('../../app').get('agenda');
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
 		.then(function(response) {
 			if (response) {
@@ -1258,12 +1258,15 @@ function sentMailToFollowers(eachVendorFollower, createdProduct, marketplaceCode
 				body = body.replace('%PRODUCT_NAME%', createdProduct.product_name);
 				body = body.replace('%URL%', marketplaceCode + '/' + createdProduct.product_slug + '/' + createdProduct.id);
 
-				sendEmail({
+				var mailArray = [];
+				mailArray.push({
 					to: email,
 					subject: subject,
 					html: body
 				});
-
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
 				return;
 			} else {
 				return;
@@ -1327,6 +1330,7 @@ export function featureProductWithPayment(req, res) {
 													"messageDetails": "Product Featured Successfully"
 												});
 											}).catch(function(error) {
+												console.log("Error::",error);
 												return res.status(400).send({
 													"message": "ERROR",
 													"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
@@ -1334,6 +1338,7 @@ export function featureProductWithPayment(req, res) {
 												});
 											})
 									}).catch(function(error) {
+										console.log("Error::",error);
 										return res.status(400).send({
 											"message": "ERROR",
 											"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
@@ -1347,6 +1352,7 @@ export function featureProductWithPayment(req, res) {
 								});
 							}
 						}).catch(function(error) {
+							console.log("Error::",error);
 							return res.status(500).send({
 								"message": "ERROR",
 								"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",

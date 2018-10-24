@@ -3,7 +3,6 @@
 const status = require('../config/status');
 const orderStatus = require('../config/order_status');
 const orderItemStatus = require('../config/order-item-status');
-const position = require('../config/position');
 const model = require('../sqldb/model-connect');
 const sequelize = require('sequelize');
 const SequelizeInstance = require('../sqldb/index');

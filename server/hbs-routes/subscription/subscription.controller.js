@@ -106,6 +106,7 @@ export function subscriptions(req, res) {
 				collectionSize: results.subscriptions.count,
 				selectedPage: 'subscription',
 				statusCode: statusCode,
+				vendorPlan:vendorPlan,
 				queryURI: queryURI,
 				queryPaginationObj:queryPaginationObj,
 				pageSize: limit,

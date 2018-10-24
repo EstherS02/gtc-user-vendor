@@ -5,7 +5,6 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
-const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const service = require('../../api/service');
@@ -66,17 +65,15 @@ export function services(req, res) {
 				});
 		},
 		featuredService: function(callback) {
-			queryObj['featured_position_service_landing'] = 1;
+			queryObj['feature_status'] = status['A'];
 			queryObj['is_featured_product'] = 1;
-			var featureLimit = 6;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, queryObj, featureLimit, order)
-				.then(function(response) {
-					return callback(null, response.rows);
+			limit = 6;
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+				.then(function(results) {
+					console.log("-------------------==================",results)
+					return callback(null, results);
 				}).catch(function(error) {
-					console.log('Error::', error);
+					console.log('Error :::', error);
 					return callback(null);
 				});
 		},

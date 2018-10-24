@@ -4,7 +4,6 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
 var async = require('async');
-const sendEmail = require('../../agenda/send-email');
 var pageScope;
 
 
@@ -96,6 +95,8 @@ export function vendorQuestion(req, res) {
 			var queryObjEmailTemplate = {};
 			var emailTemplateModel = 'EmailTemplate';
 			queryObjEmailTemplate['name'] = config.email.templates.askToVendor;
+			var agenda = require('../../app').get('agenda');
+
 			service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 				.then(function(response) {
 						var email = result.User.user_contact_email;
@@ -104,10 +105,14 @@ export function vendorQuestion(req, res) {
 						body = response.body.replace('%VENDOR_NAME%', req.body.vendor_name);
 						body = body.replace('%USER_NAME%', LoggedInUser.first_name);
 						body = body.replace('%MESSAGE%', req.body.message);
-						sendEmail({
+						var mailArray = [];
+						mailArray.push({
 							to: email,
 							subject: subject,
 							html: body
+						});
+						agenda.now(config.jobs.email, {
+							mailArray: mailArray
 						});
 					return res.status(200).send("Your Question sent to this vendor");
 				}).catch(function(error) {

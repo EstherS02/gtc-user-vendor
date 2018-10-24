@@ -29,9 +29,9 @@ function followVendor(e){
 		{{!-- <a href="javascript:;" class="checkout_jempo_a"><i class="fas fa-user-plus"></i> Follow</a> --}}
 		{{#ifCond LoggedInUser.Vendor.id "!=" this.id}}
 			{{#if this.VendorFollowers}}
-			<a href="javascript:;" class="checkout_jempo_a"><img src="../img/unfollow.png" alt="Follow"  height="30px" /></a>
+			<a href="javascript:;" ondblclick="followVendor({{this.id}})" class="checkout_jempo_a"><img src="../img/unfollow.png" alt="Follow"  height="30px" /></a>
 			{{else}}
-			<a href="javascript:;"  onclick="followVendor({{this.id}})" class="checkout_jempo_a"><img src="../img/follow.png" alt="Follow" height="30px" /></a>
+			<a href="javascript:;"  ondblclick="followVendor({{this.id}})" class="checkout_jempo_a"><img src="../img/follow.png" alt="Follow" height="30px" /></a>
 			{{/if}}
 		{{/ifCond}}
 		</p>

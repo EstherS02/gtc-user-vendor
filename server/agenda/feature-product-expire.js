@@ -4,8 +4,6 @@ const config = require('../config/environment');
 const statusCode = require('../config/status');
 const service = require('../api/service');
 const _ = require('lodash');
-const sendEmail = require('./send-email');
-
 
 var currentDate = new Date();
 var featureProductModel = 'FeaturedProduct';
@@ -95,8 +93,10 @@ function featurePromotionExpiredMail(eachProduct){
 	var vendor = eachProduct.Product.Vendor;
 	
 	var emailTemplateQueryObj = {};
+	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
 	emailTemplateQueryObj['name'] = config.email.templates.featureProductExpire;
+	var agenda = require('../../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
@@ -110,12 +110,15 @@ function featurePromotionExpiredMail(eachProduct){
 				body = body.replace('%PRODUCT_NAME%', eachProduct.Product.product_name);
 				body = body.replace('%EXPIRED_DATE%', eachProduct.end_date);
 
-                sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
-                });
-                return;
+				mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
             } else {
                 return;
             }

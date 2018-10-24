@@ -9,7 +9,6 @@ const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
-const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const ReportService = require('../../utilities/reports');
 const moment = require('moment');
@@ -84,13 +83,6 @@ exports.exportcsv = function(req, res) {
 					else {
 						value.type = adType.type2;
 					}
-					if (value.position != '') {
-						Object.keys(position).forEach(function(key) {
-							if (value.position == position[key]) {
-								value.position = key;
-							}
-						});
-					}
 
 					if (value.clicks != "null" && value.impression != "null") {
 						value.CTR = ((value.clicks / value.impression) * 100).toFixed(2) + "%";
@@ -101,7 +93,7 @@ exports.exportcsv = function(req, res) {
 				}
 				var fields = [];
 				fields = _.map(rows.rows.columns, 'columnName');
-				fields.push('product_name', 'type', 'position', 'start_date', 'end_date', 'impression', 'clicks', 'CTR');
+				fields.push('product_name', 'type', 'start_date', 'end_date', 'impression', 'clicks', 'CTR');
 				const opts = {
 					fields
 				};
@@ -126,13 +118,6 @@ exports.exportcsv = function(req, res) {
 					else {
 						value.type = adType.type2;
 					}
-					if (value.position != '') {
-						Object.keys(position).forEach(function(key) {
-							if (value.position == position[key]) {
-								value.position = key;
-							}
-						});
-					}
 
 					if (value.clicks != null && value.impression != null) {
 						value.CTR = ((value.clicks / value.impression) * 100).toFixed(2) + "%";
@@ -143,7 +128,7 @@ exports.exportcsv = function(req, res) {
 				}
 				var fields = [];
 				fields = _.map(rows.rows.columns, 'columnName');
-				fields.push('product_name', 'type', 'position', 'start_date', 'end_date', 'impression', 'clicks', 'CTR');
+				fields.push('product_name', 'type', 'start_date', 'end_date', 'impression', 'clicks', 'CTR');
 				const opts = {
 					fields
 				};

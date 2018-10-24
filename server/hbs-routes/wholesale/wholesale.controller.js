@@ -6,7 +6,6 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
-const position = require('../../config/position');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
@@ -139,25 +138,25 @@ export function wholesale(req, res) {
 		},
 		featuredProducts: function(callback) {
 			delete queryObj['marketplace_type_id'];
-			queryObj['featured_position_wholesale_landing'] = 1;
+			queryObj['feature_status'] = status['ACTIVE']
+			queryObj['position_wholesale_landing'] = 1;
 			queryObj['is_featured_product'] = 1;
 			queryObj['marketplace_id'] = 1;
-
 			limit = 6;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, queryObj, limit, order)
-				.then(function(response) {
-					return callback(null, response.rows);
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+				.then(function(results) {
+					console.log("-------------------==================",results)
+					return callback(null, results);
 				}).catch(function(error) {
-					console.log('Error::', error);
+					console.log('Error :::', error);
 					return callback(null);
 				});
+
 		},
 		country: function(callback) {
 			delete queryObj['marketplace_id'];
-			delete queryObj['featured_position_wholesale_landing'];
+			delete queryObj['feature_status'];
+			delete queryObj['position_wholesale_landing']
 			delete queryObj['is_featured_product'];
 			limit = null;
 			service.findRows(countryModel, queryObj, offset, limit, field, order)
@@ -207,7 +206,7 @@ export function wholesale(req, res) {
 						});
 					}, function done(err, success) {
 						if (!err) {
-							console.log('providers', result.rows);
+							// console.log('providers', result.rows);
 							return callback(null, result);
 						}
 					});

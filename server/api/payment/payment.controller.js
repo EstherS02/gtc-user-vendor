@@ -592,6 +592,7 @@ export function sendOrderMail(orderIdStore, req) { // export function sendOrderM
 			usernotification(OrderList, user);
 			vendorMail(OrderList, user);
 			if (user.user_contact_email) {
+				var agenda = require('../../app').get('agenda');
 				var user_email = user.user_contact_email;
 				var orderNew = [];
 				var queryObjEmailTemplate = {};
@@ -624,10 +625,14 @@ export function sendOrderMail(orderIdStore, req) { // export function sendOrderM
 								order: orderNew
 							};
 							var result = template(data);
-							sendEmail({
+							var mailArray=[];
+							mailArray.push({
 								to: email,
 								subject: subject,
 								html: result
+							});
+							agenda.now(config.jobs.email, {
+								mailArray: mailArray
 							});
 							return;
 						}
@@ -655,6 +660,7 @@ export function vendorMail(OrderList, user) {
 }
 
 function sendVendorEmail(order, user) {
+	var agenda = require('../../app').get('agenda');
 	var queryObjEmailTemplate = {};
 	var emailTemplateModel = 'EmailTemplate';
 	queryObjEmailTemplate['name'] = config.email.templates.vendorNewOrder;
@@ -681,10 +687,14 @@ function sendVendorEmail(order, user) {
 				};
 
 				var result = template(data);
-				sendEmail({
+				var mailArray=[];
+				mailArray.push({
 					to: email,
 					subject: subject,
 					html: result
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
 				});
 			}
 			return;
@@ -900,6 +910,7 @@ function sendUpgrademail(plan_id, user) {
 	let upgradePlanModel = {
 		id: plan_id
 	}
+	var agenda = require('../../app').get('agenda');
 	return service.findRow('Plan', upgradePlanModel, includeArray)
 		.then(upgradeplandetails => {
 			var upgradeplanobj = upgradeplandetails;
@@ -915,11 +926,16 @@ function sendUpgrademail(plan_id, user) {
 					body = body.replace('%first_name%', user.first_name);
 					body = body.replace('%name%', upgradeplanobj.name);
 					body = body.replace('%cost%', numeral(upgradeplanobj.cost).format('0,0.00'));
-					sendEmail({
+					var mailArray = [];
+					mailArray.push({
 						to: email,
 						subject: subject,
 						html: body
 					});
+					agenda.now(config.jobs.email, {
+						mailArray: mailArray
+					});
+					return;
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return;
@@ -1055,6 +1071,8 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 			var queryObjEmailTemplate = {};
 			var emailTemplateModel = 'EmailTemplate';
 			queryObjEmailTemplate['name'] = config.email.templates.refundRequest;
+			var agenda = require('../../app').get('agenda');
+			
 			service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 				.then(function(response) {
 					var email = vendor_email;
@@ -1074,10 +1092,14 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 						order: orderNew
 					};
 					var result = template(data);
-					sendEmail({
+					var mailArray = [];
+					mailArray.push({
 						to: email,
 						subject: subject,
 						html: result
+					});
+					agenda.now(config.jobs.email, {
+						mailArray: mailArray
 					});
 				}).catch(function(error) {
 					console.log('Error :::', error);
