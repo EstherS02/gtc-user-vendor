@@ -8,7 +8,6 @@ const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const model = require('../../sqldb/model-connect');
 const vendorPlan = require('../../config/gtc-plan');
-const Position = require('../../config/position');
 
 export function adList(req, res) {
 	var LoggedInUser = {};
@@ -217,7 +216,6 @@ export function adForm(req, res) {
 				ads: results.ads,
 				status: status,
 				selectedPage: 'ad-form',
-				Position: Position,
 				vendorPlan: vendorPlan,
 			});
 		} else {

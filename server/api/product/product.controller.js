@@ -1330,6 +1330,7 @@ export function featureProductWithPayment(req, res) {
 													"messageDetails": "Product Featured Successfully"
 												});
 											}).catch(function(error) {
+												console.log("Error::",error);
 												return res.status(400).send({
 													"message": "ERROR",
 													"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
@@ -1337,6 +1338,7 @@ export function featureProductWithPayment(req, res) {
 												});
 											})
 									}).catch(function(error) {
+										console.log("Error::",error);
 										return res.status(400).send({
 											"message": "ERROR",
 											"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
@@ -1350,6 +1352,7 @@ export function featureProductWithPayment(req, res) {
 								});
 							}
 						}).catch(function(error) {
+							console.log("Error::",error);
 							return res.status(500).send({
 								"message": "ERROR",
 								"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",

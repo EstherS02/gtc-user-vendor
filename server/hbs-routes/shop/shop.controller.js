@@ -5,12 +5,10 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
-const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const service = require('../../api/service');
 const productService = require('../../api/product/product.service');
-const featureStatus = require("../../config/position");
 
 const async = require('async');
 import series from 'async/series';
@@ -70,7 +68,8 @@ export function shop(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
-			queryObj['feature_status'] = featureStatus['ShopLanding'];
+			queryObj['feature_status'] = status['ACTIVE'];
+			queryObj['position_shop_landing']= status['ACTIVE'];
 			queryObj['is_featured_product'] = 1;
 			limit = 6;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
@@ -83,8 +82,10 @@ export function shop(req, res) {
 				});
 		},
 		publicMarketplace: function(callback) {
-			delete queryObj['featured_position_shop_landing'];
+			delete queryObj['position_shop_landing'];
 			delete queryObj['is_featured_product'];
+			delete queryObj['feature_status'];
+
 			queryObj['marketplace_id'] = marketplace['PUBLIC'];
 			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(publicMarketplace) {

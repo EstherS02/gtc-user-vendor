@@ -5,13 +5,11 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
-const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const service = require('../../api/service');
 const async = require('async');
 const productService = require('../../api/product/product.service');
-const featureStatus = require("../../config/position");
 
 export function services(req, res) {
 	var categoryModel = "Category";
@@ -67,7 +65,7 @@ export function services(req, res) {
 				});
 		},
 		featuredService: function(callback) {
-			queryObj['feature_status'] = featureStatus['ServiceLanding'];
+			queryObj['feature_status'] = status['A'];
 			queryObj['is_featured_product'] = 1;
 			limit = 6;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)

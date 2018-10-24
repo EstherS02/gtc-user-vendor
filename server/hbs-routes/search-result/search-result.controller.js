@@ -14,7 +14,6 @@ const marketplace_type = require('../../config/marketplace_type');
 const cartService = require('../../api/cart/cart.service');
 const config = require('../../config/environment');
 const durationConfig = require('../../config/duration');
-const featureStatus = require("../../config/position");
 const productService = require('../../api/product/product.service');
 
 export function index(req, res) {
@@ -107,7 +106,8 @@ export function index(req, res) {
 		isFeaturedProduct = true;
 		queryURI['is_featured_product'] = parseInt(req.query.is_featured_product);
 		productQueryParams['is_featured_product'] = parseInt(req.query.is_featured_product);
-		productQueryParams['feature_status'] = featureStatus['SearchResult'];
+		productQueryParams['feature_status'] = status['ACTIVE'];
+		productQueryParams['position_searchresult'] = status['ACTIVE'];
 		productCountCategory['is_featured_product'] = parseInt(req.query.is_featured_product);
 	}
 
@@ -245,7 +245,8 @@ export function index(req, res) {
 		},
 		topProducts: function(callback) {
 			productQueryParams['is_featured_product'] = 1;
-			productQueryParams['feature_status'] = featureStatus['SearchResult'];
+			productQueryParams['feature_status'] = status['ACTIVE'];
+			productQueryParams['position_searchresult'] = status['ACTIVE'];
 			productService.queryAllProducts(LoggedInUser.id, productQueryParams, 0, 3)
 				.then(function(results) {
 					return callback(null, results);
