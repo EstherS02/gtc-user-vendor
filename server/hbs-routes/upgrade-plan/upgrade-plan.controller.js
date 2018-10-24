@@ -133,10 +133,6 @@ export function upgradeplan(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-					
-
-			
-
 		},
 		userShowplanDetails: function(callback) {
 			var includeArr = [];
@@ -178,7 +174,29 @@ export function upgradeplan(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});		
-		}
+		},categories: function(callback) {
+			var includeArr = [];
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
+
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 	}, function(err, results) {
 		if (!err) {
 			    res.render('vendorNav/upgradeplan', {
@@ -190,8 +208,9 @@ export function upgradeplan(req, res) {
 				carddetails: results.cards,
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
-				selectedPage: 'upgradeplan'
-
+				selectedPage: 'upgradeplan',
+				categories: results.categories,
+				bottomCategory: bottomCategory,
 			});
 		} else {
 			res.render('upgradeplan', err);
