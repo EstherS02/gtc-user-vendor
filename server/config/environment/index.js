@@ -110,6 +110,7 @@ var all = {
 	},
 	jobs: {
 		'email': 'email-notification',
+		'orderEmail': 'order-email',
 		"couponExpiry": "couponExpiry",
 		"vendorPayouts": "vendorPayouts",
 		"aliExpressScrape": "aliexpress-scrape",

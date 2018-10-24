@@ -6,6 +6,7 @@ const path = require('path');
 const sequelize = require('sequelize');
 const async = require('async');
 const moment = require('moment');
+const Handlebars = require('handlebars');
 
 const service = require('../service');
 const productService = require('../product/product.service');
@@ -19,15 +20,61 @@ const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
-export function indexExample(req, res) {
-	cartService.cartCalculation(req.user.id, req, res)
-		.then((response) => {
-			return res.status(200).send(response);
-		})
-		.catch((error) => {
-			console.log("indexExample Error:::", error);
-			return res.status(500).send(error);
+export async function indexExample(req, res) {
+	const orderID = 20;
+	const orderModelName = "OrdersNew";
+	var emailTemplateModel = 'EmailTemplate';
+	const vendorOrderModelName = "VendorOrder";
+	const orderItemModelName = "OrdersItemsNew";
+
+	const includeOrderArray = [{
+		model: model['User'],
+		attributes: ['id', 'first_name', 'last_name', 'user_contact_email', 'email_verified']
+	}, {
+		model: model['Address'],
+		as: 'shippingAddress1',
+		attributes: ['id', 'first_name', 'last_name', 'company_name', 'address_line1', 'address_line2', 'city', 'postal_code'],
+		include: [{
+			model: model['State'],
+			attributes: ['id', 'name']
+		}, {
+			model: model['Country'],
+			attributes: ['id', 'name']
+		}]
+	}, {
+		model: model[orderItemModelName],
+		attributes: ['id', 'order_id', 'product_id', 'quantity', 'price'],
+		include: [{
+			model: model['Product'],
+			attributes: ['id', 'product_name'],
+			include: [{
+				model: model['ProductMedia'],
+				where: {
+					status: status['ACTIVE'],
+					base_image: 1
+				},
+				attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
+				required: false
+			}]
+		}]
+	}];
+
+	try {
+		var userBody;
+		const orderEmailTemplate = await service.findOneRow("EmailTemplate", {
+			name: "GTC-ORDER_DETAIL-NEW"
 		});
+		const userOrderResponse = await service.findOneRow(orderModelName, {
+			id: orderID
+		}, includeOrderArray);
+		userBody = orderEmailTemplate.body.replace('%OrdersItemsNews%', userOrderResponse.OrdersItemsNews);
+		var template = Handlebars.compile(userBody);
+		console.log("userBody", userBody);
+		return res.status(200).send(userOrderResponse);
+	} catch (error) {
+		console.log("indexExample Error:::", error);
+		return res.status(500).send(error);
+	}
 }
 
 export function index(req, res) {

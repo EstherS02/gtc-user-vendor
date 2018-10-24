@@ -308,7 +308,7 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Address, {
-        as: 'billingAddress2',
+        as: 'billingAddress1',
         through: OrdersNew,
         foreignKey: 'billing_address_id',
         otherKey: 'shipping_address_id',

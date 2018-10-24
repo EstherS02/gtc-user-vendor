@@ -41,6 +41,7 @@ export async function makePayment(req, res) {
 	const vendorOrderModelName = "VendorOrder";
 	const orderItemModelName = "OrdersItemsNew";
 	const paymentSettingModelName = "PaymentSetting";
+	const agenda = require('../../app').get('agenda');
 
 	req.checkBody('payment_setting_id', 'Missing Query Param').notEmpty();
 	req.checkBody('selected_billing_address_id', 'Missing Query Param').notEmpty();
@@ -163,10 +164,9 @@ export async function makePayment(req, res) {
 					id: cartItem.id
 				}));
 			}));
-			await Promise.all(orderItemsPromises);
-			await Promise.all(vendorOrderPromises);
-			await Promise.all(productQuantityPromises);
-			await Promise.all(cartEmptyPromises);
+			agenda.now(config.jobs.orderEmail, {
+				order: newOrder.id
+			});
 			return res.status(200).send("Success");
 		} else {
 			return res.status(404).send("Payment card details not found");
@@ -177,61 +177,7 @@ export async function makePayment(req, res) {
 	}
 }
 
-function createOrder(orderWithItems) {
-	var orderItems = JSON.parse(JSON.stringify(orderWithItems.items));
-	delete orderWithItems.items;
-	var order = orderWithItems;
-	return service.createRow('Order', order).then(orderResult => {
-		order.id = orderResult.id;
-		console.log("order.id", order.id);
-		var orderItemsPromises = [];
-		for (var i = 0; i < orderItems.length; i++) {
-			orderItems[i].order_id = orderResult.id;
-			orderItems[i].order_item_status = 0;
-			orderItems[i].created_on = new Date();
-			orderItemsPromises.push(createOrderItem(orderItems[i]));
-		}
-		return Promise.all(orderItemsPromises).then(itemsResults => {
-			return Promise.resolve({
-				order: orderResult,
-				items: itemsResults
-			});
-		}).catch(err => {
-			return Promise.reject(err);
-		});
-	}).catch(err => {
-		return Promise.reject(err);
-	});
-}
-
-function createOrderItem(orderItem) {
-	return service.createRow('OrderItem', orderItem);
-}
-
-function updateQuantity(productId, placedQuantity) {
-	return service.findIdRow('Product', productId)
-		.then(product => {
-			let quantityUpdate = {};
-			let currentQuantity = product.quantity_available - placedQuantity;
-
-			quantityUpdate.quantity_available = currentQuantity;
-
-			if (currentQuantity == 0) {
-				quantityUpdate.status = status['SOLDOUT'];
-			}
-
-			return service.updateRow('Product', quantityUpdate, productId)
-				.then(upadtedRow => {
-					return Promise.resolve(upadtedRow);
-				}).catch(err => {
-					return Promise.reject(err);
-				})
-		}).catch(err => {
-			return Promise.reject(err);
-		})
-}
-
-function updateSubscription(order, item) {
+/*function updateSubscription(order, item) {
 
 	var subscriptionBodyParam = {
 		user_id: order.user_id,
@@ -270,7 +216,7 @@ function updateSubscription(order, item) {
 		}).catch(err => {
 			return Promise.reject(err);
 		})
-}
+}*/
 
 export function createCard(req, res) {
 	let user = req.user;

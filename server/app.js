@@ -31,11 +31,13 @@ var mailListener = require('./components/mail-listener');
 var mailService = require('./api/mail/reply-mail.service');
 var aliExpressScrape = require('./agenda/aliexpress-scrape');
 var ebayInventory = require('./agenda/ebay-inventory');
+var orderEmail = require('./agenda/order-email');
 var amazonImportJob = require('./agenda/amazon-import');
 
 agenda.define(config.jobs.email, sendEmailNew);
 agenda.define(config.jobs.aliExpressScrape, aliExpressScrape);
 agenda.define(config.jobs.ebayInventory, ebayInventory);
+agenda.define(config.jobs.orderEmail, orderEmail);
 agenda.define(config.jobs.vendorPayouts, vendorPayouts);
 agenda.define(config.jobs.planRenewal, planRenewal);
 agenda.define(config.jobs.bulkUserPlanRenewal, bulkUserPlanRenewal);
