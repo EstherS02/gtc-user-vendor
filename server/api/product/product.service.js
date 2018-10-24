@@ -138,6 +138,7 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 		delete queryObj.feature_status;
 	}
 	try {
+		console.log("00000000000000000000000000000000000000000000000000000",includeArray)
 		const productResponse = await model['Product'].findAll({
 			include: includeArray,
 			where: queryObj,

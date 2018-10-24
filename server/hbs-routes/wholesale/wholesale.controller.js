@@ -206,7 +206,7 @@ export function wholesale(req, res) {
 						});
 					}, function done(err, success) {
 						if (!err) {
-							console.log('providers', result.rows);
+							// console.log('providers', result.rows);
 							return callback(null, result);
 						}
 					});

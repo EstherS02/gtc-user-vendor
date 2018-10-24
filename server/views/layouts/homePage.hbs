@@ -368,17 +368,10 @@
 											<td class="col-3">
 												<div class="product-right-col">
 													<h4>MOQ : {{this.moq}}</h4>
-													{{#if ../LoggedInUser.id}}
-													<a href="vendor/{{this.Vendor.id}}">
+													<a {{#if ../LoggedInUser.id}} href="vendor/{{this.Vendor.id}}" {{else}} href="/login"{{/if}}>
 														<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)"
 														 title="{{this.product_name}}" style="border-radius:50%">
 													</a>
-													{{else}}
-														<a href="javascript:;">
-														<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)"
-														 title="{{this.product_name}}" style="border-radius:50%">
-													</a>
-														{{/if}}
 													{{#if this.product_discounted_price}}
 													<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
 													{{/if}}
@@ -458,17 +451,10 @@
 											<td class="col-3">
 												<div class="product-right-col">
 													<h4>MOQ : {{this.moq}}</h4>
-													{{#if ../LoggedInUser.id}}
-													<a href="vendor/{{this.Vendor.id}}">
+													<a {{#if ../LoggedInUser.id}} href="vendor/{{this.Vendor.id}}" {{else}} href="/login"{{/if}}>
 														<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)" style="border-radius:50%"
 														 title="{{this.product_name}}">
 													</a>
-														{{else}}
-														<a href="javascript:;">
-														<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)"
-														 title="{{this.product_name}}" style="border-radius:50%">
-													</a>
-														{{/if}}
 													{{#if this.product_discounted_price}}
 													<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
 													{{/if}}
