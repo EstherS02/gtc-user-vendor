@@ -237,6 +237,7 @@ export function index(req, res) {
 		products: function(callback) {
 			productService.queryAllProducts(LoggedInUser.id, productQueryParams, offset, limit, field, order)
 				.then(function(results) {
+					console.log("-------------------------------qw",results)
 					return callback(null, results);
 				}).catch(function(error) {
 					console.log('Error :::', error);
