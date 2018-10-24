@@ -2,7 +2,6 @@
 
 const async = require('async');
 const paypal = require('paypal-rest-sdk');
-
 const config = require('../../config/environment');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');

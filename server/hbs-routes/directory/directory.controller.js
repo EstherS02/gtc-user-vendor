@@ -2,7 +2,6 @@
 
 const async = require('async');
 const sequelize = require('sequelize');
-
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
 const service = require('../../api/service');

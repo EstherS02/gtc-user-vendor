@@ -4,7 +4,6 @@ const async = require('async');
 const sequelize = require('sequelize');
 const moment = require('moment');
 var _ = require('lodash');
-
 const service = require('../../api/service');
 const searchResultService = require('../../api/service/search-result.service');
 const model = require('../../sqldb/model-connect');

@@ -1,17 +1,11 @@
 'use strict';
 
 const async = require('async');
-
-const populate = require('../../utilities/populate')
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const status = require('../../config/status');
-// const statusCode = require('../../config/status');
 const discountType = require('../../config/discount');
 const service = require('../../api/service');
-const sequelize = require('sequelize');
-const moment = require('moment');
 const vendorPlan = require('../../config/gtc-plan');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');

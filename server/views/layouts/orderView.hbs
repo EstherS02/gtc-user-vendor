@@ -158,8 +158,11 @@
 			<div class="col-md-6">
 				<ul class="breadcrumb">
 					<li><a href="#" class="active">My Account</a></li>
-					<li><a href="/order-history" class="active">Order History</a></li>
-					<li><a href="javascript:;" class="active">Order Details</a></li>
+					<li>
+						<a class="active" href={{#ifCond this.type '==' 'sales-history'}}'/my-order/order'
+						{{else}}'/order-history'{{/ifCond}}>My Orders</a>
+					</li>
+					<li>Order Details</li>
 				</ul>
 			</div>
 			<div class="col-md-6">
@@ -352,15 +355,11 @@
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status"	>
 											<option>{{objectKey orderStatusCode order.order_status}}</option>
 											{{#each orderStatusCode}}
-												{{#ifCond this "!=" ../orderStatusCode.CANCELLEDORDER}}
-													{{#ifCond this "!=" ../orderStatusCode.FAILEDORDER}}
-														{{#ifCond this "!=" ../orderStatusCode.RETURNEDORDER}}
-															{{#ifCond this ">=" ../order.order_status}}
-																<option value="{{this}}">{{objectKey ../orderStatusCode this}}</option>
-															{{/ifCond}}
-														{{/ifCond}}
-													{{/ifCond}}
-												{{/ifCond}}
+												{{#if (and 
+														(gte this ../order.order_status)
+														(lt this ../orderStatusCode.RETURNEDORDER))}}
+													<option value="{{this}}">{{objectKey ../orderStatusCode this}}</option>
+												{{/if}}
 											{{/each}}
 										</select>
 									</div>

@@ -2,7 +2,6 @@
 
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
-const reference = require('../../../config/model-reference');
 const status = require('../../../config/status');
 const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
@@ -13,9 +12,7 @@ const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
 const _ = require('lodash');
-
-import series from 'async/series';
-var async = require('async');
+const async = require('async');
 
 export function vendorDiscussion(req, res) {
 	var categoryModel = "Category";
