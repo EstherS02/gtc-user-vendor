@@ -136,14 +136,12 @@ export function wholesale(req, res) {
 		},
 		featuredProducts: function(callback) {
 			delete queryObj['marketplace_type_id'];
-			queryObj['feature_status'] = status['ACTIVE']
-			queryObj['position_wholesale_landing'] = 1;
+			queryObj['position'] = 'position_wholesale_landing';
 			queryObj['is_featured_product'] = 1;
-			queryObj['marketplace_id'] = 1;
+			// queryObj['marketplace_id'] = 1;
 			limit = 6;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 				.then(function(results) {
-					console.log("-------------------==================",results)
 					return callback(null, results);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -153,8 +151,7 @@ export function wholesale(req, res) {
 		},
 		country: function(callback) {
 			delete queryObj['marketplace_id'];
-			delete queryObj['feature_status'];
-			delete queryObj['position_wholesale_landing']
+			delete queryObj['position'];
 			delete queryObj['is_featured_product'];
 			limit = null;
 			service.findRows(countryModel, queryObj, offset, limit, field, order)

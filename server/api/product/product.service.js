@@ -121,24 +121,32 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 	}];
 
 	if (queryObj.is_featured_product == 1) {
-		includeArray.push({
-			model: model['FeaturedProduct'],
-			where: {
+		var position = queryObj.position;
+		var fQuery = {
 				status: status['ACTIVE'],
-				feature_status: queryObj.feature_status,
+				feature_status: status['ACTIVE'],
 				start_date: {
 					'$lte': moment().format('YYYY-MM-DD')
 				},
-				end_date: {
+				$or:[{
+					end_date: {
 					'$gte': moment().format('YYYY-MM-DD')
-				}
-			}
+				}	
+				},{
+					feature_indefinitely: 1
+				}]
+				
+			};
+		fQuery[position] = status['ACTIVE'];
+		includeArray.push({
+			model: model['FeaturedProduct'],
+			attributes:[],
+			where: fQuery
 		});
 		delete queryObj.is_featured_product;
-		delete queryObj.feature_status;
+		delete queryObj.position;
 	}
 	try {
-		console.log("00000000000000000000000000000000000000000000000000000",includeArray)
 		const productResponse = await model['Product'].findAll({
 			include: includeArray,
 			where: queryObj,
