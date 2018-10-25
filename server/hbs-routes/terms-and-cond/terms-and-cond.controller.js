@@ -85,7 +85,8 @@ export function termsAndCond(req, res) {
 					selectedPage: 'terms-and-cond',
 					vendorPlan: vendorPlan,
 					termsAndCond: results.termsAndCond,
-					statusCode: statusCode
+					statusCode: statusCode,
+					selectedPage: 'terms-and-cond',
 				});
 			} else {
 				res.render('vendorNav/terms-and-cond', err);

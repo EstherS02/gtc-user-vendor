@@ -91,7 +91,8 @@ export function verification(req, res) {
 					verificationStatus: verificationStatus,
 					cart: results.cartInfo,
 					marketPlace: marketplace,
-					vendorPlan: vendorPlan
+					vendorPlan: vendorPlan,
+					selectedPage: 'gtc-verification',
 				});
 			} else {
 				res.render('vendorNav/verification', err);
