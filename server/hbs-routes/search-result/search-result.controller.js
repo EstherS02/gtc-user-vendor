@@ -130,7 +130,7 @@ export function index(req, res) {
 		productCountQueryParams['product_location'] = req.query.location;
 		productCountCategory['product_location'] = req.query.location;
 	}
-
+	//changed a "keyword" for "search/keyword"
 	if (req.query.keyword) {
 		queryPaginationObj.keyword = req.query.keyword;
 		queryURI['keyword'] = req.query.keyword;
