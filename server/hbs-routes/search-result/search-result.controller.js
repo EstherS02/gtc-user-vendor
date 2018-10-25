@@ -4,7 +4,6 @@ const async = require('async');
 const sequelize = require('sequelize');
 const moment = require('moment');
 var _ = require('lodash');
-
 const service = require('../../api/service');
 const searchResultService = require('../../api/service/search-result.service');
 const model = require('../../sqldb/model-connect');
@@ -37,7 +36,6 @@ export function index(req, res) {
 	var marketPlaceModel = "Marketplace";
 	var productModel = "MarketplaceProduct";
 	var marketPlaceTypeModel = "MarketplaceType";
-
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
 		LoggedInUser = req.gtcGlobalUserObj;
 	}
@@ -107,12 +105,13 @@ export function index(req, res) {
 		isFeaturedProduct = true;
 		queryURI['is_featured_product'] = parseInt(req.query.is_featured_product);
 		productQueryParams['is_featured_product'] = parseInt(req.query.is_featured_product);
+		productQueryParams['position'] = 'position_searchresult';
 		productCountCategory['is_featured_product'] = parseInt(req.query.is_featured_product);
 	}
 
 	if (req.query.category) {
 		queryURI['category'] = parseInt(req.query.category);
-		productQueryParams['category_id'] = parseInt(req.query.category);
+		productQueryParams['product_category_id'] = parseInt(req.query.category);
 		productCountQueryParams['product_category_id'] = parseInt(req.query.category);
 		productCountCategory['product_category_id'] = parseInt(req.query.category);
 	}
@@ -126,7 +125,7 @@ export function index(req, res) {
 
 	if (req.query.location) {
 		queryURI['location'] = req.query.location;
-		productQueryParams['product_location_id'] = req.query.location;
+		productQueryParams['product_location'] = req.query.location;
 		productCountQueryParams['product_location'] = req.query.location;
 		productCountCategory['product_location'] = req.query.location;
 	}
@@ -246,15 +245,12 @@ export function index(req, res) {
 		},
 		topProducts: function(callback) {
 			productQueryParams['is_featured_product'] = 1;
-			var topLimit = 3;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, productQueryParams, topLimit, order)
-				.then(function(response) {
-					return callback(null, response);
+			productQueryParams['position'] = 'position_searchresult';
+			productService.queryAllProducts(LoggedInUser.id, productQueryParams, 0, 3)
+				.then(function(results) {
+					return callback(null, results);
 				}).catch(function(error) {
-					console.log('Error::', error);
+					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
@@ -287,6 +283,7 @@ export function index(req, res) {
 		},
 		productCount: function(callback) {
 			var resultObj = {};
+			
 			searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));

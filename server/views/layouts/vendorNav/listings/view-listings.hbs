@@ -205,64 +205,66 @@
 															<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">
 															<img src="{{this.product_base_image}}" onError="imgError(this)" style="width: 30px;" />
 															{{this.product_name}}</a>
-															</td>
-															<td scope="row">{{formatTime this.publish_date "MMM DD, YYYY"}}</td>
-															<td scope="row">{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}</td>
-															<td>{{currency this.product_price '$'}} CAD</td>
-															{{#ifCond this.status '==' ../statusCode.ACTIVE}}
-																<td class="text_green_color">Active</td>
-																{{else ifCond this.status '==' ../statusCode.INACTIVE}}
-																<td class="text_red_color">InActive</td>
-																{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
-																<td class="text_orange_color">Suspended</td>
-																{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
-																<td class="text_red_color">Sold Out</td>
-															{{/ifCond}}
-															<td class="text_blue_color">{{this.stock_keep_unit}}</td>
-														</tr>
-														{{/each}}
-														{{else}}
+														</td>
+														<td scope="row">{{formatTime this.publish_date "MMM DD, YYYY"}}</td>
+														<td scope="row">{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}</td>
+														<td>{{currency this.product_price '$'}} CAD</td>
+														<td class={{#ifCond this.status '==' ../statusCode.ACTIVE}} "text_green_color"
+																	{{else ifCond this.status '==' ../statusCode.INACTIVE}} "text_red_color"
+																	{{else ifCond this.status '==' ../statusCode.SUSPENDED}} "text_orange_color"
+																	{{else ifCond this.status '==' ../statusCode.SOLDOUT}} "text_red_color"
+																	{{/ifCond}}>
+															{{#ifCond this.status '==' ../statusCode.ACTIVE}}Active
+															{{else ifCond this.status '==' ../statusCode.INACTIVE}}InActive
+															{{else ifCond this.status '==' ../statusCode.SUSPENDED}}Suspended
+															{{else ifCond this.status '==' ../statusCode.SOLDOUT}}Sold Out
+															{{/ifCond}} 
+														</td>
+														<td class="text_blue_color">{{this.stock_keep_unit}}</td>
+													</tr>
+													{{/each}}
+													{{else}}
 														<tr><td colspan="7" style="text-align:center;">No Product Found</td></tr>
-														{{/if}}
-													</tbody>
-												</table>
-											</div>
-											{{#if collectionSize}}
-												<div class="row">
-													<div class="col-md-12">
-														{{#pagination collectionSize page pageSize maxSize}}
-															<nav aria-label="Page navigation example">
-																<ul class="pagination justify-content-center">
-																	{{#unless startFromFirstPage}}
-																		<li class="page-item-prev" style="margin-left:-310px;">
-																			<a href="listings/{{../this.type}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">
-																				<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
-																		</li>
-																	{{/unless}}
-																	{{#each pages}}
-																		<li class="page-item {{#if isCurrent}} active {{/if}}">
-																			<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-																		</li>
-																	{{/each}}
-																	{{#unless endAtLastPage}}
-																		<li class="page-item-next" style="margin-right:-310px;">
-																			<a href="listings/{{../this.type}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
-																				<i class="fa fa-angle-double-right"></i>
-																			</a>
-																		</li>
-																	{{/unless}}
-																</ul>
-															</nav>
-														{{/pagination}}
-													</div>
-												</div>
-											{{/if}}
+													{{/if}}
+												</tbody>
+											</table>
 										</div>
+										{{#if collectionSize}}
+											<div class="row">
+												<div class="col-md-12">
+													{{#pagination collectionSize page pageSize maxSize}}
+														<nav aria-label="Page navigation example">
+															<ul class="pagination justify-content-center">
+																{{#unless startFromFirstPage}}
+																	<li class="page-item-prev" style="margin-left:-310px;">
+																		<a href="listings/{{../this.type}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">
+																			<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+																	</li>
+																{{/unless}}
+																{{#each pages}}
+																	<li class="page-item {{#if isCurrent}} active {{/if}}">
+																		<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																	</li>
+																{{/each}}
+																{{#unless endAtLastPage}}
+																	<li class="page-item-next" style="margin-right:-310px;">
+																		<a href="listings/{{../this.type}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
+																			<i class="fa fa-angle-double-right"></i>
+																		</a>
+																	</li>
+																{{/unless}}
+															</ul>
+														</nav>
+													{{/pagination}}
+												</div>
+											</div>
+										{{/if}}
 									</div>
 								</div>
 							</div>
 						</div>
-					</div> 
+					</div>
+				</div> 
 				{{else}}
 					{{> plan-inactive}}
 				{{/if}}

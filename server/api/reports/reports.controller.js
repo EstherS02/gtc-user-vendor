@@ -7,7 +7,6 @@ const service = require('../service');
 const statusCode = require('../../config/status');
 const carrierCode = require('../../config/carriers');
 const orderStaus = require('../../config/order_status');
-const sendEmail = require('../../agenda/send-email');
 const ReportService = require('../../utilities/reports');
 var moment = require('moment');
 var async = require('async');

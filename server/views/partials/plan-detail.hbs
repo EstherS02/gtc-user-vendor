@@ -1,7 +1,7 @@
 <script type="text/javascript">
     var plandetails = {{{DisplayJSON PlanDetails}}}
     var userInfo = {{{ DisplayJSON LoggedInUser }}}
- function showDetails()
+	function showDetails()
     {
        if(userInfo.Vendor)
         {
@@ -32,6 +32,7 @@
 		window.location.href=uri;
 	}
   </script>
+  
 <section id="userPlanShow">
 	    <div class="text-center which_pkg" style="margin-bottom: 0px;">
 			<div id="userPlaninfo" class="pull-right"> <a href="javascript:;" onclick="showsplan()"><b>Go Back</b></a></div>
@@ -52,7 +53,8 @@
                     <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
                     <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
                     {{!-- <input type="submit" value="SIGNUP NOW" class="price_signup"> --}}
-                    <a class="price_signup btn" href="/vendor-form">SIGNUP NOW</a>
+                    <a class="price_signup btn" {{#if LoggedInUser}} {{else}}onclick="forceSignup()" {{/if}}>SIGNUP NOW</a>
+					
                 </div>
                 <div class="service_provider">
                     <p class="service_provider_p1">SERVICE PROVIDER </p>
@@ -66,7 +68,7 @@
                     <p class="service_provider_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
                     <p class="service_provider_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
                     <p class="service_provider_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
-                    <input type="submit" value="SIGNUP NOW" class="price_signup">
+                    <input type="submit" value="SIGNUP NOW" {{#if LoggedInUser}} {{else}}onclick="forceSignup()" {{/if}} class="price_signup" style="cursor:pointer;">
                 </div>
                 <div class="lifestyle_provider">
                     <p class="lifestyle_provider_p1">LIFESTYLE PROVIDER</p>
@@ -80,7 +82,7 @@
                     <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
                     <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
                     <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
-                    <input type="submit" value="SIGNUP NOW" class="price_signup">
+                    <input type="submit" value="SIGNUP NOW" {{#if LoggedInUser}} {{else}}onclick="forceSignup()" {{/if}} class="price_signup" style="cursor:pointer;">
                 </div>
                 <div class="public_seller_pg">
                     <p class="public_seller_pg_p1">PUBLIC SELLER PRICING GUIDE </p>
@@ -99,7 +101,7 @@
                     <p class="public_seller_pg_list"><i class="fas fa-check"></i> Real Time Transaction <b>Analytics</b></p>
                     <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>24 Hour</b> Dedicated Support</p>
                     <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Access To The Buyer Network</b></p>
-                    <input type="submit" value="BUILD YOUR STORE NOW" class="price_signup"style="margin-left:30px">
+                    <input type="submit" value="BUILD YOUR STORE NOW" {{#if LoggedInUser}} onclick="window.location.href='/dashboard-vendor-connect'" {{else}}onclick="forceSignup()" {{/if}}  class="price_signup"style="margin-left:30px;cursor:pointer;">
                 </div>
             </div>
         </div>
@@ -126,7 +128,7 @@
                     <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
                     <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
                     <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
-                    <input type="submit" value="SIGNUP NOW" class="price_signup" style="background-color:#4178B8">
+                    <input type="submit" value="SIGNUP NOW" class="price_signup" style="background-color:#4178B8;cursor:pointer;">
                 </div>
                 <div class="public_seller_pg" style="background-color:#D88505;padding:45px 40px 36px 40px;width:35%">
                     <p class="public_seller_pg_p1">WHOLESALE PRICING GUIDE</p>
@@ -148,7 +150,7 @@
                     <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Access To The Service Network</b></p>
                     <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Access To The Subscription Network</b></p>
                     <input type="submit" value="BUILD YOUR STORE NOW" class="price_signup"style="margin-left:30px;background-color:#925902;margin: 30px 52px;
-    padding: 12px 61px;">
+    padding: 12px 61px;cursor:pointer;">
                 </div>
             </div>
         </div>

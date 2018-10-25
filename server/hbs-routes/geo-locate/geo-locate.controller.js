@@ -51,17 +51,18 @@ function processGeoLocateSearch(req, res, cbNext) {
 				}
 			},
 			categories: function(callback) {
-				let includeArr = [];
-				const categoryOffset = 0;
-				const categoryLimit = null;
-				const categoryField = "id";
-				const categoryOrder = "asc";
-				let categoryModel = "Category";
-				const categoryQueryObj = {};
-
+				var includeArr = [];
+				var categoryOffset, categoryLimit, categoryField, categoryOrder;
+				var categoryQueryObj = {};
+	
+				categoryOffset = 0;
+				categoryLimit = null;
+				categoryField = "id";
+				categoryOrder = "asc";
+				
 				categoryQueryObj['status'] = status["ACTIVE"];
-
-				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+	
+				service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {
 						var categories = category.rows;
 						bottomCategory['left'] = categories.slice(0, 8);
@@ -71,7 +72,7 @@ function processGeoLocateSearch(req, res, cbNext) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
-			},
+			},	
 			fetchAllSubcategories: function(callback) {
 				let includeArr = [];
 				let subCategoryQueryObj = {};

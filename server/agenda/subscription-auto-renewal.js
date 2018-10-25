@@ -6,7 +6,6 @@ const service = require('../api/service');
 const moment = require('moment');
 const _ = require('lodash');
 const stripe = require('../payment/stripe.payment');
-const sendEmail = require('./send-email');
 const durationCode = require('../config/duration-unit');
 const orderStatusCode = require('../config/order_status');
 const paymentMethod = require('../config/payment-method');
@@ -84,7 +83,7 @@ function subscriptionOrder(eachSubscription) {
 	subscribedProduct = eachSubscription.Product;
 	subscriptionOrderQueryObj = {
 		user_id: eachSubscription.user_id,
-		order_status: orderStatusCode['DELIVEREDORDER'],
+		//order_status: orderStatusCode['DELIVEREDORDER'],
 		status: statusCode["ACTIVE"]
 	}
 
@@ -248,8 +247,8 @@ function subscriptionOrder(eachSubscription) {
 							.then(function(updatedRow){
 								console.log("updatedRow",updatedRow);
 								return Promise.reject(error);
-							}).catch(function(err){
-								console.log("updatedRow",updatedRow);
+							}).catch(function(error){
+								console.log("Error",error);
 								return Promise.reject(error);
 							})
 					});
@@ -266,7 +265,9 @@ function subscriptionOrder(eachSubscription) {
 function subscriptionOrderMail(createdSubscription,eachSubscription) {
 
 	var emailTemplateQueryObj = {};
+	var mailArray = [];
     emailTemplateQueryObj['name'] = config.email.templates.subscriptionAutoRenewalOrder;
+	var agenda = require('../../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
 		.then(function (response) {
@@ -285,13 +286,15 @@ function subscriptionOrderMail(createdSubscription,eachSubscription) {
 				body = body.replace('%PLACED_ON%',moment(createdSubscription.ordered_date).format('MMM D, Y'));
 				body = body.replace('%IMAGE_URL%',  eachSubscription.Product.ProductMedia[0].url);
 					
-				sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
+				mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
 				});
-				
-                return;
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
 			}else{
 				return;
 			}

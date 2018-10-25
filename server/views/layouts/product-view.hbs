@@ -81,7 +81,7 @@ $(document).ready(function() {
 		text: finaltext,
 		showLabel: false,
 		showCount: false,
-		shares: ["googleplus", "facebook", "email", "whatsapp"]
+		shares: ["facebook", "email", "whatsapp"]
 	});
 
 	$("#shareIcons").jsSocials({
@@ -119,7 +119,7 @@ $(document).ready(function() {
 		cartInfo.product_quantity = $('#quantityInput').val();
 		cartInfo.marketplace_id = marketplace_id;
 		if (userInfo.email) {
-			if ((marketplace_id == 1 && (userInfo.UserPlans)) || (marketplace_id != 1)) {
+			if ((marketplace_id == 1 && (userInfo.UserPlans.length>0)) || (marketplace_id != 1)) {
 				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
 					if(marketplace_id == 4){
 						checkAlreadySubscribed(cartInfo);

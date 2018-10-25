@@ -2,17 +2,13 @@
 
 var express = require('express');
 var router = express.Router();
-var middleware = require('../../middleware');
-var permission = require('../../config/permission');
 var auth = require('../../auth/auth.service');
-
 
 var inboxCtrl = require('./inbox/inbox.controller');
 var sentCtrl = require('./sent/sent.controller');
 var draftsCtrl = require('./drafts/drafts.controller');
 var deletedCtrl = require('./deleted/deleted.controller');
 var settingsCtrl = require('./mail-settings/mail-settings.controller');
-
 
 router.get('/inbox', auth.isAuthenticated(), inboxCtrl.inbox);
 router.get('/:path/:id', auth.isAuthenticated(), inboxCtrl.message);

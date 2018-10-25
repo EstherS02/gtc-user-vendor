@@ -197,7 +197,6 @@ $("#total_refund").val(total);
 				success: function(result) {
                     $('#conform-modal').modal('hide');
 					$('#success-modal').modal('show');
-
 				},
 				error: function(error) {
 					console.log(error);
@@ -329,9 +328,9 @@ $("#total_refund").val(total);
 													{{#select queryURI.status}}
 
 														<option disabled selected>STATUS</option>
-														{{#each orderStatus}}
+														{{#each orderStatusCode}}
 															{{!-- <option value="{{@key}}">{{@key}}</option> --}}
-															<option value="{{@key}}">{{objectKey ../orderStatus @this}}</option>
+															<option value="{{@key}}">{{objectKey ../orderStatusCode @this}}</option>
 														{{/each}}
 													{{/select}}
 													</select>
@@ -401,32 +400,24 @@ $("#total_refund").val(total);
 												{{#if Order}}
 													{{#each Order}}
 														<tr>
-															<td>
-																<input type="checkbox" class="checkbox" value="{{this.id}}">
-															</td>
-															<td>
-																<a href="/my-order/order/{{this.id}}">{{this.id}}</a>
-															</td>
+															<td><input type="checkbox" class="checkbox" value="{{this.id}}"></td>
+															<td><a href="/my-order/order/{{this.id}}">{{this.id}}</a></td>
 															<td style="display:none">{{this.purchase_order_id}}</td>
 															<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
 															<td>Stripe</td>
-															<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
+															<td class="text_green_color">{{objectKey ../orderStatusCode this.order_status}}</td>
 															<td></td>
 															<td>
-																<a href="/order-track/{{this.id}}">Track Order</a>
+																{{#ifCond this.order_status '<' ../orderStatusCode.RETURNEDORDER}}
+																	<a href="/order-track/{{this.id}}">Track Order</a>
+																{{/ifCond}}
 															</td>
 															<td class="text_blue_color">
-																{{#ifCond this.order_status '!=' "6" }}
+																{{#ifCond this.order_status '==' ../orderStatusCode.DELIVEREDORDER}}
 																<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo" style="cursor:pointer">
-																	<i class="fas fa-credit-card"></i>
-																	Issue Refund</p>
-																	{{else}}
-																	<p style="cursor:pointer">
-																	
-																	Refund Issued</p>
-																
-																	{{/ifCond}} 
-																	
+																	<i class="fas fa-credit-card"></i>Issue Refund
+																</p>
+																{{/ifCond}} 
 															</td>
 															<td class="text_blue_color">
 																<a href="javascript:;" onclick="javascript:location.href='gtc-mail/compose?id={{this.User.id}}&text={{this.User.first_name}}'">
@@ -527,7 +518,7 @@ $("#total_refund").val(total);
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
 						<b>CANCEL</button>
-					<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
+					<button type="submit" class="btn btn-small btn-primary">
 						<b>CONTINUE</b>
 					</button>
 				</div>
@@ -554,7 +545,7 @@ $("#total_refund").val(total);
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
 						<b>CANCEL</button>
-					<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
+					<button type="submit" class="btn btn-small btn-primary">
 						<b>YES</b>
 					</button>
 				</div>

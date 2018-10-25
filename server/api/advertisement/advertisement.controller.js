@@ -7,7 +7,6 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
-const Position = require('../../config/position');
 // var gtc = require('../../api/gtc/gtc.contoller')
 var gtc = require('../../api/gtc/gtc.controller')
 

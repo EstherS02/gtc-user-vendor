@@ -1,18 +1,13 @@
 'use strict';
 const sequelize = require('sequelize');
-
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const status = require('../../config/status');
-const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const service = require('../../api/service');
 const productService = require('../../api/product/product.service');
-
 const async = require('async');
-import series from 'async/series';
 
 export function shop(req, res) {
 	var categoryModel = "Category";
@@ -69,23 +64,21 @@ export function shop(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
-			queryObj['featured_position_shop_landing'] = 1;
+			queryObj['position']= 'position_shop_landing';
 			queryObj['is_featured_product'] = 1;
-			var featureLimit = 6;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, queryObj, featureLimit, order)
-				.then(function(response) {
-					return callback(null, response.rows);
+			limit = 6;
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+				.then(function(results) {
+					return callback(null, results);
 				}).catch(function(error) {
-					console.log('Error::', error);
+					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
 		publicMarketplace: function(callback) {
-			delete queryObj['featured_position_shop_landing'];
 			delete queryObj['is_featured_product'];
+			delete queryObj['position'];
+
 			queryObj['marketplace_id'] = marketplace['PUBLIC'];
 			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(publicMarketplace) {

@@ -29,8 +29,13 @@
 
 	var cartItems = {{{ DisplayJSON cart.marketplace_products }}}
 
+	var removeItem;
+
 	function removeGtcCart(item) {
-		var result = confirm("Are you sure you want to delete this item?");
+		removeItem = item;
+		$('#cart-modal').modal('show');
+
+	/*	var result = confirm("Are you sure you want to delete this item?");
 		if (result) {
 			$('#remove-cart-' + item).removeAttr('href');
 			$.ajax({
@@ -43,7 +48,21 @@
 					auth.alertService(error.status, error.responseText);
 				}
 			});
-		}
+		}*/
+	}
+
+	function removeConformed(){
+		$('#remove-cart-' + removeItem).removeAttr('href');
+			$.ajax({
+				url: '/api/cart/remove-cart/' + removeItem,
+				type: 'DELETE',
+				success: function(result) {
+					location.reload();
+				},
+				error: function(error) {
+					auth.alertService(error.status, error.responseText);
+				}
+			});
 	}
 
 	function UpdateAllCartItems() {
@@ -109,7 +128,7 @@
 	function editCoupon() {
 		$.ajax({
 			url: '/api/cart/cancel-coupon',
-			type: 'GET',
+			type: 'DELETE',
 			success: function(data, statusText, xhr) {
 				location.reload();
 			},
@@ -120,7 +139,16 @@
 	}
 
 	function orderCheckout() {
-		location.href = "/order-checkout/customer-information";
+		$.ajax({
+			url: '/api/cart/validate',
+			type: 'POST',
+			success: function(data) {
+				location.href = "/order-checkout/customer-information";
+			},
+			error: function(error) {
+				auth.alertService(error.status, error.responseText);
+			}
+		})
 	}
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}
 <div id="vendorAlert" tabindex="1">
@@ -132,7 +160,7 @@
 			<div class="alignleft">
 				<ul class="breadcrumb">
 					<li>
-						<a href="#" class="active">My Account</a>
+						<a href="/user/my-profile" class="active">My Account</a>
 					</li>
 					<li>Shopping Cart</li>
 				</ul>
@@ -598,6 +626,25 @@
 						{{/if}}
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="cart-modal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Conformation:</h5>
+			</div>
+			<div class="modal-body">
+				<div class="container">
+					<p>Are you sure you want to delete this item?</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal" onclick="removeConformed()">
+					<b>YES<b/>
+				</button>
 			</div>
 		</div>
 	</div>

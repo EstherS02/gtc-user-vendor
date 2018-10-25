@@ -36,7 +36,7 @@
                 </div>
                 <div class="col-md-3 col-12 " style="background-color:#fff">
                     <h5 class="log_head_style">FEATURED</h5>
-                    {{#if featuredProducts}} {{#each featuredProducts}}
+                    {{#if featuredProducts.rows}} {{#each featuredProducts.rows}}
                     <div class="row profile_logged_in_body2_bg_color">
                         <div class="col-md-6 col-6" style="padding-right: 0px; margin-top:10px;">
                         <a href="products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
@@ -44,7 +44,7 @@
                             </a>
                         </div>
                         <div class="col-md-6 col-6" style="padding-left: 8px; padding-right: 0px;">
-                            <h5 class="log_doller_value">${{this.product_price}}</h5>
+                            <h5 class="log_doller_value">{{this.price}}</h5>
                             <p class="profile_logged_in_body2_font_para">SAVE $20
                                 <span class="log_left_style">12m left</span>
                             </p>

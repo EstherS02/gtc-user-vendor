@@ -73,42 +73,47 @@
 											</tr>
 										</thead>
 										<tbody>
-											{{#each notifications}}
-											<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} id = "{{this.id}}" data-message="{{this.description}}" href="#gtc-modal">
-												<td scope="row ">{{this.name}}</td>
-												<td scope="row">{{{dotdotdot this.description}}}</td>
-												<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
-											</tr>
-											{{/each}}
+											{{#if notifications}}
+												{{#each notifications}}
+												<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} id = "{{this.id}}" data-message="{{this.description}}" href="#gtc-modal">
+													<td scope="row ">{{this.name}}</td>
+													<td scope="row">{{{dotdotdot this.description}}}</td>
+													<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
+												</tr>
+												{{/each}}
+											{{else}}
+												<tr><td colspan="3" style="text-align:center;">No notification received</td></tr>
+											{{/if}}
+											<tr id="noProducts"><td colspan="3" style="text-align:center;">No notification received</td></tr>
 										</tbody>
 									</table>
 								</div>
 								{{#if notifications}}
-								<div id="pagination">
-								{{#pagination collectionSize page pageSize maxSize}}
-								<nav aria-label="Page navigation example">
-									<ul class="pagination justify-content-center">
-										{{#unless startFromFirstPage}}
-										<li class="page-item">
-											<a class="page-link" href="gtc-mail/inbox?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
-										</li>
-										{{/unless}} {{#each pages}}
-										<li class="page-item {{#if isCurrent}} active {{/if}}">
-											<a class="page-link" href="gtc-mail/inbox?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
-										</li>
-										{{/each}} {{#unless endAtLastPage}}
-										<li class="page-item">
-											<a class="page-link" href="gtc-mail/inbox?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
-										</li>
-										{{/unless}}
-									</ul>
-								</nav>
-								{{/pagination}}
-								</div>
-								{{else}}
-								<div > No notification received </div>
+									<div id="pagination">
+									{{#pagination collectionSize page pageSize maxSize}}
+									<nav aria-label="Page navigation example">
+										<ul class="pagination justify-content-center">
+											{{#unless startFromFirstPage}}
+											<li class="page-item">
+												<a class="page-link" href="notifications?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
+											</li>
+											{{/unless}} {{#each pages}}
+											<li class="page-item {{#if isCurrent}} active {{/if}}">
+												<a class="page-link" href="notifications?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+											</li>
+											{{/each}} {{#unless endAtLastPage}}
+											<li class="page-item">
+												<a class="page-link" href="notifications?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+											</li>
+											{{/unless}}
+										</ul>
+									</nav>
+									{{/pagination}}
+									</div>
+								{{!-- {{else}}
+								<div > No notification received </div> --}}
 								{{/if}}
-								<div id="noProducts"> No notification received </div>
+								{{!-- <div id="noProducts"> No notification received </div> --}}
 							</div>
 						</div>
 					</div>

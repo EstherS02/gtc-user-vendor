@@ -149,114 +149,108 @@
 									</div>
 								</div>
 								<br/>
-								{{#each order.OrderItems}}
-								<div class="row">
-                                    <div class="col-md-5">
-										<p class="shop_subtotal">
-											<b>#
-												<span>{{SUMFloat @index 1}} </span>Product:</b>
-										</p>
-									</div>
-									<div class="col-md-7">
-										<p class="shop_subtotal">{{this.Product.product_name}}</p>
-									</div>
-									<div class="col-md-5">
-										<p class="shop_subtotal">
-											<b>Quantity:</b>
-										</p>
-									</div>
-									<div class="col-md-7">
-										<p class="shop_subtotal">{{this.quantity}}</p>
-									</div>
-									<div class="col-md-5">
-										<p class="shop_subtotal">
-											<b>Price(per quantity):</b>
-										</p>
-									</div>
-									<div class="col-md-7">
-										<p class="shop_subtotal">{{this.Product.price}}</p>
-									</div>
-                               </div>
-								<br/>
-								<div class="row">
-									{{#ifCond this.order_item_status '<' ../orderItemStatus.REFUND_FAILED}}
-									<div class="col-md-12">
-										 <a data-id="{{this.id}}" href="javascript:;" class="data-value">
-										<button data-id="{{this.id}}" class="ladda-button btn btn-small btn-muted" data-toggle="modal" data-target="#refundModal"
-										 data-whatever="@mdo" style="width:100%">REQUEST A RETURN</button>
-										 </a>
-									</div>
-									{{else}}
-                                       <button class="ladda-button btn btn-small btn-muted" style="width:100%"> 
-										   {{#ifCond this.order_item_status '==' ../orderItemStatus.RETURN_REQUESTED}} RETURN ALREADY REQUESTED
-										   {{else ifCond this.order_item_status '==' ../orderItemStatus.RETURN_APPROVED}} RETURN APPROVED 
-										   {{else ifCond this.order_item_status '==' ../orderItemStatus.RETURN_REJECTED}} RETURN REJECTED 
-										   {{/ifCond}}
-										</button>
-                                    {{/ifCond}}
-								</div>
-								<br/>
-								 {{/each}}
+								{{#each .}}
+									{{#OrderItems}}
+										{{#Product}}
+											<div class="row">
+												{{#ProductMedia}}
+													{{#ifCond this.base_image '==' 1 }}
+														<div class="col-sm-3">
+															<a href="{{MarketPlaceURL ../this.marketplace_id}}/{{../this.product_slug}}/{{../this.id}}">
+																<img  src="{{this.url}}" alt="iphone" style="width:100%;margin-bottom: 10px;" onError="imgError(this)"/>
+															</a>
+														</div>
 
-								 <p class="re_terms_pa">{{order.OrderItems.[0].Product.Vendor.vendor_name}}'
-									 s Return Policy</p>
-										<hr class="common_margin" />
-										<br/>
-										<div class="row">
-											<div class="col-md-12">
-												<textarea class="form-control-customized" rows="6" readonly>{{order.OrderItems.[0].Product.Vendor.TermsAndConds.[0].return_policy}}</textarea>
+													{{/ifCond}}
+												{{/ProductMedia}}
+												<div class="col-sm-8">
+													<div style="font-size:12px;">
+														<a href="{{MarketPlaceURL this.marketplace_id}}/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
+													</div>
+													<div style="font-size:12px;"><b>Qty :</b> {{../this.quantity}} </div>
+													<div style="font-size:12px;"> <b>Price :</b> {{currency ../this.final_price '$'}} CAD </div> 
+												</div>
+											</div><br/>
+											<div class="row">
+												{{#ifCond this.order_item_status '<' ../orderItemStatus.REFUND_FAILED}}
+												<div class="col-md-12">
+													<a data-id="{{this.id}}" href="javascript:;" class="data-value">
+													<button data-id="{{this.id}}" class="btn btn-small btn-muted" data-toggle="modal" data-target="#refundModal"
+													data-whatever="@mdo" style="width:100%">REQUEST A RETURN</button>
+													</a>
+												</div>
+												{{else}}
+												<button class="btn btn-small btn-muted" style="width:100%; cursor:default"> 
+													{{#ifCond this.order_item_status '==' ../orderItemStatus.RETURN_REQUESTED}} RETURN ALREADY REQUESTED
+													{{else ifCond this.order_item_status '==' ../orderItemStatus.RETURN_APPROVED}} RETURN APPROVED 
+													{{else ifCond this.order_item_status '==' ../orderItemStatus.RETURN_REJECTED}} RETURN REJECTED 
+													{{/ifCond}}
+													</button>
+												{{/ifCond}}
 											</div>
-										</div>
+										{{/Product}}
+									{{/OrderItems}}
+								 {{/each}}
+								<br/>
+								 <p class="re_terms_pa">{{order.OrderItems.[0].Product.Vendor.vendor_name}}'s Return Policy</p>
+								<hr class="common_margin" />
+								<br/>
+								<div class="row">
+									<div class="col-md-12">
+										<textarea class="form-control-customized" rows="6" readonly>{{order.OrderItems.[0].Product.Vendor.TermsAndConds.[0].return_policy}}</textarea>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-	</div>{{> footer/bottom-footer}}
-
-	<div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-labelledby="refundTitle" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLongTitle">Reason for Return</h5>
-				</div>
-				<div class="alert" id="gtc-refund-alert">
-					<button type="button" class="close" data-dismiss="alert">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<span class="refund-message"></span>
-				</div>
-				<form id="returnReason" class="form">
-					<div class="modal-body">
-						<div class="row">
-							<div class="col-lg-12">
-								<div class="form-group">
-									<label class="label-control">Please enter the reason for return:
-										<span class="text-danger">*</span>
-									</label>
-									<textarea type="text" class="form-control-customized form-control-sm" name="reason_for_return" id="reason_for_return" required></textarea>
-								</div>
-							</div>
-							<input type="hidden" id="item_id" name="item_id_name" value="">
-							<div class="col-lg-12">
-								<div class="form-group">
-									<input class="required" type="checkbox" onclick="document.getElementById('returnSubmitBtn').disabled=false;" name="checkbox"
-									/>
-									<label class="label-control">Are you sure you want to return this item from you order?</label>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
-							<b>Cancel</button>
-						<button type="submit" id="returnSubmitBtn" disabled="disabled" class="btn btn-small btn-primary">
-							<b>Submit</b>
-						</button>
-					</div>
-				</form>
 			</div>
 		</div>
 	</div>
+</div>
+{{> footer/bottom-footer}}
+
+<div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-labelledby="refundTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Reason for Return</h5>
+			</div>
+			<div class="alert" id="gtc-refund-alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<span class="refund-message"></span>
+			</div>
+			<form id="returnReason" class="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control">Please enter the reason for return:
+									<span class="text-danger">*</span>
+								</label>
+								<textarea type="text" class="form-control-customized form-control-sm" name="reason_for_return" id="reason_for_return" required></textarea>
+							</div>
+						</div>
+						<input type="hidden" id="item_id" name="item_id_name" value="">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<input class="required" type="checkbox" onclick="document.getElementById('returnSubmitBtn').disabled=false;" name="checkbox"
+								/>
+								<label class="label-control">Are you sure you want to return this item from you order?</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>Cancel</button>
+					<button type="submit" id="returnSubmitBtn" disabled="disabled" class="btn btn-small btn-primary">
+						<b>Submit</b>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

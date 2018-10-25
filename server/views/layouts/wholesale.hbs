@@ -136,7 +136,7 @@
         </div>
         <div class="product-list-body">
           <div class="row">
-            {{#each featuredProducts}}
+            {{#each featuredProducts.rows}}
             <div class="col-md-6">
               <div class="product-body">
                 <div class="table-responsive">
@@ -146,7 +146,7 @@
                         <td class="col-3">
                           <div class="product-left-col">
                             <a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-                              <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                              <img class="object-fit" onError="imgError(this)" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
                             </a>
                           </div>
                         </td>
@@ -155,19 +155,19 @@
                             <h3><a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
                             <div class="row no-margins">
                               <div class="col-md-12 col-12 no-padding">
-                                <h2 class="text-red price">{{currency this.product_price '$'}}</h2>
+                                <h2 class="text-red price">{{currency this.price '$'}}</h2>
                               </div>
                               <div class="col-md-4 col-4 no-padding">
                                 <span>Origin</span>
                               </div>
                               <div class="col-md-8 col-8 no-padding overflow-txt">
-                                <span class="text-500">{{this.country_name}}</span>
+                                <span class="text-500">{{this.Country.name}}</span>
                               </div>
                               <div class="col-md-4 col-4 no-padding">
                                 <span>Category</span>
                               </div>
                               <div class="col-md-8 col-8 no-padding overflow-txt">
-                                <a class="text-500" href="/wholesale/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                <a class="text-500" href="/wholesale/search?category={{this.Category.id}}&sub_category={{this.SubCategory.id}}" title="{{this.Category.name}} > {{this.SubCategory.name}}">{{this.Category.name}} > {{this.SubCategory.name}}</a>
                               </div>
                               <div class="col-md-4 col-4 no-padding">
                                 <span>Seller Rating</span>

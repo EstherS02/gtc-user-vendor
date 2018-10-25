@@ -14,7 +14,6 @@ const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
-const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
@@ -370,6 +369,38 @@ export function destroy(req, res) {
 			res.status(500).send("Internal server error");
 			return;
 		});
+}
+
+exports.delete = function(req, res) {
+	const paramsID = req.params.id;
+	if (req.endpoint == 'ProductMedia') {
+		service.findIdRow(req.endpoint, paramsID)
+			.then(function(row) {
+				if (row) {
+					service.destroyRecord(req.endpoint, paramsID)
+						.then(function(result) {
+							if (result) {
+								res.status(200).send('Deleted Successfully');
+								return
+							} else {
+								return res.status(404).send("Unable to delete");
+							}
+						}).catch(function(error) {
+							console.log('Error:::', error);
+							res.status(500).send("Internal server error");
+							return;
+						});
+				} else {
+					return res.status(404).send("Not found");
+				}
+			}).catch(function(error) {
+				console.log('Error:::', error);
+				res.status(500).send("Internal server error");
+				return;
+			});
+	} else {
+		return res.status(403).send("Forbidden");
+	}
 }
 
 exports.multipleUpload = function(req, res) {

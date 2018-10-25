@@ -552,10 +552,10 @@ export function deleteCard(req, res) {
 		});
 }
 
-export function sendOrderMail(orderIdStore, req) { //export function sendOrderMail(req,res) {
+export function sendOrderMail(orderIdStore, req) { // export function sendOrderMail(req,res) {//
 	var user = {};
 	user = req.user;
-	var orderIdStore = orderIdStore;
+	var orderIdStore = orderIdStore;//[763,764];//
 	var includeArr = [{
 		model: model['OrderItem'],
 		include: [{
@@ -589,10 +589,10 @@ export function sendOrderMail(orderIdStore, req) { //export function sendOrderMa
 	var order = "asc";
 	var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
 		if (OrderList) {
-
 			usernotification(OrderList, user);
 			vendorMail(OrderList, user);
 			if (user.user_contact_email) {
+				var agenda = require('../../app').get('agenda');
 				var user_email = user.user_contact_email;
 				var orderNew = [];
 				var queryObjEmailTemplate = {};
@@ -604,24 +604,35 @@ export function sendOrderMail(orderIdStore, req) { //export function sendOrderMa
 							var email = user_email;
 							var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
 							var body;
+							var total = 0;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
-							body = body.replace('/%Path%/g', req.protocol + '://' + req.get('host'));
+							body = body.replace(/%Path%/g,'https://gtc.ibcpods.com');// req.protocol + '://' + req.get('host'));
 							body = body.replace(/%currency%/g, '$');
 							body = body.replace('%UserName%', user.first_name)
 							_.forOwn(OrderList.rows, function(orders) {
+								_.forOwn(orders.OrderItems,function(orderEle){
+								orderEle.final_price = numeral(orderEle.final_price).format('$' + '0,0.00');
+								orders.total_price = numeral(orders.total_price).format('$' + '0,0.00');
+								})
 								body = body.replace('%placed_on%', moment(orders.created_on).format('MMM D, Y'));
-								body = body.replace('%Total_Price%', numeral(orders.total_price).format('$' + '0,0.00'))
+
+								total = total + orders.total_price;
 								orderNew.push(orders);
 							});
+
 							var template = Handlebars.compile(body);
 							var data = {
 								order: orderNew
 							};
 							var result = template(data);
-							sendEmail({
+							var mailArray=[];
+							mailArray.push({
 								to: email,
 								subject: subject,
 								html: result
+							});
+							agenda.now(config.jobs.email, {
+								mailArray: mailArray
 							});
 							return;
 						}
@@ -649,6 +660,7 @@ export function vendorMail(OrderList, user) {
 }
 
 function sendVendorEmail(order, user) {
+	var agenda = require('../../app').get('agenda');
 	var queryObjEmailTemplate = {};
 	var emailTemplateModel = 'EmailTemplate';
 	queryObjEmailTemplate['name'] = config.email.templates.vendorNewOrder;
@@ -660,16 +672,14 @@ function sendVendorEmail(order, user) {
 				var subject = response.subject.replace('%ORDER_TYPE%', 'New Order');
 				var body;
 				body = response.body.replace('%ORDER_TYPE%', 'New Order');
+				body = body.replace(/%currency%/g, '$');
 				body = body.replace(/%Path%/g, 'https://gtc.ibcpods.com'); //req.protocol + '://' + req.get('host'));
 				body = body.replace('%VendorName%', order.OrderItems[0].Product.Vendor.vendor_name);
-				body = body.replace(/%currency%/g, '$');
-
-				_.forOwn(order, function(orders) {
-
+				_.forOwn(order.OrderItems, function(orders) {
 					body = body.replace('%placed_on%', moment(new Date()).format('MMM D, Y'));
 					body = body.replace('%Total_Price%', numeral(order.total_price).format('$' + '0,0.00'))
+					orders.final_price = numeral(orders.final_price).format('0,0.00');
 					orderNew.push(orders);
-
 				});
 				var template = Handlebars.compile(body);
 				var data = {
@@ -677,10 +687,14 @@ function sendVendorEmail(order, user) {
 				};
 
 				var result = template(data);
-				sendEmail({
+				var mailArray=[];
+				mailArray.push({
 					to: email,
 					subject: subject,
 					html: result
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
 				});
 			}
 			return;
@@ -714,14 +728,22 @@ function usernotification(order, user) {
 	var queryObjNotification = {};
 	var NotificationTemplateModel = 'NotificationSetting';
 	queryObjNotification['code'] = config.notification.templates.orderDetail;
+	var orderEle='';
 	service.findOneRow(NotificationTemplateModel, queryObjNotification)
 		.then(function(response) {
 			var bodyParams = {};
+			_.forOwn(order.rows, function(orders) {
+				if(orderEle.length>0){
+				orderEle = `, <a href="https://gtc.ibcpods.com/order-history/"`+orders.id+`>#`+orders.id+`</a>`;	
+				}
+				orderEle = `<a href="https://gtc.ibcpods.com/order-history/"`+orders.id+`>#`+orders.id+`</a>`;
+			});
 			bodyParams.user_id = user.id;
 			bodyParams.description = response.description
 			bodyParams.description = bodyParams.description.replace('%Firstname%', user.first_name);
-			bodyParams.description = bodyParams.description.replace('%LastName%', user.last_name);
-			bodyParams.description = bodyParams.description.replace('%path%', '/order-history/' + order.id);
+			// bodyParams.description = bodyParams.description.replace('%LastName%', user.last_name);
+			bodyParams.description = bodyParams.description.replace('%orderEle%',orderEle);
+			bodyParams.description = bodyParams.description.replace('%url%',orderEle);
 			bodyParams.name = response.name;
 			bodyParams.code = response.code;
 			bodyParams.is_read = 1;
@@ -737,7 +759,7 @@ function usernotification(order, user) {
 
 export function makePlanPayment(req, res) {
 	var upgradingPlan, desc, convertMoment, start_date, end_date, vendorId;
-	var paymentBodyParam = {}, vendorPlanBodyParam = {}, userPlanBodyParam = {};
+	var paymentBodyParam = {}, vendorPlanBodyParam = {}, userPlanBodyParam = {},refundObj={};
 
 	vendorId = req.body.vendor_id;
 	upgradingPlan = req.body.plan_id;
@@ -767,7 +789,7 @@ export function makePlanPayment(req, res) {
 			});
 		}
 	}).then(function(paymentRow) {
-			if (vendorId != 0) {
+			if((vendorId != 0 && upgradingPlan != 5)) {
 				vendorPlanBodyParam = {
 					vendor_id: vendorId,
 					plan_id: req.body.plan_id,
@@ -782,7 +804,32 @@ export function makePlanPayment(req, res) {
 				if (req.user.user_contact_email) {
 					sendUpgrademail(req.body.plan_id, req.user);
 				}
-				return service.createRow('VendorPlan', vendorPlanBodyParam);
+				 service.createRow('VendorPlan', vendorPlanBodyParam).then(function(currentplanrow){
+					let includeArr = [];
+		         	refundObj = {
+					vendor_id: vendorId,	 
+				    status:status['ACTIVE'],
+				    id: {
+					$ne: currentplanrow.id
+				     },
+			       };
+			      var field = 'created_on';
+			       var order = "asc";
+			      service.findAllRows('VendorPlan', includeArr, refundObj, 0, null, field, order).then(function(successPromise){
+			      if (successPromise.count != "0") {
+				  let plandeactivestatus = {
+					status:status['INACTIVE'],
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				  };
+				   refundObj = {
+					vendor_id: vendorId,
+					id: {$ne: currentplanrow.id},
+				  };
+				  return service.updateManyRecord('VendorPlan', plandeactivestatus, refundObj);
+				}
+			  });
+				});
 			} else {
 				userPlanBodyParam = {
 					user_id: req.body.user_id,
@@ -863,6 +910,7 @@ function sendUpgrademail(plan_id, user) {
 	let upgradePlanModel = {
 		id: plan_id
 	}
+	var agenda = require('../../app').get('agenda');
 	return service.findRow('Plan', upgradePlanModel, includeArray)
 		.then(upgradeplandetails => {
 			var upgradeplanobj = upgradeplandetails;
@@ -878,11 +926,16 @@ function sendUpgrademail(plan_id, user) {
 					body = body.replace('%first_name%', user.first_name);
 					body = body.replace('%name%', upgradeplanobj.name);
 					body = body.replace('%cost%', numeral(upgradeplanobj.cost).format('0,0.00'));
-					sendEmail({
+					var mailArray = [];
+					mailArray.push({
 						to: email,
 						subject: subject,
 						html: body
 					});
+					agenda.now(config.jobs.email, {
+						mailArray: mailArray
+					});
+					return;
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return;
@@ -899,14 +952,17 @@ export function refundOrder(req, res) {
 	var refundOrderitemsID = [];
 	var notification = [];
 	var refundsOrderitems = JSON.parse(req.body.refundOrderItems);
+
 	for (var i = 0; i < refundsOrderitems.length; i++) {
 		refundOrderitemsID.push(refundsOrderitems[i]);
 	}
+
 	var order_id, paymentObj, refundObj, refundAmt, order;
 	order_id = req.params.orderId;
 	refundAmt = req.body.total_refund;
 	let includeArray = [];
 	includeArray = populate.populateData("Payment");
+	
 	let orderPaymentQueryObj = {
 		order_id: order_id,
 		order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT']
@@ -998,6 +1054,7 @@ export function refundOrder(req, res) {
 			return res.status(500).send(error);
 		});
 }
+
 export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 	var orderItemid = refundOrderitemsID;
 	var includeArr = populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Vendor.User,Order');
@@ -1014,6 +1071,8 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 			var queryObjEmailTemplate = {};
 			var emailTemplateModel = 'EmailTemplate';
 			queryObjEmailTemplate['name'] = config.email.templates.refundRequest;
+			var agenda = require('../../app').get('agenda');
+			
 			service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 				.then(function(response) {
 					var email = vendor_email;
@@ -1033,10 +1092,14 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 						order: orderNew
 					};
 					var result = template(data);
-					sendEmail({
+					var mailArray = [];
+					mailArray.push({
 						to: email,
 						subject: subject,
 						html: result
+					});
+					agenda.now(config.jobs.email, {
+						mailArray: mailArray
 					});
 				}).catch(function(error) {
 					console.log('Error :::', error);
