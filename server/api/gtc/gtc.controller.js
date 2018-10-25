@@ -6,7 +6,6 @@ const path = require('path');
 const sequelize = require('sequelize');
 const async = require('async');
 const moment = require('moment');
-
 const service = require('../service');
 const productService = require('../product/product.service');
 const reportsService = require('../reports/reports.service');

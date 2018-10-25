@@ -60,10 +60,11 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 	});
 }
 
-export function countRows(modelName, queryObj) {
+export function countRows(modelName, queryObj, includeArr) {
 	return new Promise((resolve, reject) => {
 		model[modelName].count({
-			where: queryObj
+			where: queryObj,
+			include: includeArr
 		}).then(function(count) {
 			resolve(count);
 		}).catch(function(error) {
