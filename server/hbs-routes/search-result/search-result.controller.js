@@ -133,7 +133,7 @@ export function index(req, res) {
 
 	if (req.query.keyword) {
 		queryPaginationObj.keyword = req.query.keyword;
-		queryURI['searchKeyword'] = req.query.keyword;
+		queryURI['keyword'] = req.query.keyword;
 		productQueryParams['product_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
@@ -173,6 +173,8 @@ export function index(req, res) {
 		productCountQueryParams['vendor_id'] = req.query.vendor_id;
 		productCountCategory['vendor_id'] = req.query.vendor_id;
 		vendorDetailsQueryParams['vendor_id'] = req.query.vendor_id;
+	}else{
+		productCountCategory['vendor_id'] = LoggedInUser.id;
 	}
 
 	async.series({
