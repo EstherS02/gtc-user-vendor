@@ -12,6 +12,7 @@ const service = require('../service');
 const productService = require('../product/product.service');
 const cartService = require("../cart/cart.service");
 const reportsService = require('../reports/reports.service');
+const sendEmail = require('../../agenda/send-email');
 const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
@@ -59,18 +60,46 @@ export async function indexExample(req, res) {
 		}]
 	}];
 
+	const includeVendorOrderArray = [];
+
 	try {
-		var userBody;
-		const orderEmailTemplate = await service.findOneRow("EmailTemplate", {
+		/*const orderEmailTemplate = await service.findOneRow("EmailTemplate", {
 			name: "GTC-ORDER_DETAIL-NEW"
 		});
 		const userOrderResponse = await service.findOneRow(orderModelName, {
 			id: orderID
 		}, includeOrderArray);
-		userBody = orderEmailTemplate.body.replace('%OrdersItemsNews%', userOrderResponse.OrdersItemsNews);
-		var template = Handlebars.compile(userBody);
-		console.log("userBody", userBody);
-		return res.status(200).send(userOrderResponse);
+		var subject = orderEmailTemplate.subject;
+		var template = Handlebars.compile(orderEmailTemplate.body);
+		userOrderResponse.created_on = moment(userOrderResponse.created_on).format('MMM D, Y');
+		var result = template(userOrderResponse);
+		await sendEmail({
+			to: userOrderResponse.User.user_contact_email,
+			subject: subject,
+			html: result
+		});*/
+		const vendorOrderResponse = await model['VendorOrder'].findAll({
+			where: {
+				order_id: orderID,
+				vendor_id: {
+					$col: 'OrdersNew->OrdersItemsNews->Product.vendor_id'
+				}
+			},
+			attributes: ['id', 'order_id', 'vendor_id', 'status'],
+			include: [{
+				model: model['OrdersNew'],
+				attributes: ['id'],
+				include: [{
+					model: model['OrdersItemsNew'],
+					attributes: ['id', 'order_id', 'product_id', 'quantity', 'price', 'shipping_cost', 'gtc_fees', 'plan_fees'],
+					include: [{
+						model: model['Product'],
+						attributes: ['id', 'product_name', 'vendor_id']
+					}]
+				}]
+			}]
+		});
+		return res.status(200).send(vendorOrderResponse);
 	} catch (error) {
 		console.log("indexExample Error:::", error);
 		return res.status(500).send(error);
