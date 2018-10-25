@@ -19,8 +19,66 @@
         });
     });
 </script>
-
-<section class="directory_banner" style="margin-bottom: 0">
+<div class="marketplace-banner directory">
+    <div class="gtc-container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="advertisement py-xl-4">
+                    <img class="img-fluid" src="../img/direc_banner.png">
+                </div>
+            </div>
+            <div class="col-md-7 right">
+                <h2>Search Our Global Directory of over</h2>
+                <h1>21,000 Wholesalers, Retailers & Service Providers</h1>
+                <small class="text-center text-white py-xl-3 d-block">Advanced Search</small>
+                <form id="searchForm">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-b-sm">
+                                <div class="select-container">
+                                    <select class="form-control-customized form-control-sm rounded" id="depart" name="marketplace">
+                                        <option disabled selected>Department</option>
+                                        {{#each depart}}
+                                            <option value="{{this.id}}">{{ this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-b-sm">
+                                <div class="select-container">
+                                    <select class="form-control-customized form-control-sm rounded" id="category" name="category">
+                                        <option disabled selected>Category</option>
+                                        {{#each categories}}
+                                            <option value="{{this.id}}">{{ this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-b-sm">
+                                <div class="select-container">
+                                    <select class="form-control-customized form-control-sm rounded" id="location" name="location">
+                                        <option disabled selected>Location</option>
+                                        {{#each country}}
+                                            <option value="{{this.id}}">{{ this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <button class="btn btn-md btn-directory" id="searchSubmit">SEARCH DIRECTORY</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{!-- <section class="directory_banner" style="margin-bottom: 0">
 	<div class="container-fluid full_view_pad_eighty clearfix">
       <div class="row">
           <div class="col-md-6 col-12 lstb1">
@@ -66,7 +124,8 @@
         </div>
     </div>
 </div>
-</section>
+</section> --}}
+
 <div class="other-marketplace-bg"></div>
 <div class="gtc-container">
     <div class="other-marketplace-headers">
@@ -339,9 +398,9 @@
         </div>
     </div>
 </div>
-<div class="category-section directory_banner">
+<div class="category-section py-xl-4 directory_banner">
     <div class="gtc-container">
-        <h5 class="text-center">Search the Global Trade Connect Directory by Category</h5>
+        <h1 class="text-center">Search the Global Trade Connect Directory by Category</h1>
         <div class="row">
             {{#each_limit categories 10}}
             <div class="col-md-3 m-t-md w-20">
@@ -352,8 +411,8 @@
                         <a href="/directory/search?category={{../this.id}}&sub_category={{this.id}}">{{ this.name}}</a>
                     </li>
                     {{/each_upto}}
-                    <li class="m-l-xs">
-                    <a href="/directory/search?category={{this.id}}">see more...</a>
+                    <li class="m-l-xs see-more">
+                    <a href="/directory/search?category={{this.id}}">See more...</a>
                   </li>
                 </ul>
             </div>
