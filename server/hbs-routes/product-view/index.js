@@ -2,8 +2,6 @@
 
 var express = require('express');
 var router = express.Router();
-var middleware = require('../../middleware');
-var permission = require('../../config/permission');
 var globalUser = require('../../auth/global-user-obj');
 var controller = require('./product-view.controller');
 

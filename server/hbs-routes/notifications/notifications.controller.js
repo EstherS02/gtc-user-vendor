@@ -78,7 +78,7 @@ export function notifications(req, res) {
 				categoryField = "id";
 				categoryOrder = "asc";
 				
-				categoryQueryObj['status'] = status["ACTIVE"];
+				categoryQueryObj['status'] = statusCode["ACTIVE"];
 	
 				service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {

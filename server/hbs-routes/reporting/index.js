@@ -2,8 +2,6 @@
 
 var express = require('express');
 var router = express.Router();
-var middleware = require('../../middleware');
-var permission = require('../../config/permission');
 var roles = require('../../config/roles');
 var auth = require('../../auth/auth.service');
 

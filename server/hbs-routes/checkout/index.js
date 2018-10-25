@@ -2,10 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
-var middleware = require('../../middleware');
-var permission = require('../../config/permission');
-var auth = require('../../auth/auth.service')
-var globalUser = require('../../auth/global-user-obj');
+var auth = require('../../auth/auth.service');
 
 var customerInformationCtrl = require('./customer-information/customer-information.controller');
 var shippingMethodCtrl = require('./shipping-method/shipping-method.controller');
