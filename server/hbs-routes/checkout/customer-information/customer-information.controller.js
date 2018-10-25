@@ -15,13 +15,8 @@ const cartObj = require('../../../api/cart/cart.controller');
 const querystring = require('querystring');
 
 function processCheckout(req, res, callback) {
-	let LoggedInUser = {};
 	var bottomCategory = {};
-
-	if (req.user)
-		LoggedInUser = req.user;
-
-	let user_id = LoggedInUser.id;
+	const LoggedInUser = req.user;
 
 	async.series({
 		cartInfo: function(callback) {
@@ -54,7 +49,7 @@ function processCheckout(req, res, callback) {
 			searchObj['status'] = {
 				'$eq': status["ACTIVE"]
 			}
-			searchObj['user_id'] = user_id;
+			searchObj['user_id'] = LoggedInUser.id;
 
 			return service.findRows('Address', searchObj, null, null, 'address_type', "asc", includeArr)
 				.then(function(addressData) {

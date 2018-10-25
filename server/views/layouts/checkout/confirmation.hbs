@@ -29,7 +29,7 @@
 		<h6>What's Next?</h6>
 		{{#each orderVendors}}
 		<p>
-			<img src="..{{this.Vendor.vendor_profile_pic_url}}" alt="icon_logo" style="width: 35px; height: 35px;" onerror="UserImgError(this)"> {{#ifCond LoggedInUser.id "!=" this.Vendor.user_id}} {{#if this.Vendor.is_vendor_follower}}
+			<img src="..{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.Vendor.vendor_name}}" title="{{this.Vendor.vendor_name}}" style="width: 35px; height: 35px;" onerror="UserImgError(this)"> {{#ifCond LoggedInUser.id "!=" this.Vendor.user_id}} {{#if this.Vendor.is_vendor_follower}}
 			<a href="javascript:;" class="checkout_jempo_a">
 				<img src="../img/unfollow.png" alt="Follow" height="30px" />
 			</a>

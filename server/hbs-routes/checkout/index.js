@@ -12,9 +12,9 @@ var shippingMethodCtrl = require('./shipping-method/shipping-method.controller')
 var paymentMethodCtrl = require('./payment-method/payment-method.controller');
 var confirmationCtrl = require('./confirmation/confirmation.controller');
 
-router.get('/customer-information', auth.isAuthenticated(), customerInformationCtrl.customerInformation);
-router.get('/shipping-method', auth.isAuthenticated(), customerInformationCtrl.shippingMethod);
-router.get('/payment-method', auth.isAuthenticated(), customerInformationCtrl.paymentMethod);
+router.get('/customer-information', auth.isAuthenticatedUser(), customerInformationCtrl.customerInformation);
+router.get('/shipping-method', auth.isAuthenticatedUser(), customerInformationCtrl.shippingMethod);
+router.get('/payment-method', auth.isAuthenticatedUser(), customerInformationCtrl.paymentMethod);
 router.get('/confirmation/:order_id', auth.isAuthenticatedUser(), confirmationCtrl.confirmation);
 
 module.exports = router;
