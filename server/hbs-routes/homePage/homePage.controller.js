@@ -3,7 +3,6 @@
 const _ = require('lodash');
 var async = require('async');
 const sequelize = require('sequelize');
-
 const service = require('../../api/service');
 const cartService = require('../../api/cart/cart.service');
 const status = require('../../config/status');
@@ -47,15 +46,17 @@ export function homePage(req, res) {
 		},
 		categories: function(callback) {
 			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
 
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
@@ -143,8 +144,9 @@ export function homePage(req, res) {
 		},
 		featuredProducts: function(callback) {
 			delete queryObj['marketplace_id'];
-			queryObj['feature_status'] = status['ACTIVE'];
-			queryObj['featured_position_homepage']=1;
+			// queryObj['featured_position_homepage']=1;
+			queryObj['position']='position_homepage';
+
 			queryObj['is_featured_product'] = 1;
 			limit = 6;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)

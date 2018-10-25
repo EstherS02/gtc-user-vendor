@@ -7,10 +7,8 @@ const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 
 export function cart(req, res) {
-	var LoggedInUser = {};
-	var bottomCategory = {};
-	var bottomCategory = {};
-	var categoryModel = "Category";
+	var LoggedInUser = {}, bottomCategory = {};
+	
 	if (req.user)
 		LoggedInUser = req.user;
 
@@ -27,28 +25,29 @@ export function cart(req, res) {
 				return callback(null);
 			}
 		},
-		categories: function(cb) {
+		categories: function(callback) {
 			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			var categoryModel = "Category";
-			const categoryQueryObj = {};
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
 
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
 					bottomCategory['right'] = categories.slice(8, 16);
-					return cb(null, category.rows);
+					return callback(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
-					return cb(null);
+					return callback(null);
 				});
-		}
+		},
 	}, function(err, results) {
 		if (!err && results) {
 			return res.render('cart', {

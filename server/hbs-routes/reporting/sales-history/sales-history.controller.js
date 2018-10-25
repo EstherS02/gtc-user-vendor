@@ -2,7 +2,6 @@
 
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
-const reference = require('../../../config/model-reference');
 const _ = require('lodash');
 const statusCode = require('../../../config/status');
 const service = require('../../../api/service');

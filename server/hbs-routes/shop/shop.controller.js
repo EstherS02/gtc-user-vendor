@@ -1,17 +1,13 @@
 'use strict';
 const sequelize = require('sequelize');
-
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const service = require('../../api/service');
 const productService = require('../../api/product/product.service');
-
 const async = require('async');
-import series from 'async/series';
 
 export function shop(req, res) {
 	var categoryModel = "Category";
@@ -68,13 +64,11 @@ export function shop(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
-			queryObj['feature_status'] = status['ACTIVE'];
-			queryObj['position_shop_landing']= status['ACTIVE'];
+			queryObj['position']= 'position_shop_landing';
 			queryObj['is_featured_product'] = 1;
 			limit = 6;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 				.then(function(results) {
-					console.log("-------------------==================",results)
 					return callback(null, results);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -82,9 +76,8 @@ export function shop(req, res) {
 				});
 		},
 		publicMarketplace: function(callback) {
-			delete queryObj['position_shop_landing'];
 			delete queryObj['is_featured_product'];
-			delete queryObj['feature_status'];
+			delete queryObj['position'];
 
 			queryObj['marketplace_id'] = marketplace['PUBLIC'];
 			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)

@@ -2,10 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
-var middleware = require('../../middleware');
-var permission = require('../../config/permission');
 var auth = require('../../auth/auth.service')
-var globalUser = require('../../auth/global-user-obj');
 
 var aboutCtrl = require('./about/about.controller');
 var discussionBoardCtrl = require('./discussion-board/discussion-board.controller');

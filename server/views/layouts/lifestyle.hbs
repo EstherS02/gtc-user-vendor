@@ -152,19 +152,25 @@
 															<h3><a href="/lifestyle/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
 															<div class="row no-margins">
 																<div class="col-md-12 col-12 no-padding">
-																	<h2 class="text-red price">{{currency this.product_price '$'}}</h2>
+																	{{!-- <h2 class="text-red price">{{currency this.product_price '$'}}</h2> --}}
+																	{{#if this.product_discounted_price}}
+																	<h2 class="discount-price-flag text-normal">{{currency this.product_discounted_price '$'}}</h2>
+																	<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+																	{{else}}
+																	<h2 class="price-flag text-normal">{{currency this.price '$'}}</h2>
+																	{{/if}}
 																</div>
 																<div class="col-md-4 col-4 no-padding">
 																	<span>Origin</span>
 																</div>
 																<div class="col-md-8 col-8 no-padding overflow-txt">
-																	<span class="text-500">{{this.country_name}}</span>
+																	<span class="text-500">{{this.Country.name}}</span>
 																</div>
 																<div class="col-md-4 col-4 no-padding">
 																	<span>Category</span>
 																</div>
 																<div class="col-md-8 col-8 no-padding overflow-txt">
-																	<a class="text-500" href="/lifestyle/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+																	<a class="text-500" href="/lifestyle/search?category={{this.Category.id}}&sub_category={{this.SubCategory.id}}" title="{{this.Category.name}} > {{this.SubCategory.name}}">{{this.Category.name}} > {{this.SubCategory.name}}</a>
 																</div>
 																<div class="col-md-4 col-4 no-padding">
 																	<span>Seller Rating</span>
