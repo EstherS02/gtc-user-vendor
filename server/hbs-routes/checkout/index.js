@@ -15,6 +15,6 @@ var confirmationCtrl = require('./confirmation/confirmation.controller');
 router.get('/customer-information', auth.isAuthenticated(), customerInformationCtrl.customerInformation);
 router.get('/shipping-method', auth.isAuthenticated(), customerInformationCtrl.shippingMethod);
 router.get('/payment-method', auth.isAuthenticated(), customerInformationCtrl.paymentMethod);
-router.get('/confirmation', auth.isAuthenticated(), confirmationCtrl.confirmation);
+router.get('/confirmation/:order_id', auth.isAuthenticatedUser(), confirmationCtrl.confirmation);
 
 module.exports = router;

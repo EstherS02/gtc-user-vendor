@@ -158,7 +158,6 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 			return results;
 		}
 	} catch (error) {
-		console.log('queryAllProducts Error:::', error);
 		return error;
 	}
 }

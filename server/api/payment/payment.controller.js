@@ -79,7 +79,9 @@ export async function makePayment(req, res) {
 				amount: charge.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
-				payment_response: JSON.stringify(charge)
+				payment_response: JSON.stringify(charge),
+				created_by: req.user.first_name,
+				created_on: new Date()
 			});
 
 			const newOrder = await service.createRow(orderModelName, {
@@ -167,7 +169,9 @@ export async function makePayment(req, res) {
 			agenda.now(config.jobs.orderEmail, {
 				order: newOrder.id
 			});
-			return res.status(200).send("Success");
+			return res.status(200).send({
+				order: newOrder.id
+			});
 		} else {
 			return res.status(404).send("Payment card details not found");
 		}
