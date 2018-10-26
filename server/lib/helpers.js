@@ -254,7 +254,7 @@ Handlebars.registerHelper('timeLeft', function(context,options){
     var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
     var secondsDiff='';
     if(endDate.diff(currentDate)>0){
-    var intervals = ['days','hours','minutes'],
+    var intervals = ['years','months','days','hours','minutes'],
       out = [];
     var arrayEle = [];
   for(var i=0; i<intervals.length; i++){
@@ -269,6 +269,10 @@ Handlebars.registerHelper('timeLeft', function(context,options){
     secondsDiff = arrayEle['hours']+'h '+arrayEle['minutes']%60+'m left!';
     }else if(arrayEle['days']<30){
     secondsDiff = arrayEle['days']+'d '+arrayEle['hours']%24+'h left!';
+    }else if(arrayEle['months']<12){
+    secondsDiff = arrayEle['months']+'mon '+arrayEle['days']%30+'d left!';
+    }else{
+    secondsDiff = arrayEle['years']+'Y '+arrayEle['months']%12+'mon left!';
     }
     }
     return secondsDiff;
