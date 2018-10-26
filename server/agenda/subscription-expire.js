@@ -50,7 +50,9 @@ function updateStatus(eachsubscription){
 	var subscriptionBodyParam = {};
 
 	subscriptionBodyParam = {
-		status: statusCode['INACTIVE']
+		status: statusCode['INACTIVE'],
+		last_updated_by: 'GTC Auto Expire',
+		last_updated_on : new Date()
 	}
 	return service.updateRow(subscriptionModel, subscriptionBodyParam, eachsubscription.id);
 }

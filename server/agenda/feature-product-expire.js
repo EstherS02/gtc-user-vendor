@@ -80,7 +80,9 @@ function updateFeatureStatus(eachProduct){
 	var featureBodyParam = {};
 
 	featureBodyParam = {
-		feature_status: statusCode['INACTIVE']
+		feature_status: statusCode['INACTIVE'],
+		last_updated_by: 'GTC Auto Expire',
+		last_updated_on : new Date()
 	}
 	if(eachProduct.Product.Vendor.User.user_contact_email){
 		featurePromotionExpiredMail(eachProduct);
