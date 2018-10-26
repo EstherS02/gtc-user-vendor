@@ -93,6 +93,18 @@
 .gtc-text-primary {
 	color: #336699;
 }
+.text-m1 {
+	color: #daa962;
+}
+.text-m2 {
+	color: #154a80;
+}
+.text-m3 {
+	color: #72ca51;
+}
+.text-m4 {
+	color: #e18fa3;
+}
 .text-navy {
 	color: #1ab394 !important;
 }
@@ -262,6 +274,10 @@
 	background-color: #e2e6ea;
 	border-color: #dae0e5;
 }
+.btn-red {
+	background-color: #e62345;
+	color: #fff;
+}
 .btn-primary {
 	background-color: #d78504;
 	border-color: #d78504;
@@ -348,7 +364,7 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 	border-radius: 1.25rem !important;
 }
 .form-control-border {
-	border: 3px solid #fea534 !important;
+	border: 2px solid #fea534 !important;
 }
 .fa-circle-bg {
 	color: #DDDDDF;

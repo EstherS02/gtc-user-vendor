@@ -1313,19 +1313,78 @@ label.error {
 	font-weight: 400;
 	color: #f10017a8;
 }
-
 .login-panel {
-	/*display: table;*/
 	width: 100%;
 	height: 100%;
 	padding: 10px 0;
 	position: relative;
 }
-
-/*#loginForm {
-display: table-cell;
-vertical-align: middle;
-}*/
+.login-banner {
+	background: #ffffff;
+	min-height: 421px;
+}
+.login-banner-1 {
+	background: #638ac5;
+	color: #fff;
+	min-height: 575px;
+}
+.login-banner-1 img {
+	max-height: 220px;
+}
+.login-banner-2 {
+	min-height: 420px;
+	background: url(../img/signup-highlight-1.jpg);
+	background-repeat: no-repeat;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	background-position: center;
+}
+.login-banner-3 {
+	color: #fff;
+	min-height: 420px;
+	background: url(../img/signup-highlight-2.jpg);
+	background-repeat: no-repeat;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	background-position: center;
+}
+.login-banner-4 {
+	background: #fff;
+}
+.login-banner-5 {
+	color: #fff;
+	min-height: 256px;
+	background: url(../img/signup-try.jpg);
+	background-repeat: no-repeat;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	background-position: center;
+}
+.login-banner-6 .symbol-q {
+	font-size: 2.5rem;
+	color: #e6e6e8;
+	font-weight: 500;
+}
+.login-banner-6 .symbol-a {
+	font-size: 2.5rem;
+	color: #9c9ea2;
+	font-weight: 500;
+}
+.login-right-content h1 {
+	font-family: 'Oswald', sans-serif;
+    color: #10498b;
+    font-size: 3rem;
+    font-weight: 500;
+}
+.d-inline-table {
+	display: inline-table;
+}
 .save-btn {
 	background-color: #4178BB;
 	font-size: 11px;
@@ -2432,7 +2491,187 @@ select.file-uploade:after {
 	font-size: 15px;
 	font-weight: 400;
 }
+.starter_seller {
+	background-color: #7BA4D8;
+	color: #fff;
+	padding-top: 50px;
+	border-top-left-radius: 70px;
+	border-bottom-left-radius: 70px;
+	width: 25%;
+	padding-left: 15px;
+	padding-right: 78px;
+	position: relative;
+	left: 76px;
+	height: 440px;
+	margin-top: 50px;
+}
+.starter_seller p {
+	font-size: 10px;
+	padding: 0px 20px;
+}
+.starter_seller i {
+	color: #B2F596;
+}
+.starter_seller_p1 {
+	font-family: 'Oswald', sans-serif;
+	font-size: 18px!important;
+}
+.starter_seller_list {
+	font-size: 10px;
+	margin-bottom: 0px;
+	text-align: left;
+	border-bottom: 1px solid #46A18C;
+	padding: 0px !important;
+}
+.starter_seller_h1 {
+	color: #fff;
+    font-size: 55px;
+}
+.service_provider {
+	background-color: #69BC88;
+    color: #fff;
+    padding-top: 50px;
+    border-top-left-radius: 70px;
+    border-bottom-left-radius: 70px;
+    position: relative;
+    left: 5px;
+    width: 25%;
+    padding-left: 15px;
+    padding-right: 78px;
+    height: 440px;
+    margin-top: 50px;
+}
+.service_provider p {
+	font-size: 10px;
+    padding: 0px 20px;
+}
+.service_provider i {
+	color: #B2F596;
+}
+.service_provider_p1 {
+	font-family: 'Oswald', sans-serif;
+	font-size: 18px!important;
+	
+}
+.service_provider_list {
+	font-size: 10px;
+	margin-bottom: 0px;
+	text-align: left;
+	border-bottom: 1px solid #46A18C;
+	padding: 0px !important;
+}
+.service_provider_h1 {
+	color: #fff;
+    font-size: 55px;
+}
+.lifestyle_provider {
+	background-color: #AB6C99;
+    color: #fff;
+    padding-top: 50px;
+    border-top-left-radius: 70px;
+    border-bottom-left-radius: 70px;
+    position: relative;
+    left: -66px;
+    width: 25%;
+    padding-left: 15px;
+    padding-right: 78px;
+    height: 440px;
+    margin-top: 50px;
+}
+.lifestyle_provider p {
+	font-size: 10px;
+    padding: 0px 20px;
+}
 
+.lifestyle_provider i {
+	color: #B2F596;
+}
+.lifestyle_provider_p1 {
+	font-family: 'Oswald', sans-serif;
+	font-size: 18px!important;
+	
+}
+.lifestyle_provider_list {
+	font-size: 10px;
+	margin-bottom: 0px;
+	text-align: left;
+	border-bottom: 1px solid #46A18C;
+	padding: 0px !important;
+}
+.lifestyle_provider_h1 {
+	color: #fff;
+    font-size: 55px;
+}
+.public_seller_pg {
+	background-color: #4178BB;
+    color: #fff;
+    padding-top: 50px;
+    border-radius: 70px;
+    position: relative;
+    left: -136px;
+    width: 25%;
+    padding-left: 15px;
+    padding-right: 15px;
+	min-height: 550px;
+}
+.public_seller_pg1 {
+    background-color: #D88505;
+    color: #fff;
+    padding-top: 50px;
+    border-radius: 70px;
+    width: 100%;
+    padding-left: 25px;
+    padding-right: 25px;
+    min-height: 550px;
+}
+.public_seller_pg p {
+	font-size: 10px;
+    padding: 0px 20px;
+}
+.public_seller_pg1 p {
+	font-size: 10px;
+    padding: 0px 20px;
+}
+.public_seller_pg1 i {
+	color: #B2F596;
+}
+.public_seller_pg i {
+	color: #B2F596;
+}
+.public_seller_pg_p1 {
+	font-family: 'Oswald', sans-serif;
+	font-size: 18px!important;
+}
+.public_seller_pg_list1 {
+    font-size: 10px;
+    margin-bottom: 0px;
+    text-align: left;
+    border-bottom: 1px solid #D17C04;
+    padding: 0px 48px 0px 48px !important;
+}
+.public_seller_pg_list {
+	font-size: 10px;
+	margin-bottom: 0px;
+	text-align: left;
+	border-bottom: 1px solid #46A18C;
+	padding: 0px !important;
+}
+.public_seller_pg_h1 {
+	color: #fff;
+    font-size: 55px;
+}
+.price_signup {
+  margin: 11px 52px;
+  padding: 7px 18px;
+  font-size: 12px;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  background-color: rgb(255, 160, 37);
+  border-width: initial;
+  border-style: none;
+  border-color: initial;
+  border-image: initial;
+}
 /* Reporting new styles */
 
 .reporting_content .reporting_date_range .date_range_group {

@@ -109,6 +109,37 @@
 	.home-bottom-banner-2 .content {
 		padding: 30px;
 	}
+	.starter_seller {
+		width: 100%;
+		left: 0px;
+		border-radius: 70px;
+		margin-top: 0px;
+	}
+	.service_provider {
+		width: 100%;
+		left: 0px;
+		border-radius: 70px;
+		margin-top: 20px;
+	}
+	.lifestyle_provider{
+		width: 100%;
+		left: 0px;
+		border-radius: 70px;
+		margin-top: 20px;
+	}
+	.lifestyle_provider p{
+		padding: 0px;
+	}
+
+	.public_seller_pg
+	{
+		width: 100%;
+		left: 0px;
+		margin-top: 20px;
+	}
+	.public_seller_pg_list1 {
+	    padding: 0px !important;
+	}
 }
 
 @media (min-width: 768px) {
@@ -171,6 +202,9 @@
 	}
 	.home-bottom-banner-2 .content {
 		padding: 70px;
+	}
+	.login-right-content {
+		padding: 43px 120px 10px 70px;
 	}
 }
 
@@ -265,7 +299,7 @@
 	h2.divider-line { 
 		content: "";
 		position: absolute;
-		z-index: -1;
+		z-index: 999;
 		height: 150px;
 		top: 0;
 		font-size: 0.813em;
@@ -380,7 +414,7 @@
 	h2.divider-line { 
 		content: "";
 		position: absolute;
-		z-index: -1;
+		z-index: 999;
 		height: 150px;
 		top: 0;
 		font-size: 0.813em;
@@ -497,7 +531,7 @@
 	h2.divider-line { 
 		content: "";
 		position: absolute;
-		z-index: -1;
+		z-index: 999;
 		height: 150px;
 		top: 0;
 		font-size: 0.813em;
@@ -624,7 +658,7 @@
 	h2.divider-line { 
 		content: "";
 		position: absolute;
-		z-index: -1;
+		z-index: 999;
 		height: 150px;
 		top: 0;
 		font-size: 0.813em;
