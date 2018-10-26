@@ -33,17 +33,27 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 		var vendor_id=$("#vendorId" + e).val();
 		var vendor_name = $("#vendorName" + e).val();
 		if (quantity) {
-			if ((marketplace_id == 1 && userInfo.UserPlans) || (marketplace_id != 1 || ($('#typecode').val() == 'WTS'))) {
-				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
-					cartAPI(cartInfo);
-				} else {
-					window.location.href = 'gtc-mail/compose?id=' + vendor_id + '&text=' + vendor_name;
+			$.ajax({
+				type: "POST",
+				url: "/api/cart/add-cart/" + productSpecs.id,
+				data: cartInfo,
+				success: function(response) {
+					if (response.message == "Subscribed") {
+						$('#alreadySubscribed').modal('show');
+					} else if (response.message == 'REDIRECT') {
+						window.location.href = 'gtc-mail/compose?id=' + vendor_id + '&text=' + vendor_name;
+					} else if (response.message == 'UPGRADEPLAN') {
+						$('#planUpgrade').modal('show');
+					} else if (response.message == 'SUCCESS') {
+						location.reload();
+					}
+				},
+				error: function(error) {
+					$('#quantityInput').notify(JSON.parse(error.responseText).message_details, "error");
 				}
-			} else {
-				window.location.href = "/upgradeplan";
-			}
+			});
 		} else {
-			$('#enterQuantity').modal('show');		
+			$('#enterQuantity').modal('show');
 		}
 	}
 	function cartAPI(cartInfo) {

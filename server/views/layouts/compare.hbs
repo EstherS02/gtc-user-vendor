@@ -11,21 +11,33 @@
 
 	function gtcAddToCart(e) {
 		var cartInfo = {};
-		var marketplace_id = $("#marketplaceId" + e).val();
+		var vendor_id = $("#vendor_id" + e).val();
+		var vendor_name = $("#vendor_name" + e).val();
+		var marketplace_id = $("#marketplace_id"+e).val();
 		$('#gtc-add-to-cart').prop('disabled', true);
 
 		cartInfo.product_quantity = $('#product-quantity-' + e).val();
 		cartInfo.marketplace_id = marketplace_id;
 		if (userInfo.email) {
-			if ((marketplace_id == 1 && userInfo.UserPlans) || (marketplace_id != 1 || ($('#typecode').val() == 1))) {
-				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
-					cartAPI(cartInfo);
-				} else {
-					window.location.href = 'gtc-mail/compose?id=' + vendorInfo.user_id + '&text=' + vendorInfo.vendor_name;
+			$.ajax({
+				type: "POST",
+				url: "/api/cart/add-cart/" + e,
+				data: cartInfo,
+				success: function(response) {
+					if (response.message == "Subscribed") {
+						$('#alreadySubscribed').modal('show');
+					} else if (response.message == 'REDIRECT') {
+						window.location.href = 'gtc-mail/compose?id=' + vendor_id + '&text=' + vendor_name;
+					} else if (response.message == 'UPGRADEPLAN') {
+						$('#planUpgrade').modal('show');
+					} else if (response.message == 'SUCCESS') {
+						location.reload();
+					}
+				},
+				error: function(error) {
+					$('#quantityInput').notify(JSON.parse(error.responseText).message_details, "error");
 				}
-			} else {
-				window.location.href = "/upgradeplan";
-			}
+			});
 		} else {
 			$('#myModal').modal('show');
 		}
@@ -176,19 +188,19 @@
 							<div class="col-md-4 no-padding">
 								<div class="cprlist">
 									<a href="/products/{{compareProducts.[0].product_slug}}/{{compareProducts.[0].id}}">{{compareProducts.[0].product_name}}</a>
-									<input type="hidden" name="marketplace_id0" id="marketplaceId{{compareProducts.[0].id}}" value="{{compareProducts.[0].marketplace_id}}">
+									<input type="hidden" name="marketplace_id{{compareProducts.[0].id}}" id="marketplaceId{{compareProducts.[0].id}}" value="{{compareProducts.[0].marketplace_id}}">
 								</div>
 							</div>
 							<div class="col-md-4 no-padding">
 								<div class="cprlist">
 									<a href="/products/{{compareProducts.[1].product_slug}}/{{compareProducts.[1].id}}">{{compareProducts.[1].product_name}}</a>
-									<input type="hidden" name="marketplace_id1" id = "marketplaceId{{compareProducts.[1].id}}" value="{{compareProducts.[0].marketplace_id}}">
+									<input type="hidden" name="marketplace_id{{compareProducts.[1].id}}" id = "marketplaceId{{compareProducts.[1].id}}" value="{{compareProducts.[1].marketplace_id}}">
 								</div>
 							</div>
 							<div class="col-md-4 no-padding">
 								<div class="cprlist">
 									<a href="/products/{{compareProducts.[2].product_slug}}/{{compareProducts.[2].id}}">{{compareProducts.[2].product_name}}</a>
-									<input type="hidden" name="marketplace_id2" id = "marketplaceId{{compareProducts.[2].id}}" value="{{compareProducts.[0].marketplace_id}}">
+									<input type="hidden" name="marketplace_id{{compareProducts.[2].id}}" id = "marketplaceId{{compareProducts.[2].id}}" value="{{compareProducts.[2].marketplace_id}}">
 								</div>
 							</div>
 						</div>
@@ -421,7 +433,9 @@
 							<div class="col-md-4 no-padding">
 								<div class="cprlist">
 									{{#if compareProducts.[0]}}
-										<input type="hidden" id="typecode{{compareProducts.[0].id}}" name="typecode" value="{{compareProducts.[0].marketplace_type_id}}"
+										<input type="hidden" id="vendor_id{{compareProducts.[0].id}}" name="typecode" value="{{compareProducts.[0].vendor_id}}"
+										<input type="hidden" id="vendor_name{{compareProducts.[0].id}}" name="typecode" value="{{compareProducts.[0].vendor_name}}"
+
 										/>
 										<div class="add-to-bag">
 											<label class="text-light-muted">Qty: </label>
@@ -476,7 +490,9 @@
 							<div class="col-md-4 no-padding">
 								<div class="cprlist">
 									{{#if compareProducts.[1]}}
-										<input type="hidden" id="typecode{{compareProducts.[1].id}}" name="typecode" value="{{compareProducts.[1].marketplace_type_id}}"
+										<input type="hidden" id="vendor_id{{compareProducts.[1].id}}" name="typecode" value="{{compareProducts.[1].vendor_id}}"
+										<input type="hidden" id="vendor_name{{compareProducts.[1].id}}" name="typecode" value="{{compareProducts.[1].vendor_name}}"
+
 										/>
 										<div class="add-to-bag">
 											<label class="text-light-muted">Qty: </label>
@@ -532,7 +548,8 @@
 							<div class="col-md-4 no-padding">
 								<div class="cprlist">
 									{{#if compareProducts.[2]}}
-										<input type="hidden" id="typecode{{compareProducts.[2].id}}" name="typecode" value="{{compareProducts.[2].marketplace_type_id}}"
+										<input type="hidden" id="vendor_id{{compareProducts.[2].id}}" name="typecode" value="{{compareProducts.[2].vendor_id}}">
+										<input type="hidden" id="vendor_name{{compareProducts.[2].id}}" name="typecode" value="{{compareProducts.[2].vendor_name}}"
 										/>
 										<div class="add-to-bag">
 											<label class="text-light-muted">Qty: </label>

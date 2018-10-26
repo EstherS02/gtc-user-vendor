@@ -140,7 +140,7 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 		fQuery[position] = status['ACTIVE'];
 		includeArray.push({
 			model: model['FeaturedProduct'],
-			attributes:[],
+			// attributes:[],
 			where: fQuery
 		});
 		delete queryObj.is_featured_product;

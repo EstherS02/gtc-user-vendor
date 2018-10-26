@@ -119,19 +119,26 @@ $(document).ready(function() {
 		cartInfo.product_quantity = $('#quantityInput').val();
 		cartInfo.marketplace_id = marketplace_id;
 		if (userInfo.email) {
-			if ((marketplace_id == 1 && (userInfo.UserPlans.length>0)) || (marketplace_id != 1)) {
-				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
-					if(marketplace_id == 4){
-						checkAlreadySubscribed(cartInfo);
-					}else{
-						cartAPI(cartInfo);
-					}				
-				} else {
-					window.location.href = 'gtc-mail/compose?id=' + vendorInfo.user_id + '&text=' + vendorInfo.vendor_name;
+			$.ajax({
+			type: "POST",
+			url: "/api/cart/add-cart/" + productSpecs.id,
+			data: cartInfo,
+			success: function(response) {
+				if(response.message == "Subscribed"){
+					$('#alreadySubscribed').modal('show');
+				}else if(response.message == 'REDIRECT'){
+					window.location.href = 'gtc-mail/compose?id=' + vendorInfo.user_id + '&text=' + vendorInfo.vendor_name;	
+				}else if(response.message == 'UPGRADEPLAN'){
+					$('#planUpgrade').modal('show');	
+				}else if(response.message == 'SUCCESS'){
+				location.reload();
 				}
-			} else {
-				$('#planUpgrade').modal('show');
+			},
+			error: function(error) {
+				$('#quantityInput').notify(JSON.parse(error.responseText).message_details, "error");
 			}
+		});
+
 		} else {
 			$('#myModal').modal('show');
 		}
