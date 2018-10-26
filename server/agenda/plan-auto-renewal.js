@@ -165,7 +165,7 @@ function updatePrimaryCardMail(vendorPlan) {
 	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.autoRenewalNoPrimaryCard;
-	var agenda = require('../../app').get('agenda');
+	var agenda = require('../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
@@ -206,7 +206,7 @@ function autoRenewalMail(vendorPlan, chargedAmount){
 	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.planAutoRenewal;
-	var agenda = require('../../app').get('agenda');
+	var agenda = require('../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
@@ -249,7 +249,7 @@ function planDeactivated(vendorPlan){
 	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
 	emailTemplateQueryObj['name'] = config.email.templates.planExpired;
-	var agenda = require('../../app').get('agenda');
+	var agenda = require('../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {

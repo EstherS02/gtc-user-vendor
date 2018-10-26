@@ -164,7 +164,7 @@ function featureRenewalMail(eachFeature){
 	var mailArray = [];
     emailTemplateQueryObj['name'] = config.email.templates.featureProductAutoRenewal;
 
-	var agenda = require('../../app').get('agenda');
+	var agenda = require('../app').get('agenda');
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
 		.then(function (response) {
 			if (response) {
