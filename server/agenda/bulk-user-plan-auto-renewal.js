@@ -101,7 +101,9 @@ function primaryCardDetails(userPlan){
 								amount: paymentDetails.amount / 100.0,
 								payment_method: paymentMethod['STRIPE'],
 								status: statusCode['ACTIVE'],
-								payment_response: JSON.stringify(paymentDetails)
+								payment_response: JSON.stringify(paymentDetails),
+								created_by: 'GTC Auto Renewal',
+								created_on: currentDate
 							}
 							return service.createRow('Payment', paymentObj);
 						}
@@ -110,7 +112,9 @@ function primaryCardDetails(userPlan){
 							var userPlanModel = 'UserPlan';
 							var planUpdateObj = {
 								status: statusCode['ACTIVE'],
-								end_date: moment().add(30, 'd').toDate()
+								end_date: moment().add(30, 'd').toDate(),
+								last_updated_by: 'GTC Auto Renewal',
+								last_updated_on: currentDate
 							}
 							if(userPlan.User.user_contact_email){
 								autoRenewalMail(userPlan, chargedAmount);
@@ -153,7 +157,7 @@ function updatePrimaryCardMail(userPlan) {
 	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
 	emailTemplateQueryObj['name'] = config.email.templates.autoRenewalNoPrimaryCard;
-	var agenda = require('../../app').get('agenda');
+	var agenda = require('../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
@@ -192,7 +196,7 @@ function autoRenewalMail(userPlan, chargedAmount){
 	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.planAutoRenewal;
-	var agenda = require('../../app').get('agenda');
+	var agenda = require('../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
@@ -233,7 +237,7 @@ function planDeactivated(userPlan){
 	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.planExpired;
-	var agenda = require('../../app').get('agenda');
+	var agenda = require('../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
