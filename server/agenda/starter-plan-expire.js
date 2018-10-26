@@ -73,7 +73,9 @@ function updateStatus(eachVendor){
 	var planBodyParam = {};
 
 	planBodyParam = {
-		status: statusCode['INACTIVE']
+		status: statusCode['INACTIVE'],
+		last_updated_by: 'GTC Auto Expire',
+		last_updated_on : currentDate
 	}
 	if(eachVendor.Vendor.User.user_contact_email){
 		planExpiredMail(eachVendor);

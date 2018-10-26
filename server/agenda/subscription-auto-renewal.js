@@ -164,7 +164,7 @@ function subscriptionOrder(eachSubscription) {
 						orderItemBodyParam['subtotal'] = subscriptionTotalAmount;
 						orderItemBodyParam['final_price'] = finalPrice;
 						orderItemBodyParam['status'] = statusCode['ACTIVE'];
-						orderItemBodyParam['created_by'] = eachSubscription.User.first_name;
+						orderItemBodyParam['created_by'] = 'GTC Auto Subscription Order';
 						orderItemBodyParam['created_on'] = current_date;
 
 						return service.createRow('OrderItem', orderItemBodyParam);
@@ -181,7 +181,9 @@ function subscriptionOrder(eachSubscription) {
 							amount: charge.amount / 100.0,
 							payment_method: paymentMethod['STRIPE'],
 							status: statusCode['ACTIVE'],
-							payment_response: JSON.stringify(charge)
+							payment_response: JSON.stringify(charge),
+							created_by: 'GTC Auto Subscription Order',
+							created_on: current_date
 						};
 
 						return service.createRow('Payment', paymentModelObj);
@@ -192,8 +194,8 @@ function subscriptionOrder(eachSubscription) {
 							payment_id: paymentRow.id,
 							order_payment_type: orderPaymentType['ORDER_PAYMENT'],
 							status: statusCode['ACTIVE'],
-							created_on: new Date(),
-							created_by: eachSubscription.User.first_name
+							created_on: current_date,
+							created_by: 'GTC Auto Subscription Order'
 						};
 
 						return service.createRow('OrderPayment', orderPaymentObj);
@@ -227,7 +229,7 @@ function subscriptionOrder(eachSubscription) {
 						let subscriptionUpdate = {};
 						subscriptionUpdate.last_order_placed_on = current_date;
 						subscriptionUpdate.next_order_place_on = nextSubscriptionRenewOn;
-						subscriptionUpdate.last_updated_by = eachSubscription.User.first_name;
+						subscriptionUpdate.last_updated_by = 'GTC Auto Subscription Order';
 						subscriptionUpdate.last_updated_on = current_date;
 
 						return service.updateRow('Subscription', subscriptionUpdate, eachSubscription.id);

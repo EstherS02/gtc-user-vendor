@@ -180,7 +180,9 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
 						amount: payoutAmount,
 						payment_method: paymentMethod['PAYPAL'],
 						status: statusCode['ACTIVE'],
-						payment_response: JSON.stringify(payoutDetails)
+						payment_response: JSON.stringify(payoutDetails),
+						created_by: 'GTC Auto Payout',
+						created_on: new Date()
 						}
 					}
                 } 
@@ -196,7 +198,9 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
                     payment_id: paymentRow[0].id,
                     order_id: payoutOrder,
                     status: statusCode["ACTIVE"],
-                    action: escrowAction["TRANSFERED"]
+					action: escrowAction["TRANSFERED"],
+					created_by: 'GTC Auto Payout',
+					created_on: new Date()
                 }
 
                 return service.createRow('OrderPaymentEscrow', orderPaymentEscrowObj)
