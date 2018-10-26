@@ -113,25 +113,33 @@ let sqlQueries = {
 		return query;
 	},
 	productCountBasedCategory: function(productCountQueryParams) {
-		let baseQuery = "SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id LEFT OUTER JOIN product on sub_category.id = product.sub_category_id";
-		let groupQuery = "LEFT OUTER JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 LEFT OUTER JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '"+new Date().toISOString().slice(0,10)+"' AND vendor_plan.end_date >= '"+new Date().toISOString().slice(0,10)+"'  GROUP BY sub_category.id ORDER by category.name"
+		console.log("==========================",productCountQueryParams)
+		let baseQuery = "SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id LEFT OUTER JOIN (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '"+new Date().toISOString().slice(0,10)+"' AND vendor_plan.end_date >= '"+new Date().toISOString().slice(0,10)+"') on sub_category.id = product.sub_category_id";
+		let groupQuery = "GROUP BY sub_category.id ORDER by category.name"
 		if (productCountQueryParams.is_featured_product) {
 			let query = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(featured_product.product_id) as subproductcount FROM 
 				category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
-				LEFT OUTER JOIN product on sub_category.id = product.sub_category_id 
-			    LEFT OUTER JOIN featured_product on featured_product.product_id=product.id AND product.marketplace_id =(` + productCountQueryParams.marketplace_id + `) and product.status = 1 and featured_product.status=(` + productCountQueryParams.is_featured_product + `)
+				LEFT OUTER JOIN (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') on sub_category.id = product.sub_category_id 
+			    LEFT OUTER JOIN featured_product on featured_product.product_id=product.id`;
+			    if(productCountQueryParams.marketplace_id){
+			    	 query=query+` AND product.marketplace_id =(`+ productCountQueryParams.marketplace_id+`)`;
+			 	}
+			 	if(productCountQueryParams.product_category_id){
+			    	 query=query+` AND product.product_category_id =(`+ productCountQueryParams.product_category_id+`)`;
+			 	}
+			  query=query+` and product.status = 1 and featured_product.status=(` + productCountQueryParams.is_featured_product + `)
 				GROUP BY sub_category.name ORDER by category.name`;
 			return query;
 		} else if (productCountQueryParams.marketplace_id && productCountQueryParams.keyword) {
 			let query = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
 				category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
-				LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.marketplace_id =(` + productCountQueryParams.marketplace_id + `)  and product.product_name LIKE "%` + productCountQueryParams.keyword + `%" and product.status=(` + productCountQueryParams.status + `)
+				LEFT OUTER JOIN (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') on sub_category.id = product.sub_category_id  AND product.marketplace_id =(` + productCountQueryParams.marketplace_id + `)  and product.product_name LIKE "%` + productCountQueryParams.keyword + `%" and product.status=(` + productCountQueryParams.status + `)
 				GROUP BY sub_category.id ORDER by category.name`;
 			return query;
 		} else if (productCountQueryParams.keyword) {
 			let query = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
 				category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
-				LEFT OUTER JOIN product on sub_category.id = product.sub_category_id and product.product_name LIKE "%` + productCountQueryParams.keyword + `%" and product.status=(` + productCountQueryParams.status + `)
+				LEFT OUTER JOIN (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') on sub_category.id = product.sub_category_id and product.product_name LIKE "%` + productCountQueryParams.keyword + `%" and product.status=(` + productCountQueryParams.status + `)
 				GROUP BY sub_category.id ORDER by category.name`;
 			return query;
 		} else {
@@ -177,7 +185,11 @@ let sqlQueries = {
 			let query = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN product on country.id = product.product_location and product.product_name LIKE "%` + productCountQueryParams.keyword + `%" and product.status=(` + productCountQueryParams.status + `) GROUP BY country.name ORDER by region.id`;
 			return query;
 		} else if (productCountQueryParams.is_featured_product) {
-			let query = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(marketplace_products.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN marketplace_products on country.id = marketplace_products.product_location_id and marketplace_products.is_featured_product=(` + productCountQueryParams.is_featured_product + `) and marketplace_products.marketplace_id=(` + productCountQueryParams.marketplace_id + `) and marketplace_products.status=(` + productCountQueryParams.status + `) GROUP BY country.name ORDER by region.id`
+			let query = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(marketplace_products.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN marketplace_products on country.id = marketplace_products.product_location_id and marketplace_products.is_featured_product=(` + productCountQueryParams.is_featured_product + `) and marketplace_products.status=(` + productCountQueryParams.status + `)`;
+			if(productCountQueryParams.marketplace_id){
+				query=query+` and marketplace_products.marketplace_id=(` + productCountQueryParams.marketplace_id + `)`;
+			}
+				query=query+` GROUP BY country.name ORDER by region.id`
 			return query;
 		} else {
 			for (var j in productCountQueryParams) {

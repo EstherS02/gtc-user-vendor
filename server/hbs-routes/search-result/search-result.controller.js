@@ -105,7 +105,7 @@ export function index(req, res) {
 		isFeaturedProduct = true;
 		queryURI['is_featured_product'] = parseInt(req.query.is_featured_product);
 		productQueryParams['is_featured_product'] = parseInt(req.query.is_featured_product);
-		productQueryParams['position'] = 'position_searchresult';
+		// productQueryParams['position'] = 'position_searchresult';
 		productCountCategory['is_featured_product'] = parseInt(req.query.is_featured_product);
 	}
 
@@ -172,8 +172,6 @@ export function index(req, res) {
 		productCountQueryParams['vendor_id'] = req.query.vendor_id;
 		productCountCategory['vendor_id'] = req.query.vendor_id;
 		vendorDetailsQueryParams['vendor_id'] = req.query.vendor_id;
-	}else{
-		productCountCategory['vendor_id'] = LoggedInUser.id;
 	}
 
 	async.series({

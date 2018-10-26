@@ -857,13 +857,16 @@
 															<h3><a href="/products/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a></h3>
 															<div class="row no-margins">
 																<div class="col-md-12 col-12 no-padding">
-																	<h2 class="text-red price">{{currency this.price '$'}}</h2>
-																	{{!-- {{#if this.product_discounted_price}}
+																{{#ifCond this.Marketplace.id '!=' 1}}
+																	{{#if this.product_discounted_price}}
 																		<h2 class="text-red price">{{currency this.product_discounted_price '$'}}</h2>
 																		<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
 																	{{else}}
-																		<h2 class="text-red price">{{currency this.price '$'}}</h2>
-																	{{/if}} --}}
+																		<h2 class="price">{{currency this.price '$'}}</h2>
+																	{{/if}}
+																{{else}}
+																	<h2 class="price"><small>MOQ:</small>{{this.moq}}</h2>
+																{{/ifCond}}
 																</div>
 																<div class="col-md-4 col-4 no-padding">
 																	<span>Origin</span>
