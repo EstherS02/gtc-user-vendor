@@ -9,8 +9,6 @@ paypal.configure(config.payPalConfig);
 
 const STMT_DESCRIPTOR = "GLOBALTRADECONNECT";
 
-var sender_batch_id = Math.random().toString(36).substring(9);
-
 let Stripe = {
     createCustomer: function(userObj, source) {
         var custObj = {};
@@ -83,6 +81,8 @@ let Stripe = {
     },
     vendorPaypalPayout: function(recipient_type, amount, currency, destination, order_id){
 
+		var sender_batch_id = Math.random().toString(36).substring(9);
+
         var create_payout_json = {
             "sender_batch_header": {
                 "sender_batch_id": sender_batch_id,
@@ -92,7 +92,7 @@ let Stripe = {
                 {
                     "recipient_type": recipient_type,
                     "amount": {
-                        "value": amount,
+                        "value": 50.00,
                         "currency": currency
                     },
                     "receiver": destination,

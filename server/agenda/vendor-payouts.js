@@ -97,12 +97,16 @@ function checkpaymentEscrow(order) {
                 return;
             } else {
 				vendorPay = order.Order.vendor_pay;
-				stripeOrPaypalFees = order.Order.total_price* 0.1;
-			
-				payoutAmount = vendorPay - stripeOrPaypalFees;
+
+				//NEED TO UNCOMMENT LATER 
+
+				//stripeOrPaypalFees = order.Order.total_price* 0.1;
+				//payoutAmount = vendorPay - stripeOrPaypalFees;
+
+				payoutAmount = vendorPay;
 
                 payoutVendor = order.Order.Products[0].Vendor.id;
-                payoutOrder = order.order_id;
+				payoutOrder = order.order_id;
 
                 payoutVendorPromises.push(fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder));
                 return Promise.all(payoutVendorPromises);
