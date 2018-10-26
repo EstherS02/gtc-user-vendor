@@ -172,8 +172,6 @@ export function index(req, res) {
 		productCountQueryParams['vendor_id'] = req.query.vendor_id;
 		productCountCategory['vendor_id'] = req.query.vendor_id;
 		vendorDetailsQueryParams['vendor_id'] = req.query.vendor_id;
-	}else{
-		productCountCategory['vendor_id'] = LoggedInUser.id;
 	}
 
 	async.series({

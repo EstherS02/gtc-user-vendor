@@ -56,7 +56,13 @@ export async function categoryWithProductCount(productQueryObj, isFeaturedProduc
 				}, {
 					model: model['FeaturedProduct'],
 					where: {
-						status: status['ACTIVE']
+						status: status['ACTIVE'],
+						start_date: {
+								'$lte': moment().format('YYYY-MM-DD')
+							},
+							end_date: {
+								'$gte': moment().format('YYYY-MM-DD')
+							}
 					},
 					required: isFeaturedProduct
 				}]
