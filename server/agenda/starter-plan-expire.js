@@ -89,7 +89,7 @@ function planExpiredMail(eachVendor){
 	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.starterPlanExpire;
-	var agenda = require('../../app').get('agenda');
+	var agenda = require('../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {

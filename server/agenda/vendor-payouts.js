@@ -220,7 +220,7 @@ function stripeConnectMail(vendor) {
 	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.stripeConnectEmail;
-	var agenda = require('../../app').get('agenda');
+	var agenda = require('../app').get('agenda');
 	
     return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
@@ -255,7 +255,7 @@ function payoutMail(vendor, payoutOrder, payoutAmount) {
 	var emailTemplateQueryObj = {};
 	var mailArray = [];
     emailTemplateQueryObj['name'] = config.email.templates.payoutMail;
-	var agenda = require('../../app').get('agenda');
+	var agenda = require('../app').get('agenda');
 
     return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
