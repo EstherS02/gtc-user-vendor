@@ -153,31 +153,36 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
                 }
             } else {
                 return;
-            }
+			}
+			return;
         })
         .then(function (payoutDetails) {
             var paymentPromises = [];
             var paymentObj ={};
 
-             if(payoutDetails.paid){ 
+             if(payoutDetails){ 
 
                 if(PaymentMethod == paymentMethod['STRIPE']){
-                    var paymentObj = {
-                        date: new Date(payoutDetails[0].created),
-                        amount: payoutAmount,
-                        payment_method: paymentMethod['STRIPE'],
-                        status: statusCode['ACTIVE'],
-                        payment_response: JSON.stringify(payoutDetails)
-                    };
+					if(payoutDetails.paid){ 
+						var paymentObj = {
+							date: new Date(payoutDetails[0].created),
+							amount: payoutAmount,
+							payment_method: paymentMethod['STRIPE'],
+							status: statusCode['ACTIVE'],
+							payment_response: JSON.stringify(payoutDetails)
+						};
+					}	
                 }
                 else  if(PaymentMethod == paymentMethod['PAYPAL']){
-                    paymentObj = {
-                       date: new Date(),
-                       amount: payoutAmount,
-                       payment_method: paymentMethod['PAYPAL'],
-                       status: statusCode['ACTIVE'],
-                       payment_response: JSON.stringify(payoutDetails)
-                      }
+					if( payoutDetails[0].batch_header.batch_status == 'PENDING'){ 
+						paymentObj = {
+						date: new Date(),
+						amount: payoutAmount,
+						payment_method: paymentMethod['PAYPAL'],
+						status: statusCode['ACTIVE'],
+						payment_response: JSON.stringify(payoutDetails)
+						}
+					}
                 } 
                 paymentPromises.push(createPaymentRow(paymentObj));
                 return Promise.all(paymentPromises);

@@ -100,19 +100,20 @@ let Stripe = {
                     "sender_item_id": order_id
                 }
             ]
-        };
+		};
 
-        paypal.payout.create(create_payout_json, function (error, payout) {
-            if (error) {
-                console.log(error.response);
-                throw error;
-            } else {
-                console.log("Create Single Payout Response");
-                console.log(payout);
-            }
-        });
+		return new Promise((resolve, reject) => {
+			paypal.payout.create(create_payout_json, function (error, payout) {
+				if (error) {
+					console.log(error.response);
+					return reject(error);
+				} else {
+					console.log("Create Single Payout Response",payout);
+					return resolve(payout);
+				}
+			});
+		});
     }
 };
-
 
 module.exports = Stripe;
