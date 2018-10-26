@@ -92,7 +92,7 @@ let Stripe = {
                 {
                     "recipient_type": recipient_type,
                     "amount": {
-                        "value": 50.00,
+                        "value": amount,
                         "currency": currency
                     },
                     "receiver": destination,
