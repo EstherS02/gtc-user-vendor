@@ -2491,6 +2491,42 @@ select.file-uploade:after {
 	font-size: 15px;
 	font-weight: 400;
 }
+.plan-card h3 {
+	font-family: 'Oswald', sans-serif;
+	font-size: 1.25rem;
+}
+.plan-card h1 {
+	font-size: 3rem;
+	font-weight: 500;
+}
+.plan-card .sub-b {
+	font-size: 1rem;
+	font-weight: 600;
+}
+.plan-card small {
+	font-size: 0.6875rem;
+	display: block;
+	line-height: 1.5;
+}
+.plan-card ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.plan-card ul li {
+	font-size: 0.6875rem;
+	border-bottom: 1px solid #30a260;
+	line-height: 1.2;
+}
+.plan-card ul li:before {
+	content: "\2713";
+    font-size: 15px;
+    margin-right: 5px;
+    border-right: 1px solid #30a260;
+    padding-right: 5px;
+    font-weight: 600;
+    color: #aaee9e;
+}
 .starter_seller {
 	background-color: #7BA4D8;
 	color: #fff;
@@ -2504,28 +2540,6 @@ select.file-uploade:after {
 	left: 76px;
 	height: 440px;
 	margin-top: 50px;
-}
-.starter_seller p {
-	font-size: 10px;
-	padding: 0px 20px;
-}
-.starter_seller i {
-	color: #B2F596;
-}
-.starter_seller_p1 {
-	font-family: 'Oswald', sans-serif;
-	font-size: 18px!important;
-}
-.starter_seller_list {
-	font-size: 10px;
-	margin-bottom: 0px;
-	text-align: left;
-	border-bottom: 1px solid #46A18C;
-	padding: 0px !important;
-}
-.starter_seller_h1 {
-	color: #fff;
-    font-size: 55px;
 }
 .service_provider {
 	background-color: #69BC88;
@@ -2541,29 +2555,6 @@ select.file-uploade:after {
     height: 440px;
     margin-top: 50px;
 }
-.service_provider p {
-	font-size: 10px;
-    padding: 0px 20px;
-}
-.service_provider i {
-	color: #B2F596;
-}
-.service_provider_p1 {
-	font-family: 'Oswald', sans-serif;
-	font-size: 18px!important;
-	
-}
-.service_provider_list {
-	font-size: 10px;
-	margin-bottom: 0px;
-	text-align: left;
-	border-bottom: 1px solid #46A18C;
-	padding: 0px !important;
-}
-.service_provider_h1 {
-	color: #fff;
-    font-size: 55px;
-}
 .lifestyle_provider {
 	background-color: #AB6C99;
     color: #fff;
@@ -2578,30 +2569,6 @@ select.file-uploade:after {
     height: 440px;
     margin-top: 50px;
 }
-.lifestyle_provider p {
-	font-size: 10px;
-    padding: 0px 20px;
-}
-
-.lifestyle_provider i {
-	color: #B2F596;
-}
-.lifestyle_provider_p1 {
-	font-family: 'Oswald', sans-serif;
-	font-size: 18px!important;
-	
-}
-.lifestyle_provider_list {
-	font-size: 10px;
-	margin-bottom: 0px;
-	text-align: left;
-	border-bottom: 1px solid #46A18C;
-	padding: 0px !important;
-}
-.lifestyle_provider_h1 {
-	color: #fff;
-    font-size: 55px;
-}
 .public_seller_pg {
 	background-color: #4178BB;
     color: #fff;
@@ -2613,52 +2580,6 @@ select.file-uploade:after {
     padding-left: 15px;
     padding-right: 15px;
 	min-height: 550px;
-}
-.public_seller_pg1 {
-    background-color: #D88505;
-    color: #fff;
-    padding-top: 50px;
-    border-radius: 70px;
-    width: 100%;
-    padding-left: 25px;
-    padding-right: 25px;
-    min-height: 550px;
-}
-.public_seller_pg p {
-	font-size: 10px;
-    padding: 0px 20px;
-}
-.public_seller_pg1 p {
-	font-size: 10px;
-    padding: 0px 20px;
-}
-.public_seller_pg1 i {
-	color: #B2F596;
-}
-.public_seller_pg i {
-	color: #B2F596;
-}
-.public_seller_pg_p1 {
-	font-family: 'Oswald', sans-serif;
-	font-size: 18px!important;
-}
-.public_seller_pg_list1 {
-    font-size: 10px;
-    margin-bottom: 0px;
-    text-align: left;
-    border-bottom: 1px solid #D17C04;
-    padding: 0px 48px 0px 48px !important;
-}
-.public_seller_pg_list {
-	font-size: 10px;
-	margin-bottom: 0px;
-	text-align: left;
-	border-bottom: 1px solid #46A18C;
-	padding: 0px !important;
-}
-.public_seller_pg_h1 {
-	color: #fff;
-    font-size: 55px;
 }
 .price_signup {
   margin: 11px 52px;
