@@ -352,15 +352,16 @@
 							<div class="col-md-5">
 								<div class="form-group">
 									<div class="input-group">
-										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status"	>
-											<option>{{objectKey orderStatusCode order.order_status}}</option>
-											{{#each orderStatusCode}}
-												{{#if (and 
-														(gte this ../order.order_status)
-														(lt this ../orderStatusCode.RETURNEDORDER))}}
-													<option value="{{this}}">{{objectKey ../orderStatusCode this}}</option>
-												{{/if}}
-											{{/each}}
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status">
+											{{#select (objectKey orderStatusCode order.order_status)}}
+												{{#each orderStatusCode}}
+													{{#if (and 
+															(gte this ../order.order_status)
+															(lt this ../orderStatusCode.RETURNEDORDER))}}
+														<option value="{{this}}">{{objectKey ../orderStatusCode this}}</option>
+													{{/if}}
+												{{/each}}
+											{{/select}}
 										</select>
 									</div>
 								</div>

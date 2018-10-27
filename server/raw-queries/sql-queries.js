@@ -113,7 +113,6 @@ let sqlQueries = {
 		return query;
 	},
 	productCountBasedCategory: function(productCountQueryParams) {
-		console.log("==========================",productCountQueryParams)
 		let baseQuery = "SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id LEFT OUTER JOIN (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '"+new Date().toISOString().slice(0,10)+"' AND vendor_plan.end_date >= '"+new Date().toISOString().slice(0,10)+"') on sub_category.id = product.sub_category_id";
 		let groupQuery = "GROUP BY sub_category.id ORDER by category.name"
 		if (productCountQueryParams.is_featured_product) {
