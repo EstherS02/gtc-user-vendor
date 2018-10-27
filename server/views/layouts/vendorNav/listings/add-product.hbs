@@ -7,41 +7,43 @@
 	imageFiles = {{{DisplayJSON productImages}}}
 	productBaseImage = {{{DisplayJSON productBaseImage}}}
 
-	$("#marketplace_type_id").change(function() {
+	$(document).ready(function() {
 
-		var marketplace_type_id = $('#marketplace_type_id').val();
+		$("#marketplace_type_id").change(function() {
 
-		if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }})
-		{
-			$(".priceDiv").hide();
-			$('#price').removeAttr('value');
-		}
-		else {
-			$(".priceDiv").show();
-			$("price").attr('value');
-		}
-		if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
-			$(".shippingDiv").hide();
-			$('#shipping_cost').removeAttr('value');
-		}
-		else {
-			$(".shippingDiv").show();
-			$("shipping_cost").attr('value');
-		}
+			var marketplace_type_id = $('#marketplace_type_id').val();
 
-		if (marketplace_type_id == {{ marketplaceTypeCode.WTT }}) {
-			$(".exchangingProductDiv").show();
-			$(".exchangingProductQuantityDiv").show();
-			$("exchanging_product").attr('value');
-			$("exchanging_product_quantity").attr('value');
-		}
-		else {
-			$(".exchangingProductDiv").hide();
-			$(".exchangingProductQuantityDiv").hide();
-			$('#exchanging_product').removeAttr('value');
-			$('#exchanging_product_quantity').removeAttr('value');
-		}  
-		      
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }})
+			{
+				$(".priceDiv").hide();
+				$('#price').removeAttr('value');
+			}
+			else {
+				$(".priceDiv").show();
+				$("price").attr('value');
+			}
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
+				$(".shippingDiv").hide();
+				$('#shipping_cost').removeAttr('value');
+			}
+			else {
+				$(".shippingDiv").show();
+				$("shipping_cost").attr('value');
+			}
+
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTT }}) {
+				$(".exchangingProductDiv").show();
+				$(".exchangingProductQuantityDiv").show();
+				$("exchanging_product").attr('value');
+				$("exchanging_product_quantity").attr('value');
+			}
+			else {
+				$(".exchangingProductDiv").hide();
+				$(".exchangingProductQuantityDiv").hide();
+				$('#exchanging_product').removeAttr('value');
+				$('#exchanging_product_quantity').removeAttr('value');
+			}  				
+		});
 	});
 </script>
 
@@ -256,7 +258,9 @@
 									</div>
 									<div class="col-lg-4">
 										<div class="form-group">
-											<label class="label-control">State</label>
+											<label class="label-control">State
+												<span class="text-danger">*</span>
+											</label>
 											<div class="input-group">
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state" value="">
 													{{#if editProduct.state_id}}
@@ -288,6 +292,7 @@
 									<div class="col-lg-4 priceDiv">
 										<div class="form-group">
 											<label class="label-control">Price
+												<span class="text-danger">*</span>
 											</label>
 											<input type="text" name="price" id="price" class="form-control-customized form-control-sm" value="{{editProduct.price}}">
 										</div>
@@ -356,13 +361,13 @@
 									<div class="col-lg-4">
 										<div class="form-group">
 											<label class="label-control">Sale start date & time</label>
-											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_start_date}}value="{{formatTime editProduct.exclusive_start_date "YYYY/MM/DD hh:mm"}}" {{/if}} name="exclusive_start_date" id="exclusive_start_date" disabled>
+											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_start_date}}value="{{formatTime editProduct.exclusive_start_date "YYYY/MM/DD HH:mm"}}" {{/if}} name="exclusive_start_date" id="exclusive_start_date" disabled>
 										</div>
 									</div>
 									<div class="col-lg-4">
 										<div class="form-group">
 											<label class="label-control">Sale end date & time</label>
-											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_end_date}}value="{{formatTime editProduct.exclusive_end_date "YYYY/MM/DD hh:mm"}}" {{/if}} name="exclusive_end_date" id="exclusive_end_date" disabled>
+											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_end_date}}value="{{formatTime editProduct.exclusive_end_date "YYYY/MM/DD HH:mm"}}" {{/if}} name="exclusive_end_date" id="exclusive_end_date" disabled>
 										</div>
 									</div>
 									<div class="col-lg-4">

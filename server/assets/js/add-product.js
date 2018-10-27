@@ -258,6 +258,7 @@ $(document).ready(function() {
 				}
 			},
 			product_location: "required",
+			state_id: "required",
 			sku: {
 				required: true,
 			},
@@ -278,6 +279,15 @@ $(document).ready(function() {
 				dollarsscents: true
 			},
 			status: "required",
+			price:{
+				required:function(){
+					if($("select[name=marketplace_type_id]").val() == 2 || $("select[name=marketplace_type_id]").val() == 3 || $("select[name=marketplace_type_id]").val() == 4){
+						return false;
+					}else{
+						return true;
+					}		
+				}
+			},
 			moq: {
 				required: function() {
 					if ($("input[name=marketplace]").val() == 'Private Wholesale Marketplace') {
@@ -319,7 +329,8 @@ $(document).ready(function() {
 					if ($('#exclusive_sale').is(":checked")) {
 						return true;
 					} else { return false; }
-				}
+				},
+				lesserThan: 'currentDate'
 			},
 			exclusive_end_date:{
 				required: function() {
@@ -336,6 +347,7 @@ $(document).ready(function() {
 					} else { return false; }
 				},
 				number: true,
+				min: 0.01,
 				dollarsscents: true
 			},
 			baseImage: {
@@ -354,6 +366,7 @@ $(document).ready(function() {
 			sub_category_id: "Please select product sub-category",
 			marketplace_type_id: "Please select Type",
 			product_location: "Please select product origin",
+			state_id:"Please select product state",
 			sku: {
 				required: "Please enter Stock Keeping Unit"
 			},
@@ -382,7 +395,10 @@ $(document).ready(function() {
 				digits: "Please enter a valid days"
 			},		
 			subscription_duration_unit: "Please select subscription duration type",
-			exclusive_start_date: "Please enter sales start date",
+			exclusive_start_date: {
+				required: "Please enter sales start date",
+				lesserThan: "Start date can't be less than current date and time"
+			},
 			exclusive_end_date: {
 				required: "Please enter sales end date",
 				greaterThan: "End date should be greater than start date"
@@ -390,6 +406,7 @@ $(document).ready(function() {
 			exclusive_offer: {
 				required: "Please enter offer amount",
 				number: "Please enter valid offer percentage",
+				min: "Please enter valid offer percentage",
 				dollarsscents: "Only two decimal values accepted"
 			},
 			baseImage: {
@@ -411,6 +428,17 @@ $(document).ready(function() {
 
 		if (!/Invalid|NaN/.test(new Date(value))) {
 			return new Date(value) > new Date($(params).val());
+		}
+
+		return isNaN(value) && isNaN($(params).val()) 
+			|| (Number(value) > Number($(params).val())); 
+	},'Must be greater than {0}.');
+
+	$.validator.addMethod("lesserThan", 
+	function(value, element, params) {
+
+		if (!/Invalid|NaN/.test(new Date(value))) {
+			return new Date(value) >= new Date();
 		}
 
 		return isNaN(value) && isNaN($(params).val()) 
@@ -619,10 +647,12 @@ $(document).ready(function() {
 
 		var featurePosition = $('[class="positions"]');
 		var featurePositionCount = 0;
+		var checkedFeaturePositions = [];
 
 		for (var i = 0, l = featurePosition.length; i < l; i++) {
 			if (featurePosition[i].checked) {
 				featurePositionCount = featurePositionCount + 1;
+				checkedFeaturePositions.push(featurePosition[i].name);
 			}
 		}
 		
@@ -631,41 +661,64 @@ $(document).ready(function() {
 			return;
 		}
 
-		if ($('#featureForm').valid()) {
+		featureProductInput = $("#featureForm :input").filter(function(index, element) {
+			return $(element).val() != '';
+		}).serialize();
 
-			var featureStartDate, featureEndDate, from, to, featureDuration, amount, totalFeatureFees, sum;
-			featureStartDate = $('#start_date').val();
-
-			featureProductInput = $("#featureForm :input").filter(function(index, element) {
-				return $(element).val() != '';
-			}).serialize();
-
-			if($('#end_date').val()){
-
-				featureEndDate = $('#end_date').val();
-				from = moment(featureStartDate, 'YYYY-MM-DD'); 
-				to = moment(featureEndDate, 'YYYY-MM-DD');
-				featureDuration = to.diff(from, 'days');
-
-				amount = $("#totalFees").html();
-
-				sum = amount * featureDuration / 28;
-				totalFeatureFees = sum.toFixed(2);
-
-				$("#feature_total").html(totalFeatureFees);
-				$("#feature_start_date").html(featureStartDate);
-				$("#feature_end_date").html(featureEndDate);
-
-			}else{
-				totalFeatureFees  = $("#totalFees").html();
-				$("#feature_total").html(totalFeatureFees);
-				$("#feature_start_date").html(featureStartDate);
-				$("#feature_end_date").html('Indefinitely');	
-			}
-
-			$('#featureModal').modal('hide');
-			$('#featurePaymentModal').modal('show');
+		if(checkedFeaturePositions.length == 1 && checkedFeaturePositions[0] == 'position_profilepage'){
+			featureProductInput = featureProductInput+'&product_id='+ product_id;
+			$.ajax({
+				url: '/api/product/feature',
+				type: 'POST',
+				data: featureProductInput,
+				success: function(data) {
+					$('#feature_response_message').html(data.message);
+					$('#feature_response_message_details').html(data.messageDetails);
+					$('#featureModal').modal('hide');
+					$('#feature-success-modal').modal('show');
+				},
+				error: function(error) {
+					$('#feature_response_message').html(error.responseJSON.message);
+					$('#feature_response_message_details').html(error.responseJSON.messageDetails);
+					$('#featureModal').modal('hide');
+					$('#feature-success-modal').modal('show');
+				}
+			});
 		}
+		else{
+
+			if ($('#featureForm').valid()) {
+
+				var featureStartDate, featureEndDate, from, to, featureDuration, amount, totalFeatureFees, sum;
+				featureStartDate = $('#start_date').val();
+	
+				if($('#end_date').val()){
+	
+					featureEndDate = $('#end_date').val();
+					from = moment(featureStartDate, 'YYYY-MM-DD'); 
+					to = moment(featureEndDate, 'YYYY-MM-DD');
+					featureDuration = to.diff(from, 'days');
+	
+					amount = $("#totalFees").html();
+	
+					sum = amount * featureDuration / 28;
+					totalFeatureFees = sum.toFixed(2);
+	
+					$("#feature_total").html(totalFeatureFees);
+					$("#feature_start_date").html(featureStartDate);
+					$("#feature_end_date").html(featureEndDate);
+	
+				}else{
+					totalFeatureFees  = $("#totalFees").html();
+					$("#feature_total").html(totalFeatureFees);
+					$("#feature_start_date").html(featureStartDate);
+					$("#feature_end_date").html('Indefinitely');	
+				}
+	
+				$('#featureModal').modal('hide');
+				$('#featurePaymentModal').modal('show');
+			}
+		}	
 	});
 
 	$("#featurePaymentForm").validate({

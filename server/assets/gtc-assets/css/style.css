@@ -2613,6 +2613,9 @@ select.file-uploade:after {
 .reporting_content .reporting_top_performing .top_perf_product_name {
     font-size: 13px;
     margin-bottom: 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .reporting_content .reporting_top_performing .top_perf_product_price {
