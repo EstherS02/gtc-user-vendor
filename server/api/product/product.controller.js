@@ -1371,6 +1371,47 @@ export function featureProductWithPayment(req, res) {
 					"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
 					"errorDescription": error
 				});
-			})
+			});
+	}
+}
+
+export function featureProductWithoutPayment(req, res){
+	if (req.body.product_id) {
+		var featureQueryObj = {
+			product_id: req.body.product_id
+		}
+		service.findOneRow('FeaturedProduct', featureQueryObj)
+			.then(function(row) {
+				if (!row) {
+					var featuredProductBodyParam = req.body;
+					featuredProductBodyParam['status'] =status.ACTIVE;
+					featuredProductBodyParam['feature_status'] = status[req.body.feature_status]
+					service.createRow('FeaturedProduct', featuredProductBodyParam)
+						.then(function(featuredRow) {
+							return res.status(200).send({
+								"message": "SUCCESS",
+								"messageDetails": "Product Featured Successfully"
+							});
+						}).catch(function(error) {
+							console.log("Error::",error);
+							return res.status(400).send({
+								"message": "ERROR",
+								"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
+								"errorDescription": error
+							});
+						})
+				}else {
+						return res.status(200).send({
+							"message": "MESSAGE",
+							"messageDetails": "You have already featured this product."
+						});
+					}
+			}).catch(function(error) {
+				return res.status(500).send({
+					"message": "ERROR",
+					"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
+					"errorDescription": error
+				});
+			});
 	}
 }

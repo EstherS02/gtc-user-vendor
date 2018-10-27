@@ -103,7 +103,7 @@ module.exports = (sequelize, DataTypes) => {
 		payment_id: {
             type: DataTypes.BIGINT,
             field: 'payment_id',
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'payment',
                 key: 'id'
