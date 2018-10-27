@@ -64,10 +64,11 @@ export function shop(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
-			queryObj['position']= 'position_shop_landing';
+			const tempLimit = 6;
+			queryObj['position'] = 'position_shop_landing';
 			queryObj['is_featured_product'] = 1;
-			limit = 6;
-			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, tempLimit)
 				.then(function(results) {
 					return callback(null, results);
 				}).catch(function(error) {

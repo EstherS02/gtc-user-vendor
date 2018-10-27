@@ -65,10 +65,11 @@ export function services(req, res) {
 				});
 		},
 		featuredService: function(callback) {
+			const tempLimit = 6;
 			queryObj['position'] = 'position_service_landing';
 			queryObj['is_featured_product'] = 1;
-			limit = 6;
-			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, tempLimit)
 				.then(function(results) {
 					return callback(null, results);
 				}).catch(function(error) {
