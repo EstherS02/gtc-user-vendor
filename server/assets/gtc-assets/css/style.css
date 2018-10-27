@@ -2593,6 +2593,13 @@ select.file-uploade:after {
   border-color: initial;
   border-image: initial;
 }
+.hr-line-dashed {
+	border-top: 1px dashed #e7eaec;
+    color: #ffffff;
+    background-color: #ffffff;
+    height: 1px;
+    margin: 20px 0;
+}
 /* Reporting new styles */
 
 .reporting_content .reporting_date_range .date_range_group {
