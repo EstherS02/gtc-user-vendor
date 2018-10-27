@@ -258,6 +258,7 @@ $(document).ready(function() {
 				}
 			},
 			product_location: "required",
+			state_id: "required",
 			sku: {
 				required: true,
 			},
@@ -278,6 +279,15 @@ $(document).ready(function() {
 				dollarsscents: true
 			},
 			status: "required",
+			price:{
+				required:function(){
+					if($("select[name=marketplace_type_id]").val() == 2 || $("select[name=marketplace_type_id]").val() == 3 || $("select[name=marketplace_type_id]").val() == 4){
+						return false;
+					}else{
+						return true;
+					}		
+				}
+			},
 			moq: {
 				required: function() {
 					if ($("input[name=marketplace]").val() == 'Private Wholesale Marketplace') {
@@ -319,7 +329,8 @@ $(document).ready(function() {
 					if ($('#exclusive_sale').is(":checked")) {
 						return true;
 					} else { return false; }
-				}
+				},
+				lesserThan: 'currentDate'
 			},
 			exclusive_end_date:{
 				required: function() {
@@ -336,6 +347,7 @@ $(document).ready(function() {
 					} else { return false; }
 				},
 				number: true,
+				min: 0.01,
 				dollarsscents: true
 			},
 			baseImage: {
@@ -354,6 +366,7 @@ $(document).ready(function() {
 			sub_category_id: "Please select product sub-category",
 			marketplace_type_id: "Please select Type",
 			product_location: "Please select product origin",
+			state_id:"Please select product state",
 			sku: {
 				required: "Please enter Stock Keeping Unit"
 			},
@@ -382,7 +395,10 @@ $(document).ready(function() {
 				digits: "Please enter a valid days"
 			},		
 			subscription_duration_unit: "Please select subscription duration type",
-			exclusive_start_date: "Please enter sales start date",
+			exclusive_start_date: {
+				required: "Please enter sales start date",
+				lesserThan: "Start date can't be less than current date and time"
+			},
 			exclusive_end_date: {
 				required: "Please enter sales end date",
 				greaterThan: "End date should be greater than start date"
@@ -390,6 +406,7 @@ $(document).ready(function() {
 			exclusive_offer: {
 				required: "Please enter offer amount",
 				number: "Please enter valid offer percentage",
+				min: "Please enter valid offer percentage",
 				dollarsscents: "Only two decimal values accepted"
 			},
 			baseImage: {
@@ -411,6 +428,17 @@ $(document).ready(function() {
 
 		if (!/Invalid|NaN/.test(new Date(value))) {
 			return new Date(value) > new Date($(params).val());
+		}
+
+		return isNaN(value) && isNaN($(params).val()) 
+			|| (Number(value) > Number($(params).val())); 
+	},'Must be greater than {0}.');
+
+	$.validator.addMethod("lesserThan", 
+	function(value, element, params) {
+
+		if (!/Invalid|NaN/.test(new Date(value))) {
+			return new Date(value) >= new Date();
 		}
 
 		return isNaN(value) && isNaN($(params).val()) 

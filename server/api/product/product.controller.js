@@ -135,10 +135,12 @@ export async function create(req, res) {
 	req.checkBody('state_id', 'Missing Query Param').notEmpty();
 	req.checkBody('city', 'Missing Query Param').notEmpty();
 	req.checkBody('quantity_available', 'Missing Query Param').notEmpty();
-	req.checkBody('price', 'Missing Query Param').notEmpty();
+	// Price not required for WTB,WTT,RFQ 
+	//req.checkBody('price', 'Missing Query Param').notEmpty();
 	req.checkBody('exclusive_sale', 'Missing Query Param').notEmpty();
 
-	if (req.body.marketplace_id === marketplace['WHOLESALE']) {
+	//if (req.body.marketplace_id === marketplace['WHOLESALE']) { // Not correct syntax
+	if (req.body.marketplace_id == marketplace['WHOLESALE']) {
 		req.checkBody('marketplace_type_id', 'Missing Query Param').notEmpty();
 		req.checkBody('moq', 'Missing Query Param').notEmpty();
 	} else {
@@ -274,9 +276,11 @@ export async function edit(req, res) {
 	req.checkBody('state_id', 'Missing Query Param').notEmpty();
 	req.checkBody('city', 'Missing Query Param').notEmpty();
 	req.checkBody('quantity_available', 'Missing Query Param').notEmpty();
-	req.checkBody('price', 'Missing Query Param').notEmpty();
+	// Price not required for WTB,WTT,RFQ 
+	//req.checkBody('price', 'Missing Query Param').notEmpty();
 
-	if (req.body.marketplace_id === marketplace['WHOLESALE']) {
+	//if (req.body.marketplace_id === marketplace['WHOLESALE']) {  // Not correct syntax
+	if (req.body.marketplace_id == marketplace['WHOLESALE']) {
 		req.checkBody('marketplace_type_id', 'Missing Query Param').notEmpty();
 		req.checkBody('moq', 'Missing Query Param').notEmpty();
 	} else {
