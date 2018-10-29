@@ -60,7 +60,7 @@
             {{/if}}
             {{/if}}
           </div>
-          <div class="panel-footer panel-body">
+          <div class="panel-footer panel-body" id="panelOpen">
             <div class="input-group text-background" id="sendbody">
               <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." required="required"
               />
@@ -75,7 +75,13 @@
 
 
     <script>
+		$(document).ready(function() {
+          $('#messagebody').hide();
+		  $('#panelOpen').hide();
+		
+		});
       $(function(){
+		 
        // console.log("TalkThreads", {{{ DisplayJSON talkThreads }}})
         if({{{ DisplayJSON LoggedInUser.id }}} != null){
           var socketChat = {
@@ -133,15 +139,17 @@
       $(document).on('click', '.panel-heading span.icon_minim', function (e) {
         var $this = $(this);
         if (!$this.hasClass('panel-collapsed')) {
-          $this.parents('.panel').find('.panel-body').slideUp(500);
+		  $this.parents('.panel').find('.panel-body').slideUp(500);
           $this.addClass('panel-collapsed');
           $this.removeClass('glyphicon-minus').addClass('glyphicon-plus');
-           $("#sendbody").show();
-        } else {
-         
-          $this.parents('.panel').find('.panel-body').slideDown(500);
+          $('#messagebody').show();
+		  $("#panelOpen").show();
+		  } else {
+		  $this.parents('.panel').find('.panel-body').slideDown(500);
           $this.removeClass('panel-collapsed');
           $this.removeClass('glyphicon-plus').addClass('glyphicon-minus');
+		  $('#messagebody').hide();
+		  $("#panelOpen").hide();
         }
       });
       $(document).on('focus', '.panel-footer input.chat_input', function (e) {
