@@ -10,7 +10,7 @@ const RawQueries = require('../../raw-queries/sql-queries');
 const roles = require('../../config/roles');
 const model = require('../../sqldb/model-connect');
 
-export function vendorOrderFollowers(modelName, querObj, includeArray, groupBy) {
+export function orderVendorFollowers(modelName, querObj, includeArray, groupBy) {
 	return new Promise((resolve, reject) => {
 		model[modelName].findAll({
 			where: querObj,

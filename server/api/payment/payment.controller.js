@@ -32,13 +32,13 @@ export async function makePayment(req, res) {
 	var cartItems = [];
 	var cartEmptyPromises = [];
 	var orderItemsPromises = [];
-	var vendorOrderPromises = [];
+	var orderVendorPromises = [];
 	var productQuantityPromises = [];
 	const cartModelName = "Cart";
 	const productModelName = "Product";
 	const paymentModelName = "Payment";
 	const orderModelName = "OrdersNew";
-	const vendorOrderModelName = "VendorOrder";
+	const orderVendorModelName = "OrderVendor";
 	const orderItemModelName = "OrdersItemsNew";
 	const paymentSettingModelName = "PaymentSetting";
 	const agenda = require('../../app').get('agenda');
@@ -141,7 +141,7 @@ export async function makePayment(req, res) {
 
 				if (vendorArray.indexOf(cartItem.Product.vendor_id) == -1) {
 					vendorArray.push(cartItem.Product.vendor_id);
-					vendorOrderPromises.push(service.createRow(vendorOrderModelName, {
+					orderVendorPromises.push(service.createRow(orderVendorModelName, {
 						order_id: newOrder.id,
 						vendor_id: cartItem.Product.vendor_id,
 						status: status['ACTIVE'],

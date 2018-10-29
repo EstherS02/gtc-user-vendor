@@ -51,7 +51,7 @@ export function confirmation(req, res) {
 				});
 		},
 		orderVendors: function(callback) {
-			const vendorOrderModelName = "VendorOrder";
+			const orderVendorModelName = "OrderVendor";
 			const groupBy = "id";
 			const includeArray = [{
 				model: model['OrdersNew'],
@@ -73,7 +73,7 @@ export function confirmation(req, res) {
 				}]
 			}];
 
-			vendorservice.vendorOrderFollowers(vendorOrderModelName, {
+			vendorservice.orderVendorFollowers(orderVendorModelName, {
 				order_id: orderID
 			}, includeArray, groupBy).then((response) => {
 				return callback(null, response);

@@ -329,7 +329,7 @@ belongs to        coupon                                   as Coupon
 OrdersNew
 ---------
 has many          orders_items_new                         as FkOrdersItemNew1s 
-has many          vendor_orders                            as FkVendorOrder1s 
+has many          order_vendor                            as FkVendorOrder1s 
 belongs to        users                                    as User 
 belongs to        payment                                  as Payment 
 belongs to        shipping                                 as Shipping 
@@ -691,7 +691,7 @@ has many          talk_setting                             as FkTalkSetting1s
 has many          terms_and_cond                           as TermsAndCondIbfk1s 
 has many          vendor_follower                          as FkVendorFollower1s 
 has many          vendor_notification_setting              as FkVendorNotificationSetting1s 
-has many          vendor_orders                            as FkVendorOrder2s 
+has many          order_vendor                            as FkVendorOrder2s 
 has many          vendor_plan                              as FkVendorPlan1s 
 has many          vendor_rating                            as FkVendorRating1s 
 has many          vendor_shipping_location                 as FkVendorShippingLocation1s 

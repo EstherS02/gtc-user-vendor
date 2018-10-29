@@ -136,7 +136,7 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const OrdersNew = model.OrdersNew;
     const OrdersItemsNew = model.OrdersItemsNew;
-    const VendorOrder = model.VendorOrder;
+    const OrderVendor = model.OrderVendor;
     const User = model.User;
     const Payment = model.Payment;
     const Shipping = model.Shipping;
@@ -151,7 +151,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    OrdersNew.hasMany(VendorOrder, {
+    OrdersNew.hasMany(OrderVendor, {
         foreignKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -206,7 +206,7 @@ module.exports.initRelations = () => {
     });
 
     OrdersNew.belongsToMany(Vendor, {
-        through: VendorOrder,
+        through: OrderVendor,
         foreignKey: 'order_id',
         otherKey: 'vendor_id',
         onDelete: 'NO ACTION',

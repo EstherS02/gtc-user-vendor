@@ -15,7 +15,7 @@ module.exports = async function(job, done) {
 	const orderID = job.attrs.data.order;
 	const orderModelName = "OrdersNew";
 	var emailTemplateModel = 'EmailTemplate';
-	const vendorOrderModelName = "VendorOrder";
+	const orderVendorModelName = "OrderVendor";
 	const orderItemModelName = "OrdersItemsNew";
 
 	const includeOrderArray = [{
@@ -55,7 +55,7 @@ module.exports = async function(job, done) {
 			name: "GTC-ORDER-DETAIL-NEW"
 		});
 
-		const vendorOrderEmailTemplate = await service.findOneRow("EmailTemplate", {
+		const orderVendorEmailTemplate = await service.findOneRow("EmailTemplate", {
 			name: "GTC-VENDOR-ORDER-DETAIL"
 		});
 
@@ -63,7 +63,7 @@ module.exports = async function(job, done) {
 			id: orderID
 		}, includeOrderArray);
 
-		const vendorOrderResponse = await model[vendorOrderModelName].findAll({
+		const orderVendorResponse = await model[orderVendorModelName].findAll({
 			where: {
 				order_id: orderID,
 				vendor_id: {
@@ -107,7 +107,7 @@ module.exports = async function(job, done) {
 				}]
 			}]
 		});
-		var vendorOrders = await JSON.parse(JSON.stringify(vendorOrderResponse));
+		var orderVendors = await JSON.parse(JSON.stringify(orderVendorResponse));
 
 		var userOrderSubject = userOrderEmailTemplate.subject;
 		var userOrderTemplate = Handlebars.compile(userOrderEmailTemplate.body);
@@ -115,19 +115,19 @@ module.exports = async function(job, done) {
 		var userOrderResult = userOrderTemplate(userOrderResponse);
 
 
-		await Promise.all(vendorOrders.map(async (vendorOrder, i) => {
-			vendorOrders[i].OrdersNew.total_price = await _.sumBy(vendorOrder.OrdersNew.OrdersItemsNews, function(o) {
+		await Promise.all(orderVendors.map(async (orderVendor, i) => {
+			orderVendors[i].OrdersNew.total_price = await _.sumBy(orderVendor.OrdersNew.OrdersItemsNews, function(o) {
 				return parseFloat(o.final_price);
 			});
-			var vendorOrderSubject = vendorOrderEmailTemplate.subject;
-			var vendorOrderTemplate = Handlebars.compile(vendorOrderEmailTemplate.body);
-			vendorOrder.OrdersNew.ordered_date = moment(vendorOrder.OrdersNew.ordered_date).format('MMM D, Y');
-			var vendorOrderResult = vendorOrderTemplate(vendorOrder.OrdersNew);
-			if (vendorOrder.Vendor.contact_email) {
+			var orderVendorSubject = orderVendorEmailTemplate.subject;
+			var orderVendorTemplate = Handlebars.compile(orderVendorEmailTemplate.body);
+			orderVendor.OrdersNew.ordered_date = moment(orderVendor.OrdersNew.ordered_date).format('MMM D, Y');
+			var orderVendorResult = orderVendorTemplate(orderVendor.OrdersNew);
+			if (orderVendor.Vendor.contact_email) {
 				await sendEmail({
-					to: vendorOrder.Vendor.contact_email,
-					subject: vendorOrderSubject,
-					html: vendorOrderResult
+					to: orderVendor.Vendor.contact_email,
+					subject: orderVendorSubject,
+					html: orderVendorResult
 				});
 			}
 		}));

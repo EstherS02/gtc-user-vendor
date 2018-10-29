@@ -51,6 +51,7 @@ function init(sequelize) {
     model.Order = sequelize.import('./definition/orders.js');
     model.OrdersItemsNew = sequelize.import('./definition/orders-items-new.js');
     model.OrdersNew = sequelize.import('./definition/orders-new.js');
+    model.OrderVendor = sequelize.import('./definition/order-vendor.js');
     model.Payment = sequelize.import('./definition/payment.js');
     model.PaymentSetting = sequelize.import('./definition/payment-setting.js');
     model.Plan = sequelize.import('./definition/plan.js');
@@ -86,7 +87,6 @@ function init(sequelize) {
     model.VendorFollower = sequelize.import('./definition/vendor-follower.js');
     model.VendorNotification = sequelize.import('./definition/vendor-notification.js');
     model.VendorNotificationSetting = sequelize.import('./definition/vendor-notification-setting.js');
-    model.VendorOrder = sequelize.import('./definition/vendor-orders.js');
     model.VendorPlan = sequelize.import('./definition/vendor-plan.js');
     model.VendorRating = sequelize.import('./definition/vendor-rating.js');
     model.VendorShippingLocation = sequelize.import('./definition/vendor-shipping-location.js');
@@ -135,6 +135,7 @@ function init(sequelize) {
     require('./definition/orders.js').initRelations();
     require('./definition/orders-items-new.js').initRelations();
     require('./definition/orders-new.js').initRelations();
+    require('./definition/order-vendor.js').initRelations();
     require('./definition/payment.js').initRelations();
     require('./definition/payment-setting.js').initRelations();
     require('./definition/plan.js').initRelations();
@@ -170,7 +171,6 @@ function init(sequelize) {
     require('./definition/vendor-follower.js').initRelations();
     require('./definition/vendor-notification.js').initRelations();
     require('./definition/vendor-notification-setting.js').initRelations();
-    require('./definition/vendor-orders.js').initRelations();
     require('./definition/vendor-plan.js').initRelations();
     require('./definition/vendor-rating.js').initRelations();
     require('./definition/vendor-shipping-location.js').initRelations();

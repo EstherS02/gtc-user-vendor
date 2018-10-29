@@ -210,7 +210,7 @@ module.exports.initRelations = () => {
     const TermsAndCond = model.TermsAndCond;
     const VendorFollower = model.VendorFollower;
     const VendorNotificationSetting = model.VendorNotificationSetting;
-    const VendorOrder = model.VendorOrder;
+    const OrderVendor = model.OrderVendor;
     const VendorPlan = model.VendorPlan;
     const VendorRating = model.VendorRating;
     const VendorShippingLocation = model.VendorShippingLocation;
@@ -289,7 +289,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Vendor.hasMany(VendorOrder, {
+    Vendor.hasMany(OrderVendor, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -462,7 +462,7 @@ module.exports.initRelations = () => {
     });
 
     Vendor.belongsToMany(OrdersNew, {
-        through: VendorOrder,
+        through: OrderVendor,
         foreignKey: 'vendor_id',
         otherKey: 'order_id',
         onDelete: 'NO ACTION',
