@@ -1,9 +1,12 @@
 'use strict';
 
+var fs = require('fs');
 var async = require("async");
+var https = require('https');
 const moment = require('moment');
 const sequelize = require('sequelize');
 const service = require('../service');
+const config = require('../../config/environment');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const Sequelize_Instance = require('../../sqldb/index');
@@ -355,7 +358,6 @@ export function importAliExpressProducts(product, user) {
 					newProductObj['quantity_available'] = 0;
 					newProductObj['sub_category_id'] = otherSubCategoryId;
 					newProductObj['price'] = product.variations[0].pricing;
-					//newProductObj['description'] = product.description;
 					newProductObj['product_location'] = user.Vendor.Country.id;
 					newProductObj['city'] = user.Vendor.city;
 					newProductObj['city_id'] = user.Vendor.city_id;
@@ -365,7 +367,7 @@ export function importAliExpressProducts(product, user) {
 				} else {
 					return Promise.reject(true);
 				}
-			}).then((newProduct) => {
+			}).then(async (newProduct) => {
 				var productMedias = [];
 				for (let i = 0; i < product.pics.length; i++) {
 					var productMediaObj = {};
@@ -373,7 +375,12 @@ export function importAliExpressProducts(product, user) {
 						productMediaObj['product_id'] = newProduct.id;
 						productMediaObj['type'] = 1;
 						productMediaObj['status'] = status['ACTIVE'];
-						productMediaObj['url'] = product.pics[i];
+
+						const timeInMilliSeconds = new Date().getTime();
+						const filename = timeInMilliSeconds + "-" + product.pics[i].substring(product.pics[i].lastIndexOf('/') + 1);
+						const url = await download(product.pics[i], filename);
+
+						productMediaObj['url'] = config.imageUrlRewritePath.base + "products/" + url;
 						productMediaObj['base_image'] = 1;
 						productMediaObj['created_on'] = new Date();
 						productMediaObj['created_by'] = user.first_name;
@@ -381,7 +388,12 @@ export function importAliExpressProducts(product, user) {
 						productMediaObj['product_id'] = newProduct.id;
 						productMediaObj['type'] = 1;
 						productMediaObj['status'] = status['ACTIVE'];
-						productMediaObj['url'] = product.pics[i];
+
+						const timeInMilliSeconds = new Date().getTime();
+						const filename = timeInMilliSeconds + "-" + product.pics[i].substring(product.pics[i].lastIndexOf('/') + 1);
+						const url = await download(product.pics[i], filename);
+
+						productMediaObj['url'] = config.imageUrlRewritePath.base + "products/" + url;
 						productMediaObj['base_image'] = 0;
 						productMediaObj['created_on'] = new Date();
 						productMediaObj['created_by'] = user.first_name;
@@ -396,6 +408,23 @@ export function importAliExpressProducts(product, user) {
 			});
 	});
 }
+
+var download = function(url, filename) {
+	return new Promise((resolve, reject) => {
+		var destination = config.images_base_path + "/products/" + filename;
+		var file = fs.createWriteStream(destination);
+		var request = https.get(url, function(response) {
+			response.pipe(file);
+			file.on('finish', function() {
+				file.close();
+				return resolve(filename);
+			});
+		}).on('error', function(error) {
+			fs.unlink(destination);
+			return reject(error)
+		});
+	});
+};
 
 export function importWooCommerceProducts(product, req) {
 
