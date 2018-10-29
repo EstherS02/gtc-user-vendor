@@ -74,6 +74,7 @@ module.exports.initRelations = () => {
     const OrderPayment = model.OrderPayment;
     const OrderPaymentEscrow = model.OrderPaymentEscrow;
     const OrdersNew = model.OrdersNew;
+    const OrderVendorPaymentEscrow = model.OrderVendorPaymentEscrow;
     const ProductAdsSetting = model.ProductAdsSetting;
     const UserPlan = model.UserPlan;
     const VendorPlan = model.VendorPlan;
@@ -86,6 +87,12 @@ module.exports.initRelations = () => {
     const State = model.State;
     const Vendor = model.Vendor;
     const Plan = model.Plan;
+
+    Payment.hasMany(OrderVendorPaymentEscrow, {
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
 
     Payment.hasMany(FeaturedProduct, {
         foreignKey: 'payment_id',

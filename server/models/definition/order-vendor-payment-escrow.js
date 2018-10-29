@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('OrderVendor', {
+    return sequelize.define('OrderVendorPaymentEscrow', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,23 +9,23 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        order_id: {
+        order_vendor_id: {
             type: DataTypes.BIGINT,
-            field: 'order_id',
+            field: 'order_vendor_id',
             allowNull: false,
             references: {
-                model: 'orders_new',
+                model: 'order_vendor',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        vendor_id: {
+        payment_id: {
             type: DataTypes.BIGINT,
-            field: 'vendor_id',
+            field: 'payment_id',
             allowNull: false,
             references: {
-                model: 'vendor',
+                model: 'payment',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'order_vendor',
+        tableName: 'order_vendor_payment_escrow',
         timestamps: false
     });
 };
@@ -71,25 +71,18 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const OrderVendor = model.OrderVendor;
     const OrderVendorPaymentEscrow = model.OrderVendorPaymentEscrow;
-    const OrdersNew = model.OrdersNew;
-    const Vendor = model.Vendor;
+    const OrderVendor = model.OrderVendor;
+    const Payment = model.Payment;
 
-    OrderVendor.hasMany(OrderVendorPaymentEscrow, {
+    OrderVendorPaymentEscrow.belongsTo(OrderVendor, {
         foreignKey: 'order_vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    OrderVendor.belongsTo(OrdersNew, {
-        foreignKey: 'order_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    OrderVendor.belongsTo(Vendor, {
-        foreignKey: 'vendor_id',
+    OrderVendorPaymentEscrow.belongsTo(Payment, {
+        foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
