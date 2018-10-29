@@ -103,7 +103,6 @@ export function addProduct(req, res) {
 		editProduct: function(callback) {
 			service.findIdRow('Product', editProductId, productIncludeArr)
 				.then(function(editProduct) {
-					console.log("=================================================",editProduct);
 					return callback(null, editProduct);
 
 				}).catch(function(error) {

@@ -263,6 +263,13 @@ $(document).ready(function() {
 				required: true,
 			},
 			price: {
+				required:function(){
+					if($("select[name=marketplace_type_id]").val() == 2 || $("select[name=marketplace_type_id]").val() == 3 || $("select[name=marketplace_type_id]").val() == 4){
+						return false;
+					}else{
+						return true;
+					}		
+				},
 				number: true,
 				dollarsscents: true
 			},
@@ -279,15 +286,6 @@ $(document).ready(function() {
 				dollarsscents: true
 			},
 			status: "required",
-			price:{
-				required:function(){
-					if($("select[name=marketplace_type_id]").val() == 2 || $("select[name=marketplace_type_id]").val() == 3 || $("select[name=marketplace_type_id]").val() == 4){
-						return false;
-					}else{
-						return true;
-					}		
-				}
-			},
 			moq: {
 				required: function() {
 					if ($("input[name=marketplace]").val() == 'Private Wholesale Marketplace') {
@@ -371,6 +369,7 @@ $(document).ready(function() {
 				required: "Please enter Stock Keeping Unit"
 			},
 			price: {
+				required: "Please enter product price",
 				number: "Please enter valid product price",
 				dollarsscents: "Only two decimal values accepted"
 			},
