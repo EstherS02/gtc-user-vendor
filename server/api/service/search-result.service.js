@@ -96,7 +96,13 @@ export async function countryWithProductCount(productQueryObj, isFeaturedProduct
 				include: [{
 					model: model['FeaturedProduct'],
 					where: {
-						status: status['ACTIVE']
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
 					},
 					attributes: [],
 					required: isFeaturedProduct
@@ -144,7 +150,6 @@ export async function countryWithProductCount(productQueryObj, isFeaturedProduct
 
 export async function marketplacetypeWithProductCount(productQueryObj, isFeaturedProduct) {
 	var results = {};
-
 	results['count'] = 0;
 	results['rows'] = [];
 
@@ -162,7 +167,13 @@ export async function marketplacetypeWithProductCount(productQueryObj, isFeature
 				include: [{
 					model: model['FeaturedProduct'],
 					where: {
-						status: status['ACTIVE']
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
 					},
 					attributes: [],
 					required: isFeaturedProduct
