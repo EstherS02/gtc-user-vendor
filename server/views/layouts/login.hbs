@@ -11,8 +11,7 @@
 			}, 0);
 		}
 		$('#userPlanShow').show();
-		$('#vendorPlanShow').hide();
-		$('#userPlaninfo').hide();
+		$('#planDetailShow').hide();
 		$('#btnLogin').prop('disabled', true);
 
 		$('#loginInputEmail, #loginInputPassword').keyup(function() {
@@ -44,115 +43,136 @@
 	}
 </script>
 {{> header/login-header}}
-<section class="signup_bg">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-            </div>
-            <div class="col-md-6">
-                <div class="row geo_bgimg1">
-                    <h1 class="sign_up_td"style="font-size:52px">SIGN UP TODAY!</h1>
-                    <p class="why_geo_p1">Why Setup Anywhere Else? GTC Has It All!</p>
-                    <p class="why_geo_p">Access Wholesale Deals, One touch retail buying, Access to service companies; Plumbers to Lawyers, Doctors to Nightclubs!</p>
-                    <div class="col-md-6 offset-md-4">
-                        <small id="signUpErrorLog" class="error"></small>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <a id="gtc-fb-login"><img src="../img/login-facebook.png" alt="facebook" style="margin-bottom: 5px; width: 100%;" /></a>
-                            <a id="gtc-google-login"><img src="../img/login-google.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" /></a>
-                            <a id="gtc-twitter-login"><img src="../img/login-twitter.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" /></a>
-                            <a id="gtc-linkedin-login"><img src="../img/login-linkedin.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" /></a> 
+<div class="login-banner">
+    <div class="row no-margins">
+        <div class="col-md-6 d-none d-sm-block no-padding">
+            <img class="img-fluid" src="../img/signup-hero.jpg" alt="Sign Up" title="Sign Up">
+        </div>
+        <div class="col-md-6 no-padding">
+            <div class="login-right-content">
+                <h1>SIGN UP TODAY!</h1>
+                <p class="text-primary m-b-xs">Why Setup Anywhere Else? GTC Has it All!</p>
+                <small>Access Wholesale Deals, One touch retail buying, Access to service companies; Plumbers to Lawyers, Doctors to Nightclubs!</small>
+                <div class="row m-t-sm">
+                    <div class="col-md-10 offset-md-0">
+                        <div id="signupLog"></div>
+                        <div class="signup-box">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="signup-left">
+                                        <ul>
+                                            <li>
+                                                <a href="javascript:;" id="gtc-fb-login"><img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook" title="Login with Facebook"></a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:;" id="gtc-google-login"><img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google"></a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:;" id="gtc-twitter-login"><img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter"></a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:;" id="gtc-linkedin-login"><img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn"></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <h2 class="divider-line"><span>OR</span></h2>
+                                <div class="col-md-6 signup-right">
+                                    <form id="signUpForm" class="form" novalidate="novalidate">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group m-b-sm">
+                                                    <input type="email" id="inputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border" placeholder="Email" required="true">
+                                                </div>
+                                                <div class="form-group m-b-sm">
+                                                    <input type="text" id="inputFirstname" name="first_name" class="form-control-customized form-control-sm rounded form-control-border" placeholder="First Name" required="true">
+                                                </div>
+                                                <div class="form-group m-b-sm">
+                                                    <input type="password" id="inputPassword" name="password" class="form-control-customized form-control-sm rounded form-control-border" placeholder="Password" required="true">
+                                                </div>
+                                                <div class="form-group m-b-sm">
+                                                    <div class="customCheckbox">
+                                                        <input type="checkbox" id="inputTerms" class="customCheckboxInput">
+                                                        <label class="checkbox-b" for="inputTerms"></label>
+                                                        <small class="m-l-sm font-sm1">Accept terms and conditions</small>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger" disabled="">
+                                                        <strong>CREATE ACCOUNT<i id="loadingSpinnersignUp" class="fa fa fa-spinner fa-spin m-l-xs" style="display: none;"></i></strong>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="col-md-0">
-                            <div class="col-md-0 verticalLine1"></div> 
-                            <hr><p class="sepText">or</p>
-                            <div class="col-md-0 verticalLine"> </div>     
-                        </div>    
-
-                        <div class="col-md-6">
-                        <form id="signUpForm" method="post">
-                            <div  id="signUpErrorLog"></div>
-
-                            <input type="email" id="inputEmail" name="email" class="acc_textbox " placeholder="Email" required="true">
-                            <input type="text" placeholder="First name" id="inputFirstname" name="first_name" class="acc_textbox">
-                            <input type="password" placeholder="Password" id="inputPassword" name="password" class="acc_textbox">
-                            <br/>
-                            <input type="checkbox" id="inputTerms" name="input_terms" required="true">
-                            Accept terms and conditions
-                            <button type="submit" id="btnSignup" class="acc_button btn" >CREATE ACCOUNT</button><br>
-                        </form>
                     </div>
                 </div>
             </div>
-            
         </div>
     </div>
 </div>
-</section>
-
-<div class="jumbotron text-center why_use_gtc_my_bus" style="margin-bottom: 0px;">
-    <h1>Why Use GTC for My Business?</h1>
-    <p>GTC removes cross border barriers and we make trade easy, safe and fun! Our amazing, feature rich platform giving you the power to buy and <b>sell on a local level or globally.</b></p>
-    <div class="container clearfix">
+<div class="login-banner-1 py-4 px-5">
+    <div class="container-sm">
+        <h1 class="text-center font-weight-normal">Why Use GTC for My Business?</h1>
+        <p class="text-center font-weight-normal">GTC removes cross border barriers and we make trade easy, safe and fun! Our amazing, features rich platform giving you the power to buy <strong>sell on a local or globally</strong></p>
         <div class="row">
-            <div class="col-md-4 signup_global1">
-                <div class="why_pws">
-                    <p> <img src="../img/signup-feature-1.png" style="width: 100%;"/></p>
-                    <h6>GET YOUR PROFILE</h6>
-                    <p>See <span class="why_pws_span">deals in real time</span>. Share your experience and reviews via your wall and invite your friends and family to access deals. </p>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <img src="../img/signup-feature-1.png" class="rounded img-fluid" alt="Get Your Profile" title="Get Your Profile">
+                    <h5 class="m-t-md text-center font-weight-normal">GET YOUR PROFILE</h5>
+                    <small class="text-center d-block font-weight-light">
+                        See <strong class="text-m1">deals in real time</strong>, share your experience and reviews via your wall and invite your friends and family to access deals.
+                    </small>
                 </div>
             </div>
-            <div class="col-md-4 signup_global1">
-                <div class="why_pws">
-                    <p><img src="../img/signup-feature-2.png" style="width: 100%;"/> </p>
-                    <h6>GET CONNECTED </h6>
-                    <p>Gain Access to <span class="why_pws3_span">Wholesale Deals, Retail Shopping, Local Service providers and subscription based companies</span> for the best deals either Local or Global - All with a click!</p>   
+            <div class="col-md-4">
+                <div class="text-center">
+                    <img src="../img/signup-feature-2.png" class="rounded img-fluid" alt="Get Connected" title="Get Connected">
+                    <h5 class="m-t-md text-center font-weight-normal">GET CONNECTED</h5>
+                    <small class="text-center d-block font-weight-light">
+                        Gain Access to <strong class="text-m3">Wholesale Deals, Retail Shopping, Local Service Providers and subscription based companies</strong> for the best deals either Local or Global - All with a click!
+                    </small>
                 </div>
             </div>
-            <div class="col-md-4 signup_global1">
-                <div class="why_pws">
-                    <p><img src="../img/signup-feature-3.png" style="width: 100%;"/> </p>
-                    <h6>GET STARTED </h6>
-                    <p><a href="#" class="why_pws4_span">Sign up</a> is easy quick-Join GTC today and be set up in <span class="why_pws4_span">just a matter of minutes!</span> </p>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <img src="../img/signup-feature-3.png" class="rounded img-fluid" alt="Get Started" title="Get Started">
+                    <h5 class="m-t-md text-center font-weight-normal">GET STARTED</h5>
+                    <small class="text-center d-block font-weight-light">
+                        <a href="#">Sign up</a> is easy and quick - Join GTC today and be set up in <strong class="text-m4">just a matter of minutes!</strong>
+                    </small>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<section class="signup_highlight">
-    <div class="container-fluid">
+<div class="login-banner-2 py-4 px-5 d-flex">
+    <div class="container-sm justify-content-center align-self-center">
         <div class="row">
-            <div class="col-md-6">
-            </div>
-            <div class="col-md-6 its_free">
-                <h1>It's free and easy to get started.</h1>
-                <p class="why_geo_p">Create your profile and within minutes access GTC tools to help grow your business. Get direct access to daily, relevant offers. </p>
-                <input type="submit" onclick="window.location.href='/login'" value="BUILD YOUR STORE NOW" class="its_free_btn" />
+            <div class="col-md-5 offset-md-6">
+                <h1 class="font-weight-light">It's free and easy to get started.</h1>
+                <small class="font-weight-normal d-block">Create your profile and within minutes access GTC tools to help grow your. Get direct access to daily, relevant offers</small>
+                <button class="btn btn-small m-t font-weight-bold btn-red">BUILD YOUR STORE NOW</button>
             </div>
         </div>
     </div>
-</section>
-
-<section class="signup_highlight_1">
-    <div class="container-fluid">
+</div>
+<div class="login-banner-3 py-4 px-5 d-flex">
+    <div class="container-sm justify-content-center align-self-center">
         <div class="row">
-            <div class="col-md-7 its_free1" style="">
-                <h1>Unprecedented exposure on a global platform.</h1>
-                <p class="why_geo_p">No matter what your industry, the GTC platform enables you to advertise services, post product catalogues, sell offers on the global stage. </p>
-                <input type="submit" onclick="window.location.href='/login'" value="BUILD YOUR STORE NOW" class="its_free_btn" />
-            </div>
-            <div class="col-md-5">
+            <div class="col-md-5 offset-md-1">
+                <h1 class="font-weight-light">Unprecedented exposure on a global platform.</h1>
+                <small class="font-weight-normal d-block">No matter what your industry, the GTC platform enables you to advertise services, post product catalogues, sell offers on the global stage.</small>
+                <button class="btn btn-small m-t font-weight-bold btn-red">BUILD YOUR STORE NOW</button>
             </div>
         </div>
     </div>
-</section>               
-
+</div>
 {{> plan-detail}}
-
-<section>
+{{!-- <section>
     <div class="jumbotron text-center which_pkg_test" style="margin-bottom: 0px;">
         <div class="container">
             <div class="row">
@@ -180,201 +200,165 @@
             </div>
         </div>
     </div>
-</section>
-
-<section>
-    <div class="jumbotron text-center want_to_try_gtc">
-        <h1>Want to Try Your Inventory on GTC?</h1>
-        <p style="font-size: 12px;">Start a 7-day trial of all Global Trade Connect's buyers' features, and claim your personal GTC Website Address.</p>
-        <a class="its_free_btn btn" onclick="forceSignup()">START A FREE TRIAL</a>
-        {{!-- <input type="submit" value="START A FREE TRIAL" class="its_free_btn" /> --}}
+</section> --}}
+<div class="login-banner-5 py-4 px-5 d-flex">
+    <div class="container-sm justify-content-center align-self-center text-center">
+        <h1 class="font-weight-normal">Want to Try Your Inventory on GTC?</h1>
+        <small class="d-block font-weight-light">Start a 7-day trail of all Global Trade Connect's buyers features, claim your personal GTC Website Address.</small>
+        <button class="btn btn-small m-t font-weight-bold btn-red">START A FREE TRIAL</button>
     </div>
-</section>
-
-<section class="custom-accordion" id="FAQ">
-    <div class="container">
-        <div class="row">
-            <h3 style="text-align: center;">FREQUENTLY ASKED QUESTIONS</h3>
-        </div>
-        <div class="row">
-            <div class="col-md-4 common_padding1">
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample1">
-                            <span class="question">Q</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="question-details">Can I get a unique name and URL to promote my Store? </span>
-                        </button>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="collapse multi-collapse" id="multiCollapseExample1">
-                            <div class="card card-body">
-                                <p><span class="answer">A</span> <span class="answer-details">Yes! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at massa at tellus ultricies tristique et at turpis. Cras sed vehicula enim. Cras tristique odio id vestibulum lacinia. In felugiat nibh purus.</span></p>
-                            </div>
-                        </div>
-                    </div>
+</div>
+<div class="login-banner-6 py-5">
+    <div class="gtc-container">
+        <h2 class="text-center font-weight-normal">FREQENTLY ASKED QUESTIONS</h2>
+        <div class="row m-t-md">
+            <div class="card col-md-4 no-padding d-inline-table">
+                <div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question1" aria-expanded="false" aria-controls="question1">
+                    <span class="float-left m-r symbol-q">Q</span>
+                    <span class="float-right card-text justify-content-center align-self-center">Can I get a unique name and URL to promote my Store?</span>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">
-                            <span class="question">Q</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="question-details">Can I get a unique name and URL to promote my Store? </span>
-                        </button>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="collapse multi-collapse" id="multiCollapseExample2">
-                            <div class="card card-body">
-                                <p><span class="answer">A</span> <span class="answer-details">Yes! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at massa at tellus ultricies tristique et at turpis. Cras sed vehicula enim. Cras tristique odio id vestibulum lacinia. In felugiat nibh purus.</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#multiCollapseExample3" aria-expanded="false" aria-controls="multiCollapseExample3">
-                            <span class="question">Q</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="question-details">Can I get a unique name and URL to promote my Store? </span>
-                        </button>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="collapse multi-collapse" id="multiCollapseExample3">
-                            <div class="card card-body">
-                                <p><span class="answer">A</span> <span class="answer-details">Yes! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at massa at tellus ultricies tristique et at turpis. Cras sed vehicula enim. Cras tristique odio id vestibulum lacinia. In felugiat nibh purus.</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#multiCollapseExample4" aria-expanded="false" aria-controls="multiCollapseExample4">
-                            <span class="question">Q</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="question-details">Can I get a unique name and URL to promote my Store? </span>
-                        </button>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="collapse multi-collapse" id="multiCollapseExample4">
-                            <div class="card card-body">
-                                <p><span class="answer">A</span> <span class="answer-details">Yes! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at massa at tellus ultricies tristique et at turpis. Cras sed vehicula enim. Cras tristique odio id vestibulum lacinia. In felugiat nibh purus.</span></p>
-                            </div>
-                        </div>
+                <div class="collapse bg-gray" id="question1">
+                    <div class="card-body d-flex">
+                        <span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+                        <span class="float-right card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non magna aliquet, commodo quam sed, dignissim quam. Praesent at risus libero.</span>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 common_padding1">
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#multiCollapseExample5" aria-expanded="false" aria-controls="multiCollapseExample1">
-                            <span class="question">Q</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="question-details">Can I get a unique name and URL to promote my Store? </span>
-                        </button>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="collapse multi-collapse" id="multiCollapseExample5">
-                            <div class="card card-body">
-                                <p><span class="answer">A</span> <span class="answer-details">Yes! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at massa at tellus ultricies tristique et at turpis. Cras sed vehicula enim. Cras tristique odio id vestibulum lacinia. In felugiat nibh purus.</span></p>
-                            </div>
-                        </div>
-                    </div>
+            <div class="card col-md-4 no-padding d-inline-table">
+                <div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question2" aria-expanded="false" aria-controls="question2">
+                    <span class="float-left m-r symbol-q">Q</span>
+                    <span class="float-right card-text justify-content-center align-self-center">What kind of SEO & Marketing tools do you offer?</span>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#multiCollapseExample6" aria-expanded="false" aria-controls="multiCollapseExample2">
-                            <span class="question">Q</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="question-details">Can I get a unique name and URL to promote my Store? </span>
-                        </button>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="collapse multi-collapse" id="multiCollapseExample6">
-                            <div class="card card-body">
-                                <p><span class="answer">A</span> <span class="answer-details">Yes! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at massa at tellus ultricies tristique et at turpis. Cras sed vehicula enim. Cras tristique odio id vestibulum lacinia. In felugiat nibh purus.</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#multiCollapseExample7" aria-expanded="false" aria-controls="multiCollapseExample3">
-                            <span class="question">Q</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="question-details">Can I get a unique name and URL to promote my Store? </span>
-                        </button>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="collapse multi-collapse" id="multiCollapseExample7">
-                            <div class="card card-body">
-                                <p><span class="answer">A</span> <span class="answer-details">Yes! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at massa at tellus ultricies tristique et at turpis. Cras sed vehicula enim. Cras tristique odio id vestibulum lacinia. In felugiat nibh purus.</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#multiCollapseExample8" aria-expanded="false" aria-controls="multiCollapseExample4">
-                            <span class="question">Q</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="question-details">Can I get a unique name and URL to promote my Store? </span>
-                        </button>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="collapse multi-collapse" id="multiCollapseExample8">
-                            <div class="card card-body">
-                                <p><span class="answer">A</span> <span class="answer-details">Yes! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at massa at tellus ultricies tristique et at turpis. Cras sed vehicula enim. Cras tristique odio id vestibulum lacinia. In felugiat nibh purus.</span></p>
-                            </div>
-                        </div>
+                <div class="collapse bg-gray" id="question2">
+                    <div class="card-body d-flex">
+                        <span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+                        <span class="float-right card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non magna aliquet, commodo quam sed, dignissim quam. Praesent at risus libero.</span>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 common_padding1">
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#multiCollapseExample9" aria-expanded="false" aria-controls="multiCollapseExample1">
-                            <span class="question">Q</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="question-details">Can I get a unique name and URL to promote my Store? </span>
-                        </button>
-                    </div>
-                    <div class="col-md-12"> 
-                        <div class="collapse multi-collapse" id="multiCollapseExample9">
-                            <div class="card card-body">
-                                <p><span class="answer">A</span> <span class="answer-details">Yes! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at massa at tellus ultricies tristique et at turpis. Cras sed vehicula enim. Cras tristique odio id vestibulum lacinia. In felugiat nibh purus.</span></p>
-                            </div>
-                        </div>
+            <div class="card col-md-4 no-padding d-inline-table">
+                <div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question3" aria-expanded="false" aria-controls="question3">
+                    <span class="float-left m-r symbol-q">Q</span>
+                    <span class="float-right card-text justify-content-center align-self-center">Can I syncronize my GTC wholesale inventory with my current website inventory?</span>
+                </div>
+                <div class="collapse bg-gray" id="question3">
+                    <div class="card-body d-flex">
+                        <span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+                        <span class="float-right card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non magna aliquet, commodo quam sed, dignissim quam. Praesent at risus libero.</span>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#multiCollapseExample10" aria-expanded="false" aria-controls="multiCollapseExample2">
-                            <span class="question">Q</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="question-details">Can I get a unique name and URL to promote my Store? </span>
-                        </button>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="collapse multi-collapse" id="multiCollapseExample10">
-                            <div class="card card-body">
-                                <p><span class="answer">A</span> <span class="answer-details">Yes! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at massa at tellus ultricies tristique et at turpis. Cras sed vehicula enim. Cras tristique odio id vestibulum lacinia. In felugiat nibh purus.</span></p>
-                            </div>
-                        </div>
+            </div>
+            <div class="card col-md-4 no-padding d-inline-table">
+                <div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question4" aria-expanded="false" aria-controls="question4">
+                    <span class="float-left m-r symbol-q">Q</span>
+                    <span class="float-right card-text justify-content-center align-self-center">What level of support do i get with my subscription?</span>
+                </div>
+                <div class="collapse bg-gray" id="question4">
+                    <div class="card-body d-flex">
+                        <span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+                        <span class="float-right card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non magna aliquet, commodo quam sed, dignissim quam. Praesent at risus libero.</span>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#multiCollapseExample11" aria-expanded="false" aria-controls="multiCollapseExample3">
-                            <span class="question">Q</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="question-details">Can I get a unique name and URL to promote my Store? </span>
-                        </button>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="collapse multi-collapse" id="multiCollapseExample11">
-                            <div class="card card-body">
-                                <p><span class="answer">A</span> <span class="answer-details">Yes! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at massa at tellus ultricies tristique et at turpis. Cras sed vehicula enim. Cras tristique odio id vestibulum lacinia. In felugiat nibh purus.</span></p>
-                            </div>
-                        </div>
+            </div>
+            <div class="card col-md-4 no-padding d-inline-table">
+                <div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question5" aria-expanded="false" aria-controls="question5">
+                    <span class="float-left m-r symbol-q justify-content-center align-self-center">Q</span>
+                    <span class="float-right card-text justify-content-center align-self-center">What sales and accounting reports do you offer?</span>
+                </div>
+                <div class="collapse bg-gray" id="question5">
+                    <div class="card-body d-flex">
+                        <span class="float-left m-r symbol-a">A</span>
+                        <span class="float-right card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non magna aliquet, commodo quam sed, dignissim quam. Praesent at risus libero.</span>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#multiCollapseExample12" aria-expanded="false" aria-controls="multiCollapseExample4">
-                            <span class="question">Q</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="question-details">Can I get a unique name and URL to promote my Store? </span>
-                        </button>
+            </div>
+            <div class="card col-md-4 no-padding d-inline-table">
+                <div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question6" aria-expanded="false" aria-controls="question6">
+                    <span class="float-left m-r symbol-q justify-content-center align-self-center">Q</span>
+                    <span class="float-right card-text justify-content-center align-self-center">Do you have an app?</span>
+                </div>
+                <div class="collapse bg-gray" id="question6">
+                    <div class="card-body d-flex">
+                        <span class="float-left m-r symbol-a">A</span>
+                        <span class="float-right card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non magna aliquet, commodo quam sed, dignissim quam. Praesent at risus libero.</span>
                     </div>
-                    <div class="col-md-12">
-                        <div class="collapse multi-collapse" id="multiCollapseExample12">
-                            <div class="card card-body">
-                                <p><span class="answer">A</span> <span class="answer-details">Yes! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at massa at tellus ultricies tristique et at turpis. Cras sed vehicula enim. Cras tristique odio id vestibulum lacinia. In felugiat nibh purus.</span></p>
-                            </div>
-                        </div>
+                </div>
+            </div>
+            <div class="card col-md-4 no-padding d-inline-table">
+                <div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question7" aria-expanded="false" aria-controls="question7">
+                    <span class="float-left m-r symbol-q justify-content-center align-self-center">Q</span>
+                    <span class="float-right card-text justify-content-center align-self-center">Can I get a unique name and URL to promote my Store?</span>
+                </div>
+                <div class="collapse bg-gray" id="question7">
+                    <div class="card-body d-flex">
+                        <span class="float-left m-r symbol-a">A</span>
+                        <span class="float-right card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non magna aliquet, commodo quam sed, dignissim quam. Praesent at risus libero.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card col-md-4 no-padding d-inline-table">
+                <div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question8" aria-expanded="false" aria-controls="question8">
+                    <span class="float-left m-r symbol-q justify-content-center align-self-center">Q</span>
+                    <span class="float-right card-text justify-content-center align-self-center">What kind of SEO & Marketing tools do you offer?</span>
+                </div>
+                <div class="collapse bg-gray" id="question8">
+                    <div class="card-body d-flex">
+                        <span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+                        <span class="float-right card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non magna aliquet, commodo quam sed, dignissim quam. Praesent at risus libero.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card col-md-4 no-padding d-inline-table">
+                <div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question9" aria-expanded="false" aria-controls="question9">
+                    <span class="float-left m-r symbol-q justify-content-center align-self-center">Q</span>
+                    <span class="float-right card-text justify-content-center align-self-center">Can I syncronize my GTC wholesale inventory with my current website inventory?</span>
+                </div>
+                <div class="collapse bg-gray" id="question9">
+                    <div class="card-body d-flex">
+                        <span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+                        <span class="float-right card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non magna aliquet, commodo quam sed, dignissim quam. Praesent at risus libero.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card col-md-4 no-padding d-inline-table">
+                <div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question10" aria-expanded="false" aria-controls="question10">
+                    <span class="float-left m-r symbol-q justify-content-center align-self-center">Q</span>
+                    <span class="float-right card-text justify-content-center align-self-center">What level of support do i get with my subscription?</span>
+                </div>
+                <div class="collapse bg-gray" id="question10">
+                    <div class="card-body d-flex">
+                        <span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+                        <span class="float-right card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non magna aliquet, commodo quam sed, dignissim quam. Praesent at risus libero.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card col-md-4 no-padding d-inline-table">
+                <div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question11" aria-expanded="false" aria-controls="question11">
+                    <span class="float-left m-r symbol-q justify-content-center align-self-center">Q</span>
+                    <span class="float-right card-text justify-content-center align-self-center">What sales and accounting reports do you offer?</span>
+                </div>
+                <div class="collapse bg-gray" id="question11">
+                    <div class="card-body d-flex">
+                        <span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+                        <span class="float-right card-text justify-content-center align-self-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non magna aliquet, commodo quam sed, dignissim quam. Praesent at risus libero.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card col-md-4 no-padding d-inline-table">
+                <div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question12" aria-expanded="false" aria-controls="question12">
+                    <span class="float-left m-r symbol-q justify-content-center align-self-center">Q</span>
+                    <span class="float-right card-text justify-content-center align-self-center">Do you have an app?</span>
+                </div>
+                <div class="collapse bg-gray" id="question12">
+                    <div class="card-body d-flex">
+                        <span class="float-left m-r symbol-a">A</span>
+                        <span class="float-right card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non magna aliquet, commodo quam sed, dignissim quam. Praesent at risus libero.</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
-
+</div>
 <div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content" align="center">

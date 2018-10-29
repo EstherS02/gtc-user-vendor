@@ -14,7 +14,9 @@ export function lifestyle(req, res) {
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var offset, limit, field, order;
-	var queryObj = {}, LoggedInUser = {}, bottomCategory = {};
+	var queryObj = {},
+		LoggedInUser = {},
+		bottomCategory = {};
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
 		LoggedInUser = req.gtcGlobalUserObj;
@@ -49,7 +51,7 @@ export function lifestyle(req, res) {
 			categoryLimit = null;
 			categoryField = "id";
 			categoryOrder = "asc";
-			
+
 			categoryQueryObj['status'] = status["ACTIVE"];
 
 			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
@@ -64,11 +66,11 @@ export function lifestyle(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
+			const tempLimit = 6;
 			queryObj['is_featured_product'] = 1;
 			queryObj['position'] = 'position_subscription_landing';
 
-			limit = 6;
-			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, tempLimit)
 				.then(function(results) {
 					return callback(null, results);
 				}).catch(function(error) {

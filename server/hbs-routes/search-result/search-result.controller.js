@@ -281,7 +281,7 @@ export function index(req, res) {
 		},
 		productCount: function(callback) {
 			var resultObj = {};
-			
+
 			searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
