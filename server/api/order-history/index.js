@@ -3,8 +3,6 @@
 var express = require('express');
 var auth = require('../../auth/auth.service');
 var controller = require('./order-history.controller');
-//var middleware = require('../../middleware');
-var permission = require('../../config/permission');
 
 var router = express.Router();
 

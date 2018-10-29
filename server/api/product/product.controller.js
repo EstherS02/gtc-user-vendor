@@ -246,7 +246,7 @@ export async function create(req, res) {
 				}, req.user.first_name));
 			}));
 			Promise.all(ProductAttributePromises);
-			aunnouncementMailToSubscribedUser(newProduct); // New product launched announcement mail to subscribed user.
+			aunnouncementMailToSubscribedUser(newProduct); // New product launched announcement mail to vendor followers.
 			return res.status(201).send(newProduct);
 		} else {
 			return res.status(409).send("Stock keeping unit already exists.");
