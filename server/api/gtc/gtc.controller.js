@@ -22,40 +22,22 @@ const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
 export function indexExample(req, res) {
-	const orderID = 30;
-	const vendorOrderModelName = "VendorOrder";
-	var includeArray = [{
-		model: model['OrdersNew'],
-		where: {
-			user_id: req.user.id
-		},
-		attributes: ['id', 'user_id']
-	}, {
-		model: model['Vendor'],
-		attributes: ['id', 'vendor_name', [sequelize.fn('COUNT', sequelize.col('Vendor->VendorFollowers.id')), 'is_vendor_follower']],
-		include: [{
-			model: model['VendorFollower'],
-			where: {
-				user_id: req.user.id,
-				status: status['ACTIVE']
-			},
-			required: false,
-			attributes: []
-		}]
-	}];
+	var queryObj = {};
+	var includeArray = [];
+	var orderModelName = "OrdersNew";
 
-	model['VendorOrder'].findAll({
-			include: includeArray,
-			where: {
-				order_id: orderID
-			},
-			group: ['id']
-		})
+	var offset = 0;
+	var limit = 10;
+	var field = "id";
+	var order = "ASC";
+
+	queryObj['user_id'] = req.user.id;
+
+	service.findAllRows(orderModelName, includeArray, queryObj, offset, limit, field, order)
 		.then((response) => {
 			return res.status(200).send(response);
-		})
-		.catch((error) => {
-			console.log("indexExample Error:::", error);
+		}).catch((error) => {
+			console.log("indexExample Error :::", error);
 			return res.status(500).send(error);
 		});
 }
