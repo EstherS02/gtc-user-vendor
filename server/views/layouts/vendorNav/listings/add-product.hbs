@@ -308,21 +308,25 @@
 									</div>
 									<div class="col-lg-4">
 										<div class="form-group">
-											<label class="label-control">Product Status
+											<label class="label-control">Product Status{{editProduct.status}}
 												<span class="text-danger">*</span>
 											</label>
 											<div class="input-group">
-												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status"
-												 id="product_status" value="{{editProduct.status}}">
-												{{#if editProduct.status}}
-												<!-- <option value="{{editProduct.status}}" selected>{{objectKey statusCode editProduct.status}}</option> -->
-												{{else}}
-												<option disabled selected>Select Status</option>
-												{{/if}}
-												<option value="1">Active</option>
-												<option value="2">InActive</option>
-												<option value="7">Suspended</option>
-												<option value="8">Sold Out</option>
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status" id="product_status">
+													{{#unless editProduct.status}}
+													<option disabled selected>Select Status</option>
+													{{/unless}}
+													{{#select editProduct.status}}
+														{{#each statusCode}}
+															{{#if 
+															(or 
+																(lt this ../statusCode.DELETED)
+																(gt this ../statusCode.GTC_INACTIVE)
+																)}}
+																<option value="{{this}}">{{objectKey ../statusCode this}}</option>
+															{{/if}}
+														{{/each}}
+													{{/select}}
 												</select>
 											</div>
 										</div>

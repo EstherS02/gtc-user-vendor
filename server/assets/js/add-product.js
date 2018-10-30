@@ -196,7 +196,6 @@ $(document).ready(function() {
 		});
 	});
 
-
 	$("#category").change(function() {
 		var category_id = $('#category').val();
 		$('#attributePopup').empty();

@@ -19,6 +19,7 @@ const marketplaceType = require('../../config/marketplace_type.js');
 const planPermissions = require('../../config/plan-marketplace-permission.js');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
+const populate = require('../../utilities/populate');
 const mws = require('mws-advanced');
 const _ = require('lodash');
 const stripe = require('../../payment/stripe.payment');
@@ -109,6 +110,7 @@ export function featureMany(req, res) {
 }
 
 export async function create(req, res) {
+	
 	var bodyParams = {};
 	var productMediaPromises = [];
 	var productAttributes = [];
@@ -147,7 +149,7 @@ export async function create(req, res) {
 		delete req.body.moq;
 		delete req.body.marketplace_type_id;
 	}
-
+	console.log("==================================================", req.body);
 	if (req.body.exclusive_sale == 1) {
 		req.checkBody('exclusive_start_date', 'Missing Query Param').notEmpty();
 		req.checkBody('exclusive_end_date', 'Missing Query Param').notEmpty();
@@ -314,7 +316,7 @@ export async function edit(req, res) {
 		res.status(400).send('Missing Query Params');
 		return;
 	}
-
+	
 	if (req.body.product_attributes && req.body.product_attributes.length > 0) {
 		productAttributes = JSON.parse(req.body.product_attributes);
 		delete req.body.product_attributes;
@@ -337,6 +339,7 @@ export async function edit(req, res) {
 				}
 			});
 			if (!existsVendorSKU) {
+				console.log("==================================================", bodyParams);
 				const product = await service.updateRecordNew(productModelName, bodyParams, {
 					id: existingProduct.id
 				});
@@ -1189,4 +1192,47 @@ export function featureProductWithoutPayment(req, res){
 				});
 			});
 	}
+}
+
+export function vendorMarketplaces(req, res){	
+	var vendorMarketplacesQueryObj = {}, planMarketplacesQueryObj = {};
+	var planMarketplacesIncludeArr = [];
+	var offset, limit, field, order;
+
+	offset = 0;
+	limit = null;
+	field = 'id';
+	order = 'asc';
+
+	vendorMarketplacesQueryObj = {
+		status: status.ACTIVE,
+		vendor_id: req.params.vendor_id		
+	}	
+
+	planMarketplacesQueryObj = {
+		status: status.ACTIVE
+	}
+
+	planMarketplacesIncludeArr = populate.populateData("Marketplace");
+	var planMarketplaces={};
+	
+	service.findOneRow('VendorPlan', vendorMarketplacesQueryObj, [])
+	.then(function(vendorPlanRow){
+		if(vendorPlanRow){
+			planMarketplacesQueryObj.plan_id = vendorPlanRow.plan_id;
+			service.findRows('PlanMarketplace', planMarketplacesQueryObj, offset, limit, field, order, planMarketplacesIncludeArr)
+			.then(function(planMarketplaces){
+				return res.status(200).send(planMarketplaces);
+
+			}).catch(function(error){
+				console.log("Error::", error);
+				return res.status(500).send(error);
+			})
+		}else{
+			return res.status(200).send(planMarketplaces);
+		}		
+	}).catch(function(error){
+		console.log("Error::",error);
+		return res.status(500).send(error);
+	})
 }

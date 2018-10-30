@@ -26,5 +26,6 @@ router.put('/feature-many', controller.featureMany);
 router.put('/discount/:product_id', auth.hasRole(roles['VENDOR']), controller.discountProduct)
 router.post('/feature-payment', auth.isAuthenticated(), controller.featureProductWithPayment);
 router.post('/feature', auth.isAuthenticated(), controller.featureProductWithoutPayment);
+router.get('/vendor-marketplaces/:vendor_id', auth.isAuthenticated(), controller.vendorMarketplaces);
 
 module.exports = router;
