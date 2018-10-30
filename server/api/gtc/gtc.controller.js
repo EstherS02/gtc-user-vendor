@@ -32,6 +32,11 @@ export function indexExample(req, res) {
 	var order = "ASC";
 
 	queryObj['user_id'] = req.user.id;
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['ordered_date'] = {
+		'$gte': moment(req.query['start_date'], 'MM/DD/YYYY').startOf('day').format("YYYY-MM-DD HH:mm:ss"),
+		'$lte': moment(req.query['end_date'], 'MM/DD/YYYY').endOf('day').format("YYYY-MM-DD HH:mm:ss")
+	};
 
 	service.findAllRows(orderModelName, includeArray, queryObj, offset, limit, field, order)
 		.then((response) => {

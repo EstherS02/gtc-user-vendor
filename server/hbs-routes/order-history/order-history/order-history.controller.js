@@ -14,12 +14,125 @@ const async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
 
 export function orderHistory(req, res) {
-	var LoggedInUser = {};
+	var queryParams = {};
+	var bottomCategory = {};
+	var LoggedInUser = req.user;
+	var categoryModel = "Category";
+	var dateRangeOptions = [{
+		"column": "Today",
+		"value": 1
+	}, {
+		"column": "Yesterday",
+		"value": 2
+	}, {
+		"column": "Last 7 Days",
+		"value": 3
+	}, {
+		"column": "Last 30 Days",
+		"value": 4
+	}, {
+		"column": "This Month",
+		"value": 5
+	}, {
+		"column": "Last Month",
+		"value": 6
+	}];
+
+	if (req.query.range) {
+		queryParams['range'] = req.query.range;
+	} else {
+		queryParams['range'] = 5;
+	}
+
+	if (queryParams['range'] == 5) {
+		queryParams['start_date'] = moment().subtract(30, 'days').format('MM/DD/YYYY');
+		queryParams['end_date'] = moment().subtract(1, 'days').format('MM/DD/YYYY');
+	} else {
+		if (req.query.start_date) {
+			queryParams['start_date'] = req.query.start_date;
+		}
+		if (req.query.end_date) {
+			queryParams['end_date'] = req.query.end_date;
+		}
+	}
+
+	async.series({
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req, res)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
+				return callback(null);
+			}
+		},
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+	}, function(error, results) {
+		if (!error && results) {
+			return res.render('userNav/order-history', {
+				title: "Global Trade Connect",
+				categories: results.categories,
+				bottomCategory: bottomCategory,
+				LoggedInUser: LoggedInUser,
+				cart: results.cartInfo,
+				queryParams: queryParams,
+				dateRangeOptions: dateRangeOptions
+			});
+		} else {
+			return res.render('userNav/order-history', error);
+		}
+	});
+}
+
+export function orderHistoryOld(req, res) {
 	var bottomCategory = {};
 	var categoryModel = "Category";
 	if (req.user)
 		LoggedInUser = req.user;
 	let user_id = LoggedInUser.id;
+
+	const dateRangeOptions = [{
+		"column": "Today",
+		"value": 1
+	}, {
+		"column": "Yesterday",
+		"value": 2
+	}, {
+		"column": "Last 7 Days",
+		"value": 3
+	}, {
+		"column": "Last 30 Days",
+		"value": 4
+	}, {
+		"column": "This Month",
+		"value": 5
+	}, {
+		"column": "Last Month",
+		"value": 6
+	}];
 
 
 	var queryURI = {};
@@ -156,7 +269,6 @@ export function orderHistory(req, res) {
 				});
 		},
 		orderHistory: function(callback) {
-
 			service.findAllRows(modelName, orderIncludeArr, orderQueryObj, offset, limit, field, order)
 				.then(function(results) {
 					return callback(null, results);
@@ -199,7 +311,8 @@ export function orderHistory(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				collectionSize: results.orderHistory.count,
 				selectedPage: "order-history",
-				vendorPlan: vendorPlan
+				vendorPlan: vendorPlan,
+				dateRangeOptions: dateRangeOptions
 			});
 		} else {
 			res.render('userNav/order-history', err);
