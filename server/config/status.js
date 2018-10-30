@@ -5,7 +5,8 @@ module.exports = {
 	"OPEN": 4,
 	"HOLD": 5,
 	"CLOSED": 6,
-	"SUSPENDED": 7,
-	"SOLDOUT": 8,
-	"GTC_INACTIVE":9
+	"GTC_INACTIVE":7,
+	"SUSPENDED": 8,
+	"SOLDOUT": 9,
+	
 };
