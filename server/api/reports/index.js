@@ -3,9 +3,6 @@
 var express = require('express');
 var auth = require('../../auth/auth.service');
 var controller = require('./reports.controller');
-var permission = require('../../config/permission');
-
-const roles = require('../../config/roles');
 
 var router = express.Router();
 

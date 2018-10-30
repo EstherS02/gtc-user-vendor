@@ -84,7 +84,7 @@ function appendBaseImage() {
 	}
 }
 
-function testValue(count) {
+/*function testValue(count) {
 	$(".value_discount_amount" + count).show();
 	$(".percent_discount_amount" + count).hide();
 }
@@ -92,7 +92,7 @@ function testValue(count) {
 function testPercent(count) {
 	$(".value_discount_amount" + count).hide();
 	$(".percent_discount_amount" + count).show();
-}
+}*/
 
 $(function() {
 	$('#quantity_available').change(function() {
@@ -227,7 +227,7 @@ $(document).ready(function() {
 				for (var i = 0; i < result.rows.length; i++) {
 					var productAttribute;
 					productAttribute = "<tr><td>" + result.rows[i].Attribute.attr_name + "</td><td>" +
-						"<input type='text' name=" + result.rows[i].Attribute.id + " class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td></tr>"
+						"<input type='text' name=" + result.rows[i].Attribute.id + " class='m-input-xxs all-quantity-cart-items' style='width:auto;'></td></tr>"
 
 					attributeRow = attributeRow + productAttribute;
 				}
@@ -263,6 +263,13 @@ $(document).ready(function() {
 				required: true,
 			},
 			price: {
+				required:function(){
+					if($("select[name=marketplace_type_id]").val() == 2 || $("select[name=marketplace_type_id]").val() == 3 || $("select[name=marketplace_type_id]").val() == 4){
+						return false;
+					}else{
+						return true;
+					}		
+				},
 				number: true,
 				dollarsscents: true
 			},
@@ -279,15 +286,6 @@ $(document).ready(function() {
 				dollarsscents: true
 			},
 			status: "required",
-			price:{
-				required:function(){
-					if($("select[name=marketplace_type_id]").val() == 2 || $("select[name=marketplace_type_id]").val() == 3 || $("select[name=marketplace_type_id]").val() == 4){
-						return false;
-					}else{
-						return true;
-					}		
-				}
-			},
 			moq: {
 				required: function() {
 					if ($("input[name=marketplace]").val() == 'Private Wholesale Marketplace') {
@@ -371,6 +369,7 @@ $(document).ready(function() {
 				required: "Please enter Stock Keeping Unit"
 			},
 			price: {
+				required: "Please enter product price",
 				number: "Please enter valid product price",
 				dollarsscents: "Only two decimal values accepted"
 			},
@@ -572,7 +571,7 @@ $(document).ready(function() {
 		location.reload(true);
 	});
 
-	$("#editdiscount").click(function(e) {
+/*	$("#editdiscount").click(function(e) {
 
 		if (count < 3) {
 
@@ -594,7 +593,7 @@ $(document).ready(function() {
 				$(".discount_tier").hide();
 			}
 		}
-	});
+	});*/
 
 	if (imageFiles && (imageFiles.length > 0))
 		appendImage();
