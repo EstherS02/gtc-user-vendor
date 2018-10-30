@@ -1,19 +1,23 @@
 'use strict';
 
+const async = require('async');
+const moment = require('moment');
+const sequelize = require('sequelize');
+const querystring = require('querystring');
+
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
 const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
-const sequelize = require('sequelize');
-const moment = require('moment');
+const orderHistoryService = require('../../../api/order/order-history.service');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
 const orderStatusCode = require('../../../config/order_status');
-const async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
 
 export function orderHistory(req, res) {
+	var queryObj = {};
 	var queryParams = {};
 	var bottomCategory = {};
 	var LoggedInUser = req.user;
@@ -38,6 +42,8 @@ export function orderHistory(req, res) {
 		"value": 6
 	}];
 
+	queryObj['user_id'] = req.user.id;
+
 	if (req.query.range) {
 		queryParams['range'] = req.query.range;
 	} else {
@@ -45,14 +51,33 @@ export function orderHistory(req, res) {
 	}
 
 	if (queryParams['range'] == 5) {
-		queryParams['start_date'] = moment().subtract(30, 'days').format('MM/DD/YYYY');
-		queryParams['end_date'] = moment().subtract(1, 'days').format('MM/DD/YYYY');
+		queryParams['start_date'] = moment().startOf('month').format('MM/DD/YYYY');
+		queryParams['end_date'] = moment().endOf('month').format('MM/DD/YYYY');
 	} else {
 		if (req.query.start_date) {
 			queryParams['start_date'] = req.query.start_date;
 		}
 		if (req.query.end_date) {
 			queryParams['end_date'] = req.query.end_date;
+		}
+	}
+
+	if (queryParams['start_date'] && queryParams['end_date']) {
+		queryObj['ordered_date'] = {
+			'$gte': moment(queryParams['start_date'], 'MM/DD/YYYY').startOf('day').format("YYYY-MM-DD HH:mm:ss"),
+			'$lte': moment(queryParams['end_date'], 'MM/DD/YYYY').endOf('day').format("YYYY-MM-DD HH:mm:ss")
+		};
+	}
+
+	if (req.query.status) {
+		queryParams['status'] = req.query.status;
+		queryObj['status'] = queryParams['status'];
+	}
+
+	if (req.query.query) {
+		queryParams['query'] = req.query.query;
+		queryObj['id'] = {
+			like: '%' + queryParams['query'] + '%'
 		}
 	}
 
@@ -90,6 +115,33 @@ export function orderHistory(req, res) {
 					return callback(null);
 				});
 		},
+		personalOrderHistory: function(callback) {
+			var offset = 0;
+			var order = "DESC";
+			var includeArray = [];
+			var field = "ordered_date";
+			var orderModelName = "OrdersNew";
+			var limit = req.query.limit ? parseInt(req.query.limit) : 10;
+			var offset = req.query.offset ? parseInt(req.query.offset) : 0;
+			var page = req.query.page ? parseInt(req.query.page) : 1;
+
+			queryParams['page'] = page;
+			queryParams['limit'] = limit;
+			offset = (page - 1) * limit;
+
+			includeArray = [{
+				model: model['Payment'],
+				attributes: ['id', 'amount', 'payment_method', 'status']
+			}];
+
+			orderHistoryService.findAllOrders(orderModelName, includeArray, queryObj, offset, limit, field, order)
+				.then((response) => {
+					return callback(null, response);
+				}).catch((error) => {
+					console.log("indexExample Error :::", error);
+					return callback(error);
+				});
+		}
 	}, function(error, results) {
 		if (!error && results) {
 			return res.render('userNav/order-history', {
@@ -98,7 +150,9 @@ export function orderHistory(req, res) {
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
+				orders: results.personalOrderHistory,
 				queryParams: queryParams,
+				queryParamsString: querystring.stringify(queryParams),
 				dateRangeOptions: dateRangeOptions
 			});
 		} else {

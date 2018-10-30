@@ -22,27 +22,33 @@ const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
 export function indexExample(req, res) {
+	var orderID = 34;
 	var queryObj = {};
 	var includeArray = [];
-	var orderModelName = "OrdersNew";
 
-	var offset = 0;
-	var limit = 10;
-	var field = "id";
-	var order = "ASC";
-
+	queryObj['id'] = orderID;
 	queryObj['user_id'] = req.user.id;
-	queryObj['status'] = status['ACTIVE'];
-	queryObj['ordered_date'] = {
-		'$gte': moment(req.query['start_date'], 'MM/DD/YYYY').startOf('day').format("YYYY-MM-DD HH:mm:ss"),
-		'$lte': moment(req.query['end_date'], 'MM/DD/YYYY').endOf('day').format("YYYY-MM-DD HH:mm:ss")
-	};
 
-	service.findAllRows(orderModelName, includeArray, queryObj, offset, limit, field, order)
+	includeArray = [{
+		model: model['OrdersItemsNew'],
+		attributes: ['id', 'order_id', 'product_id', 'quantity', 'price', 'shipping_cost', 'is_coupon_applied', 'coupon_amount', 'is_on_sale_item', 'discount_amount', 'order_item_status'],
+		include: [{
+			model: model['Product'],
+			attributes: ['id', 'product_name', 'product_slug'],
+			include: [{
+				model: model['Country'],
+				attributes: ['id', 'region_id', 'name']
+			}, {
+				model: model['State'],
+				attributes: ['id', 'name']
+			}]
+		}]
+	}]
+
+	service.findOneRow("OrdersNew", queryObj, includeArray)
 		.then((response) => {
-			return res.status(200).send(response);
+			return res.status(200).send(response)
 		}).catch((error) => {
-			console.log("indexExample Error :::", error);
 			return res.status(500).send(error);
 		});
 }

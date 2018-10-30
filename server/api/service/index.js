@@ -1,12 +1,13 @@
 'use strict';
 
+const _ = require('lodash');
+const sequelize = require('sequelize');
+
 const status = require('../../config/status');
 const position = require('../../config/position');
 const model = require('../../sqldb/model-connect');
-const sequelize = require('sequelize');
 const Sequelize_Instance = require('../../sqldb/index');
 const RawQueries = require('../../raw-queries/sql-queries');
-const _ = require('lodash');
 
 export function findRows(modelName, queryObj, offset, limit, field, order, includeArr) {
 	return new Promise((resolve, reject) => {

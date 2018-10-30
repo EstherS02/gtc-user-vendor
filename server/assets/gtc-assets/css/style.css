@@ -41,7 +41,9 @@ body {
     border-right: 3px solid transparent;
     border-left: 3px solid transparent;
 }
-
+.group {
+    display: flow-root;
+}
 select {
     -webkit-appearance: none;
     -moz-appearance: none;

@@ -2,6 +2,9 @@
 import Handlebars from 'handlebars';
 const moment = require('moment');
 const _ = require('lodash');
+import {
+    URLSearchParams
+} from 'url';
 const numeral = require('numeral');
 
 Handlebars.registerHelper('starCount', function(rating, color) {
@@ -220,27 +223,27 @@ Handlebars.registerHelper('FormatDate', function(context, options) {
         return newdate;
     }
 });
-Handlebars.registerHelper('timeLeft', function(context,options){
+Handlebars.registerHelper('timeLeft', function(context, options) {
     var currentDate = moment().utc().format('YYYY-M-DD HH:mm:ss');
     var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
-    var secondsDiff='';
-    if(endDate.diff(currentDate)>0){
-    var intervals = ['days','hours','minutes'],
-      out = [];
-    var arrayEle = [];
-  for(var i=0; i<intervals.length; i++){
-      var diff = endDate.diff(currentDate, intervals[i]);
-      endDate.add(diff, intervals[i]);
-      arrayEle[intervals[i]] = diff;
-      out.push(diff + ' ' + intervals[i]);
-  }
-    if(arrayEle['minutes']<60){
-    secondsDiff = arrayEle['minutes']+'m left!';        
-    }else if(arrayEle['hours']<24){
-    secondsDiff = arrayEle['hours']+'h '+arrayEle['minutes']%60+'m left!';
-    }else if(arrayEle['days']<30){
-    secondsDiff = arrayEle['days']+'d '+arrayEle['hours']%24+'h left!';
-    }
+    var secondsDiff = '';
+    if (endDate.diff(currentDate) > 0) {
+        var intervals = ['days', 'hours', 'minutes'],
+            out = [];
+        var arrayEle = [];
+        for (var i = 0; i < intervals.length; i++) {
+            var diff = endDate.diff(currentDate, intervals[i]);
+            endDate.add(diff, intervals[i]);
+            arrayEle[intervals[i]] = diff;
+            out.push(diff + ' ' + intervals[i]);
+        }
+        if (arrayEle['minutes'] < 60) {
+            secondsDiff = arrayEle['minutes'] + 'm left!';
+        } else if (arrayEle['hours'] < 24) {
+            secondsDiff = arrayEle['hours'] + 'h ' + arrayEle['minutes'] % 60 + 'm left!';
+        } else if (arrayEle['days'] < 30) {
+            secondsDiff = arrayEle['days'] + 'd ' + arrayEle['hours'] % 24 + 'h left!';
+        }
     }
     return secondsDiff;
 });
@@ -284,6 +287,16 @@ Handlebars.registerHelper('QueryParams', function(existingQueryObj, newObj, dele
         });
     }
     return serialize(existingObj);
+});
+
+Handlebars.registerHelper('paginationParams', function(existingQueryParams, newQueryObj, options) {
+    var urlParams = new URLSearchParams(existingQueryParams);
+    for (var property in newQueryObj) {
+        if (newQueryObj.hasOwnProperty(property)) {
+            urlParams.set(property, newQueryObj[property]);    
+        }
+    }
+    return urlParams;
 });
 
 Handlebars.registerHelper('FrameObject', function(options) {
@@ -457,7 +470,7 @@ Handlebars.registerHelper('marketPlaceChart', function(totalAmt, marketPlaceArr)
         let amt = parseFloat(marketPlaceArr[i].amount).toFixed(2);
         var mPlaceClass = mpKeyValue[marketPlaceArr[i].marketplace_name] ? mpKeyValue[marketPlaceArr[i].marketplace_name] : "wholesale";
         option = `<li><p class="top_perf_marketplace_chart_price">$ ${amt}</p>
-		<span class = "` + mPlaceClass + ` reporting_chart_` + mPlaceClass + `_color" style = "height:` + calculatePercentage(totalAmt, marketPlaceArr[i].amount) + `" title = "` + marketPlaceArr[i].marketplace_name + `"></span></li>`
+        <span class = "` + mPlaceClass + ` reporting_chart_` + mPlaceClass + `_color" style = "height:` + calculatePercentage(totalAmt, marketPlaceArr[i].amount) + `" title = "` + marketPlaceArr[i].marketplace_name + `"></span></li>`
         ret += option;
     }
     return new Handlebars.SafeString(ret);
@@ -563,29 +576,29 @@ Handlebars.registerHelper('OrderStatusText', function(order_status, options) {
     let orderStatus;
     switch (order_status) {
         case 1:
-			orderStatus = "Order not yet confirmed by seller";
+            orderStatus = "Order not yet confirmed by seller";
             break;
         case 2:
-			orderStatus = "Order confirmed by seller";
+            orderStatus = "Order confirmed by seller";
             break;
         case 3:
-			orderStatus = "Seller is processing your order";
+            orderStatus = "Seller is processing your order";
             break;
         case 4:
-			orderStatus = "Order dispatched";
-			break;
-		case 5:
-			orderStatus = "Order delivered";
-			break;
-		case 7:
-			orderStatus = "Order Cancelled";
-			break;
-		case 8:
-			orderStatus = "Order Failed";
-			break;
-			
+            orderStatus = "Order dispatched";
+            break;
+        case 5:
+            orderStatus = "Order delivered";
+            break;
+        case 7:
+            orderStatus = "Order Cancelled";
+            break;
+        case 8:
+            orderStatus = "Order Failed";
+            break;
+
         default:
-			orderStatus = " ";
+            orderStatus = " ";
             break;
     }
     return orderStatus;
@@ -593,30 +606,30 @@ Handlebars.registerHelper('OrderStatusText', function(order_status, options) {
 
 Handlebars.registerHelper('OrderStatusBar', function(order_status, options) {
     if (!order_status)
-		return 'style="width:100%;"';
-		
+        return 'style="width:100%;"';
+
     let prograssBar;
     switch (order_status) {
         case 1:
-			prograssBar = "width:5%;";
+            prograssBar = "width:5%;";
             break;
         case 2:
-			prograssBar = "width:10%;background-color:green;";
+            prograssBar = "width:10%;background-color:green;";
             break;
         case 3:
-			prograssBar = "width:15%;background-color:green;";
+            prograssBar = "width:15%;background-color:green;";
             break
         case 4:
-			prograssBar = "width:20%;background-color:green;";
-			break
-		case 5:
-			prograssBar = "width:100%;background-color:green;";
-			break
-		case 6:
-			prograssBar = "width:100%;background-color:green;";
-			break;		
+            prograssBar = "width:20%;background-color:green;";
+            break
+        case 5:
+            prograssBar = "width:100%;background-color:green;";
+            break
+        case 6:
+            prograssBar = "width:100%;background-color:green;";
+            break;
         default:
-			prograssBar = "width:100%;background-color:red;";
+            prograssBar = "width:100%;background-color:red;";
             break;
     }
     return prograssBar;
@@ -663,7 +676,7 @@ Handlebars.registerHelper('dotdotdot', function(str) {
     var regex = /(<([^>]+)>)/ig;
     var result = body.replace(regex, "");
     if (str.length > 100) {
-        result=result.substr(0, 100);
+        result = result.substr(0, 100);
         return result + '...';
     }
 
