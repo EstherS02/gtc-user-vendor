@@ -149,7 +149,6 @@ export async function create(req, res) {
 		delete req.body.moq;
 		delete req.body.marketplace_type_id;
 	}
-	console.log("==================================================", req.body);
 	if (req.body.exclusive_sale == 1) {
 		req.checkBody('exclusive_start_date', 'Missing Query Param').notEmpty();
 		req.checkBody('exclusive_end_date', 'Missing Query Param').notEmpty();
@@ -339,7 +338,6 @@ export async function edit(req, res) {
 				}
 			});
 			if (!existsVendorSKU) {
-				console.log("==================================================", bodyParams);
 				const product = await service.updateRecordNew(productModelName, bodyParams, {
 					id: existingProduct.id
 				});
