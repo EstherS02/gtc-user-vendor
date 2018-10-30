@@ -14,7 +14,7 @@ export async function categoryWithProductCount(productQueryObj, isFeaturedProduc
 
 	results['count'] = 0;
 	results['rows'] = [];
-
+	delete productQueryObj.is_featured_product
 	try {
 		var categoriesResponse = await model['Category'].findAll({
 			where: {
@@ -96,7 +96,13 @@ export async function countryWithProductCount(productQueryObj, isFeaturedProduct
 				include: [{
 					model: model['FeaturedProduct'],
 					where: {
-						status: status['ACTIVE']
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
 					},
 					attributes: [],
 					required: isFeaturedProduct
@@ -144,7 +150,6 @@ export async function countryWithProductCount(productQueryObj, isFeaturedProduct
 
 export async function marketplacetypeWithProductCount(productQueryObj, isFeaturedProduct) {
 	var results = {};
-
 	results['count'] = 0;
 	results['rows'] = [];
 
@@ -162,7 +167,13 @@ export async function marketplacetypeWithProductCount(productQueryObj, isFeature
 				include: [{
 					model: model['FeaturedProduct'],
 					where: {
-						status: status['ACTIVE']
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
 					},
 					attributes: [],
 					required: isFeaturedProduct
@@ -241,4 +252,37 @@ export async function productCountForCountry(productCountQueryParams) {
 			resolve()
 		}
 	});
+}
+
+export async function productCountForMareketplace(productCountBasedQueryParams){
+	return new Promise((resolve, reject) => {
+		if (productCountBasedQueryParams) {
+			Sequelize_Instance.query(RawQueries.productCountBasedMarketplace(productCountBasedQueryParams), {
+				model: model['Product'],
+				type: Sequelize_Instance.QueryTypes.SELECT
+			}).then((results) => {
+
+				resolve(results)
+			}).catch(function(error) {
+				console.log("Error:::",error)
+				reject(error);
+			});
+		} else {
+			resolve(null);
+		}
+	});
+}
+
+export async function productsCountBasedOnCountry(productCountQueryParams){
+	return new Promise((resolve,reject)=>{
+		Sequelize_Instance.query(RawQueries.productsCountBasedOnCountry(productCountQueryParams),{
+			model:model['Product'],
+			type:Sequelize_Instance.QueryTypes.SELECT
+		}).then((results)=>{
+			resolve(results)
+		}).catch(function(error){
+			console.log("Error:::",error)
+			reject(null)
+		})
+});
 }

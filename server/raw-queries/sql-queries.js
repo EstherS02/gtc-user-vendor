@@ -119,15 +119,14 @@ let sqlQueries = {
 			let query = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(featured_product.product_id) as subproductcount FROM 
 				category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
 				LEFT OUTER JOIN (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') on sub_category.id = product.sub_category_id 
-			    LEFT OUTER JOIN featured_product on featured_product.product_id=product.id`;
+			    LEFT OUTER JOIN featured_product on featured_product.product_id=product.id AND featured_product.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND featured_product.end_date >= '`+new Date().toISOString().slice(0,10)+`' and featured_product.status=(` + productCountQueryParams.is_featured_product + `)`;
 			    if(productCountQueryParams.marketplace_id){
 			    	 query=query+` AND product.marketplace_id =(`+ productCountQueryParams.marketplace_id+`)`;
 			 	}
 			 	if(productCountQueryParams.product_category_id){
 			    	 query=query+` AND product.product_category_id =(`+ productCountQueryParams.product_category_id+`)`;
 			 	}
-			  query=query+` and product.status = 1 and featured_product.status=(` + productCountQueryParams.is_featured_product + `)
-				GROUP BY sub_category.name ORDER by category.name`;
+			  query=query+` and product.status = 1 GROUP BY sub_category.name ORDER by category.name`;
 			return query;
 		} else if (productCountQueryParams.marketplace_id && productCountQueryParams.keyword) {
 			let query = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
@@ -175,30 +174,44 @@ let sqlQueries = {
 		}
 	},
 	productCountBasedCountry: function(productCountQueryParams) {
-		let baseQuery = "SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN product on country.id = product.product_location"
+		let baseQuery = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN ((product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') `
+		let conditionQuery = `on country.id = product.product_location`;
 		let groupQuery = "GROUP BY country.name ORDER by region.id"
-		if (productCountQueryParams.marketplace_id && productCountQueryParams.keyword) {
-			let query = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN product on country.id = product.product_location and product.product_name LIKE "%` + productCountQueryParams.keyword + `%" and product.marketplace_id=(` + productCountQueryParams.marketplace_id + `) and product.status=(` + productCountQueryParams.status + `) GROUP BY country.name ORDER by region.id`;
-			return query;
-		} else if (productCountQueryParams.keyword) {
-			let query = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN product on country.id = product.product_location and product.product_name LIKE "%` + productCountQueryParams.keyword + `%" and product.status=(` + productCountQueryParams.status + `) GROUP BY country.name ORDER by region.id`;
-			return query;
-		} else if (productCountQueryParams.is_featured_product) {
-			let query = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(marketplace_products.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN marketplace_products on country.id = marketplace_products.product_location_id and marketplace_products.is_featured_product=(` + productCountQueryParams.is_featured_product + `) and marketplace_products.status=(` + productCountQueryParams.status + `)`;
-			if(productCountQueryParams.marketplace_id){
-				query=query+` and marketplace_products.marketplace_id=(` + productCountQueryParams.marketplace_id + `)`;
+			if(productCountQueryParams.is_featured_product){
+				baseQuery = baseQuery+` JOIN featured_product on featured_product.product_id=product.id AND featured_product.status = 1 AND featured_product.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND featured_product.end_date >= '`+new Date().toISOString().slice(0,10)+`')`;
+				delete productCountQueryParams.is_featured_product;
+			}else{
+				baseQuery = baseQuery + `)`;
 			}
-				query=query+` GROUP BY country.name ORDER by region.id`
-			return query;
-		} else {
+			baseQuery = baseQuery +conditionQuery;
+			if(productCountQueryParams.keyword){
+				baseQuery = baseQuery + ` and product.product_name LIKE "%` + productCountQueryParams.keyword + `%"`;
+				delete productCountQueryParams.keywords;
+			}
 			for (var j in productCountQueryParams) {
 				var condition = " AND " + "product." + j + " = " + productCountQueryParams[j]
 				baseQuery = baseQuery.concat(condition)
 			}
 			let query = baseQuery + " " + groupQuery;
 			return query;
+		// }
+	},
+	productCountBasedMarketplace:function(productCountBasedQueryParams){
+		console.log("productCountBasedQueryParams",productCountBasedQueryParams)
+		var baseQuery=`SELECT marketplace_type.id,marketplace_type.name,marketplace_type.code,COUNT(product.product_name) as product_count FROM marketplace_type LEFT OUTER JOIN  (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') on marketplace_type.id = product.marketplace_type_id`;
+		var groupQuery=` GROUP BY marketplace_type.id ORDER by marketplace_type.id`;
+		if(productCountBasedQueryParams.is_featured_product == 1){
+			baseQuery = baseQuery+`LEFT OUTER JOIN featured_product on featured_product.product_id=product.id AND featured_product.status = 1 AND featured_product.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND featured_product.end_date >= '`+new Date().toISOString().slice(0,10)+`'`;
+		delete productCountBasedQueryParams.is_featured_product
 		}
-	}
+		for (var j in productCountBasedQueryParams) {
+				var condition = " AND " + "product." + j + " = " + productCountBasedQueryParams[j]
+				baseQuery = baseQuery.concat(condition)
+			}
+			let query = baseQuery + " " + groupQuery;
+			return query;
+	},
+
 };
 
 module.exports = sqlQueries;
