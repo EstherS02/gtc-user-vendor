@@ -137,9 +137,7 @@ export function index(req, res) {
 		productQueryParams['product_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
-		productCountQueryParams['product_name'] = {
-			like: '%' + req.query.keyword + '%'
-		};
+		productCountQueryParams['keyword'] = req.query.keyword;
 		productCountCategory['keyword'] = req.query.keyword;
 	}
 
@@ -161,10 +159,8 @@ export function index(req, res) {
 			'$gte': req.query.start_date,
 			'$lte': req.query.end_date
 		};
-		productCountQueryParams['created_on'] = {
-			'$gte': req.query.start_date,
-			'$lte': req.query.end_date
-		};
+		productCountQueryParams['start_date'] = req.query.start_date;
+		productCountQueryParams['end_date'] = req.query.end_date;
 	}
 
 	if (req.query.vendor_id) {

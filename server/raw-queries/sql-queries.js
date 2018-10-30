@@ -108,8 +108,13 @@ let sqlQueries = {
 		let query = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(vendor_user_product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN vendor_user_product on country.id = vendor_user_product.origin_id and vendor_user_product.status=1 GROUP BY country.name ORDER by region.id`;
 		return query;
 	},
-	vendorCountByMarkerplace: function() {
-		let query = `SELECT marketplace.id,marketplace.name,COUNT(vendor_user_product.marketplace_id) as vendor_count from marketplace LEFT OUTER JOIN vendor_user_product on marketplace.id= vendor_user_product.marketplace_id and vendor_user_product.status = 1 GROUP BY marketplace.id`;
+	vendorCountByMarkerplace: function(params) {
+		var query = '';
+		if (params.marketplace_id) {
+			query = query + `SELECT marketplace.id,marketplace.name,COUNT(vendor_user_product.marketplace_id) as vendor_count from marketplace LEFT OUTER JOIN vendor_user_product on marketplace.id= vendor_user_product.marketplace_id and vendor_user_product.status = 1 and vendor_user_product.marketplace_id = 1 GROUP BY marketplace.id`;
+		}else{
+		query = query + `SELECT marketplace.id,marketplace.name,COUNT(vendor_user_product.marketplace_id) as vendor_count from marketplace LEFT OUTER JOIN vendor_user_product on marketplace.id= vendor_user_product.marketplace_id and vendor_user_product.status = 1 GROUP BY marketplace.id`;
+		}
 		return query;
 	},
 	productCountBasedCategory: function(productCountQueryParams) {
@@ -126,6 +131,9 @@ let sqlQueries = {
 			 	if(productCountQueryParams.product_category_id){
 			    	 query=query+` AND product.product_category_id =(`+ productCountQueryParams.product_category_id+`)`;
 			 	}
+			 	if(productCountQueryParams.start_date && productCountQueryParams.end_date){
+				baseQuery = baseQuery + `and product.created_on >='`+ productCountQueryParams.start_date+ `' and product.created_on <= '`+ productCountQueryParams.end_date+`' ` ;
+				}
 			  query=query+` and product.status = 1 GROUP BY sub_category.name ORDER by category.name`;
 			return query;
 		} else if (productCountQueryParams.marketplace_id && productCountQueryParams.keyword) {
@@ -175,7 +183,7 @@ let sqlQueries = {
 	},
 	productCountBasedCountry: function(productCountQueryParams) {
 		let baseQuery = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN ((product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') `
-		let conditionQuery = `on country.id = product.product_location`;
+		let conditionQuery = ` on country.id = product.product_location`;
 		let groupQuery = "GROUP BY country.name ORDER by region.id"
 			if(productCountQueryParams.is_featured_product){
 				baseQuery = baseQuery+` JOIN featured_product on featured_product.product_id=product.id AND featured_product.status = 1 AND featured_product.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND featured_product.end_date >= '`+new Date().toISOString().slice(0,10)+`')`;
@@ -186,7 +194,12 @@ let sqlQueries = {
 			baseQuery = baseQuery +conditionQuery;
 			if(productCountQueryParams.keyword){
 				baseQuery = baseQuery + ` and product.product_name LIKE "%` + productCountQueryParams.keyword + `%"`;
-				delete productCountQueryParams.keywords;
+				delete productCountQueryParams.keyword;
+			}
+			if(productCountQueryParams.start_date && productCountQueryParams.end_date){
+				baseQuery = baseQuery + ` and product.created_on >='`+ productCountQueryParams.start_date+ `' and product.created_on <= '`+ productCountQueryParams.end_date+`' ` ;
+				delete productCountQueryParams.start_date;
+				delete productCountQueryParams.end_date;
 			}
 			for (var j in productCountQueryParams) {
 				var condition = " AND " + "product." + j + " = " + productCountQueryParams[j]
@@ -194,16 +207,27 @@ let sqlQueries = {
 			}
 			let query = baseQuery + " " + groupQuery;
 			return query;
-		// }
 	},
 	productCountBasedMarketplace:function(productCountBasedQueryParams){
-		console.log("productCountBasedQueryParams",productCountBasedQueryParams)
-		var baseQuery=`SELECT marketplace_type.id,marketplace_type.name,marketplace_type.code,COUNT(product.product_name) as product_count FROM marketplace_type LEFT OUTER JOIN  (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') on marketplace_type.id = product.marketplace_type_id`;
+		var baseQuery=`SELECT marketplace_type.id,marketplace_type.name,marketplace_type.code,COUNT(product.product_name) as product_count FROM marketplace_type LEFT OUTER JOIN  ((product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') `;
+		var conditionQuery = ` on marketplace_type.id = product.marketplace_type_id`;
 		var groupQuery=` GROUP BY marketplace_type.id ORDER by marketplace_type.id`;
 		if(productCountBasedQueryParams.is_featured_product == 1){
-			baseQuery = baseQuery+`LEFT OUTER JOIN featured_product on featured_product.product_id=product.id AND featured_product.status = 1 AND featured_product.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND featured_product.end_date >= '`+new Date().toISOString().slice(0,10)+`'`;
+			baseQuery = baseQuery+` JOIN featured_product on featured_product.product_id=product.id AND featured_product.status = 1 AND featured_product.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND featured_product.end_date >= '`+new Date().toISOString().slice(0,10)+`')`;
 		delete productCountBasedQueryParams.is_featured_product
+		}else{
+			baseQuery = baseQuery + `)`;
 		}
+		baseQuery = baseQuery+conditionQuery;
+		if(productCountBasedQueryParams.keyword){
+			baseQuery = baseQuery + ` AND product.product_name LIKE "%` + productCountBasedQueryParams.keyword + `%"`;
+			delete productCountBasedQueryParams.keyword
+		}
+		if(productCountBasedQueryParams.start_date && productCountBasedQueryParams.end_date){
+				baseQuery = baseQuery + `and product.created_on >='`+ productCountBasedQueryParams.start_date+ `' and product.created_on <= '`+ productCountBasedQueryParams.end_date+`' ` ;
+				delete productCountBasedQueryParams.start_date;
+				delete productCountBasedQueryParams.end_date;
+			}
 		for (var j in productCountBasedQueryParams) {
 				var condition = " AND " + "product." + j + " = " + productCountBasedQueryParams[j]
 				baseQuery = baseQuery.concat(condition)
