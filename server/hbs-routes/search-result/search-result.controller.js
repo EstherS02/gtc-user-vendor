@@ -105,6 +105,7 @@ export function index(req, res) {
 		isFeaturedProduct = true;
 		queryURI['is_featured_product'] = parseInt(req.query.is_featured_product);
 		productQueryParams['is_featured_product'] = parseInt(req.query.is_featured_product);
+		productCountQueryParams['is_featured_product'] = parseInt(req.query.is_featured_product);
 		// productQueryParams['position'] = 'position_searchresult';
 		productCountCategory['is_featured_product'] = parseInt(req.query.is_featured_product);
 	}
@@ -253,13 +254,35 @@ export function index(req, res) {
 				});
 		},
 		productsCountBasedOnMarketplaceTypes: function(callback) {
-			searchResultService.marketplacetypeWithProductCount(productCountQueryParams, isFeaturedProduct)
-				.then(function(response) {
-					return callback(null, response);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
+			// searchResultService.marketplacetypeWithProductCount(productCountQueryParams, isFeaturedProduct)
+			// 	.then(function(response) {
+			// 		return callback(null, response);
+			// 	}).catch(function(error) {
+			// 		console.log('Error :::', error);
+			// 		return callback(null);
+			// 	});
+			var result = {};
+			if ((selectedMarketPlaceID != marketplace['PUBLIC']) || (selectedMarketPlaceID != marketplace['SERVICE']) || (selectedMarketPlaceID != marketplace['LIFESTYLE'])) {
+				searchResultService.productCountForMareketplace(productCountQueryParams)
+					.then(function(response) {
+						var count = 0;
+						
+						var char = JSON.parse(JSON.stringify(response));
+						result.rows = char;
+						_.each(char, function(Element){
+							count=count + Element.product_count;
+						})
+						result.count= count;
+						return callback(null, result);
+					}).catch(function(error) {
+						console.log('Error:::', error);
+						return callback(null);
+					});
+			} else {
+				result.count=0;
+				result.rows = [];
+				return callback(result);
+			}
 		},
 		productsCountBasedOnCountry: function(callback) {
 			searchResultService.countryWithProductCount(productCountQueryParams, isFeaturedProduct)

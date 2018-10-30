@@ -256,6 +256,7 @@
 				<h5 class="right-header-sm" style="margin-top:10px">FILTER BY TYPE</h5>
 				<p class="right-header-xs bg{{queryURI.marketplace}}">ALL TYPES ({{marketPlaceTypes.count}})</p>
 				<ul class="right-list-view">
+
 					{{#each marketPlaceTypes.rows}}
 						<li>
 							<a {{#ifCond ../queryURI.marketplace_type "==" this.id}} class="active" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 marketplace_type=this.id) 'null'}}">
@@ -280,7 +281,7 @@
 
 			{{#ifCond marketplaceURl "!=" "lifestyle"}}
 				<h5 class="right-header-sm" style="margin-top:10px">FILTER BY LOCATION</h5>
-				<p class="right-header-xs bg{{queryURI.marketplace}}">GLOBAL ({{locations.count}})</p>
+				<p class="right-header-xs bg{{queryURI.marketplace}}">GLOBAL ({{products.count}})</p>
 				<ul class="right-list-view category-fixed">
 					{{!-- {{#each locations.rows}}
 				<li>
