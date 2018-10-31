@@ -148,13 +148,18 @@ function processGeoLocateSearch(req, res, cbNext) {
 						'$lte': parseFloat(req.query.price_max)
 					}
 				}
-
 				if (req.query.selected_category_id)
 					searchObj['product_category_id'] = req.query.selected_category_id;
 				if (req.query.selected_sub_category_id)
 					searchObj['sub_category_id'] = req.query.selected_sub_category_id;
 				if (req.query.selected_location_id)
 					searchObj['product_location'] = req.query.selected_location_id;
+				if(req.query.city)
+					searchObj['city'] = req.query.origin;
+				if(req.query.keyword)
+				searchObj['product_name'] = {
+					like: '%' + req.query.keyword + '%'
+				};
 
 				service.findAllRows("Product", includeArr, searchObj, 0, null, 'id', 'asc')
 					.then(function(results) {
