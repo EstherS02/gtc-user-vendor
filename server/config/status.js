@@ -8,5 +8,4 @@ module.exports = {
 	"GTC_INACTIVE":7,
 	"SUSPENDED": 8,
 	"SOLDOUT": 9,
-	
 };
