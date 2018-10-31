@@ -101,7 +101,7 @@ export async function makePayment(req, res) {
 				created_on: new Date()
 			});
 
-			await Promise.all(cartItems.map(async (cartItem) => {
+			for (let cartItem of cartItems) {
 				var newProductItem = {};
 
 				newProductItem['order_id'] = newOrder.id;
@@ -139,15 +139,30 @@ export async function makePayment(req, res) {
 				newProductItem['created_on'] = new Date();
 				orderItemsPromises.push(service.createRow(orderItemModelName, newProductItem));
 
-				if (vendorArray.indexOf(cartItem.Product.vendor_id) == -1) {
-					vendorArray.push(cartItem.Product.vendor_id);
-					orderVendorPromises.push(service.createRow(orderVendorModelName, {
+				const index = await vendorArray.findIndex((obj) => obj.vendor_id == cartItem.Product.vendor_id);
+				if (index > -1) {
+					vendorArray[index].total_price += parseFloat(newProductItem['price']);
+					vendorArray[index].shipping_cost += parseFloat(newProductItem['shipping_cost']);
+					vendorArray[index].gtc_fees += parseFloat(newProductItem['gtc_fees']);
+					vendorArray[index].plan_fees += parseFloat(newProductItem['plan_fees']);
+					vendorArray[index].coupon_amount += parseFloat(newProductItem['coupon_amount']);
+					vendorArray[index].final_price += parseFloat(newProductItem['final_price']);
+				} else {
+					vendorArray.push({
 						order_id: newOrder.id,
 						vendor_id: cartItem.Product.vendor_id,
+						total_price: parseFloat(newProductItem['price']),
+						shipping_cost: parseFloat(newProductItem['shipping_cost']),
+						gtc_fees: parseFloat(newProductItem['gtc_fees']),
+						gtc_fees_percent: config.order.gtc_fees,
+						plan_fees: parseFloat(newProductItem['plan_fees']),
+						plan_fees_percent: config.order.service_fee,
+						coupon_amount: parseFloat(newProductItem['coupon_amount']),
+						final_price: parseFloat(newProductItem['final_price']),
 						status: status['ACTIVE'],
 						created_by: req.user.first_name,
 						created_on: new Date()
-					}));
+					});
 				}
 
 				productQuantityPromises.push(model[productModelName].decrement({
@@ -165,6 +180,12 @@ export async function makePayment(req, res) {
 				}, {
 					id: cartItem.id
 				}));
+			}
+			await Promise.all(orderItemsPromises);
+			await Promise.all(productQuantityPromises);
+			await Promise.all(cartEmptyPromises);
+			await Promise.all(vendorArray.map(async (vendorOrder) => {
+				orderVendorPromises.push(service.createRow(orderVendorModelName, vendorOrder));
 			}));
 			agenda.now(config.jobs.orderEmail, {
 				order: newOrder.id

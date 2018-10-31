@@ -24,11 +24,16 @@ const model = require('../../sqldb/model-connect');
 
 export function indexExample(req, res) {
 	var queryObj = {};
+	var includeArray = [];
+	var orderVendorModelName = "OrderVendor";
+	var field = "created_on";
+	var order = "DESC";
+	var limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	var offset = req.query.offset ? parseInt(req.query.offset) : 0;
 
-	queryObj['id'] = 34;
-	queryObj['user_id'] = req.user.id;
+	queryObj['vendor_id'] = req.user.Vendor.id;
 
-	orderService.userOrder(queryObj)
+	orderService.findAllOrders(orderVendorModelName, includeArray, queryObj, offset, limit, field, order)
 		.then((response) => {
 			return res.status(200).send(response);
 		})

@@ -52,7 +52,7 @@ function init(sequelize) {
     model.OrdersItemsNew = sequelize.import('./definition/orders-items-new.js');
     model.OrdersNew = sequelize.import('./definition/orders-new.js');
     model.OrderVendor = sequelize.import('./definition/order-vendor.js');
-    model.OrderVendorPaymentEscrow = sequelize.import('./definition/order-vendor-payment-escrow.js');
+    model.OrderVendorPayout = sequelize.import('./definition/order-vendor-payout.js');
     model.Payment = sequelize.import('./definition/payment.js');
     model.PaymentSetting = sequelize.import('./definition/payment-setting.js');
     model.Plan = sequelize.import('./definition/plan.js');
@@ -137,7 +137,7 @@ function init(sequelize) {
     require('./definition/orders-items-new.js').initRelations();
     require('./definition/orders-new.js').initRelations();
     require('./definition/order-vendor.js').initRelations();
-    require('./definition/order-vendor-payment-escrow.js').initRelations();    
+    require('./definition/order-vendor-payout.js').initRelations();    
     require('./definition/payment.js').initRelations();
     require('./definition/payment-setting.js').initRelations();
     require('./definition/plan.js').initRelations();

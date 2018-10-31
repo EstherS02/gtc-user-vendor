@@ -31,6 +31,46 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        total_price: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'total_price',
+            allowNull: false
+        },
+        shipping_cost: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'shipping_cost',
+            allowNull: true
+        },
+        gtc_fees: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'gtc_fees',
+            allowNull: false
+        },
+        gtc_fees_percent: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'gtc_fees_percent',
+            allowNull: false
+        },
+        plan_fees: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'plan_fees',
+            allowNull: true
+        },
+        plan_fees_percent: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'plan_fees_percent',
+            allowNull: true
+        },
+        coupon_amount: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'coupon_amount',
+            allowNull: true
+        },
+        final_price: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'final_price',
+            allowNull: false
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
@@ -72,11 +112,11 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const OrderVendor = model.OrderVendor;
-    const OrderVendorPaymentEscrow = model.OrderVendorPaymentEscrow;
+    const OrderVendorPayout = model.OrderVendorPayout;
     const OrdersNew = model.OrdersNew;
     const Vendor = model.Vendor;
 
-    OrderVendor.hasMany(OrderVendorPaymentEscrow, {
+    OrderVendor.hasMany(OrderVendorPayout, {
         foreignKey: 'order_vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

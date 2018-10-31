@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('OrderVendorPaymentEscrow', {
+    return sequelize.define('OrderVendorPayout', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -71,17 +71,17 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const OrderVendorPaymentEscrow = model.OrderVendorPaymentEscrow;
+    const OrderVendorPayout = model.OrderVendorPayout;
     const OrderVendor = model.OrderVendor;
     const Payment = model.Payment;
 
-    OrderVendorPaymentEscrow.belongsTo(OrderVendor, {
+    OrderVendorPayout.belongsTo(OrderVendor, {
         foreignKey: 'order_vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    OrderVendorPaymentEscrow.belongsTo(Payment, {
+    OrderVendorPayout.belongsTo(Payment, {
         foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
