@@ -82,7 +82,7 @@
                             candidate: event.candidate.candidate
                         };
                         callObj['receiveIceCandidate'] = false;
-                        socket.emit('call:icecandidate', callObj);
+                        //socket.emit('call:icecandidate', callObj);
                     } else {
                         console.log('End of candidates.', event);
                     }
@@ -107,23 +107,6 @@
                 alert('Cannot create RTCPeerConnection object.');
                 return;
             }
-        }
-
-        let handleRemoteStreamAdded = (event) => {
-            console.log('Remote stream added.');
-            remoteStream = event.stream;
-            remoteVideo.srcObject = remoteStream;
-        }
-
-        let handleRemoteStreamRemoved = (event) => {
-            console.log('Remote stream removed. Event: ', event);
-        }
-
-        let handleIceconnectionstatechange = (event) => {
-            console.log("=====HANDLE ICE STATE CHANGE=========", event.target.iceConnectionState)
-        }
-
-        let handleIceCandidate = (event) => {
         }
 
         socket.on('connect', () => {
@@ -194,7 +177,7 @@
                 createPeerConnection(callObj);
                 pc.addStream(localStream);
                 pc.setRemoteDescription(new RTCSessionDescription(callObj.offer));
-                callObj['receiveIceCandidate'] = true;
+                //callObj['receiveIceCandidate'] = true;
                 pc.createAnswer().then((sessionDescription) => {
                     pc.setLocalDescription(sessionDescription);
                     callObj['answer'] = sessionDescription;
@@ -206,7 +189,7 @@
             });
 
             socket.on('call:answer', (callObj) => {
-                pc.setRemoteDescription(new RTCSessionDescription(callObj.answer));
+                //pc.setRemoteDescription(new RTCSessionDescription(callObj.answer));
             })
 
         });

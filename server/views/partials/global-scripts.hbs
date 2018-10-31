@@ -55,31 +55,7 @@
                     alert(`Your call was rejected by ${callObj.callFrom}`)
                 }
             });
-
-            /*
-            socket.on('call:incoming', (callInitObj) => {
-                callAcceptStatus = confirm(`Incoming Video call from ${callInitObj.callFrom}`);
-                if(callAcceptStatus){
-                    callInitObj['callAcceptStatus'] = true;
-                    return socket.emit('call:join', callInitObj);
-                }
-                callInitObj['callAcceptStatus'] = false;
-                return socket.emit('call:rejected', callInitObj);
-            });
-
-            socket.on('call:init', (callInitObj) => {
-                return socket.emit('call:join', callInitObj);
-            });
-
-             socket.on('call:rejected', (callObj) => {
-                if(!callObj.callAcceptStatus){
-                    alert(`Your call was rejected by ${callObj.callFrom}`)
-                }
-            });
-
-            */
-           
-
+            
         });
 
     })
