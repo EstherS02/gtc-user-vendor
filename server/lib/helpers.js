@@ -714,3 +714,28 @@ Handlebars.registerHelper('sizeInKB', function(value) {
     var valueInKB = value / 1000;
     return valueInKB.toFixed(2);
 });
+Handlebars.registerHelper('verificationStatus',function(obj,status,content,option){
+    var text = '';
+    if(obj.APPROVED == status){
+        text = `<span class="id-verified">
+                    <i class="fas fa-check-circle"></i>
+                </span>`;
+    }else{
+        text = `<span class="id-verified">
+                    <i class="fas fa-exclamation-circle"></i>
+                </span>`;
+    }
+    if(obj.WAITING == status){
+        text = text+'Your '+content+' verification request is awaiting';
+    }
+    else if(obj.APPROVED == status){
+        text = text+'Your '+content+' verification request is approved';
+    }else if(obj.REJECTED == status ){
+        text = text+ option;
+    }else{
+        text = text+ `You haven't submitted this yet.`;
+    }
+    return text;
+                                                
+
+})

@@ -4796,7 +4796,7 @@ span.exclamation {
 }
 
 p.verification-incomplete {
-    padding: 16px;
+    padding: 8px;
     font-size: 14px;
     /*font-weight:bold;*/
     color: #ccc;
