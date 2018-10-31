@@ -11,7 +11,35 @@
 				$('#myModal').modal('show');
 			}
 		});
+			$("#geoLocateForm").validate({
+			rules: {
+				origin: {
+					required: true
+				},
+				keyword: {
+					required: true
+				}
+			},
+			messages: {
+				origin: {
+					required: "Please enter the location",
+				},
+				keyword: {
+					required: "Please enter the keyword",
+				}
+			}
+		});
+		$('#geoLocateForm').submit(function(e) {
+		e.preventDefault();
+		let formInput = $("#geoLocateForm :input").filter(function(index, element) {
+		return $(element).val() != '';
+		}).serialize();
+		if ($('#geoLocateForm').valid()) {
+		window.location.href = 'geo-locate/search?'+formInput;
+		}
+		});
 	});
+
 </script>
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
@@ -29,11 +57,11 @@
 								<form id="geoLocateForm" class="geo-locate-form">
 									<div class="form-group m-b-sm">
 										<input type="text" id="origin" name="origin" class="form-control-customized form-control-sm rounded"
-										 placeholder="Location (eg Calgary, AB)" required="true">
+										 placeholder="Location (eg Calgary, AB)" required>
 									</div>
 									<div class="form-group m-b-sm">
 										<div class="select-container">
-											<select class="form-control-customized form-control-sm rounded">
+											<select class="form-control-customized form-control-sm rounded" name="selected_category_id" id="selected_category_id">
 												<option disabled selected>Category</option>
 												{{#each categories}}
 													<option value="{{this.id}}">{{ this.name}}</option>
@@ -43,7 +71,7 @@
 									</div>
 									<div class="form-group m-b-sm">
 										<input type="text" id="keyword" name="keyword" class="form-control-customized form-control-sm rounded"
-										 placeholder="Keyword (eg Spoiler)" required="true">
+										 placeholder="Keyword (eg Spoiler)" required>
 									</div>
 									<div class="form-group">
 										<button type="submit" class="btn btn-small btn-block btn-primary"><strong>SEARCH</strong></button>
