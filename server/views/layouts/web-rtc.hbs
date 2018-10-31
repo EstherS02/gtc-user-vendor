@@ -1,0 +1,249 @@
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+
+<style>
+    #videos {
+        transition: all 1s;
+    }
+
+    #videos.active {
+        -moz-transform: rotateY(180deg);
+        -ms-transform: rotateY(180deg);
+        -o-transform: rotateY(180deg);
+        -webkit-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+    }
+
+    #localVideo {
+        border: 1px solid gray;
+        bottom: 20px;
+        left: 20px;
+        top: unset;
+        max-height: 20%;
+        max-width: 14.9%;
+        opacity: 0;
+        transition: opacity 1s;
+    }
+
+    #localVideo.active {
+        opacity: 1;
+        z-index: 2;
+    }
+
+    #remoteVideo {
+        height: 100%;
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: cover;
+        -moz-transform: scale(-1, 1);
+        -ms-transform: scale(-1, 1);
+        -o-transform: scale(-1, 1);
+        -webkit-transform: scale(-1, 1);
+        transform: scale(-1, 1);
+        transition: opacity 1s;
+        width: 100%;
+    }
+</style>
+
+<script>
+    $(function () {
+        var localVideo = document.querySelector('#localVideo');
+        var remoteVideo = document.querySelector('#remoteVideo');
+
+        var localStream;
+        var remoteStream;
+        var pc;
+
+        let mediaConstraints = {
+            audio: false,
+            video: true
+        }
+
+        let captureLocalStreamVideo = () => {
+            return new Promise((resolve, reject) => {
+                navigator.mediaDevices.getUserMedia(mediaConstraints)
+                    .then((stream) => {
+                        return resolve(stream);
+                    }).catch((e) => {
+                        return reject(e);
+                    });
+            });
+        };
+
+        let createPeerConnection = (callObj) => {
+            try {
+                pc = new RTCPeerConnection(null);
+                pc.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        console.log('icecandidate event: ', event);
+                        callObj['iceCandidateInfo'] = {
+                            type: 'candidate',
+                            label: event.candidate.sdpMLineIndex,
+                            id: event.candidate.sdpMid,
+                            candidate: event.candidate.candidate
+                        };
+                        callObj['receiveIceCandidate'] = false;
+                        socket.emit('call:icecandidate', callObj);
+                    } else {
+                        console.log('End of candidates.', event);
+                    }
+                }
+
+                pc.oniceconnectionstatechange = (event) => {
+                    console.log("=====HANDLE ICE STATE CHANGE=========", event.target.iceConnectionState);
+                };
+                pc.onaddstream = (event) => {
+                    //handle Remote Stream added
+                    console.log('Remote stream added. Event: ', event);
+                    remoteStream = event.stream;
+                    remoteVideo.srcObject = remoteStream;
+                };
+                pc.onremovestream = (event) => {
+                    //handle Remote Stream removed
+                    console.log('Remote stream removed. Event: ', event);
+                };
+                console.log('Created RTCPeerConnnection');
+            } catch (e) {
+                console.log('Failed to create PeerConnection, exception: ' + e.message);
+                alert('Cannot create RTCPeerConnection object.');
+                return;
+            }
+        }
+
+        let handleRemoteStreamAdded = (event) => {
+            console.log('Remote stream added.');
+            remoteStream = event.stream;
+            remoteVideo.srcObject = remoteStream;
+        }
+
+        let handleRemoteStreamRemoved = (event) => {
+            console.log('Remote stream removed. Event: ', event);
+        }
+
+        let handleIceconnectionstatechange = (event) => {
+            console.log("=====HANDLE ICE STATE CHANGE=========", event.target.iceConnectionState)
+        }
+
+        let handleIceCandidate = (event) => {
+        }
+
+        socket.on('connect', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const initQueryString = urlParams.get('callInitiator');
+            console.log("initQueryString", initQueryString)
+            if (initQueryString === 'true') {
+                let callerCallObj = localStorage.getItem('callerParams');
+                callerCallObj = JSON.parse(callerCallObj);
+                captureLocalStreamVideo()
+                    .then((stream) => {
+                        console.log('Adding local stream to caller local Video Id.');
+                        localStream = stream;
+                        localVideo.srcObject = stream;
+                        return socket.emit('call:init', callerCallObj);
+                    }).catch((e) => {
+                        console.log(e);
+                        alert('getUserMedia() error: ' + e.name);
+                    });
+            } else if (initQueryString === 'false') {
+                let calleeCallObj = localStorage.getItem('calleeParams');
+                calleeCallObj = JSON.parse(calleeCallObj);
+                captureLocalStreamVideo()
+                    .then((stream) => {
+                        console.log('Adding local stream to callee local Video Id.');
+                        localStream = stream;
+                        localVideo.srcObject = stream;
+                        return socket.emit('call:join', calleeCallObj);
+                    }).catch((e) => {
+                        console.log(e);
+                        alert('getUserMedia() error: ' + e.name);
+                    });
+            }
+
+            socket.on('call:joined', (callObj) => {
+                if (!callObj.isInitiator) {
+                    console.log("Callee Joined the Room with caller", callObj);
+                    return socket.emit('call:accepted', callObj);
+                }
+                return console.log("Caller created and joined the room", callObj);
+            });
+
+            socket.on('call:accepted', (callObj) => {
+                console.log("caller knows call Accepted by the callee");
+                createPeerConnection(callObj);
+                pc.addStream(localStream);
+                console.log("caller Creating Offer");
+                pc.createOffer().then((sessionDescription) => {
+                    pc.setLocalDescription(sessionDescription);
+                    callObj['offer'] = sessionDescription;
+                    return socket.emit('call:offer', callObj);
+                }).catch((error) => {
+                    console.log('Failed to create offer session description: ' + error.toString());
+                });
+            });
+
+            socket.on('call:icecandidate', (callObj) => {
+                if(callObj.receiveIceCandidate){
+                    let candidate = new RTCIceCandidate({
+                        sdpMLineIndex: callObj.iceCandidateInfo.label,
+                        candidate: callObj.iceCandidateInfo.candidate
+                    });
+                    pc.addIceCandidate(candidate);
+                }
+            });
+
+            socket.on('call:offer', (callObj) => {
+                createPeerConnection(callObj);
+                pc.addStream(localStream);
+                pc.setRemoteDescription(new RTCSessionDescription(callObj.offer));
+                callObj['receiveIceCandidate'] = true;
+                pc.createAnswer().then((sessionDescription) => {
+                    pc.setLocalDescription(sessionDescription);
+                    callObj['answer'] = sessionDescription;
+                    console.log("answering to offer", callObj);
+                    return socket.emit('call:answer', callObj);
+                }).catch((error) => {
+                    console.log('Failed to create answer session description: ' + error.toString());
+                });
+            });
+
+            socket.on('call:answer', (callObj) => {
+                pc.setRemoteDescription(new RTCSessionDescription(callObj.answer));
+            })
+
+        });
+    })
+</script>
+
+
+{{> header/top-header LoggedInUser = LoggedInUser}}
+{{> vendor/vendor-menu}}
+
+<div class="wrapper-content bg-gray">
+    <div class="gtc-container">
+        <div class="row">
+            <div class="col-sm-2">
+                {{> vendor/vendor-side-navbar}}
+            </div>
+            <div class="col-sm-10">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="ibox-title">
+                            <h2>Web rtc peer to peer</h2>
+                        </div>
+                        <br />
+                        <div class="content-body">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <div id="videos" class="active embed-responsive embed-responsive-16by9">
+                                        <video id="localVideo" class="active" autoplay muted playsinline></video>
+                                        <video id="remoteVideo" autoplay playsinline></video>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{> footer/bottom-footer}}

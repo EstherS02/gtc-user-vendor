@@ -1,4 +1,5 @@
 import _ from 'lodash';
+const uuidv1 = require('uuid/v1');
 var talkCreate = require('../api/talk/talk.controller').talkCreate;
 var talkCount = require('../api/talk/talk.controller').talkCount;
 var userOnline = require('../api/users/users.controller').userOnline;
@@ -9,10 +10,12 @@ export function socketMsg(io) {
 	var userArray = [];
 	var talkThreadArray = [];
 	var connections = [];
+	var callRooms = {};
 	//console.log("userArray", userArray);
-	
 
-	io.sockets.on('connection', function(socket) {
+
+	io.sockets.on('connection', function (socket) {
+
 		//console.log("socket*********************", socket);
 		//console.log("userArray", userArray);
 		connections.push(socket.id);
@@ -20,7 +23,7 @@ export function socketMsg(io) {
 		console.log("clients", io.sockets.clients().server.sockets.adapter.rooms);
 
 		// id:  user_id}
-		socket.on('user:join', function(user) {
+		socket.on('user:join', function (user) {
 
 			//console.log("USER JOIN*******************************", user)
 			socket.join(user);
@@ -37,12 +40,12 @@ export function socketMsg(io) {
 			//	userOnline(user);
 		});
 
-		socket.on('user:get_online_users', function(test) {
+		socket.on('user:get_online_users', function (test) {
 			io.emit('user:online', userArray);
 		})
 
 		// {id: user_id}
-		socket.on('user:leave', function(user) {
+		socket.on('user:leave', function (user) {
 			//console.log("logout array before", userArray);
 			//console.log("USER LOGOUT", user);
 			socket.leave(user);
@@ -60,21 +63,21 @@ export function socketMsg(io) {
 		});
 
 		//{id: 1, user: user_id}
-		socket.on('chat:join', function(thread) {
+		socket.on('chat:join', function (thread) {
 			//console.log("CHAT JOIN ON CODE", thread);
 			//console.log("clients rooms connected", io.sockets.clients().server.sockets.adapter.rooms);
 			//console.log("Before talkThreadArray", talkThreadArray);
 			socket.join(thread.id);
 
 			if (_.map(talkThreadArray, 'thread').indexOf(thread.id) == -1) {
-			//	console.log("Thread id not found pushed new");
+				//	console.log("Thread id not found pushed new");
 				var obj = {
 					thread: thread.id,
 					users: [thread.user]
 				}
 				talkThreadArray.push(obj);
 			} else {
-				var threadObj = _.find(talkThreadArray, function(obj) {
+				var threadObj = _.find(talkThreadArray, function (obj) {
 					return obj.thread == thread.id;
 				});
 				//console.log("threadObj", threadObj);
@@ -85,33 +88,33 @@ export function socketMsg(io) {
 			}
 			//console.log("After talkThreadArray", talkThreadArray);
 		});
-		
-		// {id: threadid, message:"Hello", from: user_id, to_id: user_id}
-		socket.on('chat:send', function(talk) {
 
-			return talkCreate(talk).then(function(result) {
-				//console.log("RESULT", result);
-				talkCount(talk.to_id).then(function(res){
+		// {id: threadid, message:"Hello", from: user_id, to_id: user_id}
+		socket.on('chat:send', function (talk) {
+
+			return talkCreate(talk).then(function (result) {
+				console.log("RESULT", result);
+				talkCount(talk.to_id).then(function (res) {
 					console.log("RESULT_____________________", res);
 					io.to(user).emit('chat:count:receive', res);
 				})
 				result.to_id = talk.to_id;
-				var talkThreadCheck = _.find(talkThreadArray, function(threadArrObj) {
+				var talkThreadCheck = _.find(talkThreadArray, function (threadArrObj) {
 					return threadArrObj.thread == result.talk_thread_id
 				});
 				//console.log("talkThreadCheck", talkThreadCheck);
 				if (talkThreadCheck.users.indexOf(talk.to_id) == -1) {
 					//console.log("userArray", userArray);
-					var userId = _.find(userArray, function(userArrObj) {
+					var userId = _.find(userArray, function (userArrObj) {
 						console.log("userArrObj result.talk_thread_id", userArrObj, talk.to_id);
 						return userArrObj == talk.to_id
 					});
 					if (userId) {
-					//	console.log("opposite user is in online, sending msg to his room... & send also your thread room");
+						//	console.log("opposite user is in online, sending msg to his room... & send also your thread room");
 						io.to(talk.to_id).to(result.talk_thread_id).emit('chat:receive', result);
 					} else {
 						io.to(result.talk_thread_id).to(talk.to_id).emit('chat:receive', result);
-					//	console.log("oppsite user offline, emitted only for your thread room");
+						//	console.log("oppsite user offline, emitted only for your thread room");
 					}
 					//io.to(result.talk_thread_id).emit('chat:receive', result);
 				} else {
@@ -121,18 +124,18 @@ export function socketMsg(io) {
 
 			})
 		});
-		
-		socket.on('chat:count', function(user){
+
+		socket.on('chat:count', function (user) {
 			//console.log("CONSOLE.log CHAT COUNT***********************",user);
-			return talkCount(user).then(function(result){
+			return talkCount(user).then(function (result) {
 				//console.log("RESULT_____________________", result);
 				io.to(user).emit('chat:count:receive', result);
 			})
 		})
 		//{id: thread_id, user: user_id}
-		socket.on('chat:leave', function(talk) {
+		socket.on('chat:leave', function (talk) {
 			socket.leave(talk.id);
-			var talkThreadLeave = _.find(talkThreadArray, function(threadArrObj) {
+			var talkThreadLeave = _.find(talkThreadArray, function (threadArrObj) {
 				return threadArrObj === talk.id;
 			})
 			if (talkThreadLeave.users.indexOf(talk.user) == -1) {
@@ -143,12 +146,12 @@ export function socketMsg(io) {
 			}
 		});
 
-		socket.on('disconnect', function() {
+		socket.on('disconnect', function () {
 			//console.log("disconnect", socket.userId);
 			console.log("userArray in disconnect***********", userArray);
 			//console.log("clients when disconnect**", io.sockets.clients().server.sockets.adapter.rooms);
 			connections.splice(connections.indexOf(socket), 1);
-		//	console.log("%s length", connections.length);
+			//	console.log("%s length", connections.length);
 			/*if (socket.userId != null) {
 				if (userArray.indexOf(socket.userId) > -1) {
 					console.log("%s disconnected", socket.userId)
@@ -158,5 +161,95 @@ export function socketMsg(io) {
 			}*/
 			//console.log("%s Disconnected", socket.userId);
 		})
+
+		/* Start - For Web rtc Signalling*/
+
+		socket.on('call:preinit', (callObj) => {
+			//caller
+			callObj['callUniqueId'] = uuidv1();
+			io.to(callObj.callFrom).emit('call:preinit', callObj);
+		});
+
+		socket.on('call:init', (callObj) => {
+			console.log("========== Incoming Video call ===========", callObj);
+			callObj['isInitiator'] = true;
+			io.to(callObj.callFrom).emit('call:init', callObj);
+
+			//callee
+			callObj['isInitiator'] = false;
+			io.to(callObj.callTo).emit('call:incoming', callObj);
+
+			console.log("incoming Video call Init to - ", callObj['callUniqueId'])
+		});
+
+		socket.on('call:rejected', (callObj) => {
+			if (!callObj.callAcceptStatus) {
+				console.log("Caller call reject by the callee", callObj);
+				io.to(callObj.callFrom).emit('call:rejected', callObj);
+			}
+		});
+
+		socket.on('call:join', (callObj) => {
+			let room = callObj.callUniqueId;
+			let clientsInRoom = io.sockets.adapter.rooms[room];
+			let numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
+
+			if (!callRooms.hasOwnProperty(room)) {
+				callRooms[room] = {};
+				callRooms[room]['callRoomUsers'] = [];
+				callRooms[room]['callRoomUsers'].push(callObj.callFrom);
+			} else {
+				let index = callRooms[room]['callRoomUsers'].indexOf(callObj.callTo);
+				if (index == -1) {
+					callRooms[room]['callRoomUsers'].push(callObj.callTo);
+				}
+			}
+
+			if (numClients === 0) {
+				console.log("New Room Created for the Call");
+				socket.join(room);
+				console.log(callRooms, "000", io.sockets.adapter.rooms[room]);
+				return io.to(callObj.callFrom).emit('call:joined', callObj);
+			} else if (numClients === 1) {
+				console.log("Room Already Exists Joining the room");
+				socket.join(room);
+				console.log(callRooms, "1111", io.sockets.adapter.rooms[room])
+				return io.to(callObj.callTo).emit('call:joined', callObj);
+			} else {
+				console.log("Room is full - 2 Pleople Already exist")
+				console.log(callRooms, "2222", io.sockets.adapter.rooms[room])
+				//handle room full
+			}
+
+		});
+
+		socket.on('call:accepted', (callObj) => {
+			//to caller
+			callObj['isInitiator'] = true;
+			callObj['callAcceptStatus'] = true;
+			callObj['callAcceptedOn'] = new Date();
+			return io.to(callObj.callFrom).emit('call:accepted', callObj);
+		});
+
+		socket.on('call:icecandidate', (callObj) => {
+			console.log("call:icecandidate", callObj);
+			return socket.to(callObj.callUniqueId).emit('call:icecandidate', callObj);
+		});
+
+		socket.on('call:offer', (callObj) => {
+			callObj['isInitiator'] = false;
+			console.log("caller shared the offer", callObj)
+			return io.to(callObj.callTo).emit('call:offer', callObj);
+		});
+
+		socket.on('call:answer', (callObj) => {
+			callObj['isInitiator'] = true;
+			console.log("callee answered to the caller's offer", callObj)
+			return io.to(callObj.callFrom).emit('call:offer', callObj);
+		})
+
+
+		/** End - For Web rtc Signalling*/
+
 	})
 }

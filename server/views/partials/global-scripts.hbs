@@ -22,5 +22,67 @@
         return vars;
     }
 
+    $(function () {
+        socket.on('connect', () => {
+            socket.on('call:preinit', (callObj) => {
+                if(callObj && callObj.callUniqueId){
+                    let loadUrl = `/web-rtc/${callObj.callUniqueId}`;
+                    loadUrl = updateQueryString(loadUrl, "callInitiator", true);
+                    localStorage.setItem('callerParams', JSON.stringify(callObj));
+                    window.location.href = loadUrl;
+                }
+            });
+
+            socket.on('call:init', (callObj) => {
+                return socket.emit('call:join', callObj);
+            });
+
+            socket.on('call:incoming', (callObj) => {
+                let callAcceptStatus = confirm(`Incoming Video call from ${callObj.callFrom}`);
+                if(callAcceptStatus){
+                    callObj['callAcceptStatus'] = true;
+                    let loadUrl = `/web-rtc/${callObj.callUniqueId}`;
+                    loadUrl = updateQueryString(loadUrl, "callInitiator", false);
+                    localStorage.setItem('calleeParams', JSON.stringify(callObj));
+                    return window.location.href = loadUrl;
+                }
+                callObj['callAcceptStatus'] = false;
+                return socket.emit('call:rejected', callObj);
+            });
+
+            socket.on('call:rejected', (callObj) => {
+                if(!callObj.callAcceptStatus){
+                    alert(`Your call was rejected by ${callObj.callFrom}`)
+                }
+            });
+
+            /*
+            socket.on('call:incoming', (callInitObj) => {
+                callAcceptStatus = confirm(`Incoming Video call from ${callInitObj.callFrom}`);
+                if(callAcceptStatus){
+                    callInitObj['callAcceptStatus'] = true;
+                    return socket.emit('call:join', callInitObj);
+                }
+                callInitObj['callAcceptStatus'] = false;
+                return socket.emit('call:rejected', callInitObj);
+            });
+
+            socket.on('call:init', (callInitObj) => {
+                return socket.emit('call:join', callInitObj);
+            });
+
+             socket.on('call:rejected', (callObj) => {
+                if(!callObj.callAcceptStatus){
+                    alert(`Your call was rejected by ${callObj.callFrom}`)
+                }
+            });
+
+            */
+           
+
+        });
+
+    })
+
 
 </script>
