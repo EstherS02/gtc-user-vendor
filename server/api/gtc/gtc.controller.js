@@ -11,6 +11,7 @@ const Handlebars = require('handlebars');
 const service = require('../service');
 const productService = require('../product/product.service');
 const cartService = require("../cart/cart.service");
+const orderService = require("../order/order.service");
 const reportsService = require('../reports/reports.service');
 const sendEmail = require('../../agenda/send-email');
 const config = require('../../config/environment');
@@ -22,33 +23,17 @@ const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
 export function indexExample(req, res) {
-	var orderID = 34;
 	var queryObj = {};
-	var includeArray = [];
 
-	queryObj['id'] = orderID;
+	queryObj['id'] = 34;
 	queryObj['user_id'] = req.user.id;
 
-	includeArray = [{
-		model: model['OrdersItemsNew'],
-		attributes: ['id', 'order_id', 'product_id', 'quantity', 'price', 'shipping_cost', 'is_coupon_applied', 'coupon_amount', 'is_on_sale_item', 'discount_amount', 'order_item_status'],
-		include: [{
-			model: model['Product'],
-			attributes: ['id', 'product_name', 'product_slug'],
-			include: [{
-				model: model['Country'],
-				attributes: ['id', 'region_id', 'name']
-			}, {
-				model: model['State'],
-				attributes: ['id', 'name']
-			}]
-		}]
-	}]
-
-	service.findOneRow("OrdersNew", queryObj, includeArray)
+	orderService.userOrder(queryObj)
 		.then((response) => {
-			return res.status(200).send(response)
-		}).catch((error) => {
+			return res.status(200).send(response);
+		})
+		.catch((error) => {
+			console.log("indexExample Error:::", error);
 			return res.status(500).send(error);
 		});
 }

@@ -9,6 +9,9 @@ const orderStatusCode = require('../../../config/order_status');
 const status = require('../../../config/status');
 const marketplace = require('../../../config/marketplace');
 const service = require('../../../api/service');
+const orderItemStatus = require("../../../config/order-item-new-status");
+const orderService = require('../../../api/order/order.service');
+const cartService = require('../../../api/cart/cart.service');
 const cartObj = require('../../../api/cart/cart.controller');
 const populate = require('../../../utilities/populate');
 const carriersCode = require('../../../config/carriers');
@@ -20,36 +23,22 @@ export function orderView(req, res) {
 	var orderID = req.params.id;
 	var LoggedInUser = req.user;
 	var categoryModel = "Category";
-	var OrderModelName = "OrdersNew";
 
 	queryObj['id'] = orderID;
 	queryObj['user_id'] = req.user.id;
 
-
-	includeArray = [{
-		model: model['OrdersItemsNew'],
-		attributes: ['id', 'order_id', 'product_id', 'quantity', 'price', 'shipping_cost', 'is_coupon_applied', 'coupon_amount', 'is_on_sale_item', 'discount_amount', 'order_item_status'],
-		include: [{
-			model: model['Product'],
-			attributes: ['id', 'product_name', 'product_slug', 'marketplace_id'],
-			include: [{
-				model: model['Country'],
-				attributes: ['id', 'region_id', 'name']
-			}, {
-				model: model['State'],
-				attributes: ['id', 'name']
-			}]
-		}]
-	}];
-
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req, res)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		categories: function(callback) {
 			var includeArr = [];
@@ -73,7 +62,7 @@ export function orderView(req, res) {
 				});
 		},
 		order: function(callback) {
-			service.findOneRow(OrderModelName, queryObj, includeArray)
+			orderService.userOrder(queryObj)
 				.then((response) => {
 					return callback(null, response);
 				}).catch((error) => {
@@ -90,6 +79,7 @@ export function orderView(req, res) {
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
 				order: results.order,
+				orderItemStatus: orderItemStatus,
 				marketPlace: marketplace
 			});
 		} else {

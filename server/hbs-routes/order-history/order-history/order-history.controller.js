@@ -10,7 +10,7 @@ const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
 const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
-const orderHistoryService = require('../../../api/order/order-history.service');
+const orderService = require('../../../api/order/order.service');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
 const orderStatusCode = require('../../../config/order_status');
@@ -134,7 +134,7 @@ export function orderHistory(req, res) {
 				attributes: ['id', 'amount', 'payment_method', 'status']
 			}];
 
-			orderHistoryService.findAllOrders(orderModelName, includeArray, queryObj, offset, limit, field, order)
+			orderService.findAllOrders(orderModelName, includeArray, queryObj, offset, limit, field, order)
 				.then((response) => {
 					return callback(null, response);
 				}).catch((error) => {
