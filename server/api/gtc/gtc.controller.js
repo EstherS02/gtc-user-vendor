@@ -41,6 +41,19 @@ export function indexExample(req, res) {
 			console.log("indexExample Error:::", error);
 			return res.status(500).send(error);
 		});
+		
+	/*var vendorId = req.user.Vendor.id;
+	var accountingQueryParams = {};
+	accountingQueryParams['start_date'] = moment(req.query['start_date'], 'MM/DD/YYYY').startOf('day').format("YYYY-MM-DD HH:mm:ss");
+	accountingQueryParams['end_date'] = moment(req.query['end_date'], 'MM/DD/YYYY').endOf('day').format("YYYY-MM-DD HH:mm:ss");
+	reportsService.AccountingReport(vendorId, accountingQueryParams)
+		.then((response) => {
+			return res.status(200).send(response);
+		})
+		.catch((error) => {
+			console.log("index Error :::", error);
+			return res.status(500).send(error);
+		});*/
 }
 
 export function index(req, res) {
