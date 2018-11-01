@@ -55,24 +55,34 @@
         var isStarted = false;
 
         let mediaConstraints = {
-            audio: false,
+            audio: true,
             video: true
         }
 
+        var pcConfig = {
+            'iceServers': [{
+                'urls': 'stun:stun.l.google.com:19302'
+            }]
+        };
+
         let captureLocalStreamVideo = () => {
             return new Promise((resolve, reject) => {
-                navigator.mediaDevices.getUserMedia(mediaConstraints)
-                    .then((stream) => {
-                        return resolve(stream);
-                    }).catch((e) => {
-                        return reject(e);
-                    });
+                if (navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia(mediaConstraints)
+                        .then((stream) => {
+                            return resolve(stream);
+                        }).catch((e) => {
+                            return reject(e);
+                        });
+                } else {
+                    alert("Your browser is not Web RTC Supported");
+                }
             });
         };
 
         let createPeerConnection = (callObj) => {
             try {
-                pc = new RTCPeerConnection(null);
+                pc = new RTCPeerConnection(pcConfig);
                 pc.onicecandidate = (event) => {
                     console.log("ice candidate event");
                     if (event.candidate) {
@@ -93,7 +103,7 @@
                 }
 
                 pc.oniceconnectionstatechange = (event) => {
-                    console.log("=====HANDLE ICE STATE CHANGE=========", event.target.iceConnectionState);
+                    console.log("Ice connection state change", event.target.iceConnectionState);
                 };
                 pc.onaddstream = (event) => {
                     //handle Remote Stream added
@@ -189,7 +199,7 @@
             });
 
             socket.on('call:offer', (offerObj) => {
-               console.log("received offer ...", offerObj);
+                console.log("received offer ...", offerObj);
                 createPeerConnection(offerObj);
                 pc.addStream(localStream);
                 isStarted = true;
