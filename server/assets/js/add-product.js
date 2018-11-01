@@ -84,7 +84,7 @@ function appendBaseImage() {
 	}
 }
 
-function testValue(count) {
+/*function testValue(count) {
 	$(".value_discount_amount" + count).show();
 	$(".percent_discount_amount" + count).hide();
 }
@@ -92,7 +92,7 @@ function testValue(count) {
 function testPercent(count) {
 	$(".value_discount_amount" + count).hide();
 	$(".percent_discount_amount" + count).show();
-}
+}*/
 
 $(function() {
 	$('#quantity_available').change(function() {
@@ -196,7 +196,6 @@ $(document).ready(function() {
 		});
 	});
 
-
 	$("#category").change(function() {
 		var category_id = $('#category').val();
 		$('#attributePopup').empty();
@@ -227,7 +226,7 @@ $(document).ready(function() {
 				for (var i = 0; i < result.rows.length; i++) {
 					var productAttribute;
 					productAttribute = "<tr><td>" + result.rows[i].Attribute.attr_name + "</td><td>" +
-						"<input type='text' name=" + result.rows[i].Attribute.id + " class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td></tr>"
+						"<input type='text' name=" + result.rows[i].Attribute.id + " class='m-input-xxs all-quantity-cart-items' style='width:auto;'></td></tr>"
 
 					attributeRow = attributeRow + productAttribute;
 				}
@@ -258,10 +257,18 @@ $(document).ready(function() {
 				}
 			},
 			product_location: "required",
+			state_id: "required",
 			sku: {
 				required: true,
 			},
 			price: {
+				required:function(){
+					if($("select[name=marketplace_type_id]").val() == 2 || $("select[name=marketplace_type_id]").val() == 3 || $("select[name=marketplace_type_id]").val() == 4){
+						return false;
+					}else{
+						return true;
+					}		
+				},
 				number: true,
 				dollarsscents: true
 			},
@@ -319,7 +326,8 @@ $(document).ready(function() {
 					if ($('#exclusive_sale').is(":checked")) {
 						return true;
 					} else { return false; }
-				}
+				},
+				lesserThan: 'currentDate'
 			},
 			exclusive_end_date:{
 				required: function() {
@@ -336,6 +344,7 @@ $(document).ready(function() {
 					} else { return false; }
 				},
 				number: true,
+				min: 0.01,
 				dollarsscents: true
 			},
 			baseImage: {
@@ -354,10 +363,12 @@ $(document).ready(function() {
 			sub_category_id: "Please select product sub-category",
 			marketplace_type_id: "Please select Type",
 			product_location: "Please select product origin",
+			state_id:"Please select product state",
 			sku: {
 				required: "Please enter Stock Keeping Unit"
 			},
 			price: {
+				required: "Please enter product price",
 				number: "Please enter valid product price",
 				dollarsscents: "Only two decimal values accepted"
 			},
@@ -382,7 +393,10 @@ $(document).ready(function() {
 				digits: "Please enter a valid days"
 			},		
 			subscription_duration_unit: "Please select subscription duration type",
-			exclusive_start_date: "Please enter sales start date",
+			exclusive_start_date: {
+				required: "Please enter sales start date",
+				lesserThan: "Start date can't be less than current date and time"
+			},
 			exclusive_end_date: {
 				required: "Please enter sales end date",
 				greaterThan: "End date should be greater than start date"
@@ -390,6 +404,7 @@ $(document).ready(function() {
 			exclusive_offer: {
 				required: "Please enter offer amount",
 				number: "Please enter valid offer percentage",
+				min: "Please enter valid offer percentage",
 				dollarsscents: "Only two decimal values accepted"
 			},
 			baseImage: {
@@ -411,6 +426,17 @@ $(document).ready(function() {
 
 		if (!/Invalid|NaN/.test(new Date(value))) {
 			return new Date(value) > new Date($(params).val());
+		}
+
+		return isNaN(value) && isNaN($(params).val()) 
+			|| (Number(value) > Number($(params).val())); 
+	},'Must be greater than {0}.');
+
+	$.validator.addMethod("lesserThan", 
+	function(value, element, params) {
+
+		if (!/Invalid|NaN/.test(new Date(value))) {
+			return new Date(value) >= new Date();
 		}
 
 		return isNaN(value) && isNaN($(params).val()) 
@@ -544,7 +570,7 @@ $(document).ready(function() {
 		location.reload(true);
 	});
 
-	$("#editdiscount").click(function(e) {
+/*	$("#editdiscount").click(function(e) {
 
 		if (count < 3) {
 
@@ -566,7 +592,7 @@ $(document).ready(function() {
 				$(".discount_tier").hide();
 			}
 		}
-	});
+	});*/
 
 	if (imageFiles && (imageFiles.length > 0))
 		appendImage();

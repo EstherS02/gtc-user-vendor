@@ -836,5 +836,42 @@
 		{{/if}}
 	</div>
 </div>
-		
+<div class="modal fade" id="alreadySubscribed" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Already Subscribed:</h5>
+			</div>
+			<div class="modal-body">
+				<div class="container">
+					<p>You have already subscribed this product.</p>
+					<p>If you'd like to make any changes in subscription, please head <a href='/subscription'>here.</a></p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+					<b>Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="planUpgrade" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Upgrade Plan:</h5>
+			</div>
+			<div class="modal-body">
+				<div class="container">
+					<p>To buy wholesale product you need to be in bulk buyer plan.</p>
+					<p>If you'd like to upgrade plan, please head <a href='upgradeplan/userBulkupgradePlan'>here.</a></p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+					<b>Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
 {{> footer/bottom-footer}}

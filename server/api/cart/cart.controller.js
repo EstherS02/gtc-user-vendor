@@ -64,7 +64,6 @@ export async function addToCart(req, res) {
 					}
 				});
 				if (UserPlan) {
-					// const UserPlanResult = UserPlan.toJSON();
 					if (product.marketplace_type_id != marketplaceType['WTS']) {
 						return res.status(200).json({
 							message: "REDIRECT",
@@ -80,7 +79,6 @@ export async function addToCart(req, res) {
 			}
 			if(product.marketplace_id ==4){
 				const subscription = await checkAlreadySubscribetion(product.id,LoggedInUser);
-				console.log("---------------------subscription",subscription)
 				if (subscription) {
 					return res.status(200).json({
 						message: "Subscribed",

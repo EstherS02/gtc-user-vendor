@@ -5,7 +5,6 @@ const statusCode = require('../config/status');
 const service = require('../api/service');
 const _ = require('lodash');
 const stripe = require('../payment/stripe.payment');
-const populate = require('../utilities/populate');
 const paymentMethod = require('../config/payment-method');
 const gtcPlan = require('../config/gtc-plan');
 const moment = require('moment');

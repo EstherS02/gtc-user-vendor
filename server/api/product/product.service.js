@@ -151,6 +151,7 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 		});
 		delete queryObj.is_featured_product;
 	}
+
 	try {
 		const productResponse = await model['Product'].findAll({
 			include: includeArray,

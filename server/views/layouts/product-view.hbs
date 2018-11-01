@@ -223,6 +223,8 @@ var newData = {};
 newData.product_id = productSpecs.id;
 
 function compareProduct(e) {
+	var newData = {};
+	newData.product_id = productSpecs.id;
 	$('#productAlert').empty();
 	//if (userInfo.email) {
 		$.ajax({
@@ -688,9 +690,7 @@ function mailVendor(){
 													</form>
 												</div>
 												{{else}}
-												<div class="btn btn-success">
-												<a id="loginToAskVendor" href="javascript:;">Login to Ask the vendor</a>
-												</div>
+												<a id="loginToAskVendor" class="btn btn-md btn-primary" href="javascript:;">Login to Ask the vendor</a>
 												{{/if}}
 											</div>
 										</div>

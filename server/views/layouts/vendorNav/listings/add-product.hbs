@@ -1,3 +1,4 @@
+
 <script>
 
 	var discountLength = {{{ DisplayJSON editProduct.Discounts.length}}}
@@ -7,41 +8,43 @@
 	imageFiles = {{{DisplayJSON productImages}}}
 	productBaseImage = {{{DisplayJSON productBaseImage}}}
 
-	$("#marketplace_type_id").change(function() {
+	$(document).ready(function() {
 
-		var marketplace_type_id = $('#marketplace_type_id').val();
+		$("#marketplace_type_id").change(function() {
 
-		if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }})
-		{
-			$(".priceDiv").hide();
-			$('#price').removeAttr('value');
-		}
-		else {
-			$(".priceDiv").show();
-			$("price").attr('value');
-		}
-		if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
-			$(".shippingDiv").hide();
-			$('#shipping_cost').removeAttr('value');
-		}
-		else {
-			$(".shippingDiv").show();
-			$("shipping_cost").attr('value');
-		}
+			var marketplace_type_id = $('#marketplace_type_id').val();
 
-		if (marketplace_type_id == {{ marketplaceTypeCode.WTT }}) {
-			$(".exchangingProductDiv").show();
-			$(".exchangingProductQuantityDiv").show();
-			$("exchanging_product").attr('value');
-			$("exchanging_product_quantity").attr('value');
-		}
-		else {
-			$(".exchangingProductDiv").hide();
-			$(".exchangingProductQuantityDiv").hide();
-			$('#exchanging_product').removeAttr('value');
-			$('#exchanging_product_quantity').removeAttr('value');
-		}  
-		      
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }})
+			{
+				$(".priceDiv").hide();
+				$('#price').removeAttr('value');
+			}
+			else {
+				$(".priceDiv").show();
+				$("price").attr('value');
+			}
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
+				$(".shippingDiv").hide();
+				$('#shipping_cost').removeAttr('value');
+			}
+			else {
+				$(".shippingDiv").show();
+				$("shipping_cost").attr('value');
+			}
+
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTT }}) {
+				$(".exchangingProductDiv").show();
+				$(".exchangingProductQuantityDiv").show();
+				$("exchanging_product").attr('value');
+				$("exchanging_product_quantity").attr('value');
+			}
+			else {
+				$(".exchangingProductDiv").hide();
+				$(".exchangingProductQuantityDiv").hide();
+				$('#exchanging_product').removeAttr('value');
+				$('#exchanging_product_quantity').removeAttr('value');
+			}  				
+		});
 	});
 </script>
 
@@ -256,7 +259,9 @@
 									</div>
 									<div class="col-lg-4">
 										<div class="form-group">
-											<label class="label-control">State</label>
+											<label class="label-control">State
+												<span class="text-danger">*</span>
+											</label>
 											<div class="input-group">
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state" value="">
 													{{#if editProduct.state_id}}
@@ -288,6 +293,7 @@
 									<div class="col-lg-4 priceDiv">
 										<div class="form-group">
 											<label class="label-control">Price
+												<span class="text-danger">*</span>
 											</label>
 											<input type="text" name="price" id="price" class="form-control-customized form-control-sm" value="{{editProduct.price}}">
 										</div>
@@ -303,21 +309,25 @@
 									</div>
 									<div class="col-lg-4">
 										<div class="form-group">
-											<label class="label-control">Product Status
+											<label class="label-control">Product Status{{editProduct.status}}
 												<span class="text-danger">*</span>
 											</label>
 											<div class="input-group">
-												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status"
-												 id="product_status" value="{{editProduct.status}}">
-												{{#if editProduct.status}}
-												<!-- <option value="{{editProduct.status}}" selected>{{objectKey statusCode editProduct.status}}</option> -->
-												{{else}}
-												<option disabled selected>Select Status</option>
-												{{/if}}
-												<option value="1">Active</option>
-												<option value="2">InActive</option>
-												<option value="7">Suspended</option>
-												<option value="8">Sold Out</option>
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status" id="product_status">
+													{{#unless editProduct.status}}
+													<option disabled selected>Select Status</option>
+													{{/unless}}
+													{{#select editProduct.status}}
+														{{#each statusCode}}
+															{{#if 
+															(or 
+																(lt this ../statusCode.DELETED)
+																(gt this ../statusCode.GTC_INACTIVE)
+																)}}
+																<option value="{{this}}">{{objectKey ../statusCode this}}</option>
+															{{/if}}
+														{{/each}}
+													{{/select}}
 												</select>
 											</div>
 										</div>
@@ -356,13 +366,13 @@
 									<div class="col-lg-4">
 										<div class="form-group">
 											<label class="label-control">Sale start date & time</label>
-											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_start_date}}value="{{formatTime editProduct.exclusive_start_date "YYYY/MM/DD hh:mm"}}" {{/if}} name="exclusive_start_date" id="exclusive_start_date" disabled>
+											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_start_date}}value="{{formatTime editProduct.exclusive_start_date "YYYY/MM/DD HH:mm"}}" {{/if}} name="exclusive_start_date" id="exclusive_start_date" disabled>
 										</div>
 									</div>
 									<div class="col-lg-4">
 										<div class="form-group">
 											<label class="label-control">Sale end date & time</label>
-											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_end_date}}value="{{formatTime editProduct.exclusive_end_date "YYYY/MM/DD hh:mm"}}" {{/if}} name="exclusive_end_date" id="exclusive_end_date" disabled>
+											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_end_date}}value="{{formatTime editProduct.exclusive_end_date "YYYY/MM/DD HH:mm"}}" {{/if}} name="exclusive_end_date" id="exclusive_end_date" disabled>
 										</div>
 									</div>
 									<div class="col-lg-4">
@@ -447,9 +457,9 @@
 																	<tr>
 																		<td>{{this.Attribute.attr_name}}</td>
 																		<td>
-																			<input type='text' name="{{this.attribute_id}}" value="{{this.value}}" class='shop_qty_num all-quantity-cart-items' style='width:auto;'>
+																			<input type='text' name="{{this.attribute_id}}" value="{{this.value}}" class='m-input-xxs all-quantity-cart-items' 
+																			style='width:auto;'>
 																		</td>
-																		<td>{{this.Attribute.unit}}</td>
 																	</tr>
 																	{{/each}}
 																</tbody>

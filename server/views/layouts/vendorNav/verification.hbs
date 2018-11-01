@@ -61,7 +61,7 @@
 						console.log(location.imageURL); // this is where you get the return value
 						$("#img1_old").hide();
 						$("#img1").attr('src', location.imageURL);
-						$("#personal_id_verification_file_link").val(location.imageURL);
+						$("#personal_id_verification_file_link").val("");
 						$("#img1").show();
 					});
 				} else {
@@ -137,6 +137,7 @@
 				contentType: false,
 				success: function(data, text) {
 					callback(data);
+					formSubmitBtn.removeAttr("disabled")
 				},
 				error: function(request, status, error) {
 					console.log('status', status);

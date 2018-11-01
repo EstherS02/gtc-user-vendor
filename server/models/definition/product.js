@@ -118,7 +118,7 @@ module.exports = (sequelize, DataTypes) => {
         state_id: {
             type: DataTypes.BIGINT,
             field: 'state_id',
-            allowNull: true,
+            allowNull: false,
             references: {
                 model: 'state',
                 key: 'id'
