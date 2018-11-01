@@ -15,7 +15,7 @@ const cartService = require('../../../api/cart/cart.service');
 const orderService = require('../../../api/order/order.service');
 const marketPlace = require('../../../config/marketplace');
 const orderStatusCode = require('../../../config/order_status');
-const orderItemStatus = require('../../../config/order-item-status');
+const orderItemStatus = require("../../../config/order-item-new-status");
 const vendorPlan = require('../../../config/gtc-plan');
 const carriersCode = require('../../../config/carriers');
 const populate = require('../../../utilities/populate');
@@ -87,16 +87,13 @@ export function salesHistory(req, res) {
 
 	async.series({
 		cartInfo: function(callback) {
-			if (LoggedInUser.id) {
-				cartService.cartCalculation(LoggedInUser.id, req, res)
-					.then((cartResult) => {
-						return callback(null, cartResult);
-					}).catch((error) => {
-						return callback(error);
-					});
-			} else {
-				return callback(null);
-			}
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					console.log("cartInfo Error:::", error);
+					return callback(error);
+				});
 		},
 		categories: function(callback) {
 			var includeArr = [];
@@ -106,7 +103,7 @@ export function salesHistory(req, res) {
 			const categoryOrder = "asc";
 			const categoryQueryObj = {};
 
-			categoryQueryObj['status'] = statusCode["ACTIVE"];
+			categoryQueryObj['status'] = status["ACTIVE"];
 
 			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
@@ -115,7 +112,7 @@ export function salesHistory(req, res) {
 					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, category.rows);
 				}).catch(function(error) {
-					console.log('Error :::', error);
+					console.log('categories Error:::', error);
 					return callback(null);
 				});
 		},
@@ -140,9 +137,10 @@ export function salesHistory(req, res) {
 
 			orderService.findAllOrders(orderVendorModelName, includeArray, queryObj, offset, limit, field, order)
 				.then((response) => {
+					console.log("response -------------------", JSON.stringify(response));
 					return callback(null, response);
 				}).catch((error) => {
-					console.log("indexExample Error :::", error);
+					console.log("vendorOrderHistory Error :::", error);
 					return callback(error);
 				});
 		}
@@ -210,7 +208,7 @@ export function orderView(req, res) {
 					return callback(error);
 				});
 		},
-		order: function(callback) {
+		orderView: function(callback) {
 			orderService.vendorOrderDetails(queryObj)
 				.then((response) => {
 					return callback(null, response);
@@ -227,6 +225,7 @@ export function orderView(req, res) {
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
+				order: results.orderView,
 				orderItemStatus: orderItemStatus,
 				marketPlace: marketPlace
 			});

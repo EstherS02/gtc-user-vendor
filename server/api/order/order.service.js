@@ -124,13 +124,12 @@ export async function userOrderDeatils(queryObj) {
 
 export async function vendorOrderDetails(queryObj) {
 	try {
-		const vendorOrderResponse = await model['OrderVendor'].findOne({
+		const vendorOrderResponse = await model['OrderVendor'].findAll({
 			where: queryObj,
-			subQuery: true,
-			attributes: ['id', 'order_id', 'vendor_id', 'total_price', 'status'],
+			attributes: ['id', 'order_id', 'vendor_id', 'total_price'],
 			include: [{
 				model: model['OrdersNew'],
-				attributes: ['id', 'user_id', 'invoice_id', 'purchase_order_id'],
+				attributes: ['id', 'user_id', 'invoice_id', 'purchase_order_id', 'ordered_date'],
 				include: [{
 					model: model['OrdersItemsNew'],
 					include: [{
@@ -138,7 +137,7 @@ export async function vendorOrderDetails(queryObj) {
 						where: {
 							vendor_id: queryObj.vendor_id
 						},
-						attributes: ['id', 'product_name', 'product_slug', 'vendor_id', 'status', 'marketplace_id'],
+						attributes: ['id', 'product_name', 'product_slug', 'vendor_id', 'marketplace_id'],
 						include: [{
 							model: model['Vendor'],
 							attributes: ['id', 'vendor_name']
@@ -153,17 +152,58 @@ export async function vendorOrderDetails(queryObj) {
 							attributes: ['id', 'name']
 						}, {
 							model: model['ProductMedia'],
-							attributes: ['id', 'type', 'base_image', 'url'],
+							attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
 							where: {
 								base_image: 1
-							},
-							required: false
+							}
 						}]
 					}]
 				}]
 			}]
 		});
-		return vendorOrderResponse;
+		const vendorOrders = JSON.parse(JSON.stringify(vendorOrderResponse));
+		if (vendorOrders.length > 0) {
+			var order = vendorOrders[0];
+
+			order['marketplace_products'] = {};
+			order['marketplace_summary'] = {};
+
+			const marketplaceResponse = await model['Marketplace'].findAll({
+				where: {
+					status: status['ACTIVE']
+				},
+				attributes: ['id', 'name', 'code', 'status']
+			});
+			const marketplace = JSON.parse(JSON.stringify(marketplaceResponse));
+
+			await Promise.all(order.OrdersNew.OrdersItemsNews.map((aProduct) => {
+				const index = marketplace.findIndex((obj) => obj.id == aProduct.Product.marketplace_id);
+				const existsMarketplace = order['marketplace_products'].hasOwnProperty(marketplace[index].id);
+
+				if (!existsMarketplace) {
+					order['marketplace_summary'][marketplace[index].id] = {};
+					order['marketplace_products'][marketplace[index].id] = {};
+
+					order['marketplace_summary'][marketplace[index].id].sub_total = 0;
+					order['marketplace_summary'][marketplace[index].id].shipping_ground = 0;
+					order['marketplace_summary'][marketplace[index].id].total = 0;
+
+					order['marketplace_products'][marketplace[index].id].count = 0;
+					order['marketplace_products'][marketplace[index].id].products = [];
+				}
+
+				order['marketplace_summary'][aProduct.Product.marketplace_id].sub_total += parseFloat(aProduct.price);
+				order['marketplace_summary'][aProduct.Product.marketplace_id].total = order['marketplace_summary'][aProduct.Product.marketplace_id].sub_total + order['marketplace_summary'][aProduct.Product.marketplace_id].shipping_ground;
+
+				order['marketplace_products'][aProduct.Product.marketplace_id].count += 1;
+				order['OrdersNew'].total_order_items = order['marketplace_products'][aProduct.Product.marketplace_id].count;
+				order['marketplace_products'][aProduct.Product.marketplace_id].products.push(aProduct);
+			}));
+			delete order.OrdersNew.OrdersItemsNews;
+			return order;
+		} else {
+			return;
+		}
 	} catch (error) {
 		console.log("vendorOrderDetails Error:::", error);
 		return error;
