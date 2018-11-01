@@ -109,10 +109,8 @@ export function paymentSettings(req, res) {
 						return callback(null);
 					});
 			}
-
 		},
 		function(err, results) {
-			console.log(results)
 			if (!err) {
 				res.render('vendorNav/payment-settings', {
 					title: "Global Trade Connect",
