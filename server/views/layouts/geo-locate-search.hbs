@@ -139,7 +139,7 @@
 				}
 				more_content = more_content + `<a href="javascript:;"><img src="` + mapObjProduct[j].ProductMedia[0].url + `" onError="imgError(this)" style="width: 40px; height: 30px;"></a>`;
 			}
-			content = content + `<p>` + more_content + `<a href="javascript:;">See All</a></p>`;
+			content = content + `<p>` + more_content + `<a href="vendor/`+mapObjProduct[0].Vendor.id+`">See All</a></p>`;
 			createMarker(mapObjProduct[0].Vendor.latitude, mapObjProduct[0].Vendor.longitude, content, title);
 
 		}
