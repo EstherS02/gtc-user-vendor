@@ -1,5 +1,5 @@
 'use strict';
-// import Handlebars from 'handlebars';
+
 const async = require('async');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
@@ -110,16 +110,15 @@ export async function makePayment(req, res) {
 				newProductItem['price'] = cartItem.total_price;
 				newProductItem['shipping_cost'] = 0;
 				newProductItem['gtc_fees'] = (cartItem.total_price / 100 * config.order.gtc_fees).toFixed(2);
+
 				if (cartItem.Product.marketplace_id == marketPlaceCode['SERVICE']) {
 					newProductItem['plan_fees'] = (cartItem.total_price / 100 * config.order.service_fee).toFixed(2);
-				} else {
-					newProductItem['plan_fees'] = 0;
-				}
-				if (cartItem.Product.marketplace_id == marketPlaceCode['LIFESTYLE']) {
+				} else if (cartItem.Product.marketplace_id == marketPlaceCode['LIFESTYLE']) {
 					newProductItem['plan_fees'] = (cartItem.total_price / 100 * config.order.lifestyle_fee).toFixed(2);
 				} else {
 					newProductItem['plan_fees'] = 0;
 				}
+
 				newProductItem['is_coupon_applied'] = cartItem.is_coupon_applied ? 1 : 0;
 				if (newProductItem['is_coupon_applied']) {
 					newProductItem['coupon_id'] = cartResult.coupon_id;
@@ -137,6 +136,7 @@ export async function makePayment(req, res) {
 				newProductItem['status'] = status['ACTIVE'];
 				newProductItem['created_by'] = req.user.first_name;
 				newProductItem['created_on'] = new Date();
+
 				orderItemsPromises.push(service.createRow(orderItemModelName, newProductItem));
 
 				const index = await vendorArray.findIndex((obj) => obj.vendor_id == cartItem.Product.vendor_id);

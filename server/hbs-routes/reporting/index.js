@@ -20,6 +20,6 @@ router.get('/sales-history/:id', auth.isAuthenticated(), saleshistoryCtrl.orderV
 router.get('/accounting', auth.hasRole(roles['VENDOR']), accountingCtrl.accounting);
 router.get('/tax', auth.isAuthenticated(), taxCtrl.tax);
 router.get('/order', auth.hasRole(roles['VENDOR']), saleshistoryCtrl.salesHistory);
-router.get('/order/:id', auth.isAuthenticated(), saleshistoryCtrl.orderView);
+router.get('/order/:id', auth.hasRole(roles['VENDOR']), saleshistoryCtrl.orderView);
 
 module.exports = router;

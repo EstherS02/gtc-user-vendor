@@ -9,13 +9,13 @@ const querystring = require('querystring');
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
-const statusCode = require('../../../config/status');
+const status = require('../../../config/status');
 const service = require('../../../api/service');
 const cartService = require('../../../api/cart/cart.service');
 const orderService = require('../../../api/order/order.service');
 const marketPlace = require('../../../config/marketplace');
 const orderStatusCode = require('../../../config/order_status');
-const orderItemStatus = require('../../../config/order-item-status');
+const orderItemStatus = require("../../../config/order-item-new-status");
 const vendorPlan = require('../../../config/gtc-plan');
 const carriersCode = require('../../../config/carriers');
 const populate = require('../../../utilities/populate');
@@ -87,6 +87,95 @@ export function salesHistory(req, res) {
 
 	async.series({
 		cartInfo: function(callback) {
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					console.log("cartInfo Error:::", error);
+					return callback(error);
+				});
+		},
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('categories Error:::', error);
+					return callback(null);
+				});
+		},
+		vendorOrderHistory: function(callback) {
+			var offset = 0;
+			var order = "DESC";
+			var includeArray = [];
+			var field = "created_on";
+			var orderVendorModelName = "OrderVendor";
+			var limit = req.query.limit ? parseInt(req.query.limit) : 10;
+			var offset = req.query.offset ? parseInt(req.query.offset) : 0;
+			var page = req.query.page ? parseInt(req.query.page) : 1;
+
+			queryParams['page'] = page;
+			queryParams['limit'] = limit;
+			offset = (page - 1) * limit;
+
+			includeArray = [{
+				model: model["OrdersNew"],
+				attributes: ['id', 'ordered_date', 'status']
+			}];
+
+			orderService.findAllOrders(orderVendorModelName, includeArray, queryObj, offset, limit, field, order)
+				.then((response) => {
+					console.log("response -------------------", JSON.stringify(response));
+					return callback(null, response);
+				}).catch((error) => {
+					console.log("vendorOrderHistory Error :::", error);
+					return callback(error);
+				});
+		}
+	}, function(error, results) {
+		if (!error && results) {
+			return res.render('vendorNav/my-orders', {
+				title: "Global Trade Connect",
+				categories: results.categories,
+				bottomCategory: bottomCategory,
+				LoggedInUser: LoggedInUser,
+				cart: results.cartInfo,
+				orders: results.vendorOrderHistory,
+				queryParams: queryParams,
+				queryParamsString: querystring.stringify(queryParams),
+				dateRangeOptions: dateRangeOptions
+			});
+		} else {
+			return res.render('vendorNav/my-orders', error);
+		}
+	});
+}
+
+export function orderView(req, res) {
+	var queryObj = {};
+	var includeArray = [];
+	var bottomCategory = {};
+	var orderID = req.params.id;
+	var LoggedInUser = req.user;
+	var categoryModel = "Category";
+
+	queryObj['order_id'] = orderID;
+	queryObj['vendor_id'] = req.user.Vendor.id;
+
+	async.series({
+		cartInfo: function(callback) {
 			if (LoggedInUser.id) {
 				cartService.cartCalculation(LoggedInUser.id, req, res)
 					.then((cartResult) => {
@@ -106,7 +195,7 @@ export function salesHistory(req, res) {
 			const categoryOrder = "asc";
 			const categoryQueryObj = {};
 
-			categoryQueryObj['status'] = statusCode["ACTIVE"];
+			categoryQueryObj['status'] = status["ACTIVE"];
 
 			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
@@ -116,46 +205,32 @@ export function salesHistory(req, res) {
 					return callback(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
-					return callback(null);
+					return callback(error);
 				});
 		},
-		vendorOrderHistory: function(callback) {
-			var offset = 0;
-			var order = "DESC";
-			var includeArray = [];
-			var field = "created_on";
-			var orderVendorModelName = "OrderVendor";
-			var limit = req.query.limit ? parseInt(req.query.limit) : 10;
-			var offset = req.query.offset ? parseInt(req.query.offset) : 0;
-			var page = req.query.page ? parseInt(req.query.page) : 1;
-
-			queryParams['page'] = page;
-			queryParams['limit'] = limit;
-			offset = (page - 1) * limit;
-
-			orderService.findAllOrders(orderVendorModelName, includeArray, queryObj, offset, limit, field, order)
+		orderView: function(callback) {
+			orderService.vendorOrderDetails(queryObj)
 				.then((response) => {
 					return callback(null, response);
 				}).catch((error) => {
-					console.log("indexExample Error :::", error);
+					console.log("order Error:::", error);
 					return callback(error);
 				});
 		}
 	}, function(error, results) {
 		if (!error && results) {
-			return res.render('vendorNav/my-orders', {
+			return res.render('vendorNav/vendor-order/vendor-order-view', {
 				title: "Global Trade Connect",
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
-				orders: results.vendorOrderHistory,
-				queryParams: queryParams,
-				queryParamsString: querystring.stringify(queryParams),
-				dateRangeOptions: dateRangeOptions
+				order: results.orderView,
+				orderItemStatus: orderItemStatus,
+				marketPlace: marketPlace
 			});
 		} else {
-			return res.render('vendorNav/my-orders', error);
+			return res.render('vendorNav/vendor-order/vendor-order-view', error);
 		}
 	});
 }
@@ -422,7 +497,7 @@ export function salesHistoryOld(req, res) {
 }
 // Ends salesHistory
 
-export function orderView(req, res) {
+export function orderViewOld(req, res) {
 	var LoggedInUser = {},
 		bottomCategory = {},
 		searchObj = {},
