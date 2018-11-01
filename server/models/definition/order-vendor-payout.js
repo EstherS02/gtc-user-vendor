@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'order_vendor_payment_escrow',
+        tableName: 'order_vendor_payout',
         timestamps: false
     });
 };

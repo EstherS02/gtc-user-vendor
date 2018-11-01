@@ -30,9 +30,9 @@
 				<div class="col-sm-9half no-padding bg-white cart-custom-notify">
 					<div class="header-left header-lg gtc-p-l-r">
 						<h2 class="header-lg-text alignleft text-white">Order #{{order.id}}</h2>
-						<span class="header-lg-span text-white">({{order.total_order_items}} Items Total)</span>
+						<span class="header-lg-span text-white">({{order.OrdersNew.total_order_items}} Items Total)</span>
 					</div>
-					{{#if order.total_order_items}}
+					{{#if order.OrdersNew.total_order_items}}
 						{{#each order.marketplace_products}}
 							{{#ifCond @root.marketPlace.WHOLESALE '==' @key}}
 								<div class="mini-header bg{{@key}}">WHOLESALE ITEMS ({{this.count}})</div>
@@ -358,7 +358,7 @@
 						<h2 class="header-lg-text">YOUR SUMMARY</h2>
 					</div>
 					<div class="cart-summary">
-						{{#if order.total_order_items}}
+						{{#if order.OrdersNew.total_order_items}}
 							{{#each order.marketplace_summary}}
 								{{#ifCond @root.marketPlace.WHOLESALE '==' @key}}
 									<h2 class="text-marketplace-{{@key}}">Wholesale Summary</h2>

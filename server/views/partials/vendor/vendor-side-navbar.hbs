@@ -1,30 +1,3 @@
-<script type="text/javascript">
-	function myFunction() {
-		window.location.href = "/reporting";
-	}
-	function myAccountFunction() {
-		window.location.href = "/reporting/accounting";
-	}
-	$(document).ready(function() {
-		$.ajax({
-			type: 'GET',
-			url: '/api/mail/unReadMailCount',
-			success: function(data) {
-				if (data.userMailCount > 0) {
-					$(".UnreadMessages").html(data.userMailCount);
-				}
-			},
-			error: function(error) {
-				console.log(error);
-			}
-		})
-	});
-</script>
-<style>
-	.dropdown-v-list ul li a:hover{
-		color: black;
-	}
-</style>
 {{#if LoggedInUser.Vendor.id}}
 	<div class="dropdown-v-list">
 		<ul>
@@ -39,8 +12,8 @@
 						<a href="/reporting/sales-history" class="vs-link {{#ifCond selectedPage '==' 'sales-history'}} active {{/ifCond}}">Sales History</a>
 					</li>
 					<li class="nav-bar">
-						<a data-toggle="collapse" href="#collapse4Account" role="button" aria-expanded="false" aria-controls="collapse4Account"
-						 class="{{#ifCond selectedPage '==' 'accounting'}} active {{/ifCond}}" onclick="myAccountFunction()">Accounting</a>
+						<a data-toggle="collapse" href="#collapse4Account" role="button" aria-expanded="false" aria-controls="collapse4Account" class="{{#ifCond selectedPage '==' 'accounting'}} active {{/ifCond}}"
+						 onclick="myAccountFunction()">Accounting</a>
 						<ul class="collapse m-l vs-nav {{#ifCond selectedPage '==' 'accounting'}} show {{/ifCond}}" id="collapse4Account">
 							<li class="nav-bar">
 								<a href="/reporting/tax" class="{{#ifCond selectedPage '==' 'tax'}} active {{/ifCond}}">Report tax</a>
@@ -54,64 +27,27 @@
 			</li>
 			<li>
 				<a data-toggle="collapse" href="#collapse4Listing" role="button" aria-expanded="false" aria-controls="collapse4Listing">Edit Listings</a>
-				<ul class="collapse m-l  vs-nav {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "listings"}}show{{/ifCond}}{{/if}}" id="collapse4Listing">
-					{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}}
-						<li class="nav-bar">
-							<a href="/listings/wholesale" class="vs-link {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}">Wholesale Listings</a>
-						</li>
-						<li class="nav-bar">
-							<a href="/listings/shop" class="vs-link {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">Shop Listings</a>
-						</li>
-						<li class="nav-bar">
-							<a href="/listings/services" class="vs-link {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">Services Listings</a>
-						</li>
-						<li class="nav-bar">
-							<a href="/listings/lifestyle" class="vs-link {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">Subscription Listings</a>
-						</li>
-					{{/ifCond}}
-					{{!-- {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}}
-						<li class="nav-bar">
-							<a href="/listings/wholesale" class="vs-link {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}">Wholesale Listings</a>
-						</li>
-						<li class="nav-bar">
-							<a href="/listings/shop" class="vs-link {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">Shop Listings</a>
-						</li>
-						<li class="nav-bar">
-							<a href="/listings/services" class="vs-link {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">Services Listings</a>
-						</li>
-						<li class="nav-bar">
-							<a href="/listings/lifestyle" class="vs-link {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">Subscription Listings</a>
-						</li>
-					{{/ifCond}} --}}
-					{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.PUBLIC_SELLER}}
-						<li class="nav-bar">
-							<a href="/listings/shop" class="vs-link {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">Shop Listings</a>
-						</li>
-						<li class="nav-bar">
-							<a href="/listings/services" class="vs-link {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">Services Listings</a>
-						</li>
-						<li class="nav-bar">
-							<a href="/listings/lifestyle" class="vs-link {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">Subscription Listings</a>
-						</li>
-					{{/ifCond}}
-					{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.LIFESTYLE_PROVIDER}}
-						<li class="nav-bar">
-							<a href="/listings/lifestyle" class="vs-link {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">Subscription Listings</a>
-						</li>
-					{{/ifCond}}
-					{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.SERVICE_PROVIDER}}
-						<li class="nav-bar">
-							<a href="/listings/services" class="vs-link {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">Services Listings</a>
-						</li>
-					{{/ifCond}}
-					{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.STARTER_SELLER}}
-						<li class="nav-bar">
-							<a href="/listings/shop" class="vs-link {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">Shop Listings</a>
-						</li>
-						<li class="nav-bar">
-							<a href="/listings/lifestyle" class="vs-link {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">Subscription Listings</a>
-						</li>
-					{{/ifCond}}
+				<ul class="collapse m-l vs-nav" id="collapse4Listing">
+				{{#marketplacePermission LoggedInUser.Vendor.VendorPlans.[0].Plan.id 1}}
+					<li class="nav-bar">
+						<a href="/listings/wholesale" class="vs-link {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}">Wholesale Listings</a>
+					</li>
+				{{/marketplacePermission}}
+				{{#marketplacePermission LoggedInUser.Vendor.VendorPlans.[0].Plan.id 2}}
+					<li class="nav-bar">
+						<a href="/listings/shop" class="vs-link {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">Shop Listings</a>
+					</li>	
+				{{/marketplacePermission}}
+				{{#marketplacePermission LoggedInUser.Vendor.VendorPlans.[0].Plan.id 3}}
+					<li class="nav-bar">
+						<a href="/listings/services" class="vs-link {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">Services Listings</a>
+					</li>	
+				{{/marketplacePermission}}
+				{{#marketplacePermission LoggedInUser.Vendor.VendorPlans.[0].Plan.id 4}}
+					<li class="nav-bar">
+						<a href="/listings/lifestyle" class="vs-link {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">Subscription Listings</a>
+					</li>
+				{{/marketplacePermission}}				
 				</ul>
 			</li>
 			<li class="nav-bar">
@@ -176,7 +112,8 @@
 			<ul class="collapse m-l vs-nav {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "gtc-mail"}}show{{/ifCond}}{{/if}}" id="collapse4Mail">
 				<li class="nav-bar">
 					<a href="/gtc-mail/inbox" class="vs-link {{#ifCond selectedPage '==' 'inbox'}} active {{/ifCond}}">Inbox
-						<div class="mail-messages UnreadMessages"></div></a>
+						<div class="mail-messages UnreadMessages"></div>
+					</a>
 				</li>
 				<li class="nav-bar">
 					<a href="/gtc-mail/sent" class="vs-link {{#ifCond selectedPage '==' 'sent'}} active {{/ifCond}}">Sent</a>

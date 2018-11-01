@@ -3,14 +3,13 @@
 var express = require('express');
 var router = express.Router();
 var middleware = require('../../middleware');
+var roles = require('../../config/roles');
 var permission = require('../../config/permission');
 var auth = require('../../auth/auth.service');
-
 
 /* Handlebars routes */
 var controller = require('./shipping-settings.controller');
 
-router.get('/',auth.isAuthenticated(), controller.shippingSettings);
-
+router.get('/', auth.hasRole(roles['VENDOR']), controller.shippingSettings);
 
 module.exports = router;

@@ -110,6 +110,23 @@ export function findRow(modelName, queryObj, includeArr) {
 	});
 }
 
+export function findAllRow(modelName, queryObj, includeArr) {
+	return new Promise((resolve, reject) => {
+		model[modelName].findAll({
+			include: includeArr,
+			where: queryObj
+		}).then(function(row) {
+			if (row) {
+				resolve(row);
+			} else {
+				resolve(null);
+			}
+		}).catch(function(error) {
+			reject(error);
+		});
+	});
+}
+
 export function findOneRow(modelName, queryObj, includeArr) {
 	return new Promise((resolve, reject) => {
 		model[modelName].findOne({
