@@ -6,6 +6,7 @@ const model = require('../../sqldb/model-connect');
 
 export async function findAllOrders(modelName, includeArr, queryObj, offset, limit, field, order) {
 	var result = {};
+
 	try {
 		const ordersResponse = await model[modelName].findAll({
 			include: includeArr,
@@ -38,72 +39,7 @@ export async function findAllOrders(modelName, includeArr, queryObj, offset, lim
 	}
 }
 
-export async function findAllVendorOrders(vendorId) {
-	var result = {};
-
-	try {
-		const vendorOrdersResponse = await model['OrderVendor'].findAll({
-			where: {
-				vendor_id: vendorId
-			},
-			include: [{
-				model: model['OrdersNew']
-			}],
-			group: ['id']
-		});
-		return vendorOrdersResponse;
-	} catch (error) {
-		console.log("findAllVendorOrders Error:::", error);
-		return error;
-	}
-}
-
-export async function findAllVendorOrdersOld(queryObj) {
-	var result = {};
-
-	try {
-		const vendorOrdersResponse = await model['OrderVendor'].findAll({
-			where: queryObj,
-			include: [{
-				model: model['OrdersNew'],
-				attributes: ['id', 'user_id', 'invoice_id', 'purchase_order_id', 'po_number', 'total_price', 'ordered_date', 'status'],
-				include: [{
-					model: model['OrdersItemsNew'],
-					attributes: [],
-					include: [{
-						model: model['Product'],
-						where: queryObj,
-						attributes: []
-					}]
-				}]
-			}],
-			attributes: ['id', 'order_id', 'vendor_id', 'status'],
-			group: ['id']
-		});
-		const vendorOrders = await JSON.parse(JSON.stringify(vendorOrdersResponse));
-		if (vendorOrders.length > 0) {
-			const count = await model['OrderVendor'].count({
-				where: queryObj
-			});
-			const sum = await model['OrderVendor'].sum('total_price', {
-				where: queryObj,
-			});
-			result.count = count;
-			result.sum = sum;
-			result.rows = vendorOrders;
-		} else {
-			result.count = 0;
-			result.rows = orders;
-			result.total = 0;
-		}
-		return result;
-	} catch (error) {
-		console.log("findAllVendorOrders Error:::", error);
-		return error;
-	}
-}
-
-export async function userOrder(queryObj) {
+export async function userOrderDeatils(queryObj) {
 	var order = {};
 	const orderModelName = "OrdersNew";
 
@@ -182,6 +118,54 @@ export async function userOrder(queryObj) {
 			return null;
 		}
 	} catch (error) {
+		return error;
+	}
+}
+
+export async function vendorOrderDetails(queryObj) {
+	try {
+		const vendorOrderResponse = await model['OrderVendor'].findOne({
+			where: queryObj,
+			subQuery: true,
+			attributes: ['id', 'order_id', 'vendor_id', 'total_price', 'status'],
+			include: [{
+				model: model['OrdersNew'],
+				attributes: ['id', 'user_id', 'invoice_id', 'purchase_order_id'],
+				include: [{
+					model: model['OrdersItemsNew'],
+					include: [{
+						model: model['Product'],
+						where: {
+							vendor_id: queryObj.vendor_id
+						},
+						attributes: ['id', 'product_name', 'product_slug', 'vendor_id', 'status', 'marketplace_id'],
+						include: [{
+							model: model['Vendor'],
+							attributes: ['id', 'vendor_name']
+						}, {
+							model: model['Category'],
+							attributes: ['id', 'name']
+						}, {
+							model: model['SubCategory'],
+							attributes: ['id', 'name', 'category_id']
+						}, {
+							model: model['Country'],
+							attributes: ['id', 'name']
+						}, {
+							model: model['ProductMedia'],
+							attributes: ['id', 'type', 'base_image', 'url'],
+							where: {
+								base_image: 1
+							},
+							required: false
+						}]
+					}]
+				}]
+			}]
+		});
+		return vendorOrderResponse;
+	} catch (error) {
+		console.log("vendorOrderDetails Error:::", error);
 		return error;
 	}
 }

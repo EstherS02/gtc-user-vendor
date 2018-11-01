@@ -62,7 +62,7 @@ export function orderView(req, res) {
 				});
 		},
 		order: function(callback) {
-			orderService.userOrder(queryObj)
+			orderService.userOrderDeatils(queryObj)
 				.then((response) => {
 					return callback(null, response);
 				}).catch((error) => {

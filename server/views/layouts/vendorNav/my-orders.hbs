@@ -62,7 +62,7 @@
 			} else {
 				params = replaceUrlParam(params, "query", null);
 			}
-			location.href = "/order-history?" + params;
+			location.href = "/my-order/order?" + params;
 		});
 	});
 
@@ -215,8 +215,8 @@
 																<label class="checkbox-b" for="inputTerms"></label>
 															</div>
 														</td>
-														<td><a href="../order-history/{{this.order_id}}">{{this.order_id}}</a></td>
-														<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
+														<td><a href="../my-order/order/{{this.OrdersNew.id}}">{{this.OrdersNew.id}}</a></td>
+														<td>{{formatTime this.created_on "MMM D, Y"}}</td>
 														<td>Stripe</td>
 														<td>
 															{{#if this.status}} Active {{else}}Failed {{/if}}
@@ -243,18 +243,18 @@
 													<ul class="pagination justify-content-center">
 														{{#unless startFromFirstPage}}
 															<li class="justify-content-center align-self-center">
-																<a href="../order-history?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryParams.page 1) limit=@root.queryParams.limit)}}">
+																<a href="../my-order/order?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryParams.page 1) limit=@root.queryParams.limit)}}">
 																	<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 															</li>
 														{{/unless}}
 														{{#each pages}}
 															<li class="page-item {{#if isCurrent}} active {{/if}}">
-																<a class="page-link" href="../order-history?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryParams.limit)}}">{{page}}</a>
+																<a class="page-link" href="../my-order/order?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryParams.limit)}}">{{page}}</a>
 															</li>
 														{{/each}}
 														{{#unless endAtLastPage}}
 															<li class="justify-content-center align-self-center">
-																<a href="../order-history?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryParams.page 1) limit=@root.queryParams.limit)}}">Next&nbsp;
+																<a href="../my-order/order?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryParams.page 1) limit=@root.queryParams.limit)}}">Next&nbsp;
 																	<i class="fa fa-angle-double-right"></i>
 																</a>
 															</li>
