@@ -23,19 +23,7 @@ const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
 export function indexExample(req, res) {
-	var queryObj = {};
-
-	queryObj['order_id'] = 54;
-	queryObj['vendor_id'] = req.user.Vendor.id;
-
-	orderService.vendorOrderDetails(queryObj)
-		.then((response) => {
-			return res.status(200).send(response);
-		})
-		.catch((error) => {
-			console.log("indexExample Error:::", error);
-			return res.status(500).send(error);
-		});
+	return res.status(200).send(req.user);
 }
 
 export function index(req, res) {

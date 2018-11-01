@@ -398,7 +398,7 @@ export function salesHistoryOld(req, res) {
 				const categoryOrder = "asc";
 				const categoryQueryObj = {};
 
-				categoryQueryObj['status'] = statusCode["ACTIVE"];
+				categoryQueryObj['status'] = status["ACTIVE"];
 
 				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {
@@ -441,7 +441,7 @@ export function salesHistoryOld(req, res) {
 						count: results.orderHistory.count,
 						queryURI: queryURI,
 						LoggedInUser: LoggedInUser,
-						statusCode: statusCode,
+						statusCode: status,
 						marketPlace: marketPlace,
 						categories: results.categories,
 						bottomCategory: bottomCategory,
@@ -469,7 +469,7 @@ export function salesHistoryOld(req, res) {
 						count: results.orderHistory.count,
 						queryURI: queryURI,
 						LoggedInUser: LoggedInUser,
-						statusCode: statusCode,
+						statusCode: status,
 						marketPlace: marketPlace,
 						categories: results.categories,
 						bottomCategory: bottomCategory,
@@ -534,7 +534,7 @@ export function orderViewOld(req, res) {
 			const categoryOrder = "asc";
 			const categoryQueryObj = {};
 
-			categoryQueryObj['status'] = statusCode["ACTIVE"];
+			categoryQueryObj['status'] = status["ACTIVE"];
 
 			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
@@ -569,7 +569,7 @@ export function orderViewOld(req, res) {
 				queryObj["order_id"] = req.params.id;
 
 			queryObj['status'] = {
-				'$ne': statusCode["DELETED"]
+				'$ne': status["DELETED"]
 			}
 
 			return model["OrderItem"].findAndCountAll({
@@ -598,7 +598,7 @@ export function orderViewOld(req, res) {
 						where: {
 							base_image: 1,
 							status: {
-								'$eq': statusCode["ACTIVE"]
+								'$eq': status["ACTIVE"]
 							}
 						}
 					}]
@@ -617,7 +617,7 @@ export function orderViewOld(req, res) {
 			let includeArr = [];
 
 			searchObj['status'] = {
-				'$eq': statusCode["ACTIVE"]
+				'$eq': status["ACTIVE"]
 			}
 			return service.findRows(marketPlaceModel, searchObj, null, null, 'created_on', "asc", includeArr)
 				.then(function(marketPlaceData) {
@@ -674,7 +674,7 @@ export function orderViewOld(req, res) {
 				cartheader: results.cartCounts,
 				categories: results.categories,
 				bottomCategory: bottomCategory,
-				statusCode: statusCode,
+				statusCode: status,
 				orderItemStatus: orderItemStatus,
 				carriersCode: carriersCode
 			}
