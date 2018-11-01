@@ -52,6 +52,7 @@
         var localStream;
         var remoteStream;
         var pc;
+        var isStarted = false;
 
         let mediaConstraints = {
             audio: false,
@@ -73,16 +74,19 @@
             try {
                 pc = new RTCPeerConnection(null);
                 pc.onicecandidate = (event) => {
+                    console.log("ice candidate event");
                     if (event.candidate) {
-                        console.log('icecandidate event: ', event);
-                        callObj['iceCandidateInfo'] = {
+                        console.log("sending ice candidate")
+                        let iceObj = {
                             type: 'candidate',
                             label: event.candidate.sdpMLineIndex,
                             id: event.candidate.sdpMid,
-                            candidate: event.candidate.candidate
-                        };
-                        callObj['receiveIceCandidate'] = false;
-                        //socket.emit('call:icecandidate', callObj);
+                            candidate: event.candidate.candidate,
+                            callFrom: callObj.callFrom,
+                            callTo: callObj.callTo,
+                            callUniqueId: callObj.callUniqueId
+                        }
+                        socket.emit('call:icecandidate', iceObj);
                     } else {
                         console.log('End of candidates.', event);
                     }
@@ -93,13 +97,13 @@
                 };
                 pc.onaddstream = (event) => {
                     //handle Remote Stream added
-                    console.log('Remote stream added. Event: ', event);
+                    console.log('Remote stream added.');
                     remoteStream = event.stream;
                     remoteVideo.srcObject = remoteStream;
                 };
                 pc.onremovestream = (event) => {
                     //handle Remote Stream removed
-                    console.log('Remote stream removed. Event: ', event);
+                    console.log('Remote stream removed.');
                 };
                 console.log('Created RTCPeerConnnection');
             } catch (e) {
@@ -150,46 +154,67 @@
             });
 
             socket.on('call:accepted', (callObj) => {
-                console.log("caller knows call Accepted by the callee");
+                console.log("caller knows call Accepted by the callee", callObj);
                 createPeerConnection(callObj);
                 pc.addStream(localStream);
-                console.log("caller Creating Offer");
-                pc.createOffer().then((sessionDescription) => {
-                    pc.setLocalDescription(sessionDescription);
-                    callObj['offer'] = sessionDescription;
-                    return socket.emit('call:offer', callObj);
+                isStarted = true;
+
+                pc.createOffer().then((sdp) => {
+                    pc.setLocalDescription(sdp);
+                    console.log("got offer & sending", sdp);
+                    let offerObj = {
+                        type: sdp.type,
+                        sdp: sdp.sdp,
+                        callFrom: callObj.callFrom,
+                        callTo: callObj.callTo,
+                        callUniqueId: callObj.callUniqueId
+                    }
+                    socket.emit('call:offer', offerObj);
                 }).catch((error) => {
                     console.log('Failed to create offer session description: ' + error.toString());
                 });
+
             });
 
-            socket.on('call:icecandidate', (callObj) => {
-                if(callObj.receiveIceCandidate){
+            socket.on('call:icecandidate', (iceObj) => {
+                console.log("receiving ice candidate", iceObj);
+                if (isStarted) {
+                    console.log("applying ice candidate ...");
                     let candidate = new RTCIceCandidate({
-                        sdpMLineIndex: callObj.iceCandidateInfo.label,
-                        candidate: callObj.iceCandidateInfo.candidate
+                        sdpMLineIndex: iceObj.label,
+                        candidate: iceObj.candidate
                     });
                     pc.addIceCandidate(candidate);
                 }
             });
 
-            socket.on('call:offer', (callObj) => {
-                createPeerConnection(callObj);
+            socket.on('call:offer', (offerObj) => {
+               console.log("received offer ...", offerObj);
+                createPeerConnection(offerObj);
                 pc.addStream(localStream);
-                pc.setRemoteDescription(new RTCSessionDescription(callObj.offer));
-                //callObj['receiveIceCandidate'] = true;
-                pc.createAnswer().then((sessionDescription) => {
-                    pc.setLocalDescription(sessionDescription);
-                    callObj['answer'] = sessionDescription;
-                    console.log("answering to offer", callObj);
-                    return socket.emit('call:answer', callObj);
+                isStarted = true;
+
+                pc.setRemoteDescription(new RTCSessionDescription(offerObj));
+
+                pc.createAnswer().then((sdp) => {
+                    pc.setLocalDescription(sdp);
+                    console.log("got answer Obj & sending", sdp)
+                    let answerObj = {
+                        type: sdp.type,
+                        sdp: sdp.sdp,
+                        callFrom: offerObj.callFrom,
+                        callTo: offerObj.callTo,
+                        callUniqueId: offerObj.callUniqueId
+                    }
+                    socket.emit('call:answer', answerObj);
                 }).catch((error) => {
                     console.log('Failed to create answer session description: ' + error.toString());
                 });
             });
 
-            socket.on('call:answer', (callObj) => {
-                //pc.setRemoteDescription(new RTCSessionDescription(callObj.answer));
+            socket.on('call:answer', (answerObj) => {
+                console.log("Received Answer ...", answerObj);
+                pc.setRemoteDescription(new RTCSessionDescription(answerObj));
             })
 
         });

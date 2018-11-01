@@ -228,24 +228,22 @@ export function socketMsg(io) {
 			callObj['isInitiator'] = true;
 			callObj['callAcceptStatus'] = true;
 			callObj['callAcceptedOn'] = new Date();
-			return io.to(callObj.callFrom).emit('call:accepted', callObj);
+			io.to(callObj.callFrom).emit('call:accepted', callObj);
 		});
 
 		socket.on('call:icecandidate', (callObj) => {
-			console.log("call:icecandidate", callObj);
-			return socket.to(callObj.callUniqueId).emit('call:icecandidate', callObj);
+			console.log("Received call:icecandidate");
+			socket.to(callObj.callUniqueId).emit('call:icecandidate', callObj);
 		});
 
 		socket.on('call:offer', (callObj) => {
-			callObj['isInitiator'] = false;
-			console.log("caller shared the offer", callObj)
-			return io.to(callObj.callTo).emit('call:offer', callObj);
+			console.log("caller shared offer");
+			io.to(callObj.callTo).emit('call:offer', callObj);
 		});
 
 		socket.on('call:answer', (callObj) => {
-			callObj['isInitiator'] = true;
-			console.log("callee answered to the caller's offer", callObj)
-			return io.to(callObj.callFrom).emit('call:offer', callObj);
+			console.log("callee shared answer");
+			io.to(callObj.callFrom).emit('call:answer', callObj);
 		})
 
 
