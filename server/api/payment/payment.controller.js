@@ -14,6 +14,7 @@ const marketPlaceCode = require('../../config/marketplace');
 const _ = require('lodash');
 const moment = require('moment');
 const ORDER_ITEM_STATUS = require('../../config/order-item-status');
+const ORDER_ITEM_NEW_STATUS = require('../../config/order-item-new-status');
 const ORDER_PAYMENT_TYPE = require('../../config/order-payment-type');
 const uuidv1 = require('uuid/v1');
 const sendEmail = require('../../agenda/send-email');
@@ -295,93 +296,72 @@ function resMessage(message, messageDetails) {
 	};
 }
 
-export function cancelOrder(req, res) {
-	if (!req.body)
-		return res.status(400).send(resMessage("BAD_REQUEST", "Missing one or more required Parameters"));
-	if (!req.body.reason_for_cancellation)
-		return res.status(400).send(resMessage("BAD_REQUEST", "No Reason for cancellation"));
+export async function cancelOrder(req, res) {
+	req.checkBody('item_id', 'Missing Query Param').notEmpty();
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
 
-	let orderItem, paymentObj, refundObj;
+	let itemId = parseInt(req.body.item_id);
 
-	processCancelOrder(req)
-		.then(orderItemObj => {
-			orderItem = orderItemObj;
-			let includeArray = [];
-			includeArray = populate.populateData("Payment");
-			let orderPaymentQueryObj = {
-				order_id: orderItemObj.order_id,
-				order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT']
-			}
-			return service.findRow('OrderPayment', orderPaymentQueryObj, includeArray);
-		}).then(paymentRow => {
-			paymentObj = JSON.parse(JSON.stringify(paymentRow));
-			let chargedPaymentRes = JSON.parse(paymentObj.Payment.payment_response);
-			let refundAmt = parseInt(orderItem.final_price);
-			return stripe.refundCustomerCard(chargedPaymentRes.id, refundAmt);
-		}).then(refundRow => {
-			refundObj = refundRow;
-			let paymentModel = {
-				date: new Date(refundRow.created),
-				amount: refundRow.amount / 100.0,
-				payment_method: paymentMethod['STRIPE'],
-				status: status['ACTIVE'],
-				payment_response: JSON.stringify(refundRow),
-				created_by: req.user.first_name,
-				created_on: new Date()
-			};
-			return service.createRow('Payment', paymentModel);
-		}).then(createdPaymentRow => {
-			let orderPaymentModel = {
-				order_id: orderItem.order_id,
-				payment_id: createdPaymentRow.id,
-				order_payment_type: ORDER_PAYMENT_TYPE['REFUND'],
-				status: status['ACTIVE'],
-				created_by: req.user.first_name,
-				created_on: new Date()
-			}
-			return service.createRow('OrderPayment', orderPaymentModel);
-		}).then(createdOrderPaymentRow => {
+	let includeArray = [];
+	includeArray = populate.populateData("Product");
+	let orderItemObj = {
+		id: itemId
+	};
+
+	try {
+		const itemObj = await service.findRow('OrdersItemsNew', orderItemObj, includeArray);
+		if (itemObj) {
 			let updateOrderItem = {
-				reason_for_cancellation: req.body.reason_for_cancellation,
+				reason_for_cancel: req.body.reason_for_cancel,
 				cancelled_on: new Date(),
-				order_item_status: ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED'],
+				order_item_status: ORDER_ITEM_NEW_STATUS['CANCELED'],
 				last_updated_by: req.user.first_name,
 				last_updated_on: new Date()
-			}
-			return service.updateRow('OrderItem', updateOrderItem, orderItem.id);
-		}).then(updatestatusRow => {
-			let includeArr = [];
-			refundObj = {
-				order_id: orderItem.order_id,
-				order_item_status: {
-					$ne: ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED']
-				},
 			};
-			var field = 'created_on';
-			var order = "asc";
-			return service.findAllRows('OrderItem', includeArr, refundObj, 0, null, field, order);
-		}).then(successPromise => {
-			if (successPromise.count == "0") {
-				let OrderItemRefund = {
-					reason_for_cancellation: req.body.reason_for_cancellation,
-					cancelled_on: new Date(),
-					order_status: orderStatus['CANCELLEDORDER'],
-					last_updated_by: req.user.first_name,
-					last_updated_on: new Date()
+			const updatestatusRow = await service.updateRow('OrdersItemsNew', updateOrderItem, itemId);
+			if (updatestatusRow) {
+				let queryOrderVendor = {
+					order_id: itemObj.order_id,
+					vendor_id: itemObj.Product.vendor_id
 				};
-				refundObj = {
-					id: orderItem.order_id
-				};
-				service.updateRecord('Order', OrderItemRefund, refundObj);
-				return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
 
+				const orderVendorObj = await service.findRow('OrderVendor', queryOrderVendor, []);
+
+				if (orderVendorObj) {
+					let orderVendorUpdateObj = {
+						total_price: (parseFloat(orderVendorObj.total_price) - parseFloat(itemObj.price)).toFixed(2),
+						shipping_cost: (parseFloat(orderVendorObj.shipping_cost) - parseFloat(itemObj.shipping_cost)).toFixed(2),
+						gtc_fees: (parseFloat(orderVendorObj.gtc_fees) - parseFloat(itemObj.gtc_fees)).toFixed(2),
+						plan_fees: (parseFloat(orderVendorObj.plan_fees) - parseFloat(itemObj.plan_fees)).toFixed(2),
+						final_price: (parseFloat(orderVendorObj.final_price) - parseFloat(itemObj.final_price)).toFixed(2),
+						coupon_amount: (parseFloat(orderVendorObj.coupon_amount) - parseFloat(itemObj.coupon_amount)).toFixed(2),
+						last_updated_by: req.user.first_name,
+						last_updated_on: new Date()
+					};
+
+					const updateStatus = await service.updateRow('OrderVendor', orderVendorUpdateObj, orderVendorObj.id);
+					if (updateStatus) {
+						return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+					} else {
+						return res.status(400).status("Order vendor update failed.");
+					}
+				} else {
+					return res.status(404).status("Order vendor not found.");
+				}
 			} else {
-				return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+				return res.status(400).status("Orderitem update failed.");
 			}
-		}).catch(error => {
-			console.log("Error", error)
-			return res.status(500).send(error);
-		});
+		} else {
+			return res.status(404).status("Orderitem not found.");
+		}
+	} catch (error) {
+		console.log('edit Product Error:::', error);
+		return res.status(500).send(error);
+	}
 }
 
 function processCancelOrder(req) {

@@ -1,3 +1,63 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#cancel-alert").hide();
+		$("#cancelReason").validate({
+			rules: {
+				reason_for_cancel: {
+					required: true,
+					maxlength: 255
+				},
+			},
+			messages: {
+				reason_for_cancel: {
+					required: "Please enter the reason for order cancellation",
+					maxlength: "Maximum 255 characters"
+				}
+			}
+		});
+
+		$("#cancelReason").submit(function(e) {
+			e.preventDefault();
+			if ($('#cancelReason').valid()) {
+
+				let cancelObj = $("#cancelReason :input").filter(function(index, element) {
+					return $(element).val() != '';
+				}).serialize();
+
+				$.ajax({
+					url: '/api/payment/cancel-order/',
+					type: 'POST',
+					data: cancelObj,
+					success: function(result) {
+						$('#cancel-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#cancel-alert .cancel-message').text("Cancel Item Successfully")
+						$("#cancel-alert").fadeTo(7000, 500).slideUp(500, function() {
+							$("#gtc-cart-alert").slideUp(500);
+						});
+						setTimeout(function() {
+							location.reload(true);
+						}, 3000);
+
+					},
+					error: function(error) {
+						$('#cancel-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#cancel-alert .cancel-message').text(error.responseText);
+						$("#cancel-alert").fadeTo(7000, 500).slideUp(500, function() {
+							$("#cancel-alert").slideUp(500);
+						});
+						$("#cancelReason")[0].reset();
+					}
+				});
+			}
+		});
+	});
+		
+	function cancelOrderItem(item_id) {
+		$('#item_id').val(item_id);
+		$('#itemCancelModal').modal('show');
+	};
+
+</script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <div class="wrapper-content">
 	<div class="container-sm">
@@ -42,8 +102,9 @@
 											<tr>
 												<th width="45%">Product</th>
 												<th width="25%">Status</th>
-												<th width="15%">QTY</th>
-												<th width="15%" class="text-right">Price</th>
+												<th width="10%">QTY</th>
+												<th width="10%">Price</th>
+												<th width="10%" class="text-right"></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -103,8 +164,17 @@
 														{{/ifCond}}
 													</td>
 													<td><span class="font-weight-normal text-black">{{this.quantity}}</span></td>
-													<td class="text-right">
+													<td>
 														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
+													</td>
+													<td class="text-right">
+													{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+														<button type="button" id="cancel-item-{{this.id}}"  href="javascript:;" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+													{{/ifCond}}
+
+													{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
+														<button type="button" id="cancel-item-{{this.id}}"  href="javascript:;" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+													{{/ifCond}}
 													</td>
 												</tr>
 											{{/each}}
@@ -120,8 +190,9 @@
 											<tr>
 												<th width="45%">Product</th>
 												<th width="25%">Status</th>
-												<th width="15%">QTY</th>
-												<th width="15%" class="text-right">Price</th>
+												<th width="10%">QTY</th>
+												<th width="10%">Price</th>
+												<th width="10%" class="text-right"></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -181,8 +252,17 @@
 														{{/ifCond}}
 													</td>
 													<td><span class="font-weight-normal text-black">{{this.quantity}}</span></td>
-													<td class="text-right">
+													<td>
 														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
+													</td>
+													<td class="text-right">
+													{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+														<button type="button" id="cancel-item-{{this.id}}"  href="javascript:;" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+													{{/ifCond}}
+
+													{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
+														<button type="button" id="cancel-item-{{this.id}}"  href="javascript:;" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+													{{/ifCond}}
 													</td>
 												</tr>
 											{{/each}}
@@ -198,8 +278,9 @@
 											<tr>
 												<th width="45%">Product</th>
 												<th width="25%">Status</th>
-												<th width="15%">QTY</th>
-												<th width="15%" class="text-right">Price</th>
+												<th width="10%">QTY</th>
+												<th width="10%">Price</th>
+												<th width="10%" class="text-right"></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -259,8 +340,17 @@
 														{{/ifCond}}
 													</td>
 													<td><span class="font-weight-normal text-black">{{this.quantity}}</span></td>
-													<td class="text-right">
+													<td>
 														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
+													</td>
+													<td class="text-right">
+													{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+														<button type="button" id="cancel-item-{{this.id}}"  href="javascript:;" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+													{{/ifCond}}
+
+													{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
+														<button type="button" id="cancel-item-{{this.id}}"  href="javascript:;" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+													{{/ifCond}}
 													</td>
 												</tr>
 											{{/each}}
@@ -276,8 +366,9 @@
 											<tr>
 												<th width="45%">Product</th>
 												<th width="25%">Status</th>
-												<th width="15%">QTY</th>
-												<th width="15%" class="text-right">Price</th>
+												<th width="10%">QTY</th>
+												<th width="10%">Price</th>
+												<th width="10%" class="text-right"></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -337,8 +428,17 @@
 														{{/ifCond}}
 													</td>
 													<td><span class="font-weight-normal text-black">{{this.quantity}}</span></td>
-													<td class="text-right">
+													<td>
 														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
+													</td>
+													<td class="text-right">
+													{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+														<button type="button" id="cancel-item-{{this.id}}"  href="javascript:;" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+													{{/ifCond}}
+
+													{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
+														<button type="button" id="cancel-item-{{this.id}}"  href="javascript:;" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+													{{/ifCond}}
 													</td>
 												</tr>
 											{{/each}}
@@ -438,3 +538,46 @@
 	</div>
 </div>
 {{> footer/bottom-footer}}
+
+<div class="modal fade" id="itemCancelModal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Reason for Cancellation</h5>
+			</div>
+			<div class="alert" id="cancel-alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<span class="cancel-message"></span>
+			</div>
+			<form id="cancelReason" class="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control">Please enter the reason for order cancellation:<span class="text-danger">*</span></label>
+								<textarea type="text" class="form-control-customized form-control-sm" name="reason_for_cancel" id="reason_for_cancel" required></textarea>
+							</div>
+						</div>
+						<input type="hidden" id="item_id" name="item_id" value="">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<input class="required" type="checkbox" onclick="document.getElementById('submitBtn').disabled=false;" name="checkbox" />
+								<label class="label-control">Are you sure you want to cancel this item from your order?</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
+
+					<button class="ladda-button btn btn-small btn-primary" id="submitBtn" disabled="disabled" type="submit" data-style="expand-left">
+						<span class="ladda-label">Submit</span>
+						<span class="ladda-spinner"></span>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

@@ -112,6 +112,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'cancelled_on',
             allowNull: true
         },
+        reason_for_cancel: {
+            type: DataTypes.STRING(255),
+            field: 'reason_for_cancel',
+            allowNull: true
+        },
         delivered_on: {
             type: DataTypes.DATE,
             field: 'delivered_on',
