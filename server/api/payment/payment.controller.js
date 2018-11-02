@@ -307,10 +307,16 @@ export async function cancelOrder(req, res) {
 	let itemId = parseInt(req.body.item_id);
 
 	let includeArray = [];
+	let orderItemStatus;
 	includeArray = populate.populateData("Product");
 	let orderItemObj = {
 		id: itemId
 	};
+
+	if (req.user.Vendor)
+		orderItemStatus = ORDER_ITEM_NEW_STATUS['VENDOR_CANCELED'];
+	else
+		orderItemStatus = ORDER_ITEM_NEW_STATUS['CANCELED'];
 
 	try {
 		const itemObj = await service.findRow('OrdersItemsNew', orderItemObj, includeArray);
@@ -318,7 +324,7 @@ export async function cancelOrder(req, res) {
 			if ((itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['ORDER_INITIATED']) || 
 				(itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['CONFIRMED'])) {
 				let updateOrderItem = {
-					order_item_status: ORDER_ITEM_NEW_STATUS['CANCELED'],
+					order_item_status: orderItemStatus,
 					cancelled_on: new Date(),
 					reason_for_cancel: req.body.reason_for_cancel,
 					last_updated_by: req.user.first_name,
@@ -449,6 +455,49 @@ function checkingDays(date) {
 		return true;
 	} else {
 		return false;
+	}
+}
+
+export async function confirmOrder(req, res) {
+	req.checkBody('item_id', 'Missing Query Param').notEmpty();
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+	let itemId = parseInt(req.body.item_id);
+
+	let includeArray = [];
+	let orderItemObj = {
+		id: itemId
+	};
+
+	try {
+		const itemObj = await service.findRow('OrdersItemsNew', orderItemObj, includeArray);
+		if (itemObj) {
+			if (itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['ORDER_INITIATED']) {
+				let updateOrderItem = {
+					order_item_status: ORDER_ITEM_NEW_STATUS['CONFIRMED'],
+					item_confirmed_on: new Date(),
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				};
+				const updatestatusRow = await service.updateRow('OrdersItemsNew', updateOrderItem, itemId);
+				if (updatestatusRow) {
+					return res.status(200).send(resMessage("SUCCESS", "Order item confirmed successfully"));
+				} else {
+					return res.status(400).send("Orderitem update failed.");
+				}
+			} else {
+				return res.status(400).send("Orderitem is already forword.");
+			}
+		} else {
+			return res.status(404).send("Orderitem not found.");
+		}
+	} catch(error) {
+		console.log('confirm order Error:::', error);
+		return res.status(500).send(error);
 	}
 }
 
