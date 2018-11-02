@@ -226,7 +226,8 @@ export function orderView(req, res) {
 				cart: results.cartInfo,
 				order: results.orderView,
 				orderItemStatus: orderItemStatus,
-				marketPlace: marketPlace
+				marketPlace: marketPlace,
+				carriersCode: carriersCode
 			});
 		} else {
 			return res.render('vendorNav/vendor-order/vendor-order-view', error);

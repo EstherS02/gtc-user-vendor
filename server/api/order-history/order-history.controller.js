@@ -18,7 +18,7 @@ const Handlebars = require('handlebars');
 
 var emailTemplateModel = "EmailTemplate";
 
-export function updateStatus(req, res) {
+export function updateStatusOld(req, res) {
 
 	var paramsID, order_status, date;
 	var bodyParams = {}, shippingInput = {};
@@ -116,6 +116,30 @@ export function updateStatus(req, res) {
 		});
 	}
 	return res.status(201).send("Updated");
+}
+
+export async function updateStatus(req, res) {
+	req.checkBody('select_courier', 'Missing Query Param').notEmpty();
+	req.checkBody('expected_delivery_date', 'Missing Query Param').notEmpty();
+	req.checkBody('tracking_id', 'Missing Query Param').notEmpty();
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+	if (new Date() > new Date(req.body.expected_delivery_date)) {
+		return res.status(400).send("Invalid delivery date.");
+	}
+
+	let oredrId = req.params.id;
+
+	try {
+		
+	} catch(error) {
+		console.log('dispatch product Error:::', error);
+		return res.status(500).send(error);
+	}
 }
 
 function orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, res) {

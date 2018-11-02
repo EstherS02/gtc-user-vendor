@@ -1,4 +1,8 @@
 <script type="text/javascript">
+	$(function() {
+		$("#expected_delivery_date").datepicker();
+	});
+
 	$(document).ready(function() {
 		$('#cancel-alert').hide();
 
@@ -14,6 +18,36 @@
 					required: "Please enter the reason for order cancellation",
 					maxlength: "Maximum 255 characters"
 				}
+			}
+		});
+
+		$('#dispatchForm').validate({
+			rules: {
+				select_courier: {
+					required: true
+				},
+				expected_delivery_date: {
+					required: true
+				},
+				tracking_id: {
+					required: true,
+					maxlength: 20,
+					minlength: 8
+				}
+			},
+			messages: {
+				select_courier: {
+					required: "Please select courier"
+				},
+				expected_delivery_date: {
+					required: "Please select expected delivary date"
+				},
+				tracking_id: {
+					required: "Please select tracking id",
+					maxlength: "Maximum 20 characters",
+					minlength: "Minimun 8 characters"
+				}
+
 			}
 		});
 
@@ -48,6 +82,28 @@
 							$('#cancel-alert').slideUp(500);
 						});
 						$('#cancelReason')[0].reset();
+					}
+				});
+			}
+		});
+
+		$('#dispatchForm').submit(function(e) {
+			e.preventDefault();
+			if ($('#dispatchForm').valid()) {
+
+				let dispatchInput = $("#dispatchForm :input").filter(function(index, element) {
+					return $(element).val() != '';
+				}).serialize();
+
+				$.ajax({
+					url: '/api/order-history/' + {{ order.id }},
+					type: 'PUT',
+					data: dispatchInput,
+					success: function (result) {
+						console.log("result............", result);
+					},
+					error: function (error) {
+						console.log("error.............", error);
 					}
 				});
 			}
@@ -513,13 +569,43 @@
 <div class="card">
 <div class="card-header">Dispatch Order</div>
 <div class="card-body">
-<form class="dispatchForm">
-	<div class="form-group">
-	    <label for="exampleInputEmail1">Email address</label>
-	    <input type="email" class="form-control-customized form-control-sm">
-	  </div>
+<form class="form" id="dispatchForm">
+	<div class="form-group row">
+		<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Select Carrier</label>
+		<div class="col-sm-8">
+			<select class="form-control-customized form-control-sm" name="select_courier">
+				{{#if order.Shipping.provider_name}}
+					<option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
+				{{else}}
+					<option disabled selected>Select Carrier</option>
+				{{/if}}
+				{{#each carriersCode}}
+					<option value="{{this}}">{{@key}}</option>
+				{{/each}}
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Expected Delivery Date</label>
+		<div class="col-sm-8">
+			<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date"
+			value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm">
+		</div>
+	</div>
+	
+	<div class="form-group row">
+		<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Enter Tracking Id</label>
+		<div class="col-sm-8">
+			<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm">
+		</div>
+	</div>
+
+	<button class="btn btn-md btn-primary" id="dispatchBtn" type="submit" data-style="expand-left">
+		<span class="ladda-label">Dispatch Order</span>
+		<span class="ladda-spinner"></span>
+	</button>
 </form>
-<button class="btn btn-md btn-primary">Dispatch Order</button>
 </div>
 </div>
 					</div>
