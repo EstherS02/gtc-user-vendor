@@ -10,6 +10,7 @@ router.post('/pay', auth.isAuthenticatedUser(), controller.makePayment);
 router.post('/planpay', auth.isAuthenticated(), controller.makePlanPayment);
 router.post('/card', auth.isAuthenticatedUser(), controller.createCard);
 router.post('/cancel-order', auth.isAuthenticated(), controller.cancelOrder);
+router.post('/return-order', auth.isAuthenticated(), controller.returnOrder);
 router.post('/refund-order/:orderId', auth.isAuthenticated(), controller.refundOrder);
 router.delete('/card', auth.isAuthenticated(), controller.deleteCard);
 // router.get('/sendOrderMail', controller.sendOrderMail)

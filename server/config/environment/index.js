@@ -233,7 +233,10 @@ var all = {
 				safe: true
 			}
 		}
-	}
+	},
+
+	// Return order request days
+	returnItemDays: process.env.RETURN_ITEM_DAYS || 10
 };
 
 // Export the config object based on the NODE_ENV

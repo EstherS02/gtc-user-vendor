@@ -315,52 +315,140 @@ export async function cancelOrder(req, res) {
 	try {
 		const itemObj = await service.findRow('OrdersItemsNew', orderItemObj, includeArray);
 		if (itemObj) {
-			let updateOrderItem = {
-				reason_for_cancel: req.body.reason_for_cancel,
-				cancelled_on: new Date(),
-				order_item_status: ORDER_ITEM_NEW_STATUS['CANCELED'],
-				last_updated_by: req.user.first_name,
-				last_updated_on: new Date()
-			};
-			const updatestatusRow = await service.updateRow('OrdersItemsNew', updateOrderItem, itemId);
-			if (updatestatusRow) {
-				let queryOrderVendor = {
-					order_id: itemObj.order_id,
-					vendor_id: itemObj.Product.vendor_id
+			if ((itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['ORDER_INITIATED']) || 
+				(itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['CONFIRMED'])) {
+				let updateOrderItem = {
+					order_item_status: ORDER_ITEM_NEW_STATUS['CANCELED'],
+					cancelled_on: new Date(),
+					reason_for_cancel: req.body.reason_for_cancel,
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
 				};
-
-				const orderVendorObj = await service.findRow('OrderVendor', queryOrderVendor, []);
-
-				if (orderVendorObj) {
-					let orderVendorUpdateObj = {
-						total_price: (parseFloat(orderVendorObj.total_price) - parseFloat(itemObj.price)).toFixed(2),
-						shipping_cost: (parseFloat(orderVendorObj.shipping_cost) - parseFloat(itemObj.shipping_cost)).toFixed(2),
-						gtc_fees: (parseFloat(orderVendorObj.gtc_fees) - parseFloat(itemObj.gtc_fees)).toFixed(2),
-						plan_fees: (parseFloat(orderVendorObj.plan_fees) - parseFloat(itemObj.plan_fees)).toFixed(2),
-						final_price: (parseFloat(orderVendorObj.final_price) - parseFloat(itemObj.final_price)).toFixed(2),
-						coupon_amount: (parseFloat(orderVendorObj.coupon_amount) - parseFloat(itemObj.coupon_amount)).toFixed(2),
-						last_updated_by: req.user.first_name,
-						last_updated_on: new Date()
+				const updatestatusRow = await service.updateRow('OrdersItemsNew', updateOrderItem, itemId);
+				if (updatestatusRow) {
+					let queryOrderVendor = {
+						order_id: itemObj.order_id,
+						vendor_id: itemObj.Product.vendor_id
 					};
 
-					const updateStatus = await service.updateRow('OrderVendor', orderVendorUpdateObj, orderVendorObj.id);
-					if (updateStatus) {
-						return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+					const orderVendorObj = await service.findRow('OrderVendor', queryOrderVendor, []);
+
+					if (orderVendorObj) {
+						let orderVendorUpdateObj = {
+							total_price: (parseFloat(orderVendorObj.total_price) - parseFloat(itemObj.price)).toFixed(2),
+							shipping_cost: (parseFloat(orderVendorObj.shipping_cost) - parseFloat(itemObj.shipping_cost)).toFixed(2),
+							gtc_fees: (parseFloat(orderVendorObj.gtc_fees) - parseFloat(itemObj.gtc_fees)).toFixed(2),
+							plan_fees: (parseFloat(orderVendorObj.plan_fees) - parseFloat(itemObj.plan_fees)).toFixed(2),
+							final_price: (parseFloat(orderVendorObj.final_price) - parseFloat(itemObj.final_price)).toFixed(2),
+							coupon_amount: (parseFloat(orderVendorObj.coupon_amount) - parseFloat(itemObj.coupon_amount)).toFixed(2),
+							last_updated_by: req.user.first_name,
+							last_updated_on: new Date()
+						};
+
+						const updateStatus = await service.updateRow('OrderVendor', orderVendorUpdateObj, orderVendorObj.id);
+						if (updateStatus) {
+							return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+						} else {
+							return res.status(400).send("Order vendor update failed.");
+						}
 					} else {
-						return res.status(400).status("Order vendor update failed.");
+						return res.status(404).send("Order vendor not found.");
 					}
 				} else {
-					return res.status(404).status("Order vendor not found.");
+					return res.status(400).send("Orderitem update failed.");
 				}
 			} else {
-				return res.status(400).status("Orderitem update failed.");
+				return res.status(400).send("Orderitem out for shipping.");
 			}
 		} else {
-			return res.status(404).status("Orderitem not found.");
+			return res.status(404).send("Orderitem not found.");
 		}
 	} catch (error) {
-		console.log('edit Product Error:::', error);
+		console.log('cancel Item Error:::', error);
 		return res.status(500).send(error);
+	}
+}
+
+export async function returnOrder(req, res) {
+	req.checkBody('return_item_id', 'Missing Query Param').notEmpty();
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+	let itemId = parseInt(req.body.return_item_id);
+
+	let includeArray = [];
+	includeArray = populate.populateData("Product");
+	let orderItemObj = {
+		id: itemId
+	};
+	try {
+		const itemObj = await service.findRow('OrdersItemsNew', orderItemObj, includeArray);
+		if (itemObj) {
+			if ((itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['DELIVERED']) && checkingDays(itemObj.delivered_on)) {
+				let updateOrderItem = {
+					order_item_status: ORDER_ITEM_NEW_STATUS['REQUEST_FOR_RETURN'],
+					request_for_return_on: new Date(),
+					reason_for_return: req.body.reason_for_return,
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				};
+				const updatestatusRow = await service.updateRow('OrdersItemsNew', updateOrderItem, itemId);
+				if (updatestatusRow) {
+					let queryOrderVendor = {
+						order_id: itemObj.order_id,
+						vendor_id: itemObj.Product.vendor_id
+					};
+
+					const orderVendorObj = await service.findRow('OrderVendor', queryOrderVendor, []);
+
+					if (orderVendorObj) {
+						let orderVendorUpdateObj = {
+							total_price: (parseFloat(orderVendorObj.total_price) - parseFloat(itemObj.price)).toFixed(2),
+							shipping_cost: (parseFloat(orderVendorObj.shipping_cost) - parseFloat(itemObj.shipping_cost)).toFixed(2),
+							gtc_fees: (parseFloat(orderVendorObj.gtc_fees) - parseFloat(itemObj.gtc_fees)).toFixed(2),
+							plan_fees: (parseFloat(orderVendorObj.plan_fees) - parseFloat(itemObj.plan_fees)).toFixed(2),
+							final_price: (parseFloat(orderVendorObj.final_price) - parseFloat(itemObj.final_price)).toFixed(2),
+							coupon_amount: (parseFloat(orderVendorObj.coupon_amount) - parseFloat(itemObj.coupon_amount)).toFixed(2),
+							last_updated_by: req.user.first_name,
+							last_updated_on: new Date()
+						};
+
+						const updateStatus = await service.updateRow('OrderVendor', orderVendorUpdateObj, orderVendorObj.id);
+						if (updateStatus) {
+							return res.status(200).send(resMessage("SUCCESS", "Order Return Initiated. Credited to bank account to 5 to 7 bussiness days"));
+						} else {
+							return res.status(400).send("Order vendor update failed.");
+						}
+					} else {
+						return res.status(404).send("Order vendor not found.");
+					}
+
+				} else {
+					return res.status(400).send("Orderitem update failed.");
+				}
+			} else {
+				return res.status(400).send("Orderitem return days excedded.");
+			}
+		} else {
+			return res.status(404).send("Orderitem not found.");
+		}
+	} catch(error) {
+		console.log('Return item Error:::', error);
+		return res.status(500).send(error);
+	}
+}
+
+function checkingDays(date) {
+	const deliveredDate = new Date(date);
+	const currentDate = new Date();
+	deliveredDate.setDate(deliveredDate.getDate() + parseInt(config.returnItemDays));
+	if (deliveredDate >= currentDate) {
+		return true;
+	} else {
+		return false;
 	}
 }
 
