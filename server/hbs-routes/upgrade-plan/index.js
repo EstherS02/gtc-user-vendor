@@ -12,7 +12,7 @@ var auth = require('../../auth/auth.service');
 var controller = require('./upgrade-plan.controller');
 
 router.get('/', auth.hasRole(roles['USER']), controller.upgradeplan);
-router.get('/userBulkupgradePlan', auth.isAuthenticated(), controller.userBulkupgradePlan);
+router.get('/userBulkupgradePlan', auth.hasRole(roles['USER']), controller.userBulkupgradePlan);
 
 
 module.exports = router;

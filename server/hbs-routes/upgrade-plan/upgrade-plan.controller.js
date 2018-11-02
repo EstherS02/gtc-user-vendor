@@ -22,7 +22,6 @@ export function upgradeplan(req, res) {
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
-	console.log("userid:::&&&&&" + LoggedInUser.Vendor.id);
 	var queryPaginationObj = {};
 	if (req.query.sort == 'rating') {
 		var field = req.query.sort;
@@ -86,59 +85,29 @@ export function upgradeplan(req, res) {
 			service.findAllRows("PaymentSetting", includeArr, queryObjects, offset, limit, field, order)
 				.then(function(paymentSetting) {
 					var paymentSettings = paymentSetting.rows;
-
 					return callback(null, paymentSettings);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		userplanDetails: function(callback) { 
-			/*var includeArr = [];
-
-			var queryObjs = {};
-			queryObjs = {
-				user_id: user_id
-
-			};
-
-			service.findRow("UserPlan", queryObjs, includeArr)
-				.then(function(userplanDetails) {
-					var userplanDetails = userplanDetails;
-					console.log("userplanDetails:::" + userplanDetails);
-					return callback(null, userplanDetails);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});*/
-			
+		userplanDetails: function(callback) {
 			const currentDate = moment().format('YYYY-MM-DD');
 			var includeArr = populate.populateData('Plan');
-	        var queryObj = {
+			var queryObj = {
 				user_id: user_id
-				//   start_date:{
-				//     '$lte': currentDate
-				//   },
-				//   end_date:{
-				//   '$gte': currentDate,
-				//   }
-
-	              }
-	              var field = "id";
-				  var order = "desc";
-				  var limit = 1;
-	               service.findAllRows('UserPlan', includeArr, queryObj, 0, limit, field, order).
-					then(function(userplanDetails) {
-					var userplanDetails = userplanDetails;
-					return callback(null, userplanDetails);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-					
-
-			
-
+			}
+			var field = "id";
+			var order = "desc";
+			var limit = 1;
+			service.findAllRows('UserPlan', includeArr, queryObj, 0, limit, field, order).
+			then(function(userplanDetails) {
+				var userplanDetails = userplanDetails;
+				return callback(null, userplanDetails);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
 		},
 		userShowplanDetails: function(callback) {
 			var includeArr = [];
@@ -160,30 +129,24 @@ export function upgradeplan(req, res) {
 		planDetails: function(callback) {
 			const currentDate = moment().format('YYYY-MM-DD');
 			var includeArr = populate.populateData('Plan');
-	        var queryObjs = {
-				  vendor_id: vendor_id
-				//   start_date:{
-				//     '$lte': currentDate
-				//   },
-				//   end_date:{
-				//   '$gte': currentDate,
-				//   }
-	              }
-	              var field = "id";
-				  var order = "desc";
-				  var limit = 1;
-				   service.findAllRows('VendorPlan', includeArr, queryObjs, 0, limit, field, order)
-					.then(function(planDetails) {
+			var queryObjs = {
+				vendor_id: vendor_id
+			}
+			var field = "id";
+			var order = "desc";
+			var limit = 1;
+			service.findAllRows('VendorPlan', includeArr, queryObjs, 0, limit, field, order)
+				.then(function(planDetails) {
 					var planDetails = planDetails;
 					return callback(null, planDetails);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});		
+				});
 		}
 	}, function(err, results) {
 		if (!err) {
-			    res.render('vendorNav/upgradeplan', {
+			res.render('vendorNav/upgradeplan', {
 				title: "Global Trade Connect",
 				userplanDetails: results.userplanDetails,
 				PlanDetails: results.planDetails,
@@ -193,13 +156,13 @@ export function upgradeplan(req, res) {
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
 				selectedPage: 'upgradeplan'
-
 			});
 		} else {
 			res.render('upgradeplan', err);
 		}
 	});
 }
+
 export function userBulkupgradePlan(req, res) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
@@ -208,7 +171,6 @@ export function userBulkupgradePlan(req, res) {
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
-	console.log("vendorBulkupgradeplanuserid:::&&&&&" + LoggedInUser.Vendor.id);
 	var queryPaginationObj = {};
 	if (req.query.sort == 'rating') {
 		var field = req.query.sort;
@@ -218,7 +180,7 @@ export function userBulkupgradePlan(req, res) {
 		queryPaginationObj["field"] = field;
 	}
 
-	var order = "desc"; //"asc"
+	var order = "desc";
 	var offset = 0;
 	var limit = 1;
 	var vendor_id = LoggedInUser.Vendor.id;
@@ -242,7 +204,6 @@ export function userBulkupgradePlan(req, res) {
 
 	offset = (page - 1) * limit;
 	var maxSize;
-	// End pagination
 	var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 	var dropDownUrl = fullUrl.replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
 
@@ -279,52 +240,23 @@ export function userBulkupgradePlan(req, res) {
 					return callback(null);
 				});
 		},
-		userplanDetails: function(callback) { 
-			/*var includeArr = [];
-
-			var queryObjs = {};
-			queryObjs = {
-				user_id: user_id
-
-			};
-
-			service.findRow("UserPlan", queryObjs, includeArr)
-				.then(function(userplanDetails) {
-					var userplanDetails = userplanDetails;
-					console.log("userplanDetails:::" + userplanDetails);
-					return callback(null, userplanDetails);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});*/
-			
+		userplanDetails: function(callback) {
 			const currentDate = moment().format('YYYY-MM-DD');
 			var includeArr = populate.populateData('Plan');
-	        var queryObj = {
+			var queryObj = {
 				user_id: user_id
-				//   start_date:{
-				//     '$lte': currentDate
-				//   },
-				//   end_date:{
-				//   '$gte': currentDate,
-				//   }
-
-	              }
-	              var field = "id";
-				  var order = "desc";
-				  var limit = 1;
-	               service.findAllRows('UserPlan', includeArr, queryObj, 0, limit, field, order).
-					then(function(userplanDetails) {
-					var userplanDetails = userplanDetails;
-					return callback(null, userplanDetails);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-					
-
-			
-
+			}
+			var field = "id";
+			var order = "desc";
+			var limit = 1;
+			service.findAllRows('UserPlan', includeArr, queryObj, 0, limit, field, order).
+			then(function(userplanDetails) {
+				var userplanDetails = userplanDetails;
+				return callback(null, userplanDetails);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
 		},
 		userShowplanDetails: function(callback) {
 			var includeArr = [];
@@ -342,11 +274,10 @@ export function userBulkupgradePlan(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		},
-	
+		}
 	}, function(err, results) {
 		if (!err) {
-			    res.render('vendorNav/user-bulkbuyerplan', {
+			res.render('vendorNav/user-bulkbuyerplan', {
 				title: "Global Trade Connect",
 				userplanDetails: results.userplanDetails,
 				cart: results.cartInfo,
@@ -355,7 +286,6 @@ export function userBulkupgradePlan(req, res) {
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
 				selectedPage: 'user-bulkbuyerplan'
-
 			});
 		} else {
 			res.render('user-bulkbuyerplan', err);

@@ -16,7 +16,11 @@ html,
 body {
     height: 100%;
 }
-
+.card-header-xs {
+    padding: 0.625rem 1.25rem;
+    margin-bottom: 0;
+    border-radius: 0;
+}
 .search-select {
     width: 25%;
     height: auto;

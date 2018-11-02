@@ -108,6 +108,10 @@
 		$('#itemCancelModal').modal('show');
 	};
 
+	function trackOrderItem(itemId) {
+		window.location.href = window.location.pathname + "/track-order-item/" + itemId;
+	}
+
 	function returnOrderItem(item_id) {
 		$('#return_item_id').val(item_id);
 		$('#itemReturnModal').modal('show');
@@ -227,11 +231,10 @@
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
 														<button type="button" id="cancel-item-{{this.id}}"  href="javascript:;" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
 													{{/ifCond}}
-
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
-														<button type="button" id="cancel-item-{{this.id}}"  href="javascript:;" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
-													{{/ifCond}}
-
+														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+													{{/ifCond}} 
+													<button type="button" onclick="trackOrderItem(`{{this.id}}`)" class="btn btn-sm btn-info">TRACK</button>
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
 														<button  style="{{returnCond this.delivered_on}}" type="button" oninit="" id="return-item-{{this.id}}" href="javascript:;" class="btn btn-sm btn-danger" onclick="returnOrderItem('{{this.id}}')">RETURN</button>	
 													{{/ifCond}}

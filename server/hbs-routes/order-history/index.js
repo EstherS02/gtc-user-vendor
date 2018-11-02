@@ -12,5 +12,6 @@ var orderViewCtrl = require('./order-view/order-view.controller');
 
 router.get('/', auth.hasRole(roles['USER']), orderHistoryCtrl.orderHistory);
 router.get('/:id', auth.hasRole(roles['USER']), orderViewCtrl.orderView);
+router.get('/:id/track-order-item/:orderItemId', auth.hasRole(roles['USER']), orderViewCtrl.trackOrderItem);
 
 module.exports = router;
