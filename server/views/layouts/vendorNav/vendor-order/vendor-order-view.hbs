@@ -8,7 +8,7 @@
 						<a href="/user/my-profile" class="active">My Account</a>
 					</li>
 					<li>
-						<a href="/order-history" class="active">My Orders</a>
+						<a href="/my-order/order" class="active">My Orders</a>
 					</li>
 					<li>Order Items</li>
 				</ul>
@@ -40,15 +40,23 @@
 									<table class="table cart-inner-table m-b-none">
 										<thead>
 											<tr>
+												<!-- <th width="5%"></th> -->
 												<th width="45%">Product</th>
 												<th width="25%">Status</th>
-												<th width="15%">QTY</th>
-												<th width="15%" class="text-right">Price</th>
+												<th width="10%">QTY</th>
+												<th width="10%">Price</th>
+												<th width="10%" class="text-right"></th>
 											</tr>
 										</thead>
 										<tbody>
 											{{#each this.products}}
 												<tr>
+													<!-- <td class="align-middle">
+														<div class="customCheckbox">
+															<input type="checkbox" id="inputItem{{this.Product.id}}" class="customCheckboxInput">
+															<label class="checkbox-b" for="inputItem{{this.Product.id}}"></label>
+														</div>
+													</td> -->
 													<td class="d-flex">
 														<div class="col-4 product-left-col">
 															<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}">
@@ -103,8 +111,12 @@
 														{{/ifCond}}
 													</td>
 													<td><span class="font-weight-normal text-black">{{this.quantity}}</span></td>
-													<td class="text-right">
+													<td>
 														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
+													</td>
+													<td class="text-right">
+														<button type="button" class="btn btn-sm btn-info m-b w-100">CONFIRM</button>
+														<button type="button" class="btn btn-sm btn-danger w-100">CANCEL</button>
 													</td>
 												</tr>
 											{{/each}}
@@ -120,8 +132,9 @@
 											<tr>
 												<th width="45%">Product</th>
 												<th width="25%">Status</th>
-												<th width="15%">QTY</th>
-												<th width="15%" class="text-right">Price</th>
+												<th width="10%">QTY</th>
+												<th width="10%" class="text-right">Price</th>
+												<th width="10%" class="text-right"></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -181,8 +194,12 @@
 														{{/ifCond}}
 													</td>
 													<td><span class="font-weight-normal text-black">{{this.quantity}}</span></td>
-													<td class="text-right">
+													<td>
 														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
+													</td>
+													<td class="text-right">
+														<button type="button" class="btn btn-sm btn-info m-b w-100">CONFIRM</button>
+														<button type="button" class="btn btn-sm btn-danger w-100">CANCEL</button>
 													</td>
 												</tr>
 											{{/each}}
@@ -198,8 +215,9 @@
 											<tr>
 												<th width="45%">Product</th>
 												<th width="25%">Status</th>
-												<th width="15%">QTY</th>
-												<th width="15%" class="text-right">Price</th>
+												<th width="10%">QTY</th>
+												<th width="10%">Price</th>
+												<th width="10%" class="text-right">Price</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -259,8 +277,12 @@
 														{{/ifCond}}
 													</td>
 													<td><span class="font-weight-normal text-black">{{this.quantity}}</span></td>
-													<td class="text-right">
+													<td>
 														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
+													</td>
+													<td class="text-right">
+														<button type="button" class="btn btn-sm btn-info m-b w-100">CONFIRM</button>
+														<button type="button" class="btn btn-sm btn-danger w-100">CANCEL</button>
 													</td>
 												</tr>
 											{{/each}}
@@ -276,8 +298,9 @@
 											<tr>
 												<th width="45%">Product</th>
 												<th width="25%">Status</th>
-												<th width="15%">QTY</th>
-												<th width="15%" class="text-right">Price</th>
+												<th width="10%">QTY</th>
+												<th width="10%">Price</th>
+												<th width="10%" class="text-right">Price</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -337,8 +360,12 @@
 														{{/ifCond}}
 													</td>
 													<td><span class="font-weight-normal text-black">{{this.quantity}}</span></td>
-													<td class="text-right">
+													<td>
 														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
+													</td>
+													<td class="text-right">
+														<button type="button" class="btn btn-sm btn-info m-b w-100">CONFIRM</button>
+														<button type="button" class="btn btn-sm btn-danger w-100">CANCEL</button>
 													</td>
 												</tr>
 											{{/each}}
@@ -352,6 +379,20 @@
 							<h3 class="empty-msg text-primary">Order Not found</h3>
 						</div>
 					{{/if}}
+					<div class="py-4 px-5">
+<div class="card">
+<div class="card-header">Dispatch Order</div>
+<div class="card-body">
+<form class="dispatchForm">
+	<div class="form-group">
+	    <label for="exampleInputEmail1">Email address</label>
+	    <input type="email" class="form-control-customized form-control-sm">
+	  </div>
+</form>
+<button class="btn btn-md btn-primary">Dispatch Order</button>
+</div>
+</div>
+					</div>
 				</div>
 				<div class="col-sm-3half no-padding">
 					<div class="header-right header-lg gtc-p-l-r">

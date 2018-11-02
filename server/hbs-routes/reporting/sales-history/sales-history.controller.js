@@ -137,7 +137,6 @@ export function salesHistory(req, res) {
 
 			orderService.findAllOrders(orderVendorModelName, includeArray, queryObj, offset, limit, field, order)
 				.then((response) => {
-					console.log("response -------------------", JSON.stringify(response));
 					return callback(null, response);
 				}).catch((error) => {
 					console.log("vendorOrderHistory Error :::", error);
@@ -276,34 +275,8 @@ export function salesHistoryOld(req, res) {
 		} else if (dateSelect == "last30day") {
 			start_date = moment().add(-30, 'd').toDate();
 		} else {
-			//     if (from_date) {
-			//         start_date = from_date;
-			//     } else {
-			//         start_date = moment().add(-70, 'd').toDate();
-			//     }
-			//     if (to_date) {
-			//         end_date = to_date;
-			//     } else {
-			//         end_date = moment().add(0, 'd').toDate();
-			//         // end_date= moment().toDate();
-			//     }
-			// }
 
 		}
-		// else {
-		//     if (from_date) {
-		//         start_date = from_date;
-		//     } else {
-		//         start_date = moment().add(-70, 'd').toDate();
-		//     }
-		//     if (to_date) {
-		//         end_date = to_date;
-		//     } else {
-		//         end_date = moment().add(0, 'd').toDate();
-		//     }
-		//     orderQueryObj['ordered_date'] = {
-		//         $between: [start_date, end_date]
-		//     };
 	}
 	if (dateSelect) {
 		orderQueryObj['ordered_date'] = {
