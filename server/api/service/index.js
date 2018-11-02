@@ -205,6 +205,7 @@ export function updateRecordNew(modelName, bodyParams, queryObj) {
 				return resolve(null);
 			}
 		}).catch(function(error) {
+			console.log("updateRecordNew Error::: ----", updateRecordNew);
 			return reject(error);
 		})
 	});

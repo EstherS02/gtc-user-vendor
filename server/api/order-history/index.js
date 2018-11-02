@@ -10,7 +10,7 @@ var router = express.Router();
 
 router.put('/:id', auth.hasRole(roles['VENDOR']), controller.updateStatus);
 router.post('/vendor-cancel/:id', controller.vendorCancel);
-router.put('/return-request/:id', auth.isAuthenticated(),controller.returnRequest);
+router.put('/return-request/:id', auth.isAuthenticated(), controller.returnRequest);
 // router.put('/add-country', controller.addCountry);
 // router.put('/vendor-update',controller.updateVendor)
 

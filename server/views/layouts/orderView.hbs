@@ -231,18 +231,16 @@
 														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
 													</td>
 													<td class="text-right">
+														<button type="button" onclick="trackOrderItem(`{{this.id}}`)" class="btn btn-sm m-b btn-info w-100">TRACK</button>
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
-														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
 													{{/ifCond}}
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
-														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
 													{{/ifCond}} 
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
-														<button  style="{{returnCond this.delivered_on}}" type="button" oninit="" id="return-item-{{this.id}}" class="btn btn-sm btn-danger" onclick="returnOrderItem('{{this.id}}')">RETURN</button>	
+														<button  style="{{returnCond this.delivered_on}}" type="button" oninit="" id="return-item-{{this.id}}" class="btn btn-sm btn-danger w-100" onclick="returnOrderItem('{{this.id}}')">RETURN</button>	
 													{{/ifCond}}
-
-													<button type="button" onclick="trackOrderItem(`{{this.id}}`)" class="btn btn-sm btn-info">TRACK</button>
-
 													</td>
 												</tr>
 											{{/each}}
@@ -327,19 +325,18 @@
 														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
 													</td>
 													<td class="text-right">
+														<button type="button" onclick="trackOrderItem(`{{this.id}}`)" class="btn btn-sm btn-info m-b w-100">TRACK</button>
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
-														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
 													{{/ifCond}}
 
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
-														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
 													{{/ifCond}}
 
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
-														<button  style="{{returnCond this.delivered_on}}" type="button" oninit="" id="return-item-{{this.id}}" class="btn btn-sm btn-danger" onclick="returnOrderItem('{{this.id}}')">RETURN</button>	
+														<button  style="{{returnCond this.delivered_on}}" type="button" oninit="" id="return-item-{{this.id}}" class="btn btn-sm btn-danger w-100" onclick="returnOrderItem('{{this.id}}')">RETURN</button>	
 													{{/ifCond}}
-
-													<button type="button" onclick="trackOrderItem(`{{this.id}}`)" class="btn btn-sm btn-info">TRACK</button>
 													</td>
 												</tr>
 											{{/each}}
@@ -424,19 +421,19 @@
 														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
 													</td>
 													<td class="text-right">
+														<button type="button" onclick="trackOrderItem(`{{this.id}}`)" class="btn btn-sm btn-info m-b w-100">TRACK</button>
+
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
-														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
 													{{/ifCond}}
 
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
-														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
 													{{/ifCond}}
 
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
-														<button  style="{{returnCond this.delivered_on}}" type="button" oninit="" id="return-item-{{this.id}}" class="btn btn-sm btn-danger" onclick="returnOrderItem('{{this.id}}')">RETURN</button>	
+														<button  style="{{returnCond this.delivered_on}}" type="button" oninit="" id="return-item-{{this.id}}" class="btn btn-sm btn-danger w-100" onclick="returnOrderItem('{{this.id}}')">RETURN</button>	
 													{{/ifCond}}
-
-													<button type="button" onclick="trackOrderItem(`{{this.id}}`)" class="btn btn-sm btn-info">TRACK</button>
 													</td>
 												</tr>
 											{{/each}}
@@ -521,19 +518,18 @@
 														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
 													</td>
 													<td class="text-right">
+														<button type="button" onclick="trackOrderItem(`{{this.id}}`)" class="btn btn-sm btn-info m-b w-100">TRACK</button>
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
-														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
 													{{/ifCond}}
 
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
-														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														<button type="button" id="cancel-item-{{this.id}}" class="btn btn-sm btn-primary w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
 													{{/ifCond}}
 
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
-														<button  style="{{returnCond this.delivered_on}}" type="button" oninit="" id="return-item-{{this.id}}" class="btn btn-sm btn-danger" onclick="returnOrderItem('{{this.id}}')">RETURN</button>	
+														<button  style="{{returnCond this.delivered_on}}" type="button" oninit="" id="return-item-{{this.id}}" class="btn btn-sm btn-danger w-100" onclick="returnOrderItem('{{this.id}}')">RETURN</button>	
 													{{/ifCond}}
-
-													<button type="button" onclick="trackOrderItem(`{{this.id}}`)" class="btn btn-sm btn-info">TRACK</button>
 													</td>
 												</tr>
 											{{/each}}

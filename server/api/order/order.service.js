@@ -3,6 +3,7 @@
 const sequelize = require('sequelize');
 const service = require('../service');
 const status = require('../../config/status');
+const orderItemStatus = require('../../config/order-item-new-status');
 const model = require('../../sqldb/model-connect');
 
 export async function findAllOrders(modelName, includeArr, queryObj, offset, limit, field, order) {
@@ -258,6 +259,88 @@ export async function vendorOrderDetails(queryObj) {
 		}
 	} catch (error) {
 		console.log("vendorOrderDetails Error:::", error);
+		return error;
+	}
+}
+
+export async function dispatchOrder(req, orderId, vendorId, expectedDeliveryDate, bodyParams) {
+	var response = {};
+	var orderItemPromises = [];
+	const shippingModelName = "Shipping";
+	const orderVendorModelName = "OrderVendor";
+	const orderItemModelName = "OrdersItemsNews";
+
+	try {
+		const vendorOrderResponse = await model['OrderVendor'].findOne({
+			where: {
+				order_id: orderId,
+				vendor_id: vendorId
+			},
+			attributes: ['id', 'order_id', 'vendor_id'],
+			include: [{
+				model: model['OrdersNew'],
+				attributes: ['id', 'user_id', 'ordered_date', 'status'],
+				include: [{
+					model: model['OrdersItemsNew'],
+					attributes: ['id', 'order_id', 'product_id', 'order_item_status'],
+					include: [{
+						model: model['Product'],
+						where: {
+							vendor_id: vendorId
+						},
+						attributes: []
+					}]
+				}]
+			}]
+		});
+		if (vendorOrderResponse) {
+			const vendorOrder = vendorOrderResponse.toJSON();
+			for (let item of vendorOrder.OrdersNew.OrdersItemsNews) {
+				if (item.order_item_status == orderItemStatus['ORDER_INITIATED']) {
+					response['statusCode'] = 400;
+					response['data'] = "Please confirm all items.";
+					return response;
+					break;
+				}
+				if (item.order_item_status == orderItemStatus['CONFIRMED']) {
+					orderItemPromises.push(service.updateRecordNew(orderItemModelName, {
+						order_item_status: orderItemStatus['SHIPPED'],
+						shipped_on: new Date(),
+						last_updated_by: req.user.first_name,
+						last_updated_on: new Date()
+					}, {
+						id: item.id,
+						order_id: vendorOrder.OrdersNew.id
+					}));
+				}
+			}
+			if (Array.isArray(orderItemPromises) && orderItemPromises.length > 0) {
+				const newShipping = await service.createRow(shippingModelName, bodyParams);
+				const updateVendorOrder = await service.updateRecordNew(orderVendorModelName, {
+					shipping_id: newShipping.id,
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				}, {
+					id: vendorOrder.id,
+					order_id: vendorOrder.OrdersNew.id,
+					vendor_id: vendorId
+				});
+				await Promise.all(orderItemPromises);
+				response['statusCode'] = 200;
+				response['data'] = "Dispatched Successfully!.";
+				return response;
+			} else {
+				response['statusCode'] = 404;
+				response['data'] = "Sorry!, there is no order items proceed to dispatch.";
+				return response;
+			}
+		} else {
+			response['statusCode'] = 404;
+			response['data'] = "Sorry!, there is no order items proceed to dispatch.";
+			return response;
+		}
+	} catch (error) {
+		console.log("dispatchOrder Error:::", error);
 		return error;
 	}
 }

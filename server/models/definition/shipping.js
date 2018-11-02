@@ -66,6 +66,7 @@ module.exports.initRelations = () => {
     const Address = model.Address;
     const Coupon = model.Coupon;
     const Payment = model.Payment;
+    const OrderVendor = model.OrderVendor;
 
     Shipping.hasMany(Order, {
         foreignKey: 'shipping_id',
@@ -74,6 +75,12 @@ module.exports.initRelations = () => {
     });
 
     Shipping.hasMany(OrdersNew, {
+        foreignKey: 'shipping_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Shipping.hasMany(OrderVendor, {
         foreignKey: 'shipping_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
