@@ -233,7 +233,7 @@
 													{{/ifCond}}
 
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
-														<button type="button" id="return-item-{{this.id}}" href="javascript:;" class="btn btn-sm btn-danger" onclick="returnOrderItem('{{this.id}}')">RETURN</button>
+														<button  style="{{returnCond this.delivered_on}}" type="button" oninit="" id="return-item-{{this.id}}" href="javascript:;" class="btn btn-sm btn-danger" onclick="returnOrderItem('{{this.id}}')">RETURN</button>	
 													{{/ifCond}}
 
 													</td>
@@ -418,7 +418,7 @@
 													{{/ifCond}}
 
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
-														<button type="button" id="return-item-{{this.id}}" href="javascript:;" class="btn btn-sm btn-danger" onclick="returnOrderItem('{{this.id}}')">RETURN</button>
+														<button  style="{{returnCond this.delivered_on}}" type="button" oninit="" id="return-item-{{this.id}}" href="javascript:;" class="btn btn-sm btn-danger" onclick="returnOrderItem('{{this.id}}')">RETURN</button>	
 													{{/ifCond}}
 													</td>
 												</tr>
@@ -510,7 +510,7 @@
 													{{/ifCond}}
 
 													{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
-														<button type="button" id="return-item-{{this.id}}" href="javascript:;" class="btn btn-sm btn-danger" onclick="returnOrderItem('{{this.id}}')">RETURN</button>
+														<button  style="{{returnCond this.delivered_on}}" type="button" oninit="" id="return-item-{{this.id}}" href="javascript:;" class="btn btn-sm btn-danger" onclick="returnOrderItem('{{this.id}}')">RETURN</button>	
 													{{/ifCond}}
 													</td>
 												</tr>
