@@ -1,6 +1,7 @@
 'use strict';
 
 const sequelize = require('sequelize');
+const service = require('../service');
 const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
 
@@ -35,6 +36,57 @@ export async function findAllOrders(modelName, includeArr, queryObj, offset, lim
 		}
 		return result;
 	} catch (error) {
+		return error;
+	}
+}
+
+export async function trackOrderItem(orderId, orderItemId, userId) {
+	var queryObj = {};
+	var orderModelName = "OrdersNew";
+	var orderItemModelName = "OrdersItemsNew";
+
+	var includeArray = [{
+		model: model['Product'],
+		attributes: ['id', 'product_name', 'product_slug', 'status'],
+		include: [{
+			model: model["ProductMedia"],
+			attributes: ['id', 'type', 'base_image', 'url'],
+			where: {
+				base_image: 1
+			}
+		}]
+	}, {
+		model: model[orderModelName],
+		attributes: ['id', 'user_id', 'invoice_id', 'purchase_order_id', 'po_number', 'ordered_date', 'shipping_address_id', 'status'],
+		include: [{
+			model: model['Address'],
+			as: 'shippingAddress1',
+			attributes: ['id', 'first_name', 'last_name', 'company_name', 'address_line1', 'address_line2', 'city', 'postal_code'],
+			include: [{
+				model: model['State'],
+				attributes: ['id', 'name']
+			}, {
+				model: model['Country'],
+				attributes: ['id', 'name']
+			}]
+		}]
+	}];
+
+	try {
+		const order = await service.findOneRow(orderModelName, {
+			id: orderId,
+			user_id: userId
+		});
+		if (order) {
+			const orderItem = await service.findOneRow(orderItemModelName, {
+				id: orderItemId,
+				order_id: orderId
+			}, includeArray);
+			return orderItem;
+		}
+		return;
+	} catch (error) {
+		console.log("trackOrderItem Error:::", error);
 		return error;
 	}
 }

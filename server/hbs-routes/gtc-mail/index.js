@@ -19,6 +19,6 @@ router.get('/sent', auth.hasRole(roles['USER']), sentCtrl.sent);
 router.get('/drafts', auth.hasRole(roles['USER']), draftsCtrl.drafts);
 router.get('/deleted', auth.hasRole(roles['USER']), deletedCtrl.deleted);
 router.get('/compose', auth.hasRole(roles['USER']), inboxCtrl.compose);
-router.get('/mail-settings', auth.hasRole(roles['USER']), settingsCtrl.mailSettings);
+router.get('/mail-settings', auth.hasRole(roles['VENDOR']), settingsCtrl.mailSettings);
 
 module.exports = router;
