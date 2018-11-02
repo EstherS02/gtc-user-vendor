@@ -213,6 +213,9 @@
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
 															<span class="font-weight-bold text-danger">Item Canceled</span>
 														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
 															<span class="font-weight-bold text-black">Item Delivered</span>
 														{{/ifCond}}
@@ -303,6 +306,9 @@
 															<span class="font-weight-bold text-info">Item Shipped</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}
 															<span class="font-weight-bold text-danger">Item Canceled</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
@@ -397,6 +403,9 @@
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
 															<span class="font-weight-bold text-danger">Item Canceled</span>
 														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
 															<span class="font-weight-bold text-black">Item Delivered</span>
 														{{/ifCond}}
@@ -487,6 +496,9 @@
 															<span class="font-weight-bold text-info">Item Shipped</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}
 															<span class="font-weight-bold text-danger">Item Canceled</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
