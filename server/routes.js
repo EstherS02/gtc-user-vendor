@@ -68,7 +68,7 @@ export default function(app) {
 	app.use('/listings', require('./hbs-routes/listings'));
 	app.use('/subscription', require('./hbs-routes/subscription'));
 	app.use('/terms-and-cond', require('./hbs-routes/terms-and-cond'));
-	app.use('/reporting', require('./hbs-routes/reporting'));
+	app.use('/store', require('./hbs-routes/reporting'));
 	app.use('/my-order', require('./hbs-routes/reporting'));
 	app.use('/coupons', require('./hbs-routes/coupons'));
 	app.use('/wishlist', require('./hbs-routes/wishlist'));

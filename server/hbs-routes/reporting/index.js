@@ -13,7 +13,7 @@ var landingCtrl = require('./landing/landing.controller');
 var performanceCtrl = require('./performance/performance.controller');
 var saleshistoryCtrl = require('./sales-history/sales-history.controller');
 
-router.get('/', auth.hasRole(roles['VENDOR']), landingCtrl.reporting);
+router.get('/reports', auth.hasRole(roles['VENDOR']), landingCtrl.reporting);
 router.get('/performance', auth.hasRole(roles['VENDOR']), performanceCtrl.performance);
 router.get('/sales-history', auth.hasRole(roles['VENDOR']), saleshistoryCtrl.salesHistoryOld);
 router.get('/sales-history/:id', auth.hasRole(roles['VENDOR']), saleshistoryCtrl.orderView);
