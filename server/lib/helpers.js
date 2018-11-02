@@ -249,31 +249,43 @@ Handlebars.registerHelper('FormatDate', function(context, options) {
         return newdate;
     }
 });
-Handlebars.registerHelper('timeLeft', function(context,options){
+Handlebars.registerHelper('timeLeft', function(context, options) {
     var currentDate = moment().utc().format('YYYY-M-DD HH:mm:ss');
     var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
-    var secondsDiff='';
-    if(endDate.diff(currentDate)>0){
-    var intervals = ['years','months','days','hours','minutes'],
-      out = [];
-    var arrayEle = [];
-  for(var i=0; i<intervals.length; i++){
-      var diff = endDate.diff(currentDate, intervals[i]);
-      endDate.add(diff, intervals[i]);
-      arrayEle[intervals[i]] = diff;
-      out.push(diff + ' ' + intervals[i]);
-  }
-    if(arrayEle['minutes']<60){
-    secondsDiff = arrayEle['minutes']+'m left!';        
-    }else if(arrayEle['hours']<24){
-    secondsDiff = arrayEle['hours']+'h '+arrayEle['minutes']%60+'m left!';
-    }else if(arrayEle['days']<30){
-    secondsDiff = arrayEle['days']+'d '+arrayEle['hours']%24+'h left!';
-    }else if(arrayEle['months']<12){
-    secondsDiff = arrayEle['months']+'mon '+arrayEle['days']%30+'d left!';
-    }else{
-    secondsDiff = arrayEle['years']+'Y '+arrayEle['months']%12+'mon left!';
-    }
+    var secondsDiff = '';
+    if (endDate.diff(currentDate) > 0) {
+        var intervals = ['years', 'months', 'days', 'hours', 'minutes'],
+            out = [];
+        var arrayEle = [];
+        for (var i = 0; i < intervals.length; i++) {
+            var diff = endDate.diff(currentDate, intervals[i]);
+            endDate.add(diff, intervals[i]);
+            arrayEle[intervals[i]] = diff;
+            out.push(diff + ' ' + intervals[i]);
+        }
+        if (arrayEle['minutes'] < 60) {
+            secondsDiff = arrayEle['minutes'] + 'm left!';
+        } else if (arrayEle['hours'] < 24) {
+            secondsDiff = arrayEle['hours'] + 'h ';
+            if (arrayEle['minutes'] % 60 != 0)
+                secondsDiff = secondsDiff+ arrayEle['minutes'] % 60 + 'm';
+            secondsDiff = secondsDiff + ' left!';
+        } else if (arrayEle['days'] < 30) {
+            secondsDiff = arrayEle['days'] + 'd ';
+            if (arrayEle['hours'] % 24 != 0)
+                secondsDiff = secondsDiff+arrayEle['hours'] % 24 + 'h';
+            secondsDiff = secondsDiff + ' left!';
+        } else if (arrayEle['months'] < 12) {
+            secondsDiff = arrayEle['months'] + 'mon ';
+            if (arrayEle['days'] % 30 != 0)
+                secondsDiff = secondsDiff+arrayEle['days'] % 30 + 'd ';
+            secondsDiff = secondsDiff + ' left!';
+        } else {
+            secondsDiff = arrayEle['years'] + 'Y '; 
+            if(arrayEle['months'] % 12 + 'mon left!' !=0)
+            secondsDiff=secondsDiff+ arrayEle['months'] % 12 + 'mon';
+        secondsDiff = secondsDiff + ' left!';
+        }
     }
     return secondsDiff;
 });

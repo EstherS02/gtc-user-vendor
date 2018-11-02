@@ -6,6 +6,8 @@ const sequelize = require('sequelize');
 const Sequelize_Instance = require('../../sqldb/index');
 const RawQueries = require('../../raw-queries/sql-queries');
 const _ = require('lodash');
+const mv = require('mv');
+const fs = require('fs');
 
 export function findRows(modelName, queryObj, offset, limit, field, order, includeArr) {
 	return new Promise((resolve, reject) => {
@@ -578,3 +580,28 @@ export function getAllFindRow(modelName, includeArr, queryObj, field, order) {
 	});
 }
 // Not use for limit getallfindrow query ends//
+export function move(copyFrom, moveTo) {
+	return new Promise((resolve, reject) => {
+		mv(copyFrom, moveTo, {
+			clobber: true,
+			mkdirp: true
+		}, function(error) {
+			if (!error) {
+				return resolve(true);
+			} else {
+				return reject(error);
+			}
+		});
+	});
+}
+export function imgDelete(imgPath) {
+	return new Promise((resolve, reject) => {
+		  try{
+		  	fs.unlinkSync(imgPath);
+		  	resolve(true);
+			}
+			catch(err){
+				return reject(error);
+			}
+		});
+}
