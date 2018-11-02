@@ -45,7 +45,7 @@ export async function userOrderDeatils(queryObj) {
 
 	var includeArray = [{
 		model: model['OrdersItemsNew'],
-		attributes: ['id', 'order_id', 'product_id', 'quantity', 'price', 'shipping_cost', 'is_coupon_applied', 'coupon_id', 'coupon_amount', 'is_on_sale_item', 'discount_amount', 'order_item_status'],
+		attributes: ['id', 'order_id', 'product_id', 'quantity', 'price', 'shipping_cost', 'is_coupon_applied', 'coupon_id', 'coupon_amount', 'is_on_sale_item', 'discount_amount', 'delivered_on', 'order_item_status'],
 		include: [{
 			model: model['Product'],
 			attributes: ['id', 'product_name', 'product_slug', 'marketplace_id', 'marketplace_type_id', 'vendor_id', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer'],

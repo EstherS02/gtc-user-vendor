@@ -7,6 +7,7 @@ import {
 } from 'url';
 const numeral = require('numeral');
 const planPermissions = require('../config/plan-marketplace-permission.js');
+const config  = require('../config/environment');
 
 Handlebars.registerHelper('starCount', function(rating, color) {
 
@@ -722,4 +723,15 @@ Handlebars.registerHelper('decimalFixedOne', function(distance) {
 Handlebars.registerHelper('sizeInKB', function(value) {
 	var valueInKB = value / 1000;
 	return valueInKB.toFixed(2);
+});
+
+Handlebars.registerHelper('returnCond', function(date) {
+	const deliveredDate = new Date(date);
+	const currentDate = new Date();
+	deliveredDate.setDate(deliveredDate.getDate() + parseInt(config.returnItemDays));
+	if (deliveredDate >= currentDate) {
+		return "";
+	} else {
+		return "display: none;";
+	}
 });

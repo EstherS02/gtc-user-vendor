@@ -137,6 +137,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'return_received_on',
             allowNull: true
         },
+        reason_for_return: {
+            type: DataTypes.STRING(255),
+            field: 'reason_for_return',
+            allowNull: true
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
