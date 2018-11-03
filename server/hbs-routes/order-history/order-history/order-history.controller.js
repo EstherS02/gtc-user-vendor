@@ -82,16 +82,12 @@ export function orderHistory(req, res) {
 
 	async.series({
 		cartInfo: function(callback) {
-			if (LoggedInUser.id) {
-				cartService.cartCalculation(LoggedInUser.id, req, res)
-					.then((cartResult) => {
-						return callback(null, cartResult);
-					}).catch((error) => {
-						return callback(error);
-					});
-			} else {
-				return callback(null);
-			}
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
 		},
 		categories: function(callback) {
 			var includeArr = [];
@@ -149,6 +145,7 @@ export function orderHistory(req, res) {
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
+				marketPlace: marketplace,
 				orders: results.personalOrderHistory,
 				queryParams: queryParams,
 				queryParamsString: querystring.stringify(queryParams),
@@ -309,7 +306,7 @@ export function orderHistoryOld(req, res) {
 			categoryLimit = null;
 			categoryField = "id";
 			categoryOrder = "asc";
-			
+
 			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
 			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)

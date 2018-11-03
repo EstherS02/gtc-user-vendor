@@ -12,7 +12,11 @@ const populate = require('../../utilities/populate');
 
 export function subscriptions(req, res) {
 
-	var LoggedInUser = {}, subscriptionQueryObj = {}, queryURI = {},queryPaginationObj = {}, bottomCategory = {};
+	var LoggedInUser = {},
+		subscriptionQueryObj = {},
+		queryURI = {},
+		queryPaginationObj = {},
+		bottomCategory = {};
 	var subscriptionIncludeArr = []
 	var offset, limit, field, order, page, maxSize;
 
@@ -41,23 +45,29 @@ export function subscriptions(req, res) {
 	if (req.query.status) {
 		queryURI['status'] = req.query.status;
 		subscriptionQueryObj['status'] = statusCode[req.query.status]
-	} 
+	}
 
 	if (req.query.keyword) {
 		queryURI['keyword'] = req.query.keyword;
-		subscriptionIncludeArr = [
-			{
-				model: model["Product"],
-				where: {
-					product_name: {
-						like: '%' + req.query.keyword + '%'
-					}
+		subscriptionIncludeArr = [{
+			model: model["Product"],
+			where: {
+				product_name: {
+					like: '%' + req.query.keyword + '%'
 				}
 			}
-		]
+		}]
 	}
 
 	async.series({
+		cartInfo: function(callback) {
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -80,17 +90,15 @@ export function subscriptions(req, res) {
 				});
 		},
 		subscriptions: function(callback) {
-
-			service.findRows('Subscription', subscriptionQueryObj, offset, limit, field, order, subscriptionIncludeArr) 
-				.then(function(subscriptions){
-
+			service.findRows('Subscription', subscriptionQueryObj, offset, limit, field, order, subscriptionIncludeArr)
+				.then(function(subscriptions) {
 					return callback(null, subscriptions);
-				}).catch(function(error){
+				}).catch(function(error) {
 					return callback(error);
-				})
-		},
-	},function(err, results) {
-		if (!err) {
+				});
+		}
+	}, function(error, results) {
+		if (!error) {
 			maxSize = results.subscriptions.count / limit;
 			if (results.subscriptions.count % limit)
 				maxSize++;
@@ -99,6 +107,7 @@ export function subscriptions(req, res) {
 
 			res.render('userNav/view-subscription', {
 				title: "Global Trade Connect",
+				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser,
 				bottomCategory: bottomCategory,
 				categories: results.categories,
@@ -106,17 +115,16 @@ export function subscriptions(req, res) {
 				collectionSize: results.subscriptions.count,
 				selectedPage: 'subscription',
 				statusCode: statusCode,
-				vendorPlan:vendorPlan,
+				vendorPlan: vendorPlan,
+				marketPlace: marketplace,
 				queryURI: queryURI,
-				queryPaginationObj:queryPaginationObj,
+				queryPaginationObj: queryPaginationObj,
 				pageSize: limit,
 				maxSize: 5,
 				page: page
 			})
-		}else {
-			res.render('userNav/view-subscription', err);
+		} else {
+			res.render('userNav/view-subscription', error);
 		}
 	});
 }
-
-

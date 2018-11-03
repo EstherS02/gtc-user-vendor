@@ -91,7 +91,7 @@
 	.ibox-title h2 {
 		display: inline-block;
 	}
-	.progress {
+	/*.progress {
 	    width: 200px;
 	    height: 200px;
 	    line-height: 200px;
@@ -99,7 +99,7 @@
 	.progress .progress-value {
 		line-height: 185px;
 		font-size: 38px;
-	}
+	}*/
 	.home-bottom-banner-3 .coming-soon {
 		display: block;
 	    margin-left: auto;
@@ -184,7 +184,7 @@
 		-webkit-box-align: center;
 		align-items: center;
 	}
-	.progress {
+	/*.progress {
 	    width: 200px;
 	    height: 200px;
 	    line-height: 200px;
@@ -192,7 +192,7 @@
 	.progress .progress-value {
 		line-height: 185px;
 		font-size: 38px;
-	}
+	}*/
 	.home-bottom-banner-2 .home-ad {
 		height: 424px;
 		width: 100%;
@@ -683,7 +683,7 @@
 		background-repeat: no-repeat;
 		background-size: 54% 100%;
 	}
-	.progress {
+	/*.progress {
 	    width: 250px;
 	    height: 250px;
 	    line-height: 250px;
@@ -691,7 +691,7 @@
 	.progress .progress-value {
 		line-height: 235px;
 		font-size: 48px;
-	}
+	}*/
 	.home-bottom-banner-2 h1 {
 		font-size: 2.5rem;
 	}

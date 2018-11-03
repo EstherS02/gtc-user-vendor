@@ -3050,7 +3050,7 @@ select.file-uploade:after {
 	top: 31px !important;
 	left: 0px !important;
 }
-.progress {
+/*.progress {
 	background: none;
 	margin: 0 auto;
 	box-shadow: none;
@@ -3103,7 +3103,7 @@ p.progress-texts {
 	font-family: 'Oswald', sans-serif;
 	font-size: 1.3rem;
 	font-weight: 500;
-}
+}*/
 .column-1 {
 	max-width: 8.5%;
 }
