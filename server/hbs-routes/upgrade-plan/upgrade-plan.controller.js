@@ -34,14 +34,10 @@ export function upgradeplan(req, res) {
 	var order = "desc"; //"asc"
 	var offset = 0;
 	var limit = 1;
-	var queryObj = {};
-	var vendor_id
-	if (LoggedInUser.Vendor) {
+	var vendor_id;
+	if (LoggedInUser.Vendor)
 		vendor_id = LoggedInUser.Vendor.id;
-		queryObj = {
-			vendor_id: vendor_id,
-		};
-	}
+
 	var rating_limit = 120;
 
 	//pagination 
@@ -187,13 +183,8 @@ export function userBulkupgradePlan(req, res) {
 	var offset = 0;
 	var limit = 1;
 	var vendor_id;
-	var queryObj = {};
-	if (LoggedInUser.Vendor) {
+	if (LoggedInUser.Vendor) 
 		vendor_id = LoggedInUser.Vendor.id;
-		queryObj = {
-			vendor_id: vendor_id,
-		};
-	}
 	
 	var rating_limit = 120;
 
