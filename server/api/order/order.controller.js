@@ -5,6 +5,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
 const status = require('../../config/status');
+const orderItemStatus = require('../../config/order-item-new-status');
 const ORDER_ITEM_STATUS = require('../../config/order-item-status');
 const populate = require('../../utilities/populate')
 const orderService = require('./order.service');
@@ -30,10 +31,14 @@ export function orderItemdetails(req, res) {
 	});
 }
 
-export function dispatchOrder(req, res) {
+export async function dispatchOrder(req, res) {
 	var bodyParams = {};
+	var orderItemPromises = [];
 	const orderId = req.params.orderId;
 	const vendorId = req.user.Vendor.id;
+	const shippingModelName = "Shipping";
+	const orderVendorModelName = "OrderVendor";
+	const orderItemModelName = "OrdersItemsNews";
 
 	req.checkBody('select_courier', 'Missing Query Param').notEmpty();
 	req.checkBody('expected_delivery_date', 'Missing Query Param').notEmpty();
@@ -57,12 +62,69 @@ export function dispatchOrder(req, res) {
 	bodyParams['created_on'] = new Date();
 	bodyParams['created_by'] = req.user.first_name;
 
-	orderService.dispatchOrder(req, orderId, vendorId, expectedDeliveryDate, bodyParams)
-		.then((response) => {
-			return res.status(response.statusCode).send(response.data);
-		})
-		.catch((error) => {
-			console.log("dispatchOrder Error:::", error);
-			return res.status(500).send(error);
-		});
+	var includeArray = [{
+		model: model['OrdersNew'],
+		attributes: ['id', 'user_id', 'ordered_date', 'status'],
+		include: [{
+			model: model['OrdersItemsNew'],
+			attributes: ['id', 'order_id', 'product_id', 'order_item_status'],
+			include: [{
+				model: model['Product'],
+				where: {
+					vendor_id: vendorId
+				},
+				attributes: []
+			}]
+		}]
+	}];
+
+	try {
+		const vendorOrder = await service.findOneRow(orderVendorModelName, {
+			order_id: orderId,
+			vendor_id: req.user.Vendor.id
+		}, includeArray);
+		if (vendorOrder) {
+			for (let item of vendorOrder.OrdersNew.OrdersItemsNews) {
+				if (item.order_item_status == orderItemStatus['ORDER_INITIATED']) {
+					response['statusCode'] = 400;
+					response['data'] = "Please confirm all items.";
+					return response;
+					break;
+				}
+				if (item.order_item_status == orderItemStatus['CONFIRMED']) {
+					orderItemPromises.push(service.updateRecordNew(orderItemModelName, {
+						order_item_status: orderItemStatus['SHIPPED'],
+						shipped_on: new Date(),
+						last_updated_by: req.user.first_name,
+						last_updated_on: new Date()
+					}, {
+						id: item.id,
+						order_id: vendorOrder.OrdersNew.id
+					}));
+				}
+			}
+
+			if (Array.isArray(orderItemPromises) && orderItemPromises.length > 0) {
+				const newShipping = await service.createRow(shippingModelName, bodyParams);
+				const updateVendorOrder = await service.updateRecordNew(orderVendorModelName, {
+					shipping_id: newShipping.id,
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				}, {
+					id: vendorOrder.id,
+					order_id: vendorOrder.OrdersNew.id,
+					vendor_id: vendorId
+				});
+				await Promise.all(orderItemPromises);
+				return res.status(200).send(updateVendorOrder);
+			} else {
+				return res.status(404).send("Sorry!, there is no order items proceed to dispatch.");
+			}
+		} else {
+			return res.status(404).send("Sorry!, there is no order items proceed to dispatch.");
+		}
+	} catch (error) {
+		console.log("dispatchOrder Error:::", error);
+		return res.status(500).send(error);
+	}
 }
