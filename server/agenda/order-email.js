@@ -117,7 +117,7 @@ module.exports = async function(job, done) {
 
 		await Promise.all(orderVendors.map(async (orderVendor, i) => {
 			orderVendors[i].OrdersNew.total_price = await _.sumBy(orderVendor.OrdersNew.OrdersItemsNews, function(o) {
-				return parseFloat(o.final_price);
+				return parseFloat(o.price);
 			});
 			var orderVendorSubject = orderVendorEmailTemplate.subject;
 			var orderVendorTemplate = Handlebars.compile(orderVendorEmailTemplate.body);

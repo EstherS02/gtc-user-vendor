@@ -31,6 +31,17 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        shipping_id: {
+            type: DataTypes.BIGINT,
+            field: 'shipping_id',
+            allowNull: true,
+            references: {
+                model: 'shipping',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
         total_price: {
             type: DataTypes.DECIMAL(10, 2),
             field: 'total_price',
@@ -115,6 +126,7 @@ module.exports.initRelations = () => {
     const OrderVendorPayout = model.OrderVendorPayout;
     const OrdersNew = model.OrdersNew;
     const Vendor = model.Vendor;
+    const Shipping = model.Shipping;
 
     OrderVendor.hasMany(OrderVendorPayout, {
         foreignKey: 'order_vendor_id',
@@ -130,6 +142,12 @@ module.exports.initRelations = () => {
 
     OrderVendor.belongsTo(Vendor, {
         foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    OrderVendor.belongsTo(Shipping, {
+        foreignKey: 'shipping_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

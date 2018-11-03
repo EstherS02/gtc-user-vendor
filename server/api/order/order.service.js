@@ -3,6 +3,7 @@
 const sequelize = require('sequelize');
 const service = require('../service');
 const status = require('../../config/status');
+const orderItemStatus = require('../../config/order-item-new-status');
 const model = require('../../sqldb/model-connect');
 
 export async function findAllOrders(modelName, includeArr, queryObj, offset, limit, field, order) {
