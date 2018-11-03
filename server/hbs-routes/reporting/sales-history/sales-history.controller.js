@@ -210,6 +210,7 @@ export function orderView(req, res) {
 		orderView: function(callback) {
 			orderService.vendorOrderDetails(queryObj)
 				.then((response) => {
+					console.log("response ----", JSON.stringify(response));
 					return callback(null, response);
 				}).catch((error) => {
 					console.log("order Error:::", error);

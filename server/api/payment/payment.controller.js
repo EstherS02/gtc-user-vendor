@@ -296,7 +296,7 @@ function resMessage(message, messageDetails) {
 	};
 }
 
-export async function cancelOrder(req, res) {
+export async function cancelOrderItem(req, res) {
 	req.checkBody('item_id', 'Missing Query Param').notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {
@@ -375,7 +375,7 @@ export async function cancelOrder(req, res) {
 	}
 }
 
-export async function returnOrder(req, res) {
+export async function returnOrderItem(req, res) {
 	req.checkBody('return_item_id', 'Missing Query Param').notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {
@@ -458,7 +458,7 @@ function checkingDays(date) {
 	}
 }
 
-export async function confirmOrder(req, res) {
+export async function confirmOrderItem(req, res) {
 	req.checkBody('item_id', 'Missing Query Param').notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {

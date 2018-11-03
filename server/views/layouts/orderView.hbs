@@ -42,7 +42,7 @@
 				}).serialize();
 
 				$.ajax({
-					url: '/api/payment/cancel-order/',
+					url: '/api/payment/cancel-order-item/',
 					type: 'POST',
 					data: cancelObj,
 					success: function(result) {
@@ -77,7 +77,7 @@
 				}).serialize();
 
 				$.ajax({
-					url: '/api/payment/return-order',
+					url: '/api/payment/return-order-item',
 					type: 'POST',
 					data: returnObj,
 					success: function(result) {
@@ -208,7 +208,7 @@
 															<span class="font-weight-bold text-info">Item Confirmed</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.SHIPPED}}
-															<span class="font-weight-bold text-info">Item Shipped</span>
+															<span class="font-weight-bold text-info">Item Dispatched</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
 															<span class="font-weight-bold text-danger">Item Canceled</span>
@@ -302,7 +302,7 @@
 															<span class="font-weight-bold text-info">Item Confirmed</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.SHIPPED}}
-															<span class="font-weight-bold text-info">Item Shipped</span>
+															<span class="font-weight-bold text-info">Item Dispatched</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
 															<span class="font-weight-bold text-danger">Item Canceled</span>
@@ -398,7 +398,7 @@
 															<span class="font-weight-bold text-info">Item Confirmed</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.SHIPPED}}
-															<span class="font-weight-bold text-info">Item Shipped</span>
+															<span class="font-weight-bold text-info">Item Dispatched</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
 															<span class="font-weight-bold text-danger">Item Canceled</span>
@@ -495,7 +495,7 @@
 															<span class="font-weight-bold text-info">Item Confirmed</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.SHIPPED}}
-															<span class="font-weight-bold text-info">Item Shipped</span>
+															<span class="font-weight-bold text-info">Item Dispatched</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
 															<span class="font-weight-bold text-danger">Item Canceled</span>

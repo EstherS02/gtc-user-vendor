@@ -38,7 +38,7 @@ export async function dispatchOrder(req, res) {
 	const vendorId = req.user.Vendor.id;
 	const shippingModelName = "Shipping";
 	const orderVendorModelName = "OrderVendor";
-	const orderItemModelName = "OrdersItemsNews";
+	const orderItemModelName = "OrdersItemsNew";
 
 	req.checkBody('select_courier', 'Missing Query Param').notEmpty();
 	req.checkBody('expected_delivery_date', 'Missing Query Param').notEmpty();
@@ -50,11 +50,12 @@ export async function dispatchOrder(req, res) {
 		return;
 	}
 
-	if (new Date() > new Date(req.body.expected_delivery_date)) {
+	var expectedDeliveryDate = new Date(req.body.expected_delivery_date);
+
+	if (new Date() > expectedDeliveryDate) {
 		return res.status(400).send("Invalid delivery date.");
 	}
 
-	var expectedDeliveryDate = new Date(req.body.expected_delivery_date);
 
 	bodyParams['provider_name'] = req.body.select_courier;
 	bodyParams['tracking_id'] = req.body.tracking_id;
@@ -94,6 +95,7 @@ export async function dispatchOrder(req, res) {
 				if (item.order_item_status == orderItemStatus['CONFIRMED']) {
 					orderItemPromises.push(service.updateRecordNew(orderItemModelName, {
 						order_item_status: orderItemStatus['SHIPPED'],
+						expected_delivery_date: expectedDeliveryDate,
 						shipped_on: new Date(),
 						last_updated_by: req.user.first_name,
 						last_updated_on: new Date()
