@@ -5,6 +5,7 @@
 
 	$(document).ready(function() {
 		$('#cancel-alert').hide();
+		$("#dispatch-alert").hide();
 
 		$('#cancelReason').validate({
 			rules: {
@@ -61,7 +62,7 @@
 				}).serialize();
 
 				$.ajax({
-					url: '/api/payment/cancel-order/',
+					url: '/api/payment/cancel-order-item/',
 					type: 'POST',
 					data: cancelObj,
 					success: function(result) {
@@ -96,14 +97,26 @@
 				}).serialize();
 
 				$.ajax({
-					url: '/api/order-history/' + {{ order.id }},
+					url: '/api/order/dispatch/' + {{ order.OrdersNew.id }},
 					type: 'PUT',
 					data: dispatchInput,
 					success: function (result) {
-						console.log("result............", result);
+						$('#dispatch-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#dispatch-alert .dispatch-message').text("Item dispatched Successfully")
+						$('#dispatch-alert').fadeTo(7000, 500).slideUp(500, function() {
+							$('#dispatch-alert').slideUp(500);
+						});
+						setTimeout(function() {
+							location.reload(true);
+						}, 3000);
 					},
 					error: function (error) {
-						console.log("error.............", error);
+						$('#dispatch-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#dispatch-alert .dispatch-message').text(error.responseText);
+						$('#dispatch-alert').fadeTo(7000, 500).slideUp(500, function() {
+							$('#dispatch-alert').slideUp(500);
+						});
+						$('#dispatchForm')[0].reset();
 					}
 				});
 			}
@@ -119,7 +132,7 @@
 	function confirmOrderItem(item_id) {
 		if (item_id) {
 			$.ajax({
-				url: '/api/payment/confirm-order/',
+				url: '/api/payment/confirm-order-item/',
 				type: 'POST',
 				data: {
 					item_id: item_id
@@ -165,7 +178,7 @@
 			<div class="row no-margins">
 				<div class="col-sm-9half no-padding bg-white cart-custom-notify">
 					<div class="header-left header-lg gtc-p-l-r">
-						<h2 class="header-lg-text alignleft text-white">Order #{{order.id}}</h2>
+						<h2 class="header-lg-text alignleft text-white">Order #{{order.OrdersNew.id}}</h2>
 						<span class="header-lg-span text-white">({{order.OrdersNew.total_order_items}} Items Total)</span>
 					</div>
 					{{#if order.OrdersNew.total_order_items}}
@@ -231,7 +244,7 @@
 															<span class="font-weight-bold text-info">Item Confirmed</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.SHIPPED}}
-															<span class="font-weight-bold text-info">Item Shipped</span>
+															<span class="font-weight-bold text-info">Item Dispatched</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
 															<span class="font-weight-bold text-danger">Item Canceled</span>
@@ -328,7 +341,7 @@
 															<span class="font-weight-bold text-info">Item Confirmed</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.SHIPPED}}
-															<span class="font-weight-bold text-info">Item Shipped</span>
+															<span class="font-weight-bold text-info">Item Dispatched</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
 															<span class="font-weight-bold text-danger">Item Canceled</span>
@@ -423,7 +436,7 @@
 															<span class="font-weight-bold text-info">Item Confirmed</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.SHIPPED}}
-															<span class="font-weight-bold text-info">Item Shipped</span>
+															<span class="font-weight-bold text-info">Item Dispatched</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
 															<span class="font-weight-bold text-danger">Item Canceled</span>
@@ -518,7 +531,7 @@
 															<span class="font-weight-bold text-info">Item Confirmed</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.SHIPPED}}
-															<span class="font-weight-bold text-info">Item Shipped</span>
+															<span class="font-weight-bold text-info">Item Dispatched</span>
 														{{/ifCond}}
 														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
 															<span class="font-weight-bold text-danger">Item Canceled</span>
@@ -566,48 +579,52 @@
 						</div>
 					{{/if}}
 					<div class="py-4 px-5">
-<div class="card">
-<div class="card-header">Dispatch Order</div>
-<div class="card-body">
-<form class="form" id="dispatchForm">
-	<div class="form-group row">
-		<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Select Carrier</label>
-		<div class="col-sm-8">
-			<select class="form-control-customized form-control-sm" name="select_courier">
-				{{#if order.Shipping.provider_name}}
-					<option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
-				{{else}}
-					<option disabled selected>Select Carrier</option>
-				{{/if}}
-				{{#each carriersCode}}
-					<option value="{{this}}">{{@key}}</option>
-				{{/each}}
-			</select>
-		</div>
-	</div>
+					<div class="card">
+					<div class="card-header">Dispatch Order</div>
+					<div class="alert" id="dispatch-alert">
+						<button type="button" class="close" data-dismiss="alert">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span class="dispatch-message"></span>
+					</div>
+					<div class="card-body">
+					<form class="form" id="dispatchForm">
+						<div class="form-group row">
+							<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Select Carrier</label>
+							<div class="col-sm-8">
+								<select class="form-control-customized form-control-sm" name="select_courier">
+									{{#if order.Shipping.provider_name}}
+										<option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
+									{{else}}
+										<option disabled selected>Select Carrier</option>
+									{{/if}}
+									{{#each carriersCode}}
+										<option value="{{this}}">{{@key}}</option>
+									{{/each}}
+								</select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Expected Delivery Date</label>
+							<div class="col-sm-8">
+								<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date"
+								value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm">
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Enter Tracking Id</label>
+							<div class="col-sm-8">
+								<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm">
+							</div>
+						</div>
 
-	<div class="form-group row">
-		<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Expected Delivery Date</label>
-		<div class="col-sm-8">
-			<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date"
-			value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm">
-		</div>
-	</div>
-	
-	<div class="form-group row">
-		<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Enter Tracking Id</label>
-		<div class="col-sm-8">
-			<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm">
-		</div>
-	</div>
-
-	<button class="btn btn-md btn-primary" id="dispatchBtn" type="submit" data-style="expand-left">
-		<span class="ladda-label">Dispatch Order</span>
-		<span class="ladda-spinner"></span>
-	</button>
-</form>
-</div>
-</div>
+						<button class="btn btn-md btn-primary" id="dispatchBtn" type="submit" data-style="expand-left">
+							<span class="ladda-label">Dispatch Order</span>
+							<span class="ladda-spinner"></span>
+						</button>
+					</form>
+					</div>
+					</div>
 					</div>
 				</div>
 				<div class="col-sm-3half no-padding">

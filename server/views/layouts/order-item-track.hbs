@@ -46,7 +46,7 @@
 								<div class="col-3">
 									{{#if item.shipped_on}}
 										<p class="font-weigh-bold text-black m-b-none">
-											<small>Shipped on {{formatTime item.shipped_on "D MMM"}}</small>
+											<small>Dispatched on {{formatTime item.shipped_on "D MMM"}}</small>
 										</p>
 									{{/if}}
 								</div>
@@ -126,6 +126,9 @@
 										 	{{/ifCond}}
 										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.CONFIRMED}}	
 										 		confirmed.
+										 	{{/ifCond}}
+										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.SHIPPED}}	
+										 		dispatched.
 										 	{{/ifCond}}
 											{{#ifCond item.order_item_status '==' @root.orderItemStatus.DELIVERED}}	
 										 		delivered.
