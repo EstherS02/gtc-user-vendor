@@ -768,7 +768,7 @@ Handlebars.registerHelper('returnCond', function(date) {
 
 Handlebars.registerHelper('trackProgressBar', function(status) {
 	if (status == orderItemStatus['ORDER_INITIATED']) {
-		return "width: 0%;background-color: darkgoldenrod;"
+		return "width: 1%;background-color: darkgoldenrod;"
 	} else if (status == orderItemStatus['CONFIRMED']) {
 		return "width: 25%;background-color: darkslateblue;"
 	} else if (status == orderItemStatus['SHIPPED']) {

@@ -107,6 +107,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'shipped_on',
             allowNull: true
         },
+        expected_delivery_date: {
+            type: DataTypes.DATE,
+            field: 'expected_delivery_date',
+            allowNull: true
+        },
         cancelled_on: {
             type: DataTypes.DATE,
             field: 'cancelled_on',
