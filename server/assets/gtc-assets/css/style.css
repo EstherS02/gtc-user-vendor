@@ -3050,6 +3050,60 @@ select.file-uploade:after {
 	top: 31px !important;
 	left: 0px !important;
 }
+.progress-circle {
+	background: none;
+	margin: 0 auto;
+	box-shadow: none;
+	position: relative;
+}
+.progress-circle .progress-circle-left {
+	left: 0;
+}
+.progress-circle > span {
+	width: 50%;
+	height: 100%;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	z-index: 1;
+}
+.progress-circle .progress-circle-value {
+	width: 90%;
+	height: 90%;
+	border-radius: 50%;
+	color: #fff;
+	text-align: center;
+	position: absolute;
+	top: 5%;
+	left: 5%;
+}
+.yellow .progress-circle-label {
+	color: #fff;
+}
+.yellow .progress-circle-value {
+	background: #feaf48;
+}
+.blue .progress-circle-value {
+	background: #4178b1;
+	color: #fff;
+}
+.white .progress-circle-value {
+	background: #ffffff;
+	color: #000;
+}
+.green .progress-circle-value {
+	background: #71da40;
+	color: #fff;
+}
+.red .progress-circle-value {
+	background: #ea4565;
+	color: #fff;
+}
+p.progress-circle-texts {
+	font-family: 'Oswald', sans-serif;
+	font-size: 1.3rem;
+	font-weight: 500;
+}
 .column-1 {
 	max-width: 8.5%;
 }

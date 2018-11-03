@@ -91,6 +91,15 @@
 	.ibox-title h2 {
 		display: inline-block;
 	}
+	.progress-circle {
+	    width: 200px;
+	    height: 200px;
+	    line-height: 200px;
+	}
+	.progress-circle .progress-circle-value {
+		line-height: 185px;
+		font-size: 38px;
+	}
 	.home-bottom-banner-3 .coming-soon {
 		display: block;
 		margin-left: auto;
@@ -174,6 +183,15 @@
 		flex-flow: row wrap;
 		-webkit-box-align: center;
 		align-items: center;
+	}
+	.progress-circle {
+	    width: 200px;
+	    height: 200px;
+	    line-height: 200px;
+	}
+	.progress-circle .progress-circle-value {
+		line-height: 185px;
+		font-size: 38px;
 	}
 	.home-bottom-banner-2 .home-ad {
 		height: 424px;
@@ -664,6 +682,15 @@
 		background: url(../img/signup-hero-home.jpg);
 		background-repeat: no-repeat;
 		background-size: 54% 100%;
+	}
+	.progress-circle {
+	    width: 250px;
+	    height: 250px;
+	    line-height: 250px;
+	}
+	.progress-circle .progress-circle-value {
+		line-height: 235px;
+		font-size: 48px;
 	}
 	.home-bottom-banner-2 h1 {
 		font-size: 2.5rem;
