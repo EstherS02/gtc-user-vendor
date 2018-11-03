@@ -149,7 +149,6 @@ export function product(req, res) {
 				}
 				productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit)
 					.then(function(publicMarketplace) {
-						console.log(publicMarketplace);
 						return callback(null, publicMarketplace);
 					}).catch(function(error) {
 						console.log('Error :::', error);
@@ -232,6 +231,7 @@ export function product(req, res) {
 				if (vendorID) {
 					productQueryObj['vendor_id'] = vendorID;
 				}
+				productQueryObj['marketplace_id'] = marketplaceID;
 
 				var resultObj = {};
 				categoryService.productViewCategoryProductCount(queryObj, productQueryObj)
@@ -370,8 +370,6 @@ export function product(req, res) {
 												.catch(function(err) {
 													callback(null);
 												})
-
-
 										}
 									}).catch(function(err) {
 										console.log("err", err)

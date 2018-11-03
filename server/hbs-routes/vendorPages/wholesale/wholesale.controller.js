@@ -223,7 +223,6 @@ export function vendorWholesale(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-
 		},
 		categoryWithProductCount: function(callback) {
 			var resultObj = {};
