@@ -8,6 +8,7 @@ import {
 const numeral = require('numeral');
 const planPermissions = require('../config/plan-marketplace-permission.js');
 const config  = require('../config/environment');
+const orderItemStatus = require("../config/order-item-new-status");
 
 Handlebars.registerHelper('starCount', function(rating, color) {
 
@@ -733,5 +734,19 @@ Handlebars.registerHelper('returnCond', function(date) {
 		return "";
 	} else {
 		return "display: none;";
+	}
+});
+
+Handlebars.registerHelper('trackProgressBar', function(status) {
+	if (status == orderItemStatus['ORDER_INITIATED']) {
+		return "width: 0%;background-color: darkgoldenrod;"
+	} else if (status == orderItemStatus['CONFIRMED']) {
+		return "width: 25%;background-color: darkslateblue;"
+	} else if (status == orderItemStatus['SHIPPED']) {
+		return "width: 50%;background-color: darkcyan;"
+	} else if (status == orderItemStatus['DELIVERED']) {
+		return "width: 100%;background-color: darkgreen;"
+	} else {
+		return "width: 100%;background-color: darkred;"
 	}
 });

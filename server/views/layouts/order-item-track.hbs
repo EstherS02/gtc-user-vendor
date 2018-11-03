@@ -14,10 +14,12 @@
 						<div class="content-body px-3">
 							<div class="row py-4">
 								<div class="col-2">
-									<img class="img-fluid" width="100px" height="auto" src="{{item.Product.ProductMedia.[0].url}}" title="{{item.Product.product_name}}">
+									<a href="../shop/{{item.Product.product_slug}}/{{item.Product.id}}">
+									<img class="img-fluid" width="100px" height="auto" src="{{item.Product.ProductMedia.[0].url}}" title="{{item.Product.product_name}}"></a>
 								</div>
 								<div class="col-8">
-									<p class="font-weigh-bold text-blue">{{item.Product.product_name}}</p>
+									<a href="../shop/{{item.Product.product_slug}}/{{item.Product.id}}" title="{{item.Product.product_name}}" class="text-black">
+									<p class="font-weigh-bold text-blue">{{item.Product.product_name}}</p></a>
 								</div>
 							</div>
 							<div class="row">
@@ -26,49 +28,137 @@
 								</div>
 							</div>
 							<div class="progress">
-								<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+								<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="{{trackProgressBar item.order_item_status}}"></div>
 							</div>
 							<div class="row py-3">
-								<div class="col-4">
+								<div class="col-3">
 									<p class="font-weigh-bold text-black m-b-none">
-										<strong>Ordered on 10 Dec</strong>
+										<small>Placed on {{formatTime item.created_on "D MMM"}}</small>
 									</p>
 								</div>
-								<div class="col-4">
-									<p class="font-weigh-bold text-black m-b-none">
-										<strong>Shipped on 11 Dec</strong>
-									</p>
+								<div class="col-3">
+									{{#if item.item_confirmed_on}}
+										<p class="font-weigh-bold text-black m-b-none">
+											<small>Confirm on {{formatTime item.item_confirmed_on "D MMM"}}</small>
+										</p>
+									{{/if}}
 								</div>
-								<div class="col-4">
-									<p class="font-weigh-bold text-black m-b-none float-right">Delivered on 13 Dec</p>
+								<div class="col-3">
+									{{#if item.shipped_on}}
+										<p class="font-weigh-bold text-black m-b-none">
+											<small>Shipped on {{formatTime item.shipped_on "D MMM"}}</small>
+										</p>
+									{{/if}}
 								</div>
+
+								{{#ifCond item.order_item_status '==' @root.orderItemStatus.DELIVERED}}
+									<div class="col-3">
+										{{#if item.delivered_on}}
+											<p class="font-weigh-bold text-black m-b-none float-right">
+												<small>Delivered on {{formatTime item.delivered_on "D MMM"}}</small>
+											</p>
+										{{/if}}
+									</div>
+								{{/ifCond}}
+								{{#ifCond item.order_item_status '==' @root.orderItemStatus.CANCELED}}
+									<div class="col-3">
+										{{#if item.cancelled_on}}
+											<p class="font-weigh-bold text-black m-b-none float-right">
+												<small>Canceled on {{formatTime item.cancelled_on "D MMM"}}</small>
+											</p>
+										{{/if}}
+									</div>
+								{{/ifCond}}
+								{{#ifCond item.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}
+									<div class="col-3">
+										{{#if item.cancelled_on}}
+											<p class="font-weigh-bold text-black m-b-none float-right">
+												<small>Canceled on {{formatTime item.cancelled_on "D MMM"}}</small>
+											</p>
+										{{/if}}
+									</div>
+								{{/ifCond}}
+								{{#ifCond item.order_item_status '==' @root.orderItemStatus.REQUEST_FOR_RETURN}}
+									<div class="col-3">
+										{{#if item.request_for_return_on}}
+											<p class="font-weigh-bold text-black m-b-none float-right">
+												<small>Return Request on {{formatTime item.request_for_return_on "D MMM"}}</small>
+											</p>
+										{{/if}}
+									</div>
+								{{/ifCond}}
+								{{#ifCond item.order_item_status '==' @root.orderItemStatus.APPROVED_REQUEST_FOR_RETURN}}
+									<div class="col-3">
+										{{#if item.approved_request_for_return_on}}
+											<p class="font-weigh-bold text-black m-b-none float-right">
+												<small>Approve Return Request on {{formatTime item.approved_request_for_return_on "D MMM"}}</small>
+											</p>
+										{{/if}}
+									</div>
+								{{/ifCond}}
+								{{#ifCond item.order_item_status '==' @root.orderItemStatus.RETURN_RECIVED}}
+									<div class="col-3">
+										{{#if item.return_received_on}}
+											<p class="font-weigh-bold text-black m-b-none float-right">
+												<small>Return Received on {{formatTime item.return_received_on "D MMM"}}</small>
+											</p>
+										{{/if}}
+									</div>
+								{{/ifCond}}
 							</div>
 							<div class="row m-t-md">
 								<div class="col-md-6 offset-md-6">
 									<div class="card">
 										<div class="card-header-xs bg1 text-md">SHIPMENT DETAILS</div>
 									<div class="card-body bg-gray">
-										<p class="m-b-none">Last update: Wednesday, 13 Dec</p>
+										<p class="m-b-none">Last update: {{formatTime item.last_updated_on "D MMM, HH:MM a"}}</p>
 									</div>
 								</div>
 								<div class="col-md-12 m-t">
 									<div class="row">
-										<div class="col-md-2">
+										{{!-- <div class="col-md-2">
 											<p class="font-weigh-normal text-black m-b-none">11:30am</p>
-										</div>
+										</div> --}}
 										<div class="col-md-10">
-											<p class="font-weigh-normal text-black m-b-none">Your package was delivered</p>
-												<div class="d-block">
-													<small class="font-weight-light d-inline-block m-r-md">Carrier</small>
-													<small class="font-weight-light m-l-sm">CIntel.com Courier Canada Inc.</small>
-												</div>
-												<div class="d-block">
-													<small class="font-weight-light d-inline-block">Tracking #</small>
-													<small class="font-weight-light m-l-sm">#170014</small>
-												</div>
-												<div class="d-block">
-													<small class="font-weight-normal"><a href="#">View Order Details</a></small>
-												</div>
+											<p class="font-weigh-normal text-black m-b-none">Your package was
+											{{#ifCond item.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}	
+										 		placed.
+										 	{{/ifCond}}
+										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.CONFIRMED}}	
+										 		confirmed.
+										 	{{/ifCond}}
+											{{#ifCond item.order_item_status '==' @root.orderItemStatus.DELIVERED}}	
+										 		delivered.
+										 	{{/ifCond}}
+										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.CANCELED}}	
+										 		canceled.
+										 	{{/ifCond}}
+										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}	
+										 		canceled by vendor.
+										 	{{/ifCond}}
+										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.REQUEST_FOR_RETURN}}	
+										 		request for return.
+										 	{{/ifCond}}
+										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.APPROVED_REQUEST_FOR_RETURN}}	
+										 		approve request for return.
+										 	{{/ifCond}}
+										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.RETURN_RECIVED}}	
+										 		return received.
+										 	{{/ifCond}}
+											</p>
+											<div class="d-block">
+												<small class="font-weight-light d-inline-block m-r-md">Carrier</small>
+												<small class="font-weight-light m-l-sm">CIntel.com Courier Canada Inc.</small>
+											</div>
+											<div class="d-block">
+												<small class="font-weight-light d-inline-block">Tracking #</small>
+												<small class="font-weight-light m-l-sm">#170014</small>
+											</div>
+											<div class="d-block">
+												<small class="font-weight-normal">
+													<a href="javascript:;" onclick="window.history.back()">View Order Details</a>
+												</small>
+											</div>
 											</div>
 										</div>
 									</div>

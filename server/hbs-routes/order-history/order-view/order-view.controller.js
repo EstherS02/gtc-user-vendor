@@ -138,7 +138,8 @@ export function trackOrderItem(req, res) {
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
-				item: results.trackOrderItem
+				item: results.trackOrderItem,
+				orderItemStatus: orderItemStatus,
 			});
 		} else {
 			return res.return("order-item-track", error);
