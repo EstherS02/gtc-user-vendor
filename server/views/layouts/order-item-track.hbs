@@ -111,7 +111,11 @@
 									<div class="card">
 										<div class="card-header-xs bg1 text-md">SHIPMENT DETAILS</div>
 									<div class="card-body bg-gray">
-										<p class="m-b-none">Last update: {{formatTime item.last_updated_on "D MMM, HH:MM a"}}</p>
+										{{#if item.last_updated_on}}
+										<p class="m-b-none">Last update: {{formatTime item.last_updated_on "dddd, D MMM, HH:MM a"}}</p>
+										{{else}}
+										<p class="m-b-none">Last update: {{formatTime item.created_on "dddd, D MMM  HH:MM a"}}</p>
+										{{/if}}
 									</div>
 								</div>
 								<div class="col-md-12 m-t">
