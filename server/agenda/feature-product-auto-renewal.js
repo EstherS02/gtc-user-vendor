@@ -6,11 +6,10 @@ const service = require('../api/service');
 const moment = require('moment');
 const _ = require('lodash');
 const stripe = require('../payment/stripe.payment');
-const sendEmail = require('./send-email');
 const paymentMethod = require('../config/payment-method');
 
 const CURRENCY = 'usd';
-const current_date = new Date();
+const currentDate = new Date();
 
 
 export function featureProductAutoRenewal(job, done) {
@@ -93,7 +92,7 @@ function FeatureAutoRenewal(eachFeature){
 	featureRenewOn = moment(startDate, "YYYY-MM-DD").add(+28, 'd');
 	renewalAmount = eachFeature.Payment.amount;
 
-	if (featureRenewOn < current_date) {
+	if (featureRenewOn < currentDate) {
 
 		var cardQueryObj = {};
 
@@ -113,7 +112,9 @@ function FeatureAutoRenewal(eachFeature){
 							amount: charge.amount / 100.0,
 							payment_method: paymentMethod['STRIPE'],
 							status: statusCode['ACTIVE'],
-							payment_response: JSON.stringify(charge)
+							payment_response: JSON.stringify(charge),
+							created_by: 'GTC- Auto Renewal',
+							created_on: currentDate
 						};
 						return service.createRow('Payment', paymentModelObj);
 
@@ -122,16 +123,18 @@ function FeatureAutoRenewal(eachFeature){
 
 						var deativateBodyParam ={
 							status: statusCode['INACTIVE'],
-							feature_status: statusCode['INACTIVE']
+							feature_status: statusCode['INACTIVE'],
+
 						}
 						return service.updateRow('FeaturedProduct', deativateBodyParam, eachFeature.id);
 
 					}).then(function(deactivatedRow) {
 						delete eachFeature.id;
 						var newFeatureRow = eachFeature;
-						newFeatureRow.start_date = current_date;
+						newFeatureRow.start_date = currentDate;
 						newFeatureRow.payment_id = renewalPaymentId;
-						newFeatureRow.created_on = current_date;
+						newFeatureRow.created_on = currentDate;
+						newFeatureRow.created_by = 'GTC- Auto Renewal'
 
 						return service.createRow('FeaturedProduct', newFeatureRow);
 
@@ -162,8 +165,10 @@ function FeatureAutoRenewal(eachFeature){
 
 function featureRenewalMail(eachFeature){
 	var emailTemplateQueryObj = {};
+	var mailArray = [];
     emailTemplateQueryObj['name'] = config.email.templates.featureProductAutoRenewal;
 
+	var agenda = require('../app').get('agenda');
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
 		.then(function (response) {
 			if (response) {
@@ -173,15 +178,17 @@ function featureRenewalMail(eachFeature){
 				body = response.body.replace('%USER_NAME%', eachFeature.Product.Vendor.vendor_name);
 				body = body.replace('%PRODUCT_NAME%', eachFeature.Product.product_name);
 				body = body.replace('%AMOUNT%', eachFeature.Payment.amount);
-				body = body.replace('%CURRENT_DATE%', current_date);
+				body = body.replace('%CURRENT_DATE%', currentDate);
 					
-				sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
+				mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
 				});
-				
-                return;
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
 			}else{
 				return;
 			}

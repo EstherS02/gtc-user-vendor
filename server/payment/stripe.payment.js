@@ -9,8 +9,6 @@ paypal.configure(config.payPalConfig);
 
 const STMT_DESCRIPTOR = "GLOBALTRADECONNECT";
 
-var sender_batch_id = Math.random().toString(36).substring(9);
-
 let Stripe = {
     createCustomer: function(userObj, source) {
         var custObj = {};
@@ -83,6 +81,8 @@ let Stripe = {
     },
     vendorPaypalPayout: function(recipient_type, amount, currency, destination, order_id){
 
+		var sender_batch_id = Math.random().toString(36).substring(9);
+
         var create_payout_json = {
             "sender_batch_header": {
                 "sender_batch_id": sender_batch_id,
@@ -100,19 +100,20 @@ let Stripe = {
                     "sender_item_id": order_id
                 }
             ]
-        };
+		};
 
-        paypal.payout.create(create_payout_json, function (error, payout) {
-            if (error) {
-                console.log(error.response);
-                throw error;
-            } else {
-                console.log("Create Single Payout Response");
-                console.log(payout);
-            }
-        });
+		return new Promise((resolve, reject) => {
+			paypal.payout.create(create_payout_json, function (error, payout) {
+				if (error) {
+					console.log(error.response);
+					return reject(error);
+				} else {
+					console.log("Create Single Payout Response",payout);
+					return resolve(payout);
+				}
+			});
+		});
     }
 };
-
 
 module.exports = Stripe;

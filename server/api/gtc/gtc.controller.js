@@ -19,7 +19,6 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const orderItemStatus = require('../../config/order-item-new-status');
 const marketplace = require('../../config/marketplace');
-const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 

@@ -7,7 +7,6 @@ var roles = require('../../config/roles');
 var permission = require('../../config/permission');
 var auth = require('../../auth/auth.service');
 
-/* Handlebars routes */
 var controller = require('./user-profile.controller');
 
 router.get('/my-profile', auth.hasRole(roles['USER']), controller.userProfile);

@@ -38,7 +38,7 @@ export function index(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 12;
+	limit = req.query.limit ? parseInt(req.query.limit) : 15;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "sales_count";
@@ -72,6 +72,8 @@ export function index(req, res) {
 	} else if (marketplaceURl == 'subscription-providers') {
 		selectedMarketPlaceID = marketplace['LIFESTYLE'];
 		queryParameters['marketplace_id'] = marketplace['LIFESTYLE'];
+	} else{
+		selectedMarketPlaceID =null;
 	}
 
 	queryPaginationObj['marketplaceURl'] = marketplaceURl;
@@ -262,7 +264,12 @@ export function index(req, res) {
 		},
 		vendorCountByMarketplace: function(callback) {
 			var result = {};
-			vendorService.vendorCountByMarketplace()
+			var queryObj={};
+			if((selectedMarketPlaceID != marketplace['LIFESTYLE'])||(selectedMarketPlaceID != marketplace['SERVICE'])||(selectedMarketPlaceID != marketplace['PUBLIC'])){
+				 queryObj.markerplace_id = marketplace['WHOLESALE'];
+			}
+
+			vendorService.vendorCountByMarketplace(queryObj)
 				.then((response) => {
 					result.rows = JSON.parse(JSON.stringify(response));
 					return callback(null, result);

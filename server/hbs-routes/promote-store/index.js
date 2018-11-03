@@ -12,5 +12,4 @@ var controller = require('./promote-store.controller');
 
 router.get('/', auth.hasRole(roles['VENDOR']), controller.promoteStore);
 
-
 module.exports = router;

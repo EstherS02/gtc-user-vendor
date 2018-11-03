@@ -12,5 +12,4 @@ var controller = require('./reviews.controller');
 
 router.get('/', auth.hasRole(roles['VENDOR']), controller.reviews);
 
-
 module.exports = router;

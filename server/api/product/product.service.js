@@ -123,6 +123,38 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 		required: false
 	}];
 
+	if (queryObj.is_featured_product == 1) {
+		var featuredProductQueryObj = {
+			status: status['ACTIVE'],
+			feature_status: status['ACTIVE'],
+			start_date: {
+				'$lte': moment().format('YYYY-MM-DD')
+			},
+			$or: [{
+				end_date: {
+					'$gte': moment().format('YYYY-MM-DD')
+				}
+			}, {
+				feature_indefinitely: 1
+			}]
+		};
+		var position = queryObj.position;
+		if (position) {
+			featuredProductQueryObj[position] = status['ACTIVE'];
+			delete queryObj.position;
+		}
+		includeArray.push({
+			model: model['FeaturedProduct'],
+			where: featuredProductQueryObj
+		});
+		includeCountArray.push({
+			model: model['FeaturedProduct'],
+			attributes: [],
+			where: featuredProductQueryObj
+		});
+		delete queryObj.is_featured_product;
+	}
+
 	try {
 		const productResponse = await model['Product'].findAll({
 			include: includeArray,

@@ -52,10 +52,10 @@
 	background-image:url(../img/bg-footer.jpg);
 	color: #FFFFFF;
 }
-a:hover
+/*a:hover
 {
 	text-decoration: none;
-}
+}*/
 .social-links
 {
 	background-color: #154980;
@@ -4796,7 +4796,7 @@ span.exclamation {
 }
 
 p.verification-incomplete {
-    padding: 16px;
+    padding: 8px;
     font-size: 14px;
     /*font-weight:bold;*/
     color: #ccc;
