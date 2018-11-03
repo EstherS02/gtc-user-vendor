@@ -16,7 +16,7 @@ module.exports = {
 		}
 	},
 	mongo: {
-		uri: 'mongodb://192.168.2.163:27017/test-gtc'
+		uri: 'mongodb://127.0.0.1:27017/test-gtc'
 	},
 	// Seed database on startup
 	seedDB: true

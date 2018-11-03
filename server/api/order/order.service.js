@@ -43,12 +43,14 @@ export async function findAllOrders(modelName, includeArr, queryObj, offset, lim
 
 export async function trackOrderItem(orderId, orderItemId, userId) {
 	var queryObj = {};
+	var shippingModelName = "Shipping";
 	var orderModelName = "OrdersNew";
 	var orderItemModelName = "OrdersItemsNew";
+	var orderVendorModelName = "OrderVendor";
 
 	var includeArray = [{
 		model: model['Product'],
-		attributes: ['id', 'product_name', 'product_slug', 'status'],
+		attributes: ['id', 'product_name', 'product_slug', 'vendor_id', 'status'],
 		include: [{
 			model: model["ProductMedia"],
 			attributes: ['id', 'type', 'base_image', 'url'],
@@ -60,6 +62,14 @@ export async function trackOrderItem(orderId, orderItemId, userId) {
 		model: model[orderModelName],
 		attributes: ['id', 'user_id', 'invoice_id', 'purchase_order_id', 'po_number', 'ordered_date', 'shipping_address_id', 'status'],
 		include: [{
+			model: model[orderVendorModelName],
+			attributes: ['id', 'order_id', 'vendor_id', 'shipping_id'],
+			include: [{
+				model: model[shippingModelName],
+				attributes: ['id', 'provider_name', 'tracking_id']
+			}],
+			required: false
+		}, {
 			model: model['Address'],
 			as: 'shippingAddress1',
 			attributes: ['id', 'first_name', 'last_name', 'company_name', 'address_line1', 'address_line2', 'city', 'postal_code'],
@@ -81,7 +91,10 @@ export async function trackOrderItem(orderId, orderItemId, userId) {
 		if (order) {
 			const orderItem = await service.findOneRow(orderItemModelName, {
 				id: orderItemId,
-				order_id: orderId
+				order_id: orderId,
+				'$OrdersNew->OrderVendors.vendor_id$': {
+					$col: 'Product.vendor_id'
+				}
 			}, includeArray);
 			return orderItem;
 		}

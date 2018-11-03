@@ -1,6 +1,8 @@
 <script type="text/javascript">
 	$(function() {
-		$("#expected_delivery_date").datepicker();
+		$("#expected_delivery_date").datepicker({
+			autoHide: true
+		});
 	});
 
 	$(document).ready(function() {
@@ -189,7 +191,6 @@
 									<table class="table cart-inner-table m-b-none">
 										<thead>
 											<tr>
-												<!-- <th width="5%"></th> -->
 												<th width="45%">Product</th>
 												<th width="25%">Status</th>
 												<th width="10%">QTY</th>
@@ -200,12 +201,6 @@
 										<tbody>
 											{{#each this.products}}
 												<tr>
-													<!-- <td class="align-middle">
-														<div class="customCheckbox">
-															<input type="checkbox" id="inputItem{{this.Product.id}}" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputItem{{this.Product.id}}"></label>
-														</div>
-													</td> -->
 													<td class="d-flex">
 														<div class="col-4 product-left-col">
 															<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}">
@@ -592,6 +587,7 @@
 						<div class="form-group row">
 							<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Select Carrier</label>
 							<div class="col-sm-8">
+								<div class="select-container">
 								<select class="form-control-customized form-control-sm" name="select_courier">
 									{{#if order.Shipping.provider_name}}
 										<option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
@@ -602,6 +598,7 @@
 										<option value="{{this}}">{{@key}}</option>
 									{{/each}}
 								</select>
+								</div>
 							</div>
 						</div>
 						<div class="form-group row">
@@ -617,11 +614,14 @@
 								<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm">
 							</div>
 						</div>
-
-						<button class="btn btn-md btn-primary" id="dispatchBtn" type="submit" data-style="expand-left">
-							<span class="ladda-label">Dispatch Order</span>
-							<span class="ladda-spinner"></span>
-						</button>
+						<div class="form-group row">
+							<div class="col-sm-8 offset-md-4">
+								<button class="btn btn-md btn-primary" id="dispatchBtn" type="submit" data-style="expand-left">
+									<span class="ladda-label">Dispatch Order</span>
+									<span class="ladda-spinner"></span>
+								</button>
+							</div>
+						</div>
 					</form>
 					</div>
 					</div>

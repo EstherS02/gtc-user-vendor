@@ -120,9 +120,6 @@
 								</div>
 								<div class="col-md-12 m-t">
 									<div class="row">
-										{{!-- <div class="col-md-2">
-											<p class="font-weigh-normal text-black m-b-none">11:30am</p>
-										</div> --}}
 										<div class="col-md-10">
 											<p class="font-weigh-normal text-black m-b-none">Your package was
 											{{#ifCond item.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}	
@@ -153,14 +150,16 @@
 										 		return received.
 										 	{{/ifCond}}
 											</p>
+											{{#ifCond item.order_item_status '==' @root.orderItemStatus.SHIPPED}}
 											<div class="d-block">
 												<small class="font-weight-light d-inline-block m-r-md">Carrier</small>
-												<small class="font-weight-light m-l-sm">CIntel.com Courier Canada Inc.</small>
+												<small class="font-weight-light m-l-sm">{{objectKey carriersCode item.OrdersNew.OrderVendors.[0].Shipping.provider_name}}</small>
 											</div>
 											<div class="d-block">
 												<small class="font-weight-light d-inline-block">Tracking #</small>
-												<small class="font-weight-light m-l-sm">#170014</small>
+												<small class="font-weight-light m-l-sm">{{item.OrdersNew.OrderVendors.[0].Shipping.tracking_id}}</small>
 											</div>
+											{{/ifCond}}
 											<div class="d-block">
 												<small class="font-weight-normal">
 													<a href="javascript:;" onclick="window.history.back()">View Order Details</a>

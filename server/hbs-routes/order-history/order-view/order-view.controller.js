@@ -6,6 +6,7 @@ const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const orderStatusCode = require('../../../config/order_status');
 const status = require('../../../config/status');
+const carriersCode = require('../../../config/carriers');
 const marketplace = require('../../../config/marketplace');
 const service = require('../../../api/service');
 const orderItemStatus = require("../../../config/order-item-new-status");
@@ -13,7 +14,6 @@ const orderService = require('../../../api/order/order.service');
 const cartService = require('../../../api/cart/cart.service');
 const cartObj = require('../../../api/cart/cart.controller');
 const populate = require('../../../utilities/populate');
-const carriersCode = require('../../../config/carriers');
 
 export function orderView(req, res) {
 	var queryObj = {};
@@ -139,6 +139,7 @@ export function trackOrderItem(req, res) {
 				cart: results.cartInfo,
 				item: results.trackOrderItem,
 				orderItemStatus: orderItemStatus,
+				carriersCode: carriersCode
 			});
 		} else {
 			return res.return("order-item-track", error);
