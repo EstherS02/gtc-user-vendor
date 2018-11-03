@@ -4,7 +4,6 @@ const config = require('../config/environment');
 const statusCode = require('../config/status');
 const service = require('../api/service');
 const _ = require('lodash');
-const sendEmail = require('./send-email');
 const gtcPlan = require('../config/gtc-plan');
 
 var currentDate = new Date();
@@ -74,7 +73,9 @@ function updateStatus(eachVendor){
 	var planBodyParam = {};
 
 	planBodyParam = {
-		status: statusCode['INACTIVE']
+		status: statusCode['INACTIVE'],
+		last_updated_by: 'GTC Auto Expire',
+		last_updated_on : currentDate
 	}
 	if(eachVendor.Vendor.User.user_contact_email){
 		planExpiredMail(eachVendor);
@@ -87,8 +88,10 @@ function planExpiredMail(eachVendor){
 	var vendor = eachVendor.Vendor;
 	
 	var emailTemplateQueryObj = {};
+	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.starterPlanExpire;
+	var agenda = require('../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
@@ -101,12 +104,15 @@ function planExpiredMail(eachVendor){
 				body = body.replace('%USERNAME%', vendor.vendor_name);
 				body = body.replace('%EXPIRED_DATE%', eachVendor.end_date);
 
-                sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
-                });
-                return;
+                mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
             } else {
                 return;
             }

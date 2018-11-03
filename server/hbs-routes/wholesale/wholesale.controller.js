@@ -4,15 +4,12 @@ const sequelize = require('sequelize');
 const populate = require('../../utilities/populate')
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const status = require('../../config/status');
-const position = require('../../config/position');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const marketplace_type = require('../../config/marketplace_type');
 const productService = require('../../api/product/product.service');
-
 const async = require('async');
 
 export function wholeSaleProductView(req, res) {
@@ -138,29 +135,27 @@ export function wholesale(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
+			const tempLimit = 6;
 			delete queryObj['marketplace_type_id'];
-			queryObj['featured_position_wholesale_landing'] = 1;
+			queryObj['position'] = 'position_wholesale_landing';
 			queryObj['is_featured_product'] = 1;
-			queryObj['marketplace_id'] = 1;
 
-			limit = 6;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, queryObj, limit, order)
-				.then(function(response) {
-					return callback(null, response.rows);
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, tempLimit)
+				.then(function(results) {
+					return callback(null, results);
 				}).catch(function(error) {
-					console.log('Error::', error);
+					console.log('Error :::', error);
 					return callback(null);
 				});
+
 		},
 		country: function(callback) {
+			const tempLimit = null;
 			delete queryObj['marketplace_id'];
-			delete queryObj['featured_position_wholesale_landing'];
+			delete queryObj['position'];
 			delete queryObj['is_featured_product'];
-			limit = null;
-			service.findRows(countryModel, queryObj, offset, limit, field, order)
+
+			service.findRows(countryModel, queryObj, offset, tempLimit, field, order)
 				.then(function(country) {
 					return callback(null, country.rows);
 				}).catch(function(error) {
@@ -169,7 +164,9 @@ export function wholesale(req, res) {
 				});
 		},
 		type: function(callback) {
-			service.findRows(typeModel, queryObj, offset, limit, field, order)
+			const tempLimit = null;
+
+			service.findRows(typeModel, queryObj, offset, tempLimit, field, order)
 				.then(function(type) {
 					return callback(null, type.rows);
 				}).catch(function(error) {
@@ -178,12 +175,13 @@ export function wholesale(req, res) {
 				});
 		},
 		wholesalers: function(callback) {
-			queryObj['type'] = 'Private Wholesale Marketplace';
 			var result = {};
+			const tempLimit = 6;
+			queryObj['type'] = 'Private Wholesale Marketplace';
 			field = 'sales_count';
 			order = 'desc';
-			limit = 6;
-			service.findRows(vendorModel, queryObj, offset, limit, field, order)
+
+			service.findRows(vendorModel, queryObj, offset, tempLimit, field, order)
 				.then(function(wholesalers) {
 					result.rows = JSON.parse(JSON.stringify(wholesalers.rows));
 					var vendorAvgRating = {};
@@ -207,7 +205,7 @@ export function wholesale(req, res) {
 						});
 					}, function done(err, success) {
 						if (!err) {
-							console.log('providers', result.rows);
+							// console.log('providers', result.rows);
 							return callback(null, result);
 						}
 					});

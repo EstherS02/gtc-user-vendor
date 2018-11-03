@@ -2,14 +2,13 @@
 
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
 const sequelize = require('sequelize');
-var async = require('async');
-const Op = sequelize.Op
+const vendorPlan = require('../../config/gtc-plan');
+const async = require('async');
 
 export function messages(req, res) {
 	var categoryModel = "Category";
@@ -42,7 +41,6 @@ export function messages(req, res) {
 						user_id: LoggedInUser.id
 					},
 				}).then(function(instances) {
-					console.log("instances***********************", instances);
 					for (var i = 0, iLen = instances.length; i < iLen; i++) {
 						threadsUnRead.push(instances[i].thread_id);
 					}
@@ -61,7 +59,6 @@ export function messages(req, res) {
 						attributes: ['talk_thread_id', [sequelize.fn('count', 1), 'count']],
 						group: ['talk_thread_id']
 					}).then(function(results1) {
-						console.log("**********************************************results1", results1);
 						return callback(null, results1);
 					});
 				})
@@ -99,7 +96,6 @@ export function messages(req, res) {
 							[model['TalkThread'], model['Talk'], "id", "desc"]
 						]
 					}).then(function(results1) {
-						//console.log("**********************************************results1", results1);
 						return callback(null, results1);
 					}).catch(function(error) {
 						console.log('Error :::', error);
@@ -109,15 +105,17 @@ export function messages(req, res) {
 			},
 			categories: function(callback) {
 				var includeArr = [];
-				const categoryOffset = 0;
-				const categoryLimit = null;
-				const categoryField = "id";
-				const categoryOrder = "asc";
-				const categoryQueryObj = {};
-
+				var categoryOffset, categoryLimit, categoryField, categoryOrder;
+				var categoryQueryObj = {};
+	
+				categoryOffset = 0;
+				categoryLimit = null;
+				categoryField = "id";
+				categoryOrder = "asc";
+				
 				categoryQueryObj['status'] = statusCode["ACTIVE"];
-
-				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+	
+				service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {
 						var categories = category.rows;
 						bottomCategory['left'] = categories.slice(0, 8);
@@ -127,7 +125,7 @@ export function messages(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
-			}
+			},
 		},
 		function(err, results) {
 
@@ -141,7 +139,7 @@ export function messages(req, res) {
 					cart: results.cartInfo,
 					marketPlace: marketplace,
 					LoggedInUser: LoggedInUser,
-					// vendorPlan: vendorPlan,
+					vendorPlan: vendorPlan,
 				});
 			} else {
 				res.render('vendorNav/messages', err);

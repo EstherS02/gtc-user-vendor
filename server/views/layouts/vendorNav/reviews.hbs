@@ -30,7 +30,7 @@
 											<hr class="review-hr" />
 											<div class="row">
 												<div class="col-md-1">
-													<img class="responsive" src="{{this.User.user_pic_url}}" alt="img" style=" width: 100%;height: auto;" />{{!-- "../../img/signup-feature-1.png" --}}
+													<img class="responsive" src="{{this.User.user_pic_url}}" onError="imgError(this)" alt="img" style=" width: 100%;height: auto;" />{{!-- "../../img/signup-feature-1.png" --}}
 												</div>
 												<div class="col-md-7">
 													<p style="font-size: small;margin-bottom: 0rem;">
@@ -72,29 +72,33 @@
 							</div>
 						</div>
 						{{!-- Pagination starts --}}
-							<div class="row">
-								<div style="margin:0 auto;width:100px;">
+							<div class="row m-t-sm">
+								<div class="col-md-12">
+								{{!-- <div style="margin:0 auto;width:100px;"> --}}
 								{{#pagination queryPaginationObj.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-										<nav aria-label="Page navigation example">
-											<ul class="pagination justify-content-center">
-												{{#unless startFromFirstPage}}
-													<li class="page-item">
-														<a class="page-link" href="../reviews?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-													</li>
-												{{/unless}} 
-												{{#each pages}}
-													<li class="page-item {{#if isCurrent}} active {{/if}}">
-														<a class="page-link" href="../reviews?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-													</li>
-												{{/each}}
-												{{#unless endAtLastPage}}
-													<li class="page-item">
-														<a class="page-link" href="../reviews?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-													</li>
-												{{/unless}}
-											</ul>
-										</nav>
-									{{/pagination}}
+									<nav aria-label="Page navigation example">
+										<ul class="pagination justify-content-center">
+											{{#unless startFromFirstPage}}
+												<li class="page-item-prev" style="margin-left:-310px;">
+													<a href="../reviews?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">
+														<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+												</li>
+											{{/unless}}
+											{{#each pages}}
+												<li class="page-item {{#if isCurrent}} active {{/if}}">
+													<a class="page-link" href="../reviews?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+												</li>
+											{{/each}}
+											{{#unless endAtLastPage}}
+												<li class="page-item-next" style="margin-right:-310px;">
+													<a href="../reviews?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
+														<i class="fa fa-angle-double-right"></i>
+													</a>
+												</li>
+											{{/unless}}
+										</ul>
+									</nav>
+								{{/pagination}}
 				{{!-- 					{{#pagination collectionSize page pageSize maxSize}}
 										<nav aria-label="Page navigation example">
 											<ul class="pagination justify-content-center">

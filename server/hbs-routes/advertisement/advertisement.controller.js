@@ -1,34 +1,27 @@
 'use strict';
 
 const async = require('async');
-
 const service = require('../../api/service');
 const cartService = require('../../api/cart/cart.service');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const model = require('../../sqldb/model-connect');
 const vendorPlan = require('../../config/gtc-plan');
-const Position = require('../../config/position');
 
 export function adList(req, res) {
-	var LoggedInUser = {};
-	var bottomCategory = {};
-	var queryObj = {};
-	var queryURI = {};
-	var queryPaginationObj = {};
-	var categoryModel = "Category";
-	var countryModel = "Country";
-	var adsModel = "ProductAdsSetting";
+
+	var LoggedInUser = {}, bottomCategory = {}, queryObj = {}, queryURI = {}, queryPaginationObj = {};
+	var offset, limit, order, page, field, user_id;
+	var includeArrAds = [];
 
 	if (req.user)
 		LoggedInUser = req.user;
-	var includeArrAds = [{
-		model: model['Country']
-	}, {
-		model: model['State']
-	}];
 
-	var offset, limit, order, page, field;
+	includeArrAds = [
+		{ model: model['Country'] }, 
+		{ model: model['State']}
+	];
+
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
@@ -44,6 +37,7 @@ export function adList(req, res) {
 	field = req.query.field ? parseInt(req.query.field) : 'created_on';
 	queryPaginationObj['field'] = field;
 	delete req.query.page;
+
 	if (req.query.status) {
 		queryURI['status'] = req.query.status;
 		queryObj['status'] = status[req.query.status]
@@ -54,9 +48,10 @@ export function adList(req, res) {
 			like: '%' + req.query.keyword + '%'
 		};
 	}
+
 	queryObj['vendor_id'] = LoggedInUser.Vendor.id;
 
-	let user_id = LoggedInUser.id;
+	user_id = LoggedInUser.id;
 
 	async.series({
 		cartInfo: function(callback) {
@@ -72,16 +67,19 @@ export function adList(req, res) {
 			}
 		},
 		categories: function(callback) {
-			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
 
+			var includeArr = [];
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
+
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
@@ -93,7 +91,7 @@ export function adList(req, res) {
 				});
 		},
 		ads: function(callback) {
-			service.findAllRows(adsModel, includeArrAds, queryObj, offset, limit, field, 'desc')
+			service.findAllRows('ProductAdsSetting', includeArrAds, queryObj, offset, limit, field, 'desc')
 				.then(function(response) {
 					console.log(response);
 					return callback(null, response);
@@ -124,26 +122,27 @@ export function adList(req, res) {
 }
 
 export function adForm(req, res) {
-	var LoggedInUser = {};
-	var bottomCategory = {};
-	var queryObj = {};
-	var categoryModel = "Category";
-	var countryModel = "Country";
-	var adsModel = "ProductAdsSetting";
+
+	var LoggedInUser = {}, bottomCategory = {}, queryObj = {}, queryObjAds = {};
+	var user_id;
+	var includeArrAds = [];
+
 	if (req.user)
 		LoggedInUser = req.user;
-	let user_id = LoggedInUser.id;
-	var includeArrAds = [{
-		model: model['Country']
-	}, {
-		model: model['State']
-	}];
-	var queryObjAds = {};
+
+	user_id = LoggedInUser.id;
+
+	includeArrAds = [
+		{ model: model['Country'] },
+		{ model: model['State']	}
+	];
+
 	if (req.params.id) {
 		queryObjAds['id'] = req.params.id;
 	} else {
 		queryObjAds['id'] = '';
 	}
+
 	async.series({
 		cartInfo: function(callback) {
 			if (LoggedInUser.id) {
@@ -158,16 +157,19 @@ export function adForm(req, res) {
 			}
 		},
 		categories: function(callback) {
-			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
 
+			var includeArr = [];
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
+
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
@@ -179,7 +181,7 @@ export function adForm(req, res) {
 				});
 		},
 		ads: function(callback) {
-			service.findRow(adsModel, queryObjAds, includeArrAds)
+			service.findRow('ProductAdsSetting', queryObjAds, includeArrAds)
 				.then(function(ad) {
 					if (ad) {
 						return callback(null, ad);
@@ -194,7 +196,7 @@ export function adForm(req, res) {
 		country: function(callback) {
 			const countryField = 'name';
 			const countryOrder = 'ASC';
-			service.findRows(countryModel, queryObj, 0, null, countryField, countryOrder)
+			service.findRows('Country', queryObj, 0, null, countryField, countryOrder)
 				.then(function(country) {
 					return callback(null, country.rows);
 
@@ -203,7 +205,6 @@ export function adForm(req, res) {
 					return callback(null);
 				});
 		},
-
 	}, function(err, results) {
 		if (!err) {
 			res.render('vendorNav/advertisement/ad-form', {
@@ -217,7 +218,6 @@ export function adForm(req, res) {
 				ads: results.ads,
 				status: status,
 				selectedPage: 'ad-form',
-				Position: Position,
 				vendorPlan: vendorPlan,
 			});
 		} else {

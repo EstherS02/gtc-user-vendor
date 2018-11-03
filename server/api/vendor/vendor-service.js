@@ -42,9 +42,9 @@ export async function vendorCountByCountry(params) {
 	});
 }
 
-export async function vendorCountByMarketplace() {
+export async function vendorCountByMarketplace(params) {
 	return new Promise((resolve, reject) => {
-		Sequelize_Instance.query(RawQueries.vendorCountByMarkerplace(), {
+		Sequelize_Instance.query(RawQueries.vendorCountByMarkerplace(params), {
 			model: model['Marketplace'],
 			type: Sequelize_Instance.QueryTypes.SELECT
 		}).then((results) => {

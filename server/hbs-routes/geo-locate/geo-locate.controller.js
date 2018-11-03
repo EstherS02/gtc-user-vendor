@@ -11,11 +11,13 @@ const status = require('../../config/status');
 const service = require('../../api/service');
 const RawQueries = require('../../raw-queries/sql-queries');
 const cartService = require('../../api/cart/cart.service');
+const searchResultService = require('../../api/service/search-result.service');
 const marketplace = require('../../config/marketplace');
 
 function processGeoLocateSearch(req, res, cbNext) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
+	var productCountCategory = {};
 	var queryURI = {};
 
 	if (req.query.selected_category_id)
@@ -51,17 +53,18 @@ function processGeoLocateSearch(req, res, cbNext) {
 				}
 			},
 			categories: function(callback) {
-				let includeArr = [];
-				const categoryOffset = 0;
-				const categoryLimit = null;
-				const categoryField = "id";
-				const categoryOrder = "asc";
-				let categoryModel = "Category";
-				const categoryQueryObj = {};
-
+				var includeArr = [];
+				var categoryOffset, categoryLimit, categoryField, categoryOrder;
+				var categoryQueryObj = {};
+	
+				categoryOffset = 0;
+				categoryLimit = null;
+				categoryField = "id";
+				categoryOrder = "asc";
+				
 				categoryQueryObj['status'] = status["ACTIVE"];
-
-				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+	
+				service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {
 						var categories = category.rows;
 						bottomCategory['left'] = categories.slice(0, 8);
@@ -71,7 +74,7 @@ function processGeoLocateSearch(req, res, cbNext) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
-			},
+			},	
 			fetchAllSubcategories: function(callback) {
 				let includeArr = [];
 				let subCategoryQueryObj = {};
@@ -93,6 +96,61 @@ function processGeoLocateSearch(req, res, cbNext) {
 				service.findAllRows('Country', includeArr, countryQueryObj, 0, null, 'id', 'asc')
 					.then(function(country) {
 						return callback(null, country.rows);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
+			countryProductCount: function(callback) {
+				var resultObj = {};
+				searchResultService.productCountForCountry(productCountCategory)
+					.then(function(response) {
+						var char = JSON.parse(JSON.stringify(response));
+						_.each(char, function(o) {
+							if (_.isUndefined(resultObj[o.regionname])) {
+								resultObj[o.regionname] = {};
+								resultObj[o.regionname]["regionname"] = o.regionname;
+								resultObj[o.regionname]["regionid"] = o.regionid;
+								resultObj[o.regionname]["count"] = 0;
+								resultObj[o.regionname]["subCategory"] = [];
+	
+							}
+							var subCatObj = {}
+							subCatObj["countryname"] = o.countryname;
+							subCatObj["countryid"] = o.countryid;
+							subCatObj["count"] = o.productcount;
+							resultObj[o.regionname]["count"] += Number(o.productcount);
+							resultObj[o.regionname]["subCategory"].push(subCatObj)
+						})
+						return callback(null, resultObj);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
+			productCount: function(callback) {
+				var resultObj = {};
+	
+				searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
+					.then(function(response) {
+						var char = JSON.parse(JSON.stringify(response));
+						_.each(char, function(o) {
+							if (_.isUndefined(resultObj[o.categoryname])) {
+								resultObj[o.categoryname] = {};
+								resultObj[o.categoryname]["categoryName"] = o.categoryname;
+								resultObj[o.categoryname]["categoryID"] = o.categoryid;
+								resultObj[o.categoryname]["count"] = 0;
+								resultObj[o.categoryname]["subCategory"] = [];
+	
+							}
+							var subCatObj = {}
+							subCatObj["subCategoryName"] = o.subcategoryname;
+							subCatObj["subCategoryId"] = o.subcategoryid;
+							subCatObj["count"] = o.subproductcount;
+							resultObj[o.categoryname]["count"] += Number(o.subproductcount);
+							resultObj[o.categoryname]["subCategory"].push(subCatObj)
+						})
+						return callback(null, resultObj);
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return callback(null);
@@ -120,6 +178,7 @@ function processGeoLocateSearch(req, res, cbNext) {
 			products: function(callback) {
 				let includeArr = [{
 					model: model['Vendor']
+					
 				}, {
 					model: model["ProductMedia"],
 					where: {
@@ -147,13 +206,18 @@ function processGeoLocateSearch(req, res, cbNext) {
 						'$lte': parseFloat(req.query.price_max)
 					}
 				}
-
 				if (req.query.selected_category_id)
 					searchObj['product_category_id'] = req.query.selected_category_id;
 				if (req.query.selected_sub_category_id)
 					searchObj['sub_category_id'] = req.query.selected_sub_category_id;
 				if (req.query.selected_location_id)
 					searchObj['product_location'] = req.query.selected_location_id;
+				if(req.query.city)
+					searchObj['city'] = req.query.origin;
+				if(req.query.keyword)
+				searchObj['product_name'] = {
+					like: '%' + req.query.keyword + '%'
+				};
 
 				service.findAllRows("Product", includeArr, searchObj, 0, null, 'id', 'asc')
 					.then(function(results) {
@@ -186,6 +250,8 @@ function processGeoLocateSearch(req, res, cbNext) {
 					totalCategoryProducts: results.categoriesCount.totalCategoryProducts,
 					advancedSearchProducts: results.products.rows,
 					advancedSearchByVendor: advancedSearchByVendor,
+					countryProductCount: results.countryProductCount,
+					productCount: results.productCount,
 					LoggedInUser: LoggedInUser
 				}
 				return cbNext(null, geo_locate_result);

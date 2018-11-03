@@ -12,5 +12,4 @@ var controller = require('./verification.controller');
 
 router.get('/', auth.hasRole(roles['VENDOR']), controller.verification);
 
-
 module.exports = router;

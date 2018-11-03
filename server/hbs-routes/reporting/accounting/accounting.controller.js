@@ -4,10 +4,8 @@ var async = require('async');
 const moment = require('moment');
 const sequelize = require('sequelize');
 const querystring = require('querystring');
-
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
-const reference = require('../../../config/model-reference');
 const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
 const reportsService = require('../../../api/reports/reports.service');

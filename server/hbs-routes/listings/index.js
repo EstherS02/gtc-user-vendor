@@ -6,7 +6,6 @@ var middleware = require('../../middleware');
 var permission = require('../../config/permission');
 const roles = require('../../config/roles');
 var auth = require('../../auth/auth.service')
-var globalUser = require('../../auth/global-user-obj');
 
 var viewListingsCtrl = require('./view-listings/view-listings.controller');
 var addProductCtrl = require('./add-product/add-product.controller');

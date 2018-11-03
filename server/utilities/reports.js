@@ -3,7 +3,6 @@
 const status = require('../config/status');
 const orderStatus = require('../config/order_status');
 const orderItemStatus = require('../config/order-item-status');
-const position = require('../config/position');
 const model = require('../sqldb/model-connect');
 const sequelize = require('sequelize');
 const SequelizeInstance = require('../sqldb/index');
@@ -470,3 +469,72 @@ export function performanceChanges(queryObj, lhsBetween, rhsBetween, limit, offs
         });
     });
 }
+// starts export performance selected values//
+export function exportperformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
+    const pastRange = _.assign({}, queryObj);
+    pastRange.from = lhsBetween[0];
+    pastRange.to = lhsBetween[1];
+    const currentRange = _.assign({}, queryObj);
+    currentRange.from = rhsBetween[0];
+    currentRange.to = rhsBetween[1];
+
+    return new Promise((resolve, reject) => {
+        var result = {};
+        return getAllexportPerformance(pastRange, limit, offset).then(function(lhsResult) {
+            result.lhs_result = lhsResult;
+            return result;
+        }).then(function() {
+            if (queryObj.compare == 'true') {
+                return getAllexportPerformance(currentRange, limit, offset).then(function(rhsResult) {
+                    result.rhs_result = rhsResult;
+                    resolve(result);
+                });
+            } else {
+                resolve(result);
+            }
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });
+}
+// Ends export performance selected values//
+
+// started selected values to exported the export functions//
+function getAllexportPerformance(queryObj, limit, offset) {
+    return new Promise((resolve, reject) => {
+        SequelizeInstance.query(`SELECT
+				( SELECT product_name FROM product WHERE product.id = order_items.product_id
+     				LIMIT 1 ) AS product_name,
+     			( SELECT NAME FROM marketplace WHERE product.marketplace_id = marketplace.id
+					LIMIT 1 ) AS marketplace_name,
+    			SUM(orders.total_price) AS total_sales,
+    			SUM(orders.total_price) - SUM(orders.gtc_fees) AS vendor_fee,
+    			SUM(orders.gtc_fees) AS gtc_fees
+				FROM
+    					orders
+					LEFT OUTER JOIN order_items ON orders.id = order_items.order_id
+					LEFT OUTER JOIN product ON order_items.product_id = product.id
+				WHERE
+    				product.vendor_id = :vendor_id and order_items.created_on between :from and :to
+				GROUP BY
+    				order_items.product_id
+    			ORDER BY SUM(orders.total_price) DESC
+				LIMIT :limit OFFSET :offset`, {
+            replacements: {
+                vendor_id: queryObj.vendor_id,
+                from: moment(queryObj.from).format("YYYY-MM-DD"),
+                to: moment(queryObj.to).format("YYYY-MM-DD"),
+                limit: limit,
+                offset: offset
+            },
+            type: sequelize.QueryTypes.SELECT
+        }).then(data => {
+            resolve(data);
+        }).catch(function(err) {
+            console.log('getAllPerformance error ', err);
+            reject(err);
+        });
+    });
+}
+// Ends selected values to exported the export functions//

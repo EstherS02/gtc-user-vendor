@@ -90,7 +90,9 @@ var all = {
 			subscriptionAutoRenewalOrder: "SUBSCRIPTION-AUTO-RENEWAL-ORDER",
 			newProductAnnouncementMail: "NEW-PRODUCT-ANNOUNCEMENT-MAIL",
 			featureProductAutoRenewal: "FEATURE-PRODUCT-AUTO-RENEWAL",
-			vendorOrderConformation: "VENDOR-ORDER-CONFORMATION"
+			vendorOrderConformation: "VENDOR-ORDER-CONFORMATION",
+			vendorOrderShipped:"VENDOR-ORDER-SHIPPED",
+			orderDelivered: "ORDER-DELEIVERED"
 		}
 	},
 	//Notification

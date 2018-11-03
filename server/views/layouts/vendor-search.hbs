@@ -130,9 +130,9 @@
 				</ul>
 
 				{{#ifCond marketplaceURl "==" 'directories'}}
-					<h5 class="right-header-sm" style="margin-top:10px">FILTER BY MARKETPLACE</h5>
-					<p class="right-header-xs bg{{queryURI.marketplace}}">ALL TYPES ({{locations.count}})</p>
-					<ul class="right-list-view category-fixed">
+					<h5 class="right-header-sm" style="margin-top:10px; display:none">FILTER BY MARKETPLACE</h5>
+					<p class="right-header-xs bg{{queryURI.marketplace}}" style="display:none">ALL TYPES ({{locations.count}})</p>
+					<ul class="right-list-view category-fixed" style="display:none">
 						{{#each allMarkerPlace.rows}}
 							<li>
 								<a {{#ifCond ../queryURI.marketplace "==" this.id}} class="active" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 marketplace=this.id) 'null'}}">
@@ -170,7 +170,7 @@
 												<tr class="d-flex">
 													<td class="col-3">
 														<div class="product-left-col">
-															<img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+															<img class="object-fit" src="{{this.url}}" onError="imgError(this)" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
 														</div>
 													</td>
 													<td class="col-9">

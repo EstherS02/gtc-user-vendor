@@ -4,7 +4,6 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
-const sequelize = require('sequelize');
 const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 const orderStatus = require('../../config/order_status');

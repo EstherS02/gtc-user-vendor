@@ -13,7 +13,7 @@ var transporter = nodemailer.createTransport(smtpTransport({
 		user: config.smtpTransport.auth.user,
 		pass: config.smtpTransport.auth.pass
 	}
-}));;
+}));
 
 module.exports = function(email, done) {
 	const arr = email.attrs.data.mailArray;
@@ -21,7 +21,7 @@ module.exports = function(email, done) {
 		transporter.sendMail(emailObj, function(error, response) {
 			if (error) {
 				console.log("Error:::", error);
-			} else {
+				} else {
 				console.log("response", response);
 			}
 		});

@@ -1,10 +1,6 @@
 'use strict';
 
 const async = require('async');
-const _ = require('lodash');
-const config = require('../../../config/environment');
-const status = require('../../../config/status');
-const service = require('../../../api/service');
 
 export function shippingMethod(req, res) {
 	var LoggedInUser = {};

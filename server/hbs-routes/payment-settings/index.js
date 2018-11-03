@@ -12,5 +12,4 @@ var controller = require('./payment-settings.controller');
 
 router.get('/', auth.hasRole(roles['VENDOR']), controller.paymentSettings);
 
-
 module.exports = router;

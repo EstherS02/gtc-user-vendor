@@ -8,7 +8,6 @@ const model = require('../../sqldb/model-connect');
 const providers = require('../../config/providers');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
-const sendEmail = require('../../agenda/send-email');
 const service = require('../service');
 const moment = require('moment');
 
@@ -114,7 +113,8 @@ export function create(req, res) {
 						var queryObjEmailTemplate = {};
 						var emailTemplateModel = "EmailTemplate";
 						queryObjEmailTemplate['name'] = config.email.templates.userCreate;
-
+						var agenda = require('../../app').get('agenda');
+						
 						service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 							.then(function(response) {
 								if (response) {
@@ -125,10 +125,14 @@ export function create(req, res) {
 									body = response.body.replace('%USERNAME%', username);
 									body = body.replace('%LINK%', config.baseUrl + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
 
-									sendEmail({
+									var mailArray = [];
+									mailArray.push({
 										to: email,
 										subject: subject,
 										html: body
+									});
+									agenda.now(config.jobs.email, {
+										mailArray: mailArray
 									});
 									return res.status(201).send(user);
 								} else {
@@ -189,6 +193,7 @@ export function resend(req, res) {
 							var queryObjEmailTemplate = {};
 							var emailTemplateModel = "EmailTemplate";
 							queryObjEmailTemplate['name'] = config.email.templates.userCreate;
+							var agenda = require('../../app').get('agenda');
 
 							service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 								.then(function(response) {
@@ -200,10 +205,14 @@ export function resend(req, res) {
 										body = response.body.replace('%USERNAME%', username);
 										body = body.replace('%LINK%', config.baseUrl + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
 
-										sendEmail({
+										var mailArray = [];
+										mailArray.push({
 											to: email,
 											subject: subject,
 											html: body
+										});
+										agenda.now(config.jobs.email, {
+											mailArray: mailArray
 										});
 										return res.status(201).send(user);
 									} else {
@@ -624,6 +633,7 @@ export function forgotPassword(req, res) {
 							var queryObjEmailTemplate = {};
 							var emailTemplateModel = "EmailTemplate";
 							queryObjEmailTemplate['name'] = config.email.templates.passwordReset;
+							var agenda = require('../../app').get('agenda');
 
 							service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 								.then(function(response) {
@@ -637,10 +647,14 @@ export function forgotPassword(req, res) {
 											body = response.body.replace('%USERNAME%', username);
 											body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + email + "&forgot_password_token=" + forgot_password_token);
 
-											sendEmail({
+											var mailArray = [];
+											mailArray.push({
 												to: email,
 												subject: subject,
 												html: body
+											});
+											agenda.now(config.jobs.email, {
+												mailArray: mailArray
 											});
 											return res.status(201).send("Instructions have been sent to your associated email account. Check your email and follow the instructions to reset your password.");
 										} else {

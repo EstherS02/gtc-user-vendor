@@ -91,6 +91,55 @@
 	.ibox-title h2 {
 		display: inline-block;
 	}
+	.progress {
+	    width: 200px;
+	    height: 200px;
+	    line-height: 200px;
+	}
+	.progress .progress-value {
+		line-height: 185px;
+		font-size: 38px;
+	}
+	.home-bottom-banner-3 .coming-soon {
+		display: block;
+	    margin-left: auto;
+	    margin-right: auto;
+	    width: 50%;
+	}
+	.home-bottom-banner-2 .content {
+		padding: 30px;
+	}
+	.starter_seller {
+		width: 100%;
+		left: 0px;
+		border-radius: 70px;
+		margin-top: 0px;
+	}
+	.service_provider {
+		width: 100%;
+		left: 0px;
+		border-radius: 70px;
+		margin-top: 20px;
+	}
+	.lifestyle_provider{
+		width: 100%;
+		left: 0px;
+		border-radius: 70px;
+		margin-top: 20px;
+	}
+	.lifestyle_provider p{
+		padding: 0px;
+	}
+
+	.public_seller_pg
+	{
+		width: 100%;
+		left: 0px;
+		margin-top: 20px;
+	}
+	.public_seller_pg_list1 {
+	    padding: 0px !important;
+	}
 }
 
 @media (min-width: 768px) {
@@ -119,7 +168,7 @@
 	}
 	.responsive-flex {
 		display: flex;
-	  	justify-content: space-between;
+		justify-content: space-between;
 	}
 	.responsive-flex .align-left, .align-left {
 		float: left;
@@ -134,6 +183,28 @@
 		flex-flow: row wrap;
 		-webkit-box-align: center;
 		align-items: center;
+	}
+	.progress {
+	    width: 200px;
+	    height: 200px;
+	    line-height: 200px;
+	}
+	.progress .progress-value {
+		line-height: 185px;
+		font-size: 38px;
+	}
+	.home-bottom-banner-2 .home-ad {
+		height: 424px;
+		width: 100%;
+	}
+	.home-bottom-banner-3 .coming-soon {
+		float: right;
+	}
+	.home-bottom-banner-2 .content {
+		padding: 70px;
+	}
+	.login-right-content {
+		padding: 43px 120px 10px 70px;
 	}
 }
 
@@ -183,7 +254,7 @@
 		color: #2178b5;
 	}
 	.home-banner .banner-padding {
-		padding: 17px 0;
+		padding: 15px 0;
 	}
 	.w-20 {
 		max-width: 20%;
@@ -228,7 +299,7 @@
 	h2.divider-line { 
 		content: "";
 		position: absolute;
-		z-index: -1;
+		z-index: 999;
 		height: 150px;
 		top: 0;
 		font-size: 0.813em;
@@ -283,7 +354,6 @@
 	}
 	.gtc-top-header {
 		margin-right: -5rem;
-		/*padding-left: 10px;*/
 		border-bottom-left-radius: 10px;
 	}
 	.landing {
@@ -298,7 +368,8 @@
 		color: #2178b5;
 	}
 	.home-banner .banner-padding {
-		padding: 17px 0;
+		padding: 15px 0;
+		height: 365px;
 	}
 	.w-20 {
 		max-width: 20%;
@@ -343,7 +414,7 @@
 	h2.divider-line { 
 		content: "";
 		position: absolute;
-		z-index: -1;
+		z-index: 999;
 		height: 150px;
 		top: 0;
 		font-size: 0.813em;
@@ -359,6 +430,9 @@
 		color: #769dc8;
 		text-align: center;
 		background: #fff;
+	}
+	.home-banner-right {
+		margin-top: 10px;
 	}
 	.home-banner {
 		background: url(../img/signup-hero-home.jpg);
@@ -398,7 +472,6 @@
 	}
 	.gtc-top-header {
 		margin-right: -5rem;
-		/*padding-left: 10px;*/
 		border-bottom-left-radius: 10px;
 	}
 	.landing {
@@ -413,7 +486,7 @@
 		color: #2178b5;
 	}
 	.home-banner .banner-padding {
-		padding: 17px 0;
+		padding: 15px 0;
 	}
 	.w-20 {
 		max-width: 20%;
@@ -458,7 +531,7 @@
 	h2.divider-line { 
 		content: "";
 		position: absolute;
-		z-index: -1;
+		z-index: 999;
 		height: 150px;
 		top: 0;
 		font-size: 0.813em;
@@ -523,8 +596,8 @@
 		padding-right: 5rem;
 	}
 	.gtc-top-header {
-		margin-bottom: -5rem;
-		/*padding-left: 10px;*/
+		margin-right: -6rem;
+		font-size: 0.813em;
 		border-bottom-left-radius: 10px;
 	}
 	.landing {
@@ -539,7 +612,8 @@
 		color: #2178b5;
 	}
 	.home-banner .banner-padding {
-		padding: 17px 0;
+		padding: 15px 0;
+		height: 440px;
 	}
 	.w-20 {
 		max-width: 20%;
@@ -584,7 +658,7 @@
 	h2.divider-line { 
 		content: "";
 		position: absolute;
-		z-index: -1;
+		z-index: 999;
 		height: 150px;
 		top: 0;
 		font-size: 0.813em;
@@ -601,10 +675,32 @@
 		text-align: center;
 		background: #fff;
 	}
+	.home-banner-right {
+		margin-top: 40px;
+	}
 	.home-banner {
 		background: url(../img/signup-hero-home.jpg);
 		background-repeat: no-repeat;
-		background-size: 56% auto;
+		background-size: 54% 100%;
+	}
+	.progress {
+	    width: 250px;
+	    height: 250px;
+	    line-height: 250px;
+	}
+	.progress .progress-value {
+		line-height: 235px;
+		font-size: 48px;
+	}
+	.home-bottom-banner-2 h1 {
+		font-size: 2.5rem;
+	}
+	.home-bottom-banner-2 .left1 {
+		padding: 0 105px;
+	}
+	.home-bottom-banner-2 .home-ad {
+		height: 460px;
+    	width: 100%
 	}
 }
 

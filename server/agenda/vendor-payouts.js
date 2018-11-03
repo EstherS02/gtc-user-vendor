@@ -8,7 +8,6 @@ const paymentType = require('../config/order-payment-type');
 const moment = require('moment');
 const _ = require('lodash');
 const stripe = require('../payment/stripe.payment');
-const sendEmail = require('./send-email');
 const populate = require('../utilities/populate');
 const paymentMethod = require('../config/payment-method');
 const escrowAction = require('../config/escrow-action');
@@ -98,12 +97,16 @@ function checkpaymentEscrow(order) {
                 return;
             } else {
 				vendorPay = order.Order.vendor_pay;
-				stripeOrPaypalFees = orderTotal* 0.1;
-			
-				payoutAmount = vendorPay - stripeOrPaypalFees;
+
+				//NEED TO UNCOMMENT LATER 
+
+				//stripeOrPaypalFees = order.Order.total_price* 0.1;
+				//payoutAmount = vendorPay - stripeOrPaypalFees;
+
+				payoutAmount = vendorPay;
 
                 payoutVendor = order.Order.Products[0].Vendor.id;
-                payoutOrder = order.order_id;
+				payoutOrder = order.order_id;
 
                 payoutVendorPromises.push(fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder));
                 return Promise.all(payoutVendorPromises);
@@ -150,31 +153,38 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
                 }
             } else {
                 return;
-            }
+			}
+			return;
         })
         .then(function (payoutDetails) {
             var paymentPromises = [];
             var paymentObj ={};
 
-             if(payoutDetails.paid){ 
+             if(payoutDetails){ 
 
                 if(PaymentMethod == paymentMethod['STRIPE']){
-                    var paymentObj = {
-                        date: new Date(payoutDetails[0].created),
-                        amount: payoutAmount,
-                        payment_method: paymentMethod['STRIPE'],
-                        status: statusCode['ACTIVE'],
-                        payment_response: JSON.stringify(payoutDetails)
-                    };
+					if(payoutDetails.paid){ 
+						var paymentObj = {
+							date: new Date(payoutDetails[0].created),
+							amount: payoutAmount,
+							payment_method: paymentMethod['STRIPE'],
+							status: statusCode['ACTIVE'],
+							payment_response: JSON.stringify(payoutDetails)
+						};
+					}	
                 }
                 else  if(PaymentMethod == paymentMethod['PAYPAL']){
-                    paymentObj = {
-                       date: new Date(),
-                       amount: payoutAmount,
-                       payment_method: paymentMethod['PAYPAL'],
-                       status: statusCode['ACTIVE'],
-                       payment_response: JSON.stringify(payoutDetails)
-                      }
+					if( payoutDetails[0].batch_header.batch_status == 'PENDING'){ 
+						paymentObj = {
+						date: new Date(),
+						amount: payoutAmount,
+						payment_method: paymentMethod['PAYPAL'],
+						status: statusCode['ACTIVE'],
+						payment_response: JSON.stringify(payoutDetails),
+						created_by: 'GTC Auto Payout',
+						created_on: new Date()
+						}
+					}
                 } 
                 paymentPromises.push(createPaymentRow(paymentObj));
                 return Promise.all(paymentPromises);
@@ -188,7 +198,9 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
                     payment_id: paymentRow[0].id,
                     order_id: payoutOrder,
                     status: statusCode["ACTIVE"],
-                    action: escrowAction["TRANSFERED"]
+					action: escrowAction["TRANSFERED"],
+					created_by: 'GTC Auto Payout',
+					created_on: new Date()
                 }
 
                 return service.createRow('OrderPaymentEscrow', orderPaymentEscrowObj)
@@ -217,10 +229,12 @@ function createPaymentRow(paymentObj) {
 
 function stripeConnectMail(vendor) {
 
-    var emailTemplateQueryObj = {};
+	var emailTemplateQueryObj = {};
+	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.stripeConnectEmail;
-
+	var agenda = require('../app').get('agenda');
+	
     return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
             if (response) {
@@ -230,12 +244,15 @@ function stripeConnectMail(vendor) {
                 var subject = response.subject;
                 var body = response.body.replace('%USERNAME%', username);
 
-                sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
-                });
-                return;
+                mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
             } else {
                 return;
             }
@@ -248,8 +265,10 @@ function stripeConnectMail(vendor) {
 
 function payoutMail(vendor, payoutOrder, payoutAmount) {
 
-    var emailTemplateQueryObj = {};
+	var emailTemplateQueryObj = {};
+	var mailArray = [];
     emailTemplateQueryObj['name'] = config.email.templates.payoutMail;
+	var agenda = require('../app').get('agenda');
 
     return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
         .then(function (response) {
@@ -266,12 +285,15 @@ function payoutMail(vendor, payoutOrder, payoutAmount) {
                 body = body.replace('%CURRENCY%', CURRENCY);
                 body = body.replace('%CREATED_DATE%', date);
 
-                sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
-                });
-                return;
+                mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
             } else {
                 return;
             }

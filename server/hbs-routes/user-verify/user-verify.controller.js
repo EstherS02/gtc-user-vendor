@@ -2,14 +2,11 @@
 
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
-const addressCode = require('../../config/address');
 const service = require('../../api/service');
 const async = require('async');
-const populate = require('../../utilities/populate');
 
 export function userVerify(req, res) {
 	var bottomCategory = {};

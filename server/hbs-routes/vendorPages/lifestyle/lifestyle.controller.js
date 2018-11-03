@@ -2,7 +2,6 @@
 
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
-const reference = require('../../../config/model-reference');
 const status = require('../../../config/status');
 const verificationStatus = require('../../../config/verification_status');
 const productService = require('../../../api/product/product.service');
@@ -13,9 +12,7 @@ const cartService = require('../../../api/cart/cart.service');
 const shopService=require('../../../api/vendor/vendor-service')
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
-const moment = require('moment');
-import series from 'async/series';
-var async = require('async');
+const async = require('async');
 var _ = require('lodash');
 
 export function vendorLifestyle(req, res) {

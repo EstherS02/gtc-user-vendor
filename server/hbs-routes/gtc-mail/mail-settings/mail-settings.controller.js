@@ -2,33 +2,32 @@
 
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
-const reference = require('../../../config/model-reference');
 const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
-var async = require('async');
+const async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
 const mailStatus = require('../../../config/mail-status');
 const cartService = require('../../../api/cart/cart.service');
 const marketplace = require('../../../config/marketplace');
 
 export function mailSettings(req, res) {
-	var LoggedInUser = {};
-	var bottomCategory = {};
+	var LoggedInUser = {}, bottomCategory = {}, queryObj = {}, queryObjCategory ={};
+	var includeArr = [];
+	var user_id;
 
 	if (req.user)
 		LoggedInUser = req.user;
 
-	let user_id = LoggedInUser.id;
+	user_id = LoggedInUser.id;
+
 	if (req.user.Vendor.id) {
-		//pagination 
-		var page;
-		var offset;
-		var limit;
-		var order = "asc";
-		var field = "id";
-		var modelName = 'VendorNotification';
-		var queryObj = {};
-		var includeArr = [{
+
+		var page, offset, limit, order, field;
+
+		order = "asc";
+		field = "id";
+
+		includeArr = [{
 			model: model["VendorNotificationSetting"],
 			where: {
 				vendor_id: req.user.Vendor.id
@@ -36,7 +35,7 @@ export function mailSettings(req, res) {
 			required: false
 		}];
 
-		var queryObjCategory = {
+		queryObjCategory = {
 			status: statusCode['ACTIVE']
 		};
 
@@ -54,7 +53,7 @@ export function mailSettings(req, res) {
 				}
 			},
 			notifications: function(callback) {
-				service.findRows(modelName, queryObj, 0, null, field, order, includeArr)
+				service.findRows('VendorNotification', queryObj, 0, null, field, order, includeArr)
 					.then(function(results) {
 						return callback(null, results);
 
@@ -65,16 +64,17 @@ export function mailSettings(req, res) {
 			},
 			categories: function(callback) {
 				var includeArr = [];
-				const categoryOffset = 0;
-				const categoryLimit = null;
-				const categoryField = "id";
-				const categoryOrder = "asc";
-				var categoryModel = "Category";
-				const categoryQueryObj = {};
-
+				var categoryOffset, categoryLimit, categoryField, categoryOrder;
+				var categoryQueryObj = {};
+	
+				categoryOffset = 0;
+				categoryLimit = null;
+				categoryField = "id";
+				categoryOrder = "asc";
+				
 				categoryQueryObj['status'] = statusCode["ACTIVE"];
-
-				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+	
+				service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {
 						var categories = category.rows;
 						bottomCategory['left'] = categories.slice(0, 8);
@@ -84,7 +84,7 @@ export function mailSettings(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
-			}
+			},
 		}, function(err, results) {
 			if (!err) {
 				var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
