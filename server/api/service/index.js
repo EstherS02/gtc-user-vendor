@@ -601,7 +601,7 @@ export function imgDelete(imgPath) {
 		  	resolve(true);
 			}
 			catch(err){
-				return reject(error);
+				return reject(err);
 			}
 		});
 }

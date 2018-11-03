@@ -25,7 +25,7 @@
 			formSubmitBtn.css("cursor", "pointer")
 
 		});
-		 $("input[@name='lom']").change(function(){
+		 $("#verificationForm").change(function(){
 	        formSubmitBtn.removeAttr("disabled")
 			formSubmitBtn.css("cursor", "pointer")
 	    });
@@ -87,7 +87,7 @@
 						ouputPopup(data);
 					},
 					error: function(err) {
-						console.log("error", err)
+						console.log("error:::", err)
 						ouputPopupError(err.responseText);
 					}
 				});
@@ -108,21 +108,21 @@
 		}
 	}
 	function ouputPopup(data) {
-		$('#gtc-add-to-cart').prop('disabled', false);
-		$('#gtc-add-to-cart').removeClass('alert-danger').addClass('alert-success');
-		$('#gtc-add-to-cart .cart-message').text(data);
-		$("#gtc-add-to-cart").fadeTo(7000, 500).slideUp(500, function() {
-			$("#gtc-add-to-cart").slideUp(500);
+		$('#gtc-cart-alert').prop('disabled', false);
+		$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+		$('#gtc-cart-alert .alert-message').text(data);
+		$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+			$("#gtc-cart-alert").slideUp(500);
 			location.reload();
 		});
 	}
 
 	function ouputPopupError(data) {
-		$('#gtc-add-to-cart').prop('disabled', false);
-		$('#gtc-add-to-cart').removeClass('alert-success').addClass('alert-danger');
-		$('#gtc-add-to-cart .cart-message').text(data);
-		$("#gtc-add-to-cart").fadeTo(7000, 500).slideUp(500, function() {
-			$("#gtc-add-to-cart").slideUp(500);
+		$('#gtc-cart-alert').prop('disabled', false);
+		$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+		$('#gtc-cart-alert .alert-message').text(data);
+		$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+			$("#gtc-cart-alert").slideUp(500);
 		});
 	}
 
@@ -148,7 +148,7 @@
 									<button type="button" class="close" data-dismiss="alert">
 										<span aria-hidden="true">&times;</span>
 									</button>
-									<span class="cart-message"></span>
+									<span class="alert-message"></span>
 								</div>
 								<p style="font-size: 13px;padding-left:5px">
 									Global Trade Connects requires all vendor to go through a several step process of documentation submission in order to verify
