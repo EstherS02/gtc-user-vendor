@@ -1,8 +1,6 @@
-	'use strict';
+'use strict';
 
-const _ = require('lodash');
 const sequelize = require('sequelize');
-
 const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
 const Sequelize_Instance = require('../../sqldb/index');
