@@ -109,8 +109,9 @@ var all = {
 		}
 	},
 	jobs: {
-		'email': 'email-notification',
-		'orderEmail': 'order-email',
+		"email": "email-notification",
+		"orderEmail": "order-email",
+		"orderItemPayout": "order-item-payout",
 		"couponExpiry": "couponExpiry",
 		"vendorPayouts": "vendorPayouts",
 		"aliExpressScrape": "aliexpress-scrape",
@@ -133,6 +134,10 @@ var all = {
 		gtc_fees: 1,
 		service_fee: 10,
 		lifestyle_fee: 10
+	},
+	payment: {
+		"cancelOrderItem": 3,
+		"returnOrderItem": 3
 	},
 	sesTransporter: {
 		accessKeyId: process.env.SES_ACCESS_KEY_ID,

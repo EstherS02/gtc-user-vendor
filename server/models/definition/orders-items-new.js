@@ -183,6 +183,7 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const OrdersItemsNew = model.OrdersItemsNew;
+    const OrderItemPayout = model.OrderItemPayout;
     const OrdersNew = model.OrdersNew;
     const Product = model.Product;
     const Coupon = model.Coupon;
@@ -195,6 +196,12 @@ module.exports.initRelations = () => {
 
     OrdersItemsNew.belongsTo(Product, {
         foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    OrdersItemsNew.hasMany(OrderItemPayout, {
+        foreignKey: 'order_item_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

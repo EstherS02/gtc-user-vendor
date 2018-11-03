@@ -141,7 +141,7 @@ module.exports = async function(job, done) {
 		}
 		done();
 	} catch (error) {
-		console.log("indexExample Error:::", error);
+		console.log("orderEmail Error:::", error);
 		return error;
 	}
 }

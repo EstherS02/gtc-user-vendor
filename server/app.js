@@ -32,12 +32,14 @@ var mailService = require('./api/mail/reply-mail.service');
 var aliExpressScrape = require('./agenda/aliexpress-scrape');
 var ebayInventory = require('./agenda/ebay-inventory');
 var orderEmail = require('./agenda/order-email');
+var orderItemPayout = require('./agenda/order-item-payout');
 var amazonImportJob = require('./agenda/amazon-import');
 
 agenda.define(config.jobs.email, sendEmailNew);
 agenda.define(config.jobs.aliExpressScrape, aliExpressScrape);
 agenda.define(config.jobs.ebayInventory, ebayInventory);
 agenda.define(config.jobs.orderEmail, orderEmail);
+agenda.define(config.jobs.orderItemPayout, orderItemPayout);
 agenda.define(config.jobs.vendorPayouts, vendorPayouts);
 agenda.define(config.jobs.planRenewal, planRenewal);
 agenda.define(config.jobs.bulkUserPlanRenewal, bulkUserPlanRenewal);
@@ -51,6 +53,7 @@ agenda.define(config.jobs.amazonImportJob, amazonImportJob);
 agenda.on('ready', function() {
 	console.log('agenda onReady');
 	agenda.every('8 hours', 'vendorPayouts');
+	agenda.every('8 hours', config.jobs.orderItemPayout);
 	agenda.every('12 hours', 'planRenewal');
 	agenda.every('12 hours', 'bulkUserPlanRenewal');
 	agenda.every('12 hours', 'subscriptionAutoRenewal');
