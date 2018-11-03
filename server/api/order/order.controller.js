@@ -57,7 +57,6 @@ export async function dispatchOrder(req, res) {
 		return res.status(400).send("Invalid delivery date.");
 	}
 
-
 	bodyParams['provider_name'] = req.body.select_courier;
 	bodyParams['tracking_id'] = req.body.tracking_id;
 	bodyParams['status'] = status['ACTIVE'];
@@ -88,10 +87,7 @@ export async function dispatchOrder(req, res) {
 		if (vendorOrder) {
 			for (let item of vendorOrder.OrdersNew.OrdersItemsNews) {
 				if (item.order_item_status == orderItemStatus['ORDER_INITIATED']) {
-					response['statusCode'] = 400;
-					response['data'] = "Please confirm all items.";
-					return response;
-					break;
+					return res.status(400).send("Please confirm all items.");
 				}
 				if (item.order_item_status == orderItemStatus['CONFIRMED']) {
 					orderItemPromises.push(service.updateRecordNew(orderItemModelName, {

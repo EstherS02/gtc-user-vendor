@@ -114,7 +114,6 @@ module.exports = async function(job, done) {
 		userOrderResponse.ordered_date = moment(userOrderResponse.ordered_date).format('MMM D, Y');
 		var userOrderResult = userOrderTemplate(userOrderResponse);
 
-
 		await Promise.all(orderVendors.map(async (orderVendor, i) => {
 			orderVendors[i].OrdersNew.total_price = await _.sumBy(orderVendor.OrdersNew.OrdersItemsNews, function(o) {
 				return parseFloat(o.price);
