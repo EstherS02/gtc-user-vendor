@@ -34,12 +34,15 @@ export function upgradeplan(req, res) {
 	var order = "desc"; //"asc"
 	var offset = 0;
 	var limit = 1;
-	var vendor_id = LoggedInUser.Vendor.id;
-	var rating_limit = 120;
 	var queryObj = {};
-	queryObj = {
-		vendor_id: vendor_id,
-	};
+	var vendor_id
+	if (LoggedInUser.Vendor) {
+		vendor_id = LoggedInUser.Vendor.id;
+		queryObj = {
+			vendor_id: vendor_id,
+		};
+	}
+	var rating_limit = 120;
 
 	//pagination 
 	var page;
@@ -129,9 +132,9 @@ export function upgradeplan(req, res) {
 		planDetails: function(callback) {
 			const currentDate = moment().format('YYYY-MM-DD');
 			var includeArr = populate.populateData('Plan');
-			var queryObjs = {
-				vendor_id: vendor_id
-			}
+			var queryObjs = {}
+			if (vendor_id) 
+				queryObjs.vendor_id = vendor_id;
 			var field = "id";
 			var order = "desc";
 			var limit = 1;
@@ -183,12 +186,16 @@ export function userBulkupgradePlan(req, res) {
 	var order = "desc";
 	var offset = 0;
 	var limit = 1;
-	var vendor_id = LoggedInUser.Vendor.id;
-	var rating_limit = 120;
+	var vendor_id;
 	var queryObj = {};
-	queryObj = {
-		vendor_id: vendor_id,
-	};
+	if (LoggedInUser.Vendor) {
+		vendor_id = LoggedInUser.Vendor.id;
+		queryObj = {
+			vendor_id: vendor_id,
+		};
+	}
+	
+	var rating_limit = 120;
 
 	//pagination 
 	var page;
