@@ -40,7 +40,7 @@ function removeImage(e, imageIndex) {
 
 function removeBaseImage(e, imageIndex) {
 	if (productBaseImage[imageIndex].id) {
-		if (confirm('Are you sure you want to delete this thing into the database?')) {
+		if (confirm('Are you sure you want to delete base image from database?')) {
 		    // Delete it!
 		    productBaseImageId = productBaseImage[imageIndex].id;
 			productBaseImage.splice(imageIndex, 1);

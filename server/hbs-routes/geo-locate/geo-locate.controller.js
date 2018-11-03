@@ -11,11 +11,13 @@ const status = require('../../config/status');
 const service = require('../../api/service');
 const RawQueries = require('../../raw-queries/sql-queries');
 const cartService = require('../../api/cart/cart.service');
+const searchResultService = require('../../api/service/search-result.service');
 const marketplace = require('../../config/marketplace');
 
 function processGeoLocateSearch(req, res, cbNext) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
+	var productCountCategory = {};
 	var queryURI = {};
 
 	if (req.query.selected_category_id)
@@ -99,6 +101,61 @@ function processGeoLocateSearch(req, res, cbNext) {
 						return callback(null);
 					});
 			},
+			countryProductCount: function(callback) {
+				var resultObj = {};
+				searchResultService.productCountForCountry(productCountCategory)
+					.then(function(response) {
+						var char = JSON.parse(JSON.stringify(response));
+						_.each(char, function(o) {
+							if (_.isUndefined(resultObj[o.regionname])) {
+								resultObj[o.regionname] = {};
+								resultObj[o.regionname]["regionname"] = o.regionname;
+								resultObj[o.regionname]["regionid"] = o.regionid;
+								resultObj[o.regionname]["count"] = 0;
+								resultObj[o.regionname]["subCategory"] = [];
+	
+							}
+							var subCatObj = {}
+							subCatObj["countryname"] = o.countryname;
+							subCatObj["countryid"] = o.countryid;
+							subCatObj["count"] = o.productcount;
+							resultObj[o.regionname]["count"] += Number(o.productcount);
+							resultObj[o.regionname]["subCategory"].push(subCatObj)
+						})
+						return callback(null, resultObj);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
+			productCount: function(callback) {
+				var resultObj = {};
+	
+				searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
+					.then(function(response) {
+						var char = JSON.parse(JSON.stringify(response));
+						_.each(char, function(o) {
+							if (_.isUndefined(resultObj[o.categoryname])) {
+								resultObj[o.categoryname] = {};
+								resultObj[o.categoryname]["categoryName"] = o.categoryname;
+								resultObj[o.categoryname]["categoryID"] = o.categoryid;
+								resultObj[o.categoryname]["count"] = 0;
+								resultObj[o.categoryname]["subCategory"] = [];
+	
+							}
+							var subCatObj = {}
+							subCatObj["subCategoryName"] = o.subcategoryname;
+							subCatObj["subCategoryId"] = o.subcategoryid;
+							subCatObj["count"] = o.subproductcount;
+							resultObj[o.categoryname]["count"] += Number(o.subproductcount);
+							resultObj[o.categoryname]["subCategory"].push(subCatObj)
+						})
+						return callback(null, resultObj);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
 			categoriesCount: function(callback) {
 				service.categoryAndSubcategoryCount().then(function(result) {
 					return callback(null, result);
@@ -121,6 +178,7 @@ function processGeoLocateSearch(req, res, cbNext) {
 			products: function(callback) {
 				let includeArr = [{
 					model: model['Vendor']
+					
 				}, {
 					model: model["ProductMedia"],
 					where: {
@@ -192,6 +250,8 @@ function processGeoLocateSearch(req, res, cbNext) {
 					totalCategoryProducts: results.categoriesCount.totalCategoryProducts,
 					advancedSearchProducts: results.products.rows,
 					advancedSearchByVendor: advancedSearchByVendor,
+					countryProductCount: results.countryProductCount,
+					productCount: results.productCount,
 					LoggedInUser: LoggedInUser
 				}
 				return cbNext(null, geo_locate_result);

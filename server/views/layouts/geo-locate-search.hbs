@@ -20,10 +20,14 @@
 			<div class="col-md-3" style="height: 650px;overflow-y: scroll;overflow-x: hidden;">
 				<div class="row">
 					<div class="col-md-10 geo_sort_bg">
-						<p>Showing <b> {{advancedSearchProducts.length}} products</b></p>
+						<p>Showing
+							<b> {{advancedSearchProducts.length}} products</b>
+						</p>
 					</div>
 					<div class="col-md-2 geo_arrow_bg">
-						<a href="/geo-locate" style="color:#fff;"><i class="fas fa-caret-right"></i></a>
+						<a href="/geo-locate" style="color:#fff;">
+							<i class="fas fa-caret-right"></i>
+						</a>
 					</div>
 				</div>
 
@@ -31,38 +35,82 @@
 					<div class="col-md-12 col-12" style="background-color:#FFF">
 						<div class="ibox" style="margin-bottom: 0px;">
 							<div class="ibox-content ibox-content-geo-locate bg-transparent">
-								<p class="right-header-xs" style="font-size: 11px;"><b>FILTER BY CATEGORY</b></p>
+								<p class="right-header-xs" style="font-size: 11px;">
+									<b>FILTER BY CATEGORY</b>
+								</p>
 								<p class="right-header-xs bg1">ALL CATEGORIES</p>
 								<ul class="right-list-view category-fixed-geo-locate">
-									{{#each categories}}
+									{{!-- {{#each categories}}
 										<li>
 											<a data-toggle="collapse" role="button" aria-expanded="true" class="collapsed coll" href="#list{{this.name}}">{{this.name}}
-												<!-- ({{this.categoryCount}}) --></a>
+												<!-- ({{this.categoryCount}}) -->
+											</a>
 											<ul class="inner-list-view collapse" id="list{{this.name}}">
 												{{#each ../allSubcategories}}
 													{{#ifCond this.category_id '==' ../this.id}}
 														<li>
 															<a href="../geo-locate/search?{{QueryParams ../../queryURI (FrameObject selected_category_id=../this.id selected_sub_category_id=this.id) ''}}">{{this.name}}
-																<!-- ({{this.subCategoryCount}}) --></a>
+																<!-- ({{this.subCategoryCount}}) -->
+															</a>
 														</li>
 													{{/ifCond}}
 												{{/each}}
 											</ul>
 										</li>
-									{{/each}}
+									{{/each}} --}}
+											{{#each productCount}}
+					<li>
+						<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="{{#ifCond ../queryURI.category "!=" this.categoryID}} collapsed {{/ifCond}}coll"
+						 href="#list{{this.categoryName}}"></a>
+						<a>{{this.categoryName}} ({{this.count}})</a>
+						<ul class="inner-list-view collapse {{#ifCond ../queryURI.category '==' this.categoryID}}show{{/ifCond}}" id="list{{this.categoryName}}">
+							{{#each this.subCategory}}
+								<li>                                                                                              
+									<a {{#ifCond ../../queryURI.sub_category "==" this.subCategoryId}} class="active" {{/ifCond}} href="../geo-locate/search?{{QueryParams ../../queryURI (FrameObject selected_category_id=../this.categoryID selected_sub_category_id=this.subCategoryId) 'null'}}">
+										<span>{{this.subCategoryName}} ({{this.count}})</span>
+									</a>
+								</li>
+							{{/each}}
+						</ul>
+					</li>
+				{{/each}}
 								</ul>
 							</div>
 						</div>
 
 						<div class="ibox" style="margin-bottom: 0px;">
 							<div class="ibox-content ibox-content-geo-locate bg-transparent" style="border-width: 0px 0;">
-								<p class="right-header-xs" style="font-size: 11px;"><b>FILTER BY LOCATION</b></p>
-								<p class="right-header-xs bg1"> <a>GLOBAL</a></p>
+								<p class="right-header-xs" style="font-size: 11px;">
+									<b>FILTER BY LOCATION</b>
+								</p>
+								<p class="right-header-xs bg1">
+									<a>GLOBAL</a>
+								</p>
 								<ul class="right-list-view category-fixed-geo-locate">
-									{{#each country}}
+									{{!-- {{#each country}}
 										<li style="padding-left:15px;">
 											<a href="../geo-locate/search?{{QueryParams ../queryURI (FrameObject selected_location_id=this.id) ''}}">{{this.name}}
 												<!-- ({{this.categoryCount}}) --></a>
+										</li>
+									{{/each}} --}}
+
+									{{#each countryProductCount}}
+										<li>
+											<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.regionname}}">{{this.regionname}} ({{this.count}})</a>
+											<ul class="inner-list-view collapse" id="list{{this.regionname}}">
+												{{#each this.subCategory}}
+													<li>
+														<a {{#ifCond ../../queryURI.location "==" this.countryid}} class="active" {{/ifCond}} href="../geo-locate/search?{{QueryParams ../../queryURI (FrameObject selected_location_id=this.countryid) 'null'}}">
+															{{#if this.countryname}}
+																<span>{{this.countryname}} ({{this.count}})</span>
+															{{else}}
+																<span>(No Country Found)</span>
+															{{/if}}
+
+														</a>
+													</li>
+												{{/each}}
+											</ul>
 										</li>
 									{{/each}}
 								</ul>
@@ -75,10 +123,11 @@
 									<b class="geo_search_filter">FILTER BY PRICE</b>
 								</p>
 								<p class="right-header-xs">
-									<input type="number" placeholder="From" id="min_price_input" class="geo_search_from filter-price-input" />
-									&nbsp;&nbsp;-&nbsp;&nbsp;
+									<input type="number" placeholder="From" id="min_price_input" class="geo_search_from filter-price-input" /> &nbsp;&nbsp;-&nbsp;&nbsp;
 									<input type="number" placeholder="To" id="max_price_input" class="geo_search_to filter-price-input" />&nbsp;
-									<button class="geo_search_update cursor-pointer filter-geo-locate-update" onclick="priceUpdate();"> <b>UPDATE</b></button>
+									<button class="geo_search_update cursor-pointer filter-geo-locate-update" onclick="priceUpdate();">
+										<b>UPDATE</b>
+									</button>
 								</p>
 							</div>
 						</div>
@@ -139,7 +188,7 @@
 				}
 				more_content = more_content + `<a href="javascript:;"><img src="` + mapObjProduct[j].ProductMedia[0].url + `" onError="imgError(this)" style="width: 40px; height: 30px;"></a>`;
 			}
-			content = content + `<p>` + more_content + `<a href="vendor/`+mapObjProduct[0].Vendor.id+`">See All</a></p>`;
+			content = content + `<p>` + more_content + `<a href="vendor/` + mapObjProduct[0].Vendor.id + `">See All</a></p>`;
 			createMarker(mapObjProduct[0].Vendor.latitude, mapObjProduct[0].Vendor.longitude, content, title);
 
 		}
