@@ -78,7 +78,7 @@ export function accounting(req, res) {
 			accountingQueryParams['end_date'] = new Date(queryParams['end_date']);
 			reportsService.AccountingReport(req.user.Vendor.id, accountingQueryParams)
 				.then((response) => {
-					return callback(null, null);
+					return callback(null, response);
 				})
 				.catch((error) => {
 					return callback(error);
@@ -125,7 +125,8 @@ export function accounting(req, res) {
 				statusCode: statusCode,
 				queryParams: queryParams,
 				queryURI: querystring.stringify(queryParams),
-				dateRangeOptions: dateRangeOptions
+				dateRangeOptions: dateRangeOptions,
+				accountingReport: results.accountingReports
 			});
 		} else {
 			return res.render('vendorNav/reporting/accounting', error);

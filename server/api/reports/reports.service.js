@@ -14,6 +14,7 @@ export async function AccountingReport(vendorID, queryParams) {
 	accounting['processing_fees'] = 0;
 	accounting['subscription_fees'] = 0;
 	accounting['payment_in_escrow'] = 0;
+	accounting['gtc_pay_escrow'] = 0;
 
 	var queryObj = {};
 	queryObj.created_on = {};
@@ -124,12 +125,12 @@ export async function AccountingReport(vendorID, queryParams) {
 			}]
 		});		
 		if(!_.isUndefined(gtcPaymentEscrow['OrderVendorPayouts.Payment.amount']))
-			accounting['gtc_pay_escrow'] = parseFloat(gtcPaymentEscrow['OrderVendorPayouts.Payment.amount']);
-		else
-			accounting['gtc_pay_escrow'] = 0;
+			accounting['gtc_pay_escrow'] = parseFloat(gtcPaymentEscrow['OrderVendorPayouts.Payment.amount']);		
 
-		accounting['total'] = _.sum(Object.values(accounting));
+		//accounting['total'] = _.sum(Object.values(accounting));
+		accounting['total'] = accounting['membership'] + accounting['featured_product'] + accounting['processing_fees'] + accounting['subscription_fees'];
 		delete adminQueryObj.created_on;
+		
 		return accounting;
 	} catch (error) {
 		return error;
