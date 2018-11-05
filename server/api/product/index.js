@@ -19,13 +19,14 @@ router.post('/import-woocommerce', auth.hasRole(roles['VENDOR']), auth.hasPermis
 router.post('/import-aliexpress', auth.hasRole(roles['VENDOR']), auth.hasPermission(), controller.importAliExpress);
 router.post('/import-amazon', auth.hasRole(roles['VENDOR']), auth.hasPermission(), controller.importAmazon);
 router.post('/', auth.hasRole(roles['VENDOR']), multipartMiddleware, auth.hasPermission(), check.limitExceeds(), controller.create);
-router.post('/add-product', auth.hasRole(roles['VENDOR']), auth.hasPermission(), check.limitExceeds(), controller.addProduct);
-router.post('/edit-product', auth.hasRole(roles['VENDOR']), auth.hasPermission(), check.limitExceeds(), controller.editProduct);
 router.post('/import-product', auth.isAuthenticated(), controller.importProduct);
 router.put('/edit/:id', auth.hasRole(roles['VENDOR']), multipartMiddleware, auth.hasPermission(), controller.edit);
 router.put('/feature-one/:id', controller.featureOne);
 router.put('/feature-many', controller.featureMany);
 router.put('/discount/:product_id', auth.hasRole(roles['VENDOR']), controller.discountProduct)
 router.post('/feature-payment', auth.isAuthenticated(), controller.featureProductWithPayment);
+router.post('/feature', auth.isAuthenticated(), controller.featureProductWithoutPayment);
+router.get('/vendor-marketplaces/:vendor_id', auth.isAuthenticated(), controller.vendorMarketplaces);
+router.get('/admin/vendors', auth.hasRole(roles['ADMIN']), controller.planActiveVendors);
 
 module.exports = router;

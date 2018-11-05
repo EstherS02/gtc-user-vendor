@@ -6,7 +6,6 @@ const service = require('../api/service');
 const moment = require('moment');
 const _ = require('lodash');
 const stripe = require('../payment/stripe.payment');
-const sendEmail = require('./send-email');
 const durationCode = require('../config/duration-unit');
 const orderStatusCode = require('../config/order_status');
 const paymentMethod = require('../config/payment-method');
@@ -84,7 +83,7 @@ function subscriptionOrder(eachSubscription) {
 	subscribedProduct = eachSubscription.Product;
 	subscriptionOrderQueryObj = {
 		user_id: eachSubscription.user_id,
-		order_status: orderStatusCode['DELIVEREDORDER'],
+		//order_status: orderStatusCode['DELIVEREDORDER'],
 		status: statusCode["ACTIVE"]
 	}
 
@@ -165,7 +164,7 @@ function subscriptionOrder(eachSubscription) {
 						orderItemBodyParam['subtotal'] = subscriptionTotalAmount;
 						orderItemBodyParam['final_price'] = finalPrice;
 						orderItemBodyParam['status'] = statusCode['ACTIVE'];
-						orderItemBodyParam['created_by'] = eachSubscription.User.first_name;
+						orderItemBodyParam['created_by'] = 'GTC Auto Subscription Order';
 						orderItemBodyParam['created_on'] = current_date;
 
 						return service.createRow('OrderItem', orderItemBodyParam);
@@ -182,7 +181,9 @@ function subscriptionOrder(eachSubscription) {
 							amount: charge.amount / 100.0,
 							payment_method: paymentMethod['STRIPE'],
 							status: statusCode['ACTIVE'],
-							payment_response: JSON.stringify(charge)
+							payment_response: JSON.stringify(charge),
+							created_by: 'GTC Auto Subscription Order',
+							created_on: current_date
 						};
 
 						return service.createRow('Payment', paymentModelObj);
@@ -193,8 +194,8 @@ function subscriptionOrder(eachSubscription) {
 							payment_id: paymentRow.id,
 							order_payment_type: orderPaymentType['ORDER_PAYMENT'],
 							status: statusCode['ACTIVE'],
-							created_on: new Date(),
-							created_by: eachSubscription.User.first_name
+							created_on: current_date,
+							created_by: 'GTC Auto Subscription Order'
 						};
 
 						return service.createRow('OrderPayment', orderPaymentObj);
@@ -228,7 +229,7 @@ function subscriptionOrder(eachSubscription) {
 						let subscriptionUpdate = {};
 						subscriptionUpdate.last_order_placed_on = current_date;
 						subscriptionUpdate.next_order_place_on = nextSubscriptionRenewOn;
-						subscriptionUpdate.last_updated_by = eachSubscription.User.first_name;
+						subscriptionUpdate.last_updated_by = 'GTC Auto Subscription Order';
 						subscriptionUpdate.last_updated_on = current_date;
 
 						return service.updateRow('Subscription', subscriptionUpdate, eachSubscription.id);
@@ -248,8 +249,8 @@ function subscriptionOrder(eachSubscription) {
 							.then(function(updatedRow){
 								console.log("updatedRow",updatedRow);
 								return Promise.reject(error);
-							}).catch(function(err){
-								console.log("updatedRow",updatedRow);
+							}).catch(function(error){
+								console.log("Error",error);
 								return Promise.reject(error);
 							})
 					});
@@ -266,7 +267,9 @@ function subscriptionOrder(eachSubscription) {
 function subscriptionOrderMail(createdSubscription,eachSubscription) {
 
 	var emailTemplateQueryObj = {};
+	var mailArray = [];
     emailTemplateQueryObj['name'] = config.email.templates.subscriptionAutoRenewalOrder;
+	var agenda = require('../app').get('agenda');
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
 		.then(function (response) {
@@ -285,13 +288,15 @@ function subscriptionOrderMail(createdSubscription,eachSubscription) {
 				body = body.replace('%PLACED_ON%',moment(createdSubscription.ordered_date).format('MMM D, Y'));
 				body = body.replace('%IMAGE_URL%',  eachSubscription.Product.ProductMedia[0].url);
 					
-				sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
+				mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
 				});
-				
-                return;
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
 			}else{
 				return;
 			}

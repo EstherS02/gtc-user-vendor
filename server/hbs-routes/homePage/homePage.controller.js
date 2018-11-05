@@ -3,18 +3,15 @@
 const _ = require('lodash');
 var async = require('async');
 const sequelize = require('sequelize');
-
 const service = require('../../api/service');
 const cartService = require('../../api/cart/cart.service');
 const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
-const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
 const marketplace_type = require('../../config/marketplace_type');
 const productService = require('../../api/product/product.service');
 
 export function homePage(req, res) {
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var bottomCategory = {};
@@ -48,15 +45,17 @@ export function homePage(req, res) {
 		},
 		categories: function(callback) {
 			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
 
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
@@ -144,22 +143,23 @@ export function homePage(req, res) {
 		},
 		featuredProducts: function(callback) {
 			delete queryObj['marketplace_id'];
-			queryObj['featured_position_homepage'] = 1;
+			// queryObj['featured_position_homepage']=1;
+			queryObj['position']='position_homepage';
+
 			queryObj['is_featured_product'] = 1;
 			limit = 6;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, queryObj, limit, order)
-				.then(function(response) {
-					return callback(null, response.rows);
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+				.then(function(results) {
+					return callback(null, results);
 				}).catch(function(error) {
-					console.log('Error::', error);
+					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
 		topSellers: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			delete queryObj['featured_position_homepage'];
 			delete queryObj['is_featured_product'];
 			field = 'sales_count';
@@ -195,7 +195,7 @@ export function homePage(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(error, null);
-				});
+				});*/
 		},
 	}, function(err, results) {
 		if (!err) {

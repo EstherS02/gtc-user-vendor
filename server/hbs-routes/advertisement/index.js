@@ -2,16 +2,13 @@
 
 var express = require('express');
 var router = express.Router();
-var middleware = require('../../middleware');
-var permission = require('../../config/permission');
 var auth = require('../../auth/auth.service');
+const roles = require('../../config/roles');
 
-
-/* Handlebars routes */
 var controller = require('./advertisement.controller');
 
-router.get('/add', auth.isAuthenticated(), controller.adForm);
-router.get('/add/:id', auth.isAuthenticated(), controller.adForm);
-router.get('/', auth.isAuthenticated(), controller.adList);
+router.get('/add', auth.hasRole(roles['VENDOR']), controller.adForm);
+router.get('/add/:id', auth.hasRole(roles['VENDOR']), controller.adForm);
+router.get('/', auth.hasRole(roles['VENDOR']), controller.adList);
 
 module.exports = router;

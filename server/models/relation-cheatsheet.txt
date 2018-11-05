@@ -2,42 +2,24 @@
 
 Address
 -------
-has many          orders                                   as FkOrder3s 
-has many          orders                                   as FkOrder4s 
-has many          orders_new                               as FkOrderNew4s 
-has many          orders_new                               as FkOrderNew5s 
+has many          order                                    as FkOrder4s 
+has many          order                                    as FkOrder5s 
 belongs to        users                                    as User 
 belongs to        country                                  as Country 
 belongs to        state                                    as Province 
 belongs to many   users                                    as OrderUsers 
+belongs to many   payment                                  as OrderPayments 
 belongs to many   shipping                                 as OrderShippings 
 belongs to many   address                                  as OrderBillingAddresses 
-belongs to many   coupon                                   as OrderCoupons 
 belongs to many   users                                    as OrderUsers 
+belongs to many   payment                                  as OrderPayments 
 belongs to many   shipping                                 as OrderShippings 
 belongs to many   address                                  as OrderShippingAddresses 
-belongs to many   coupon                                   as OrderCoupons 
-belongs to many   users                                    as OrdersNewUsers 
-belongs to many   payment                                  as OrdersNewPayments 
-belongs to many   shipping                                 as OrdersNewShippings 
-belongs to many   address                                  as OrdersNewBillingAddresses 
-belongs to many   users                                    as OrdersNewUsers 
-belongs to many   payment                                  as OrdersNewPayments 
-belongs to many   shipping                                 as OrdersNewShippings 
-belongs to many   address                                  as OrdersNewShippingAddresses 
-
-
-AdFeaturedproduct
------------------
 
 
 Admin
 -----
 belongs to        users                                    as User 
-
-
-AdminUser
----------
 
 
 Announcement
@@ -131,19 +113,13 @@ has many          coupon_category                          as FkCouponCategory1s
 has many          coupon_excluded_category                 as FkCouponExcludedCategory1s 
 has many          coupon_excluded_product                  as FkCouponExcludedProduct1s 
 has many          coupon_product                           as FkCouponProduct1s 
-has many          orders                                   as FkOrder5s 
-has many          orders_items_new                         as FkOrdersItemNew3s 
+has many          order_item                               as FkOrderItem3s 
 belongs to        vendor                                   as Vendor 
 belongs to many   category                                 as CouponCategoryCategories 
 belongs to many   category                                 as CouponExcludedCategoryCategories 
 belongs to many   product                                  as CouponExcludedProductProducts 
 belongs to many   product                                  as CouponProductProducts 
-belongs to many   users                                    as OrderUsers 
-belongs to many   shipping                                 as OrderShippings 
-belongs to many   address                                  as OrderShippingAddresses 
-belongs to many   address                                  as OrderBillingAddresses 
-belongs to many   orders_new                               as OrdersItemsNewOrders 
-belongs to many   product                                  as OrdersItemsNewProducts 
+belongs to many   order                                    as OrderItemOrders 
 
 
 CouponCategory
@@ -255,10 +231,6 @@ belongs to many   country                                  as ProductProductLoca
 belongs to many   state                                    as ProductStates 
 
 
-MarketplaceProduct
-------------------
-
-
 MarketplaceType
 ---------------
 has many          product                                  as FkProduct3s 
@@ -280,82 +252,63 @@ NotificationSetting
 -------------------
 
 
-OrderItem
----------
-belongs to        orders                                   as Order 
-belongs to        product                                  as Product 
-belongs to        tax                                      as Tax 
-
-
-OrderItemsOverview
-------------------
-
-
-OrderPayment
-------------
-belongs to        orders                                   as Order 
-belongs to        payment                                  as Payment 
-
-
-OrderPaymentEscrow
-------------------
-belongs to        payment                                  as Payment 
-belongs to        orders                                   as Order 
-
-
 Order
 -----
-has many          order_items                              as FkOrderItems1s 
-has many          order_payment                            as FkOrderPayment1s 
-has many          order_payment_escrow                     as FkOrderPaymentEscrow2s 
-belongs to        users                                    as User 
-belongs to        shipping                                 as Shipping 
-belongs to        address                                  as ShippingAddress 
-belongs to        address                                  as BillingAddress 
-belongs to        coupon                                   as Coupon 
-belongs to many   product                                  as OrderItemProducts 
-belongs to many   tax                                      as OrderItemTaxes 
-belongs to many   payment                                  as OrderPaymentPayments 
-belongs to many   payment                                  as OrderPaymentEscrowPayments 
-
-
-OrdersItemsNew
---------------
-belongs to        orders_new                               as Order 
-belongs to        product                                  as Product 
-belongs to        coupon                                   as Coupon 
-
-
-OrdersNew
----------
-has many          orders_items_new                         as FkOrdersItemNew1s 
-has many          order_vendor                            as FkVendorOrder1s 
+has many          order_item                               as FkOrderItem1s 
+has many          order_vendor                             as FkVendorOrder1s 
 belongs to        users                                    as User 
 belongs to        payment                                  as Payment 
 belongs to        shipping                                 as Shipping 
 belongs to        address                                  as ShippingAddress 
 belongs to        address                                  as BillingAddress 
-belongs to many   product                                  as OrdersItemsNewProducts 
-belongs to many   coupon                                   as OrdersItemsNewCoupons 
-belongs to many   vendor                                   as VendorOrderVendors 
+belongs to many   coupon                                   as OrderItemCoupons 
+belongs to many   shipping                                 as OrderVendorShippings 
+
+
+OrderItem
+---------
+has many          order_item_payout                        as FkOrderItemPayout1s 
+belongs to        order                                    as Order 
+belongs to        coupon                                   as Coupon 
+belongs to many   payment                                  as OrderItemPayoutPayments 
+
+
+OrderItemPayout
+---------------
+belongs to        order_item                               as OrderItem 
+belongs to        payment                                  as Payment 
+
+
+OrderVendor
+-----------
+has many          order_vendor_payout                      as FkOrderVendorPaymentEscrow1s 
+belongs to        order                                    as Order 
+belongs to        shipping                                 as Shipping 
+belongs to many   payment                                  as OrderVendorPayoutPayments 
+
+
+OrderVendorPayout
+-----------------
+belongs to        order_vendor                             as OrderVendor 
+belongs to        payment                                  as Payment 
 
 
 Payment
 -------
 has many          featured_product                         as FkFeaturedProduct2s 
-has many          order_payment                            as FkOrderPayment2s 
-has many          order_payment_escrow                     as FkOrderPaymentEscrow1s 
-has many          orders_new                               as FkOrderNew2s 
+has many          order                                    as FkOrder2s 
+has many          order_item_payout                        as FkOrderItemPayout2s 
+has many          order_vendor_payout                      as FkOrderVendorPaymentEscrow2s 
 has many          product_ads_setting                      as FkProductAdsSetting5s 
 has many          user_plan                                as FkUserPlan3s 
 has many          vendor_plan                              as FkVendorPlan3s 
 belongs to many   product                                  as FeaturedProductProducts 
-belongs to many   orders                                   as OrderPaymentOrders 
-belongs to many   orders                                   as OrderPaymentEscrowOrders 
-belongs to many   users                                    as OrdersNewUsers 
-belongs to many   shipping                                 as OrdersNewShippings 
-belongs to many   address                                  as OrdersNewShippingAddresses 
-belongs to many   address                                  as OrdersNewBillingAddresses 
+belongs to many   users                                    as OrderUsers 
+belongs to many   shipping                                 as OrderShippings 
+belongs to many   address                                  as OrderShippingAddresses 
+belongs to many   address                                  as OrderBillingAddresses 
+belongs to many   order_item                               as OrderItemPayoutOrderItems 
+belongs to many   order_vendor                             as OrderVendorPayoutOrderVendors 
 belongs to many   product                                  as ProductAdsSettingProducts 
 belongs to many   country                                  as ProductAdsSettingCountries 
 belongs to many   state                                    as ProductAdsSettingStates 
@@ -402,8 +355,6 @@ has many          coupon_excluded_product                  as FkCouponExcludedPr
 has many          coupon_product                           as FkCouponProduct2s 
 has many          discount                                 as FkDiscount1s 
 has many          featured_product                         as FkFeaturedProduct1s 
-has many          order_items                              as FkOrderItems2s 
-has many          orders_items_new                         as FkOrdersItemNew2s 
 has many          product_ads_setting                      as FkProductAdsSetting1s 
 has many          product_attribute                        as FkProductAttribute2s 
 has many          product_media                            as FkProductMedia1s 
@@ -421,10 +372,6 @@ belongs to many   users                                    as CartUsers
 belongs to many   coupon                                   as CouponExcludedProductCoupons 
 belongs to many   coupon                                   as CouponProductCoupons 
 belongs to many   payment                                  as FeaturedProductPayments 
-belongs to many   orders                                   as OrderItemOrders 
-belongs to many   tax                                      as OrderItemTaxes 
-belongs to many   orders_new                               as OrdersItemsNewOrders 
-belongs to many   coupon                                   as OrdersItemsNewCoupons 
 belongs to many   country                                  as ProductAdsSettingCountries 
 belongs to many   state                                    as ProductAdsSettingStates 
 belongs to many   vendor                                   as ProductAdsSettingVendors 
@@ -450,13 +397,9 @@ belongs to        attribute                                as Attribute
 belongs to        product                                  as Product 
 
 
-ProductMedium
+ProductMedia
 -------------
 belongs to        product                                  as Product 
-
-
-ProductRating
--------------
 
 
 Region
@@ -473,16 +416,13 @@ belongs to        users                                    as User
 
 Shipping
 --------
-has many          orders                                   as FkOrder2s 
-has many          orders_new                               as FkOrderNew3s 
+has many          order                                    as FkOrder3s 
+has many          order_vendor                             as FkVendorOrder3s 
 belongs to many   users                                    as OrderUsers 
+belongs to many   payment                                  as OrderPayments 
 belongs to many   address                                  as OrderShippingAddresses 
 belongs to many   address                                  as OrderBillingAddresses 
-belongs to many   coupon                                   as OrderCoupons 
-belongs to many   users                                    as OrdersNewUsers 
-belongs to many   payment                                  as OrdersNewPayments 
-belongs to many   address                                  as OrdersNewShippingAddresses 
-belongs to many   address                                  as OrdersNewBillingAddresses 
+belongs to many   order                                    as OrderVendorOrders 
 
 
 State
@@ -528,10 +468,6 @@ belongs to        users                                    as User
 belongs to        product                                  as Product 
 
 
-SubscriptionSale
-----------------
-
-
 Talk
 ----
 belongs to        users                                    as From 
@@ -559,10 +495,7 @@ belongs to        users                                    as User
 
 Tax
 ---
-has many          order_items                              as FkOrderItems4s 
 belongs to        country                                  as Country 
-belongs to many   orders                                   as OrderItemOrders 
-belongs to many   product                                  as OrderItemProducts 
 
 
 TermsAndCond
@@ -601,10 +534,6 @@ belongs to        mail                                     as Mail
 belongs to        users                                    as User 
 
 
-UserOrder
----------
-
-
 UserPlan
 --------
 belongs to        users                                    as User 
@@ -623,8 +552,7 @@ has many          discussion_board_post_like               as FkDiscussionBoardP
 has many          mail                                     as FkMail1s 
 has many          mail                                     as FkMail2s 
 has many          notification                             as FkNotification1s 
-has many          orders                                   as FkOrder1s 
-has many          orders_new                               as FkOrderNew1s 
+has many          order                                    as FkOrder1s 
 has many          payment_setting                          as FkPaymentSetting1s 
 has many          reviews                                  as FkProductReview2s 
 has many          subscription                             as FkSubscription1s 
@@ -647,14 +575,10 @@ belongs to many   discussion_board_post                    as DiscussionBoardPos
 belongs to many   discussion_board_post                    as DiscussionBoardPostLikeDiscussionBoardPosts 
 belongs to many   users                                    as MailTos 
 belongs to many   users                                    as MailFroms 
+belongs to many   payment                                  as OrderPayments 
 belongs to many   shipping                                 as OrderShippings 
 belongs to many   address                                  as OrderShippingAddresses 
 belongs to many   address                                  as OrderBillingAddresses 
-belongs to many   coupon                                   as OrderCoupons 
-belongs to many   payment                                  as OrdersNewPayments 
-belongs to many   shipping                                 as OrdersNewShippings 
-belongs to many   address                                  as OrdersNewShippingAddresses 
-belongs to many   address                                  as OrdersNewBillingAddresses 
 belongs to many   product                                  as ReviewProducts 
 belongs to many   product                                  as SubscriptionProducts 
 belongs to many   talk_thread                              as TalkTalkThreads 
@@ -691,7 +615,6 @@ has many          talk_setting                             as FkTalkSetting1s
 has many          terms_and_cond                           as TermsAndCondIbfk1s 
 has many          vendor_follower                          as FkVendorFollower1s 
 has many          vendor_notification_setting              as FkVendorNotificationSetting1s 
-has many          order_vendor                            as FkVendorOrder2s 
 has many          vendor_plan                              as FkVendorPlan1s 
 has many          vendor_rating                            as FkVendorRating1s 
 has many          vendor_shipping_location                 as FkVendorShippingLocation1s 
@@ -715,7 +638,6 @@ belongs to many   state                                    as ProductAdsSettingS
 belongs to many   payment                                  as ProductAdsSettingPayments 
 belongs to many   users                                    as VendorFollowerUsers 
 belongs to many   vendor_notification                      as VendorNotificationSettingVendorNotifications 
-belongs to many   orders_new                               as VendorOrderOrders 
 belongs to many   plan                                     as VendorPlanPlans 
 belongs to many   payment                                  as VendorPlanPayments 
 belongs to many   users                                    as VendorRatingUsers 
@@ -740,12 +662,6 @@ belongs to        vendor                                   as Vendor
 belongs to        vendor_notification                      as VendorNotification 
 
 
-VendorOrder
------------
-belongs to        orders_new                               as Order 
-belongs to        vendor                                   as Vendor 
-
-
 VendorPlan
 ----------
 belongs to        vendor                                   as Vendor 
@@ -763,10 +679,6 @@ VendorShippingLocation
 ----------------------
 belongs to        vendor                                   as Vendor 
 belongs to        country                                  as Country 
-
-
-VendorUserProduct
------------------
 
 
 VendorVerification

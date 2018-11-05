@@ -12,9 +12,7 @@ function init(sequelize) {
     initialized = true;
     // Import model files and assign them to `model` object.
     model.Address = sequelize.import('./definition/address.js');
-    model.AdFeaturedproduct = sequelize.import('./definition/ad-featuredproduct.js');
     model.Admin = sequelize.import('./definition/admin.js');
-    model.AdminUser = sequelize.import('./definition/admin-user.js');
     model.Announcement = sequelize.import('./definition/announcement.js');
     model.Appclient = sequelize.import('./definition/appclients.js');
     model.Attribute = sequelize.import('./definition/attribute.js');
@@ -40,19 +38,15 @@ function init(sequelize) {
     model.GlobalSetting = sequelize.import('./definition/global-setting.js');
     model.Mail = sequelize.import('./definition/mail.js');
     model.Marketplace = sequelize.import('./definition/marketplace.js');
-    model.MarketplaceProduct = sequelize.import('./definition/marketplace-products.js');
     model.MarketplaceType = sequelize.import('./definition/marketplace-type.js');
     model.Notification = sequelize.import('./definition/notification.js');
     model.NotificationSetting = sequelize.import('./definition/notification-settings.js');
-    model.OrderItem = sequelize.import('./definition/order-items.js');
-    model.OrderItemsOverview = sequelize.import('./definition/order-items-overview.js');
-    model.OrderPayment = sequelize.import('./definition/order-payment.js');
-    model.OrderPaymentEscrow = sequelize.import('./definition/order-payment-escrow.js');
-    model.Order = sequelize.import('./definition/orders.js');
-    model.OrdersItemsNew = sequelize.import('./definition/orders-items-new.js');
-    model.OrdersNew = sequelize.import('./definition/orders-new.js');
+    model.Order = sequelize.import('./definition/order.js');
+    model.OrderItem = sequelize.import('./definition/order-item.js');
+    model.OrderItemPayout = sequelize.import('./definition/order-item-payout.js');
     model.OrderVendor = sequelize.import('./definition/order-vendor.js');
     model.OrderVendorPayout = sequelize.import('./definition/order-vendor-payout.js');
+    model.OrderItemOverview = sequelize.import('./definition/order-item-overview.js');
     model.Payment = sequelize.import('./definition/payment.js');
     model.PaymentSetting = sequelize.import('./definition/payment-setting.js');
     model.Plan = sequelize.import('./definition/plan.js');
@@ -62,14 +56,12 @@ function init(sequelize) {
     model.ProductAdsSetting = sequelize.import('./definition/product-ads-setting.js');
     model.ProductAttribute = sequelize.import('./definition/product-attribute.js');
     model.ProductMedia = sequelize.import('./definition/product-media.js');
-    model.ProductRating = sequelize.import('./definition/product-ratings.js');
     model.Region = sequelize.import('./definition/region.js');
     model.Review = sequelize.import('./definition/reviews.js');
     model.Shipping = sequelize.import('./definition/shipping.js');
     model.State = sequelize.import('./definition/state.js');
     model.SubCategory = sequelize.import('./definition/sub-category.js');
     model.Subscription = sequelize.import('./definition/subscription.js');
-    model.SubscriptionSale = sequelize.import('./definition/subscription-sales.js');
     model.Talk = sequelize.import('./definition/talk.js');
     model.TalkSetting = sequelize.import('./definition/talk-setting.js');
     model.TalkThread = sequelize.import('./definition/talk-thread.js');
@@ -80,7 +72,6 @@ function init(sequelize) {
     model.TicketThread = sequelize.import('./definition/ticket-thread.js');
     model.Timezone = sequelize.import('./definition/timezone.js');
     model.UserMail = sequelize.import('./definition/user-mail.js');
-    model.UserOrder = sequelize.import('./definition/user-orders.js');
     model.UserPlan = sequelize.import('./definition/user-plan.js');
     model.User = sequelize.import('./definition/users.js');
     model.UserToken = sequelize.import('./definition/user-token.js');
@@ -91,15 +82,12 @@ function init(sequelize) {
     model.VendorPlan = sequelize.import('./definition/vendor-plan.js');
     model.VendorRating = sequelize.import('./definition/vendor-rating.js');
     model.VendorShippingLocation = sequelize.import('./definition/vendor-shipping-location.js');
-    model.VendorUserProduct = sequelize.import('./definition/vendor-user-product.js');
     model.VendorVerification = sequelize.import('./definition/vendor-verification.js');
     model.WishList = sequelize.import('./definition/wish-list.js');
 
     // All models are initialized. Now connect them with relations.
     require('./definition/address.js').initRelations();
-    require('./definition/ad-featuredproduct.js').initRelations();
     require('./definition/admin.js').initRelations();
-    require('./definition/admin-user.js').initRelations();
     require('./definition/announcement.js').initRelations();
     require('./definition/appclients.js').initRelations();
     require('./definition/attribute.js').initRelations();
@@ -125,19 +113,15 @@ function init(sequelize) {
     require('./definition/global-setting.js').initRelations();
     require('./definition/mail.js').initRelations();
     require('./definition/marketplace.js').initRelations();
-    require('./definition/marketplace-products.js').initRelations();
     require('./definition/marketplace-type.js').initRelations();
     require('./definition/notification.js').initRelations();
     require('./definition/notification-settings.js').initRelations();
-    require('./definition/order-items.js').initRelations();
-    require('./definition/order-items-overview.js').initRelations();
-    require('./definition/order-payment.js').initRelations();
-    require('./definition/order-payment-escrow.js').initRelations();
-    require('./definition/orders.js').initRelations();
-    require('./definition/orders-items-new.js').initRelations();
-    require('./definition/orders-new.js').initRelations();
+    require('./definition/order.js').initRelations();
+    require('./definition/order-item.js').initRelations();
+    require('./definition/order-item-payout.js').initRelations();
     require('./definition/order-vendor.js').initRelations();
-    require('./definition/order-vendor-payout.js').initRelations();    
+    require('./definition/order-vendor-payout.js').initRelations();
+    require('./definition/order-item-overview.js').initRelations();
     require('./definition/payment.js').initRelations();
     require('./definition/payment-setting.js').initRelations();
     require('./definition/plan.js').initRelations();
@@ -147,14 +131,12 @@ function init(sequelize) {
     require('./definition/product-ads-setting.js').initRelations();
     require('./definition/product-attribute.js').initRelations();
     require('./definition/product-media.js').initRelations();
-    require('./definition/product-ratings.js').initRelations();
     require('./definition/region.js').initRelations();
     require('./definition/reviews.js').initRelations();
     require('./definition/shipping.js').initRelations();
     require('./definition/state.js').initRelations();
     require('./definition/sub-category.js').initRelations();
     require('./definition/subscription.js').initRelations();
-    require('./definition/subscription-sales.js').initRelations();
     require('./definition/talk.js').initRelations();
     require('./definition/talk-setting.js').initRelations();
     require('./definition/talk-thread.js').initRelations();
@@ -165,7 +147,6 @@ function init(sequelize) {
     require('./definition/ticket-thread.js').initRelations();
     require('./definition/timezone.js').initRelations();
     require('./definition/user-mail.js').initRelations();
-    require('./definition/user-orders.js').initRelations();
     require('./definition/user-plan.js').initRelations();
     require('./definition/users.js').initRelations();
     require('./definition/user-token.js').initRelations();
@@ -176,7 +157,6 @@ function init(sequelize) {
     require('./definition/vendor-plan.js').initRelations();
     require('./definition/vendor-rating.js').initRelations();
     require('./definition/vendor-shipping-location.js').initRelations();
-    require('./definition/vendor-user-product.js').initRelations();
     require('./definition/vendor-verification.js').initRelations();
     require('./definition/wish-list.js').initRelations();
     return model;

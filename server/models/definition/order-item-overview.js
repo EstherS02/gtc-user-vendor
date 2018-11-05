@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('OrderItemsOverview', {
+    return sequelize.define('OrderItemOverview', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -49,11 +49,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'order_item_status',
             allowNull: true
         },
-        order_status: {
-            type: DataTypes.INTEGER,
-            field: 'order_status',
-            allowNull: true
-        },
         marketplace_name: {
             type: DataTypes.STRING(64),
             field: 'marketplace_name',
@@ -95,7 +90,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'order_items_overview',
+        tableName: 'order_item_overview',
         timestamps: false
     });
 };

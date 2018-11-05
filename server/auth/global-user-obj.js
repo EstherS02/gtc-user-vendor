@@ -111,6 +111,7 @@ function isGlobalObj() {
 			}
 		});
 }
+
 function isGlobalObjUser() {
 	return compose()
 		.use(function(req, res, next) {
@@ -133,20 +134,20 @@ function isGlobalObjUser() {
 				queryObj['id'] = req.gtcGlobalUserObj.userId;
 
 				model['User'].findOne({
-					include:[{
-						model:model['UserPlan'],
-						where:{
-							status:{
-								$eq:status['ACTIVE']
+					include: [{
+						model: model['UserPlan'],
+						where: {
+							status: {
+								$eq: status['ACTIVE']
 							},
-							end_date:{
-								$gte:new Date()
+							end_date: {
+								$gte: new Date()
 							},
-							start_date:{
-								$lte:new Date()
+							start_date: {
+								$lte: new Date()
 							}
 						},
-						required:false,
+						required: false,
 					}],
 					where: queryObj,
 					attributes: {
@@ -156,7 +157,7 @@ function isGlobalObjUser() {
 					if (userObj) {
 						req.gtcGlobalUserObj = userObj.toJSON();
 						req.gtcGlobalUserObj['isAvailable'] = true;
-						if(userObj.UserPlans.length <= 0){
+						if (userObj.UserPlans.length <= 0) {
 							req.gtcGlobalUserObj['UserPlans'] = false;
 						}
 

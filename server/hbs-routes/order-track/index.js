@@ -2,15 +2,12 @@
 
 var express = require('express');
 var router = express.Router();
-var middleware = require('../../middleware');
-var permission = require('../../config/permission');
+const roles = require('../../config/roles');
 var auth = require('../../auth/auth.service');
 
-
-/* Handlebars routes */
 var controller = require('./order-track.controller');
 
-router.get('/:id',auth.isAuthenticated(), controller.orderTrack);
-router.get('/',auth.isAuthenticated(), controller.orderTrack);
+router.get('/:id', auth.hasRole(roles['USER']), controller.orderTrack);
+router.get('/', auth.hasRole(roles['USER']), controller.orderTrack);
 
 module.exports = router;

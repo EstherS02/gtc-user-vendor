@@ -5,6 +5,7 @@
 </script>
 
 <script type="text/javascript">
+    var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	function onSearch(){
 		var from = $('#lhs_from').val();
 		var to = $('#lhs_to').val();
@@ -13,6 +14,31 @@
 		var Compare = $('#compare').val();
 
 		location.href = "/store/performance?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
+	}
+	function downloadCSV(args) {
+		$.ajax({
+				type: 'POST',
+				url: '/api/export-csv/reportperformancecsv',
+				data: {"vendor_id": $('#login_vendoruserid').val()},
+				success: function(data) {
+					console.log("enter the loopsss");
+					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+					var csvURL = null;
+					if (navigator.msSaveBlob) {
+						csvURL = navigator.msSaveBlob(csvData, 'Report.csv');
+					} else {
+						csvURL = window.URL.createObjectURL(csvData);
+					}
+					var tempLink = document.createElement('a');
+					tempLink.href = csvURL;
+					tempLink.setAttribute('download', 'Report.csv');
+					tempLink.click();
+				},
+				error: function(request, status, error) {
+					console.log('request', request);
+					console.log('status', status);
+				}
+			});
 	}
 </script>
 
@@ -120,13 +146,13 @@
 										<option>EXPORT TO</option>
 									</select> --}}
 									<div class="form-group mx-sm-3 mb-2">
-										{{!--
-										<button class="btn btn-small btn-muted export-btn">EXPORT</button> --}}
-										<div class="select-container ">
+										<button class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button> 
+										<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
+										{{!-- <div class="select-container ">
 											<select class="form-control-customized form-control-sm" name="dateSelect">
 												<option disabled selected>Export</option>
 											</select>
-										</div>
+										</div> --}}
 									</div>
 								</div>
 							</div>

@@ -2,7 +2,6 @@
 
 var express = require('express');
 var router = express.Router();
-var middleware = require('../../middleware');
 var auth = require('../../auth/auth.service');
 const roles = require('../../config/roles');
 var permission = require('../../config/permission');

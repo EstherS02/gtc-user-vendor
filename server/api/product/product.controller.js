@@ -19,11 +19,11 @@ const marketplaceType = require('../../config/marketplace_type.js');
 const planPermissions = require('../../config/plan-marketplace-permission.js');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
+const populate = require('../../utilities/populate');
 const mws = require('mws-advanced');
 const _ = require('lodash');
 const stripe = require('../../payment/stripe.payment');
 const paymentMethod = require('../../config/payment-method');
-const sendEmail = require('../../agenda/send-email');
 const durationUnitCode = require('../../config/duration-unit');
 
 export function productView(req, res) {
@@ -110,6 +110,7 @@ export function featureMany(req, res) {
 }
 
 export async function create(req, res) {
+	
 	var bodyParams = {};
 	var productMediaPromises = [];
 	var productAttributes = [];
@@ -136,7 +137,8 @@ export async function create(req, res) {
 	req.checkBody('state_id', 'Missing Query Param').notEmpty();
 	req.checkBody('city', 'Missing Query Param').notEmpty();
 	req.checkBody('quantity_available', 'Missing Query Param').notEmpty();
-	req.checkBody('price', 'Missing Query Param').notEmpty();
+	// Price not required for WTB,WTT,RFQ 
+	//req.checkBody('price', 'Missing Query Param').notEmpty();
 	req.checkBody('exclusive_sale', 'Missing Query Param').notEmpty();
 
 	if (req.body.marketplace_id == marketplace['WHOLESALE']) {
@@ -146,7 +148,6 @@ export async function create(req, res) {
 		delete req.body.moq;
 		delete req.body.marketplace_type_id;
 	}
-
 	if (req.body.exclusive_sale == 1) {
 		req.checkBody('exclusive_start_date', 'Missing Query Param').notEmpty();
 		req.checkBody('exclusive_end_date', 'Missing Query Param').notEmpty();
@@ -177,8 +178,16 @@ export async function create(req, res) {
 		delete req.body.product_attributes;
 	}
 
+	// If created by admin vendor_id present in body
+	var vendorId;
+	if(!req.body.vendor_id){      
+		vendorId = req.user.Vendor.id
+	}else{
+		vendorId = req.body.vendor_id
+	}
+
 	bodyParams = req.body;
-	bodyParams['vendor_id'] = req.user.Vendor.id;
+ 	bodyParams['vendor_id'] = vendorId;
 	bodyParams['publish_date'] = new Date();
 	bodyParams['product_slug'] = string_to_slug(req.body.product_name);
 	bodyParams['created_by'] = req.user.first_name;
@@ -187,7 +196,7 @@ export async function create(req, res) {
 	try {
 		const existsVendorSKU = await service.findOneRow(productModelName, {
 			sku: req.body.sku,
-			vendor_id: req.user.Vendor.id
+			vendor_id: vendorId
 		});
 		if (!existsVendorSKU) {
 			const newProduct = await service.createRow(productModelName, bodyParams);
@@ -245,9 +254,10 @@ export async function create(req, res) {
 				}, req.user.first_name));
 			}));
 			Promise.all(ProductAttributePromises);
+			aunnouncementMailToSubscribedUser(newProduct); // New product launched announcement mail to vendor followers.
 			return res.status(201).send(newProduct);
 		} else {
-			return res.status(409).send("Stack keep unit already exists.");
+			return res.status(409).send("Stock keeping unit already exists.");
 		}
 	} catch (error) {
 		console.log('create Product Error:::', error);
@@ -256,6 +266,7 @@ export async function create(req, res) {
 }
 
 export async function edit(req, res) {
+	
 	var productID = req.params.id;
 	var bodyParams = {};
 	var productMediaPromises = [];
@@ -275,9 +286,11 @@ export async function edit(req, res) {
 	req.checkBody('state_id', 'Missing Query Param').notEmpty();
 	req.checkBody('city', 'Missing Query Param').notEmpty();
 	req.checkBody('quantity_available', 'Missing Query Param').notEmpty();
-	req.checkBody('price', 'Missing Query Param').notEmpty();
+	// Price not required for WTB,WTT,RFQ 
+	//req.checkBody('price', 'Missing Query Param').notEmpty();
 
-	if (req.body.marketplace_id === marketplace['WHOLESALE']) {
+	//if (req.body.marketplace_id === marketplace['WHOLESALE']) {  // Not correct syntax
+	if (req.body.marketplace_id == marketplace['WHOLESALE']) {
 		req.checkBody('marketplace_type_id', 'Missing Query Param').notEmpty();
 		req.checkBody('moq', 'Missing Query Param').notEmpty();
 	} else {
@@ -286,6 +299,7 @@ export async function edit(req, res) {
 	}
 
 	if (req.body.exclusive_sale == 1) {
+		req.body.exclusive_offer = parseInt(req.body.exclusive_offer);
 		req.checkBody('exclusive_start_date', 'Missing Query Param').notEmpty();
 		req.checkBody('exclusive_end_date', 'Missing Query Param').notEmpty();
 		req.checkBody('exclusive_offer', 'Missing Query Param').notEmpty();
@@ -306,7 +320,7 @@ export async function edit(req, res) {
 		res.status(400).send('Missing Query Params');
 		return;
 	}
-
+	
 	if (req.body.product_attributes && req.body.product_attributes.length > 0) {
 		productAttributes = JSON.parse(req.body.product_attributes);
 		delete req.body.product_attributes;
@@ -367,15 +381,102 @@ export async function edit(req, res) {
 				Promise.all(ProductAttributePromises);
 				return res.status(200).send(product);
 			} else {
-				return res.status(409).send("Stack keep unit already exists.");
+				return res.status(409).send("Stock keeping unit already exists.");
 			}
 		} else {
-			return res.status(404).status("product not found.");
+			return res.status(404).status("Product not found.");
 		}
 	} catch (error) {
-		console.log('edit Product Error:::', error);
+		console.log('Edit Product Error:::', error);
 		return res.status(500).send(error);
 	}
+}
+
+function aunnouncementMailToSubscribedUser(newProduct) {
+	var offset, limit, field, order;
+	var vendorFollowerQueryObj = {},
+		vendorFollowerIncludeArr = [];
+
+	offset = null;
+	limit = null;
+	field = 'id';
+	order = 'asc';
+
+	vendorFollowerQueryObj = {
+		vendor_id: newProduct.vendor_id,
+		status: status['ACTIVE']
+	}
+
+	vendorFollowerIncludeArr = [{
+		"model": model['User'],
+		where: {
+			status: status["ACTIVE"]
+		},
+		attributes: ['id', 'first_name', 'user_contact_email'],
+	}, {
+		"model": model['Vendor'],
+		where: {
+			status: status["ACTIVE"]
+		},
+		attributes: ['id', 'vendor_name'],
+	}]
+
+	return service.findAllRows('VendorFollower', vendorFollowerIncludeArr, vendorFollowerQueryObj, offset, limit, field, order)
+		.then(function(vendorFollowers) {
+
+			_.forOwn(vendorFollowers.rows, function(eachVendorFollower) {
+				sentMailToFollowers(eachVendorFollower, newProduct);
+			});
+
+		}).catch(function(error) {
+			return;
+		})
+}
+
+function sentMailToFollowers(eachVendorFollower, newProduct) {
+
+	var emailTemplateQueryObj = {};
+	emailTemplateQueryObj['name'] = config.email.templates.newProductAnnouncementMail;
+	var agenda = require('../../app').get('agenda');
+	var marketplaceCode;
+	if(newProduct.marketplace_id == marketplace.WHOLESALE)
+		marketplaceCode = 'wholesale';	
+	else if(newProduct.marketplace_id == marketplace.PUBLIC)
+		marketplaceCode = 'shop';
+	else if(newProduct.marketplace_id == marketplace.SERVICE)
+		marketplaceCode = 'services';
+	else if(newProduct.marketplace_id == marketplace.LIFESTYLE)
+		marketplaceCode = 'lifestyle';
+
+	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
+		.then(function(response) {
+			if (response) {
+
+				var email = eachVendorFollower.User.user_contact_email;
+				var subject = response.subject;
+				subject = subject.replace('%VENDOR_NAME%', eachVendorFollower.Vendor.vendor_name);
+				var body;
+				body = response.body.replace('%USER_NAME%', eachVendorFollower.User.first_name);
+				body = body.replace(/%VENDOR_NAME%/g, eachVendorFollower.Vendor.vendor_name);
+				body = body.replace('%PRODUCT_NAME%', newProduct.product_name);
+				body = body.replace('%URL%', marketplaceCode + '/' + newProduct.product_slug + '/' + newProduct.id);
+
+				var mailArray = [];
+				mailArray.push({
+					to: email,
+					subject: subject,
+					html: body
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
+				});
+				return;
+			} else {
+				return;
+			}
+		}).catch(function(error) {
+			return;
+		})
 }
 
 export function move(copyFrom, moveTo) {
@@ -956,319 +1057,6 @@ function resMessage(message, messageDetails) {
 	};
 }
 
-export function addProduct(req, res) {
-
-	var product_id, marketplaceCode, createdProduct = {};
-
-	if (req.query.marketplace_id == marketplace.WHOLESALE)
-		marketplaceCode = 'wholesale'
-
-	if (req.query.marketplace_id == marketplace.PUBLIC)
-		marketplaceCode = 'shop'
-
-	if (req.query.marketplace_id == marketplace.SERVICE)
-		marketplaceCode = 'services'
-
-	if (req.query.marketplace_id == marketplace.LIFESTYLE)
-		marketplaceCode = 'lifestyle'
-
-	delete req.query.marketplace;
-
-	if (req.user.role === roles['VENDOR']) {
-		req.query.vendor_id = req.user.Vendor.id;
-	}
-
-	if (req.query.status) {
-		var productStatus = req.query.status;
-		delete req.query.status;
-		req.query.status = status[productStatus]
-	}
-
-	if (req.query.subscription_duration_unit) {
-		var subscriptionDurationUnit = req.query.subscription_duration_unit;
-		delete req.query.subscription_duration_unit;
-		req.query.subscription_duration_unit = durationUnitCode[subscriptionDurationUnit]
-	}
-
-	req.query.publish_date = new Date();
-	req.query.product_slug = string_to_slug(req.query.product_name);
-	req.query.created_on = new Date();
-	req.query.created_by = req.user.Vendor.vendor_name;
-
-	service.createRow('Product', req.query)
-		.then(function(row) {
-			product_id = row.id;
-			createdProduct = row;
-
-			if (req.body.imageArr) {
-				var imagePromise = [];
-				var imageArr = JSON.parse(req.body.imageArr);
-				imagePromise.push(updateProductMedia(imageArr, product_id));
-				return Promise.all(imagePromise);
-			}
-		}).then(function(updatedImage) {
-
-			if (req.body.attributeArr) {
-				var attributePromise = [];
-				var attributeArr = JSON.parse(req.body.attributeArr);
-				attributePromise.push(updateProductAttribute(attributeArr, product_id));
-				return Promise.all(attributePromise);
-			}
-		}).then(function(updatedAttribute) {
-
-			if (req.body.discountArr) {
-				var discountPromise = [];
-				var discountArr = JSON.parse(req.body.discountArr);
-				discountPromise.push(updateDiscount(discountArr, product_id));
-				return Promise.all(discountPromise);
-			}
-		}).then(function(updatedDiscount) {
-
-			aunnouncementMailToSubscribedUser(createdProduct, marketplaceCode);
-			return res.status(200).send("Product Created Successfully");
-
-		}).catch(function(error) {
-			console.log('Error:::', error);
-			return res.status(500).send("Internal Server Error");
-		})
-}
-
-export function editProduct(req, res) {
-	var product_id = req.query.product_id;
-
-	if (req.query.status) {
-		var productStatus = req.query.status;
-		delete req.query.status;
-		req.query.status = status[productStatus]
-	}
-
-	if (req.query.subscription_duration_unit) {
-		var subscriptionDurationUnit = req.query.subscription_duration_unit;
-		delete req.query.subscription_duration_unit;
-		req.query.subscription_duration_unit = durationUnitCode[subscriptionDurationUnit]
-	}
-
-	req.query.product_slug = string_to_slug(req.query.product_name);
-	req.query.last_updated_on = new Date();
-	req.query.last_updated_by = req.user.Vendor.vendor_name;
-
-	var bodyParams = req.query;
-
-	model["Product"].update(bodyParams, {
-		where: {
-			id: product_id
-		}
-	}).then(function(row) {
-		if (req.body.imageArr) {
-			var imagePromise = [];
-			var imageArr = JSON.parse(req.body.imageArr);
-			imagePromise.push(updateProductMedia(imageArr, product_id));
-			return Promise.all(imagePromise);
-		}
-	}).then(function() {
-		if (req.body.attributeArr) {
-			var attributePromise = [];
-			var attributeArr = JSON.parse(req.body.attributeArr);
-			attributePromise.push(updateProductAttribute(attributeArr, product_id));
-			return Promise.all(attributePromise);
-		}
-	}).then(function(updatedAttribute) {
-		if (req.body.discountArr) {
-			var discountPromise = [];
-			var discountArr = JSON.parse(req.body.discountArr);
-			discountPromise.push(updateDiscount(discountArr, product_id));
-			return Promise.all(discountPromise);
-		}
-	}).then(function(updatedDiscount) {
-		return res.status(200).send({
-			"message": "Success",
-			"messageDetails": "Product Updated Successfully"
-		});
-	}).catch(function(error) {
-		console.log('Error:::', error);
-		return res.status(500).send({
-			"message": "Error",
-			"messageDetails": "Internal server error"
-		});
-	})
-}
-
-function updateProductMedia(imageArr, product_id) {
-
-	var queryObj = {
-		product_id: product_id
-	}
-
-	model['ProductMedia'].destroy({
-		where: queryObj
-	}).then(function(delectedProductMedia) {
-
-		var mediaCreatePromise = [];
-
-		_.forOwn(imageArr, function(imageElement) {
-
-			imageElement.product_id = product_id;
-			imageElement.created_on = new Date();
-
-			mediaCreatePromise.push(createProductMedia(imageElement));
-		})
-		return Promise.all(mediaCreatePromise);
-
-	}).then(function(response) {
-		return Promise.resolve(response);
-
-	}).catch(function(error) {
-		console.log("Error::", error);
-		return Promise.reject(error);
-	})
-}
-
-function updateProductAttribute(attributeArr, product_id) {
-
-	var queryObj = {
-		product_id: product_id
-	}
-
-	model['ProductAttribute'].destroy({
-		where: queryObj
-	}).then(function(delectedAttributerow) {
-		var attributeCreatePromise = [];
-
-		_.forOwn(attributeArr, function(attributeElement) {
-			attributeElement.product_id = product_id;
-			attributeElement.attribute_id = attributeElement.name;
-			attributeElement.status = 1;
-			delete attributeElement.name;
-
-			attributeCreatePromise.push(createProductAttribute(attributeElement));
-		});
-
-		return Promise.all(attributeCreatePromise);
-
-	}).then(function(response) {
-		return Promise.resolve(response);
-
-	}).catch(function(error) {
-		console.log("Error::", error);
-		return Promise.reject(error);
-	})
-}
-
-function updateDiscount(discountArr, product_id) {
-	var queryObj = {
-		product_id: product_id
-	}
-
-	model['Discount'].destroy({
-		where: queryObj
-	}).then(function(delectedDiscountrow) {
-		var discountCreatePromise = [];
-
-		_.forOwn(discountArr, function(discountElement) {
-
-			discountElement.product_id = product_id;
-			discountElement.created_on = new Date();
-
-			discountCreatePromise.push(createDiscount(discountElement));
-		});
-		return Promise.all(discountCreatePromise);
-
-	}).then(function(response) {
-		return Promise.resolve(response);
-
-	}).catch(function(error) {
-		console.log("Error::", error);
-		return Promise.reject(error);
-	})
-}
-
-function createProductMedia(imageElement) {
-	return service.createRow('ProductMedia', imageElement);
-}
-
-function createProductAttribute(attributeElement) {
-	return service.createRow('ProductAttribute', attributeElement);
-}
-
-function createDiscount(discountElement, product_id) {
-	return service.createRow('Discount', discountElement);
-}
-
-function aunnouncementMailToSubscribedUser(createdProduct, marketplaceCode) {
-
-	var offset, limit, field, order;
-	var vendorFollowerQueryObj = {},
-		vendorFollowerIncludeArr = [];
-
-	offset = null;
-	limit = null;
-	field = 'id';
-	order = 'asc';
-
-	vendorFollowerQueryObj = {
-		vendor_id: createdProduct.vendor_id,
-		status: status['ACTIVE']
-	}
-
-	vendorFollowerIncludeArr = [{
-		"model": model['User'],
-		where: {
-			status: status["ACTIVE"]
-		},
-		attributes: ['id', 'first_name', 'user_contact_email'],
-	}, {
-		"model": model['Vendor'],
-		where: {
-			status: status["ACTIVE"]
-		},
-		attributes: ['id', 'vendor_name'],
-	}]
-
-	return service.findAllRows('VendorFollower', vendorFollowerIncludeArr, vendorFollowerQueryObj, offset, limit, field, order)
-		.then(function(vendorFollowers) {
-
-			_.forOwn(vendorFollowers.rows, function(eachVendorFollower) {
-				sentMailToFollowers(eachVendorFollower, createdProduct, marketplaceCode);
-			});
-
-		}).catch(function(error) {
-			return;
-		})
-}
-
-function sentMailToFollowers(eachVendorFollower, createdProduct, marketplaceCode) {
-
-	var emailTemplateQueryObj = {};
-	emailTemplateQueryObj['name'] = config.email.templates.newProductAnnouncementMail;
-
-	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
-		.then(function(response) {
-			if (response) {
-
-				var email = eachVendorFollower.User.user_contact_email;
-				var subject = response.subject;
-				subject = subject.replace('%VENDOR_NAME%', eachVendorFollower.Vendor.vendor_name);
-				var body;
-				body = response.body.replace('%USER_NAME%', eachVendorFollower.User.first_name);
-				body = body.replace(/%VENDOR_NAME%/g, eachVendorFollower.Vendor.vendor_name);
-				body = body.replace('%PRODUCT_NAME%', createdProduct.product_name);
-				body = body.replace('%URL%', marketplaceCode + '/' + createdProduct.product_slug + '/' + createdProduct.id);
-
-				sendEmail({
-					to: email,
-					subject: subject,
-					html: body
-				});
-
-				return;
-			} else {
-				return;
-			}
-		}).catch(function(error) {
-			return;
-		})
-}
-
 export function featureProductWithPayment(req, res) {
 
 	if (req.query.product_id) {
@@ -1323,6 +1111,7 @@ export function featureProductWithPayment(req, res) {
 													"messageDetails": "Product Featured Successfully"
 												});
 											}).catch(function(error) {
+												console.log("Error::",error);
 												return res.status(400).send({
 													"message": "ERROR",
 													"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
@@ -1330,6 +1119,7 @@ export function featureProductWithPayment(req, res) {
 												});
 											})
 									}).catch(function(error) {
+										console.log("Error::",error);
 										return res.status(400).send({
 											"message": "ERROR",
 											"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
@@ -1343,6 +1133,7 @@ export function featureProductWithPayment(req, res) {
 								});
 							}
 						}).catch(function(error) {
+							console.log("Error::",error);
 							return res.status(500).send({
 								"message": "ERROR",
 								"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
@@ -1361,6 +1152,126 @@ export function featureProductWithPayment(req, res) {
 					"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
 					"errorDescription": error
 				});
-			})
+			});
 	}
+}
+
+export function featureProductWithoutPayment(req, res){
+	if (req.body.product_id) {
+		var featureQueryObj = {
+			product_id: req.body.product_id
+		}
+		service.findOneRow('FeaturedProduct', featureQueryObj)
+			.then(function(row) {
+				if (!row) {
+					var featuredProductBodyParam = req.body;
+					featuredProductBodyParam['status'] =status.ACTIVE;
+					featuredProductBodyParam['feature_status'] = status[req.body.feature_status]
+					service.createRow('FeaturedProduct', featuredProductBodyParam)
+						.then(function(featuredRow) {
+							return res.status(200).send({
+								"message": "SUCCESS",
+								"messageDetails": "Product Featured Successfully"
+							});
+						}).catch(function(error) {
+							console.log("Error::",error);
+							return res.status(400).send({
+								"message": "ERROR",
+								"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
+								"errorDescription": error
+							});
+						})
+				}else {
+						return res.status(200).send({
+							"message": "MESSAGE",
+							"messageDetails": "You have already featured this product."
+						});
+					}
+			}).catch(function(error) {
+				return res.status(500).send({
+					"message": "ERROR",
+					"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
+					"errorDescription": error
+				});
+			});
+	}
+}
+
+export function vendorMarketplaces(req, res){	
+	var vendorMarketplacesQueryObj = {}, planMarketplacesQueryObj = {};
+	var planMarketplacesIncludeArr = [];
+	var offset, limit, field, order;
+
+	offset = 0;
+	limit = null;
+	field = 'id';
+	order = 'asc';
+
+	vendorMarketplacesQueryObj = {
+		status: status.ACTIVE,
+		vendor_id: req.params.vendor_id		
+	}	
+
+	planMarketplacesQueryObj = {
+		status: status.ACTIVE
+	}
+
+	planMarketplacesIncludeArr = populate.populateData("Marketplace");
+	var planMarketplaces={};
+	
+	service.findOneRow('VendorPlan', vendorMarketplacesQueryObj, [])
+	.then(function(vendorPlanRow){
+		if(vendorPlanRow){
+			planMarketplacesQueryObj.plan_id = vendorPlanRow.plan_id;
+			service.findRows('PlanMarketplace', planMarketplacesQueryObj, offset, limit, field, order, planMarketplacesIncludeArr)
+			.then(function(planMarketplaces){
+				return res.status(200).send(planMarketplaces);
+
+			}).catch(function(error){
+				console.log("Error::", error);
+				return res.status(500).send(error);
+			})
+		}else{
+			return res.status(200).send(planMarketplaces);
+		}		
+	}).catch(function(error){
+		console.log("Error::",error);
+		return res.status(500).send(error);
+	})
+}
+
+export function planActiveVendors(req, res){	
+	var currentDate = new Date();
+	var offset, limit, field, order;
+	var vendorIncludeArr = [];
+	var vendorQueryObj = {};
+
+	vendorQueryObj = {
+		status: status.ACTIVE	
+	}
+
+	vendorIncludeArr = [
+		{
+			model:model['VendorPlan'],
+			where: { 	status: status.ACTIVE,
+						start_date:{ '$lte': currentDate },
+						end_date:{ '$gte': currentDate }
+					},
+			attributes:['id']
+		}
+	]
+	
+	offset = 0;
+	limit = null;
+	field = 'id';
+	order = 'asc';
+
+	service.findRows('Vendor', vendorQueryObj, offset, limit, field, order, vendorIncludeArr)
+	.then(function(vendor){
+		return res.status(200).send(vendor);
+
+	}).catch(function(error){
+		console.log("Error::",error);
+		return res.status(500).send(error);
+	})
 }

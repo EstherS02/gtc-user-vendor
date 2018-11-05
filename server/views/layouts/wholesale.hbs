@@ -14,7 +14,66 @@
   });
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
-<section class="lifestyle_banner" style="margin-bottom: 0; background-color: #5D5646;">
+<div class="marketplace-banner wholesale">
+    <div class="gtc-container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="advertisement py-xl-4">
+                    <img class="img-fluid" src="../img/direc_banner.png">
+                </div>
+            </div>
+            <div class="col-md-7 right">
+                <h2>Our Wholesale Marketplace has over</h2>
+                <h1>12,000 Wholesalers & 60,000 Products</h1>
+                <small class="text-center text-white py-xl-3 d-block">Advanced Search</small>
+                <form id="searchForm">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-b-sm">
+                                <div class="select-container">
+                                    <select class="form-control-customized form-control-sm rounded" id="marketplace_type" name="marketplace_type">
+                                        <option disabled selected>Type</option>
+                                        {{#each type}}
+                                          <option value="{{this.id}}">{{ this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-b-sm">
+                                <div class="select-container">
+                                    <select class="form-control-customized form-control-sm rounded" id="category" name="category">
+                                        <option disabled selected>Category</option>
+                                        {{#each categories}}
+                                            <option value="{{this.id}}">{{ this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-b-sm">
+                                <div class="select-container">
+                                    <select class="form-control-customized form-control-sm rounded" id="location" name="location">
+                                        <option disabled selected>Location</option>
+                                        {{#each country}}
+                                            <option value="{{this.id}}">{{ this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <button class="btn btn-md btn-directory" id="searchSubmit">SEARCH DIRECTORY</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{!-- <section class="lifestyle_banner" style="margin-bottom: 0; background-color: #5D5646;">
 	<div class="container-fluid full_view_pad_eighty clearfix">
     <div class="row">
       <div class="col-md-6 col-12 lstb1">
@@ -60,7 +119,7 @@
       </div>
     </div>
   </div>
-</section>
+</section> --}}
 
 <div class="other-marketplace-bg"></div>
 <div class="gtc-container">
@@ -136,7 +195,7 @@
         </div>
         <div class="product-list-body">
           <div class="row">
-            {{#each featuredProducts}}
+            {{#each featuredProducts.rows}}
             <div class="col-md-6">
               <div class="product-body">
                 <div class="table-responsive">
@@ -146,7 +205,7 @@
                         <td class="col-3">
                           <div class="product-left-col">
                             <a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-                              <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                              <img class="object-fit" onError="imgError(this)" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
                             </a>
                           </div>
                         </td>
@@ -155,19 +214,19 @@
                             <h3><a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
                             <div class="row no-margins">
                               <div class="col-md-12 col-12 no-padding">
-                                <h2 class="text-red price">{{currency this.product_price '$'}}</h2>
+                                <h2 class="text-red price">{{currency this.price '$'}}</h2>
                               </div>
                               <div class="col-md-4 col-4 no-padding">
                                 <span>Origin</span>
                               </div>
                               <div class="col-md-8 col-8 no-padding overflow-txt">
-                                <span class="text-500">{{this.country_name}}</span>
+                                <span class="text-500">{{this.Country.name}}</span>
                               </div>
                               <div class="col-md-4 col-4 no-padding">
                                 <span>Category</span>
                               </div>
                               <div class="col-md-8 col-8 no-padding overflow-txt">
-                                <a class="text-500" href="/wholesale/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                <a class="text-500" href="/wholesale/search?category={{this.Category.id}}&sub_category={{this.SubCategory.id}}" title="{{this.Category.name}} > {{this.SubCategory.name}}">{{this.Category.name}} > {{this.SubCategory.name}}</a>
                               </div>
                               <div class="col-md-4 col-4 no-padding">
                                 <span>Seller Rating</span>

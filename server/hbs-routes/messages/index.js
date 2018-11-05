@@ -2,15 +2,11 @@
 
 var express = require('express');
 var router = express.Router();
-var middleware = require('../../middleware');
 var auth = require('../../auth/auth.service');
-var permission = require('../../config/permission');
+const roles = require('../../config/roles');
 
-
-/* Handlebars routes */
 var controller = require('./messages.controller');
 
-router.get('/', auth.isAuthenticated(),controller.messages);
-// var router = express.Router();
+router.get('/', auth.hasRole(roles['USER']), controller.messages);
 
 module.exports = router;

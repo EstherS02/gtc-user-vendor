@@ -2,7 +2,6 @@
 
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
-const reference = require('../../../config/model-reference');
 const status = require('../../../config/status');
 const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
@@ -13,9 +12,7 @@ const shopService=require('../../../api/vendor/vendor-service')
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const sequelize = require('sequelize');
-const moment = require('moment');
-import series from 'async/series';
-var async = require('async');
+const async = require('async');
 var _ = require('lodash');
 
 export function vendorServices(req, res) {
@@ -25,7 +22,6 @@ export function vendorServices(req, res) {
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var offset, limit, field, order, page;
@@ -165,9 +161,11 @@ export function vendorServices(req, res) {
 		},
 		categoryWithProductCount: function(callback) {
 			var resultObj = {};
+			var categoryWithProductCount = {};
 			shopService.vendorProductCountForFilter(queryObj)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
+					var count = 0;
 					_.each(char, function(o) {
 						if (_.isUndefined(resultObj[o.categoryname])) {
 							resultObj[o.categoryname] = {};
@@ -183,8 +181,11 @@ export function vendorServices(req, res) {
 						subCatObj["count"] = o.subproductcount;
 						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+						count= count + o.subproductcount;
 					})
-					return callback(null, resultObj);
+					categoryWithProductCount.rows = resultObj;
+					categoryWithProductCount.count = count;
+					return callback(null, categoryWithProductCount);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);

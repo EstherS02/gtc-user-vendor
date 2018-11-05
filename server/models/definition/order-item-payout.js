@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('OrderPayment', {
+    return sequelize.define('OrderItemPayout', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        order_id: {
+        order_item_id: {
             type: DataTypes.BIGINT,
-            field: 'order_id',
+            field: 'order_item_id',
             allowNull: false,
             references: {
-                model: 'orders',
+                model: 'order_item',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -30,11 +30,6 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-        },
-        order_payment_type: {
-            type: DataTypes.INTEGER,
-            field: 'order_payment_type',
-            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
@@ -67,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'order_payment',
+        tableName: 'order_item_payout',
         timestamps: false
     });
 };
@@ -76,17 +71,17 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const OrderPayment = model.OrderPayment;
-    const Order = model.Order;
+    const OrderItemPayout = model.OrderItemPayout;
+    const OrderItem = model.OrderItem;
     const Payment = model.Payment;
 
-    OrderPayment.belongsTo(Order, {
-        foreignKey: 'order_id',
+    OrderItemPayout.belongsTo(OrderItem, {
+        foreignKey: 'order_item_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    OrderPayment.belongsTo(Payment, {
+    OrderItemPayout.belongsTo(Payment, {
         foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

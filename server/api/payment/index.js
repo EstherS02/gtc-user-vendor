@@ -15,5 +15,5 @@ router.post('/return-order-item', auth.isAuthenticated(), controller.returnOrder
 router.post('/confirm-order-item', auth.hasRole(roles['VENDOR']), controller.confirmOrderItem);
 router.post('/refund-order/:orderId', auth.isAuthenticated(), controller.refundOrder);
 router.delete('/card', auth.isAuthenticated(), controller.deleteCard);
-// router.get('/sendOrderMail', controller.sendOrderMail)
+// router.get('/sendOrderMail', auth.isAuthenticated(),controller.sendOrderMail)
 module.exports = router;

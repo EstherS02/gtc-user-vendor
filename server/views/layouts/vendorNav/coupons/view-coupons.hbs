@@ -62,7 +62,7 @@
 		if (selected.length > 0) {
 			window.location.href = '/coupons/edit-coupons?id=' + selected;
 		} else {
-			ouputErrorPopup("Please select one coupon it edit.");
+			ouputErrorPopup("Please select one coupon to edit.");
 		}
 	}
 	function create(e) {
@@ -217,16 +217,15 @@
 																		<small>CAD</small>
 																	{{/ifCond}}
 																</td>
-																{{!-- satusCode --}}
-																{{#ifCond this.status "==" ../statusCode.ACTIVE}}
-																	<td class="text_green_color">Active</td>
-																	{{else ifCond this.status "==" ../statusCode.SUSPENDED}}
-																	<td class="text_orange_color">Suspended</td>
-																	{{else ifCond this.status "==" ../statusCode.SOLDOUT}}
-																	<td class="text_red_color">Sold Out</td>
-																	{{else ifCond this.status "==" ../statusCode.INACTIVE}}
-																	<td class="text_orange_color">Inactive</td>
-																{{/ifCond}} {{!-- End status Code--}}
+																<td class={{#ifCond this.status '==' ../statusCode.ACTIVE}} "text_green_color"
+																			{{else ifCond this.status '==' ../statusCode.SUSPENDED}} "text_orange_color"
+																			{{else ifCond this.status '==' ../statusCode.SOLDOUT}} "text_red_color"
+																			{{/ifCond}}>
+																	{{#ifCond this.status '==' ../statusCode.ACTIVE}}Active
+																	{{else ifCond this.status '==' ../statusCode.SUSPENDED}}Suspended
+																	{{else ifCond this.status '==' ../statusCode.SOLDOUT}}Sold Out
+																	{{/ifCond}} 
+																</td>
 															</tr>
 															{{/each}}
 															{{else}}

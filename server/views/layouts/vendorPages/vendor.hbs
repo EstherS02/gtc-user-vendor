@@ -36,7 +36,7 @@
                 </div>
                 <div class="col-md-3 col-12 " style="background-color:#fff">
                     <h5 class="log_head_style">FEATURED</h5>
-                    {{#if featuredProducts}} {{#each featuredProducts}}
+                    {{#if featuredProducts.rows}} {{#each featuredProducts.rows}}
                     <div class="row profile_logged_in_body2_bg_color">
                         <div class="col-md-6 col-6" style="padding-right: 0px; margin-top:10px;">
                         <a href="products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
@@ -44,19 +44,21 @@
                             </a>
                         </div>
                         <div class="col-md-6 col-6" style="padding-left: 8px; padding-right: 0px;">
-                            <h5 class="log_doller_value">${{this.product_price}}</h5>
-                            <p class="profile_logged_in_body2_font_para">SAVE $20
+                            <h5 class="log_doller_value">{{currency this.price '$'}}</h5>
+                            {{!-- <p class="profile_logged_in_body2_font_para">SAVE $20
                                 <span class="log_left_style">12m left</span>
-                            </p>
-                            <p class="profile_logged_in_body2_font_para_1">
-                                <a href="/products/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a> -Free 15%off for the month Augest</p>
+                            </p> --}}
+                            <p class="profile_logged_in_body2_font_para_1 ">
+                                <a href="/products/{{this.product_slug}}/{{this.id}}" class="vendor_landing_product_name">{{this.product_name}}</a> {{!-- -Free 15%off for the month Augest --}}</p>
                             <div class="container">
                                 <div class="row">
-                                    <div class="col-md-4 col-4">
-                                        <p class="profile_logged_in_body2_font_2">Category</p>
+                                    <div class="col-md-4 col-4 no-padding">
+                                        <p class="profile_logged_in_body2_font_2">Category :</p>
                                     </div>
-                                    <div class="col-md-8 col-8">
-                                        <p class="profile_logged_in_body2_font_2">{{this.category_name}} &gt; {{this.sub_category_name}}</p>
+                                    <div class="col-md-8 col-8 no-padding">
+                                        <p class="profile_logged_in_body2_font_2 overflow-txt">
+                                        <a href="/products/search?category={{this.Category.id}}&sub_category={{this.SubCategory.id}}" class="text-black">{{this.Category.name}} &gt; {{this.SubCategory.name}}</a>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -73,18 +75,18 @@
                     <div class="row profile_logged_in_body2_bg_color">
                         {{#each topSelling}}
                         <div class="col-md-4 col-4" style="margin-top:10px; padding-right:0px;">
-                        <a href="products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+                        <a href="products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" >
                             <img width="100%" src="{{this.product_base_image}}" onError="imgError(this)" style="border-radius:50%" height="90px">
                         </a>
                         </div>
                         <div class="col-md-8 col-8" style="margin-top:10px;" class="btn btn-pophover" data-toggle="popover" data-placement="top" id="pop_hover" onmouseover="showPopover({{this.id}})">
                             <P class="profile_logged_in_body2_font_para_1">
-                                <a href="/products/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>-Free 20% off </P>
+                                <a href="/products/{{this.product_slug}}/{{this.id}}" class="vendor_landing_product_name">{{this.product_name}}</a>{{!-- -Free 20% off  --}}</P>
                             {{#if product_quantity}}
                             <p class="profile_logged_in_body2_font_para_1">Availability {{this.product_quantity}} Remaining</p>{{/if}}
-                            <p class="profile_logged_in_body2_font_para"> ${{this.product_price}} - Save $20
+                            {{!-- <p class="profile_logged_in_body2_font_para"> ${{this.product_price}} - Save $20
                                 <span class="log_left_style">12m left!</span>
-                            </p>
+                            </p> --}}
                         </div>
                         <div class="col-md-12 col-12">
                             <hr>
@@ -104,12 +106,12 @@
                         </div>
                         <div class="col-md-8 col-8" style="margin-top:10px;">
                             <P class="profile_logged_in_body2_font_para_1">
-                                <a href="/products/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>-Free 20% off </P>
+                                <a href="/products/{{this.product_slug}}/{{this.id}}" class="vendor_landing_product_name">{{this.product_name}}</a>{{!-- -Free 20% off  --}}</P>
                             {{#if product_quantity}}
                             <p class="profile_logged_in_body2_font_para_1">Availability {{this.product_quantity}} Remaining</p>{{/if}}
-                            <p class="profile_logged_in_body2_font_para"> ${{this.product_price}} - Save $20
+                            {{!-- <p class="profile_logged_in_body2_font_para"> ${{this.product_price}} - Save $20
                                 <span class="log_left_style">12m left!</span>
-                            </p>
+                            </p> --}}
                         </div>
                         <div class="col-md-12 col-12">
                             <hr>

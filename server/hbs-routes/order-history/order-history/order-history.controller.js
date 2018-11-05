@@ -7,7 +7,6 @@ const querystring = require('querystring');
 
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
-const reference = require('../../../config/model-reference');
 const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
 const orderService = require('../../../api/order/order.service');
@@ -83,16 +82,12 @@ export function orderHistory(req, res) {
 
 	async.series({
 		cartInfo: function(callback) {
-			if (LoggedInUser.id) {
-				cartService.cartCalculation(LoggedInUser.id, req, res)
-					.then((cartResult) => {
-						return callback(null, cartResult);
-					}).catch((error) => {
-						return callback(error);
-					});
-			} else {
-				return callback(null);
-			}
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
 		},
 		categories: function(callback) {
 			var includeArr = [];
@@ -120,7 +115,7 @@ export function orderHistory(req, res) {
 			var order = "DESC";
 			var includeArray = [];
 			var field = "ordered_date";
-			var orderModelName = "OrdersNew";
+			var orderModelName = "Order";
 			var limit = req.query.limit ? parseInt(req.query.limit) : 10;
 			var offset = req.query.offset ? parseInt(req.query.offset) : 0;
 			var page = req.query.page ? parseInt(req.query.page) : 1;
@@ -150,6 +145,7 @@ export function orderHistory(req, res) {
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
+				marketPlace: marketplace,
 				orders: results.personalOrderHistory,
 				queryParams: queryParams,
 				queryParamsString: querystring.stringify(queryParams),
@@ -303,15 +299,17 @@ export function orderHistoryOld(req, res) {
 		},
 		categories: function(callback) {
 			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
+
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
 
 			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);

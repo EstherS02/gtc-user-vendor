@@ -5,7 +5,6 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
-const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const service = require('../../api/service');
@@ -14,7 +13,6 @@ const productService = require('../../api/product/product.service');
 
 export function services(req, res) {
 	var categoryModel = "Category";
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var offset, limit, field, order;
 	var queryObj = {};
@@ -66,22 +64,20 @@ export function services(req, res) {
 				});
 		},
 		featuredService: function(callback) {
-			queryObj['featured_position_service_landing'] = 1;
+			const tempLimit = 6;
+			queryObj['position'] = 'position_service_landing';
 			queryObj['is_featured_product'] = 1;
-			var featureLimit = 6;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, queryObj, featureLimit, order)
-				.then(function(response) {
-					return callback(null, response.rows);
+
+			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, tempLimit)
+				.then(function(results) {
+					return callback(null, results);
 				}).catch(function(error) {
-					console.log('Error::', error);
+					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
 		serviceMarketplace: function(callback) {
-			delete queryObj['featured_position_service_landing'];
+			delete queryObj['position'];
 			delete queryObj['is_featured_product'];
 			queryObj['marketplace_id'] = marketplace['SERVICE'];
 			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
@@ -93,7 +89,9 @@ export function services(req, res) {
 				});
 		},
 		servicesProviders: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			delete queryObj['marketplace_id'];
 			queryObj['type'] = 'Services Marketplace';
 			field = 'sales_count';
@@ -129,7 +127,7 @@ export function services(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		}
 	}, function(err, results) {
 		if (!err) {

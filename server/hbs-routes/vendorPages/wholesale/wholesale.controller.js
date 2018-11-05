@@ -2,7 +2,6 @@
 
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
-const reference = require('../../../config/model-reference');
 const status = require('../../../config/status');
 const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
@@ -13,10 +12,8 @@ const cartService = require('../../../api/cart/cart.service');
 const shopService=require('../../../api/vendor/vendor-service')
 const Plan = require('../../../config/gtc-plan');
 const marketplace_type = require('../../../config/marketplace_type');
-const moment = require('moment');
-import series from 'async/series';
-var async = require('async');
-var _ = require('lodash');
+const async = require('async');
+const _ = require('lodash');
 
 export function vendorWholesale(req, res) {
 	var LoggedInUser = {};
@@ -28,7 +25,6 @@ export function vendorWholesale(req, res) {
 	var bottomCategory = {};
 	var vendorProductCategoryCount = {};
 
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var offset, limit, field, order, page;
@@ -226,13 +222,15 @@ export function vendorWholesale(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-
 		},
 		categoryWithProductCount: function(callback) {
+			delete queryObj.marketplace_type_id;
 			var resultObj = {};
+			var categoryWithProductCount = {};
 			shopService.vendorProductCountForFilter(queryObj)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
+					var count = 0;
 					_.each(char, function(o) {
 						if (_.isUndefined(resultObj[o.categoryname])) {
 							resultObj[o.categoryname] = {};
@@ -248,8 +246,11 @@ export function vendorWholesale(req, res) {
 						subCatObj["count"] = o.subproductcount;
 						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+						count= count + o.subproductcount;
 					})
-					return callback(null, resultObj);
+					categoryWithProductCount.count = count;
+					categoryWithProductCount.rows = resultObj;
+					return callback(null, categoryWithProductCount);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);

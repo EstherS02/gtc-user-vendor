@@ -1,7 +1,7 @@
 <div class="ibox">
 	<div class="ibox-content bg-transparent">
 		<h5 class="right-header-sm">SEARCH BY CATEGORY</h5>
-		<p class="right-header-xs bg-{{selectedPage}}{{!-- {{product.Marketplace.id}} --}}">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
+		<p class="right-header-xs bg-{{selectedPage}}{{!-- {{product.Marketplace.id}} --}}">ALL CATEGORIES ({{categoryWithProductCount.count}})</p>
 		<ul class="right-list-view">
 			{{!-- {{#each categoriesWithCount.rows}}
 			<li>
@@ -15,7 +15,7 @@
 				</ul>
 			</li>
 			{{/each}} --}}
-			{{#each categoryWithProductCount}}
+			{{#each categoryWithProductCount.rows}}
 			<li>
 				<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.categoryName}}">{{this.categoryName}} ({{this.count}})</a>
 				<ul class="inner-list-view collapse" id="list{{this.categoryName}}">

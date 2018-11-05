@@ -2,15 +2,11 @@
 
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
-const sequelize = require('sequelize');
-const moment = require('moment');
-import series from 'async/series';
-var async = require('async');
+const async = require('async');
 const verificationStatus = require('../../config/verification_status');
 const vendorPlan = require('../../config/gtc-plan');
 
@@ -35,16 +31,12 @@ export function verification(req, res) {
 
 	async.series({
 			cartInfo: function(callback) {
-				if (LoggedInUser.id) {
-					cartService.cartCalculation(LoggedInUser.id, req, res)
-						.then((cartResult) => {
-							return callback(null, cartResult);
-						}).catch((error) => {
-							return callback(error);
-						});
-				} else {
-					return callback(null);
-				}
+				cartService.cartCalculation(LoggedInUser.id, req, res)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
 			},
 			verification: function(callback) {
 				service.findOneRow(modelName, queryObj, includeArr)
@@ -95,7 +87,8 @@ export function verification(req, res) {
 					verificationStatus: verificationStatus,
 					cart: results.cartInfo,
 					marketPlace: marketplace,
-					vendorPlan: vendorPlan
+					vendorPlan: vendorPlan,
+					selectedPage: 'gtc-verification',
 				});
 			} else {
 				res.render('vendorNav/verification', err);

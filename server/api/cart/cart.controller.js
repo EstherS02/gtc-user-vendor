@@ -41,7 +41,7 @@ export async function addToCart(req, res) {
 			},
 			include:[{
 				model:model['Vendor'],
-				attributes:['id'],
+				attributes:['id','vendor_name'],
 				include:[{
 					model:model['User'],
 					attributes:['id','first_name','last_name']
@@ -49,13 +49,43 @@ export async function addToCart(req, res) {
 			}]
 		});
 		if (productResponse) {
-			// console.log("--------8----================productResponse",JSON.stringify(productResponse))
-			// if(productResponse.marketplace_id == 1){
-					
-			// }else{
-			// 	// -------------------------------------------------------
-			// }
 			const product = productResponse.toJSON();
+			if (product.marketplace_id == 1) {
+				const UserPlan = await model["UserPlan"].findOne({
+					where: {
+						user_id: LoggedInUser.id,
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					}
+				});
+				if (UserPlan) {
+					if (product.marketplace_type_id != marketplaceType['WTS']) {
+						return res.status(200).json({
+							message: "REDIRECT",
+							message_details: "OOPS ! Contact Vendor to purchase this Product"
+						});
+					}
+				} else {
+					return res.status(200).json({
+							message: "UPGRADEPLAN",
+							message_details: "OOPS ! Please Upgrade your Plan"
+						});
+				}
+			}
+			if(product.marketplace_id ==4){
+				const subscription = await checkAlreadySubscribetion(product.id,LoggedInUser);
+				if (subscription) {
+					return res.status(200).json({
+						message: "Subscribed",
+						message_details: "OOPS ! This product Already Subscribed"
+					});
+				}
+			}
 			if (product.quantity_available == 0) {
 				return res.status(400).json({
 					message: "SOLD_OUT",
@@ -591,6 +621,29 @@ export function checkAlreadySubscribed(req, res) {
 				return res.status(200).send(SubscriptionExist);
 			} else {
 				return res.status(200).send(null);
+			}
+		}).catch(function() {
+			return res.status(400).send("Internal Server Error");
+		})
+}
+function checkAlreadySubscribetion(productID, user) {
+	var product_id, user_id, subscriptionQueryObj = {};
+
+	product_id = productID;
+	user_id = user.id;
+
+	subscriptionQueryObj = {
+		user_id: user_id,
+		product_id: product_id,
+		status: status['ACTIVE']
+	}
+
+	return service.findOneRow('Subscription', subscriptionQueryObj)
+		.then(function(SubscriptionExist) {
+			if (SubscriptionExist) {
+				return true;//res.status(200).send(SubscriptionExist);
+			} else {
+				return false;//res.status(200).send(null);
 			}
 		}).catch(function() {
 			return res.status(400).send("Internal Server Error");

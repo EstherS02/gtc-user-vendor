@@ -4,7 +4,6 @@ const async = require('async');
 const sequelize = require('sequelize');
 const moment = require('moment');
 var _ = require('lodash');
-
 const service = require('../../api/service');
 const searchResultService = require('../../api/service/search-result.service');
 const model = require('../../sqldb/model-connect');
@@ -35,9 +34,7 @@ export function index(req, res) {
 
 	var categoryModel = "Category";
 	var marketPlaceModel = "Marketplace";
-	var productModel = "MarketplaceProduct";
 	var marketPlaceTypeModel = "MarketplaceType";
-
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
 		LoggedInUser = req.gtcGlobalUserObj;
 	}
@@ -107,6 +104,8 @@ export function index(req, res) {
 		isFeaturedProduct = true;
 		queryURI['is_featured_product'] = parseInt(req.query.is_featured_product);
 		productQueryParams['is_featured_product'] = parseInt(req.query.is_featured_product);
+		productCountQueryParams['is_featured_product'] = parseInt(req.query.is_featured_product);
+		// productQueryParams['position'] = 'position_searchresult';
 		productCountCategory['is_featured_product'] = parseInt(req.query.is_featured_product);
 	}
 
@@ -130,16 +129,14 @@ export function index(req, res) {
 		productCountQueryParams['product_location'] = req.query.location;
 		productCountCategory['product_location'] = req.query.location;
 	}
-
+	//changed a "keyword" for "search/keyword"
 	if (req.query.keyword) {
 		queryPaginationObj.keyword = req.query.keyword;
-		queryURI['searchKeyword'] = req.query.keyword;
+		queryURI['keyword'] = req.query.keyword;
 		productQueryParams['product_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
-		productCountQueryParams['product_name'] = {
-			like: '%' + req.query.keyword + '%'
-		};
+		productCountQueryParams['keyword'] = req.query.keyword;
 		productCountCategory['keyword'] = req.query.keyword;
 	}
 
@@ -161,10 +158,8 @@ export function index(req, res) {
 			'$gte': req.query.start_date,
 			'$lte': req.query.end_date
 		};
-		productCountQueryParams['created_on'] = {
-			'$gte': req.query.start_date,
-			'$lte': req.query.end_date
-		};
+		productCountQueryParams['start_date'] = req.query.start_date;
+		productCountQueryParams['end_date'] = req.query.end_date;
 	}
 
 	if (req.query.vendor_id) {
@@ -244,26 +239,45 @@ export function index(req, res) {
 		},
 		topProducts: function(callback) {
 			productQueryParams['is_featured_product'] = 1;
-			var topLimit = 3;
-			var order = [
-				sequelize.fn('RAND'),
-			];
-			productService.RandomProducts(productModel, productQueryParams, topLimit, order)
-				.then(function(response) {
-					return callback(null, response);
-				}).catch(function(error) {
-					console.log('Error::', error);
-					return callback(null);
-				});
-		},
-		productsCountBasedOnMarketplaceTypes: function(callback) {
-			searchResultService.marketplacetypeWithProductCount(productCountQueryParams, isFeaturedProduct)
-				.then(function(response) {
-					return callback(null, response);
+			productQueryParams['position'] = 'position_searchresult';
+			productService.queryAllProducts(LoggedInUser.id, productQueryParams, 0, 3)
+				.then(function(results) {
+					return callback(null, results);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		productsCountBasedOnMarketplaceTypes: function(callback) {
+			// searchResultService.marketplacetypeWithProductCount(productCountQueryParams, isFeaturedProduct)
+			// 	.then(function(response) {
+			// 		return callback(null, response);
+			// 	}).catch(function(error) {
+			// 		console.log('Error :::', error);
+			// 		return callback(null);
+			// 	});
+			var result = {};
+			if ((selectedMarketPlaceID != marketplace['PUBLIC']) || (selectedMarketPlaceID != marketplace['SERVICE']) || (selectedMarketPlaceID != marketplace['LIFESTYLE'])) {
+				searchResultService.productCountForMareketplace(productCountQueryParams)
+					.then(function(response) {
+						var count = 0;
+						
+						var char = JSON.parse(JSON.stringify(response));
+						result.rows = char;
+						_.each(char, function(Element){
+							count=count + Element.product_count;
+						})
+						result.count= count;
+						return callback(null, result);
+					}).catch(function(error) {
+						console.log('Error:::', error);
+						return callback(null);
+					});
+			} else {
+				result.count=0;
+				result.rows = [];
+				return callback(result);
+			}
 		},
 		productsCountBasedOnCountry: function(callback) {
 			searchResultService.countryWithProductCount(productCountQueryParams, isFeaturedProduct)
@@ -285,9 +299,11 @@ export function index(req, res) {
 		},
 		productCount: function(callback) {
 			var resultObj = {};
+			var productCount ={};
 			searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
+					var count = 0;
 					_.each(char, function(o) {
 						if (_.isUndefined(resultObj[o.categoryname])) {
 							resultObj[o.categoryname] = {};
@@ -303,8 +319,11 @@ export function index(req, res) {
 						subCatObj["count"] = o.subproductcount;
 						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+						count= count + o.subproductcount;
 					})
-					return callback(null, resultObj);
+					productCount.count = count;
+					productCount.rows = resultObj;
+					return callback(null, productCount);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -312,9 +331,11 @@ export function index(req, res) {
 		},
 		countryProductCount: function(callback) {
 			var resultObj = {};
+			var countryProductCount ={};
 			searchResultService.productCountForCountry(productCountCategory)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
+					var count = 0;
 					_.each(char, function(o) {
 						if (_.isUndefined(resultObj[o.regionname])) {
 							resultObj[o.regionname] = {};
@@ -330,8 +351,11 @@ export function index(req, res) {
 						subCatObj["count"] = o.productcount;
 						resultObj[o.regionname]["count"] += Number(o.productcount);
 						resultObj[o.regionname]["subCategory"].push(subCatObj)
+						count= count + o.productcount;
 					})
-					return callback(null, resultObj);
+					countryProductCount.count = count;
+					countryProductCount.rows = resultObj;
+					return callback(null, countryProductCount);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);

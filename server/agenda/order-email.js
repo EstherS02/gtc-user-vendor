@@ -13,10 +13,10 @@ const model = require('../sqldb/model-connect');
 
 module.exports = async function(job, done) {
 	const orderID = job.attrs.data.order;
-	const orderModelName = "OrdersNew";
+	const orderModelName = "Order";
 	var emailTemplateModel = 'EmailTemplate';
 	const orderVendorModelName = "OrderVendor";
-	const orderItemModelName = "OrdersItemsNew";
+	const orderItemModelName = "OrderItem";
 
 	const includeOrderArray = [{
 		model: model['User'],
@@ -67,7 +67,7 @@ module.exports = async function(job, done) {
 			where: {
 				order_id: orderID,
 				vendor_id: {
-					$col: 'OrdersNew->OrdersItemsNews->Product.vendor_id'
+					$col: 'Order->OrderItems->Product.vendor_id'
 				}
 			},
 			attributes: ['id', 'order_id', 'vendor_id', 'status'],
@@ -75,7 +75,7 @@ module.exports = async function(job, done) {
 				model: model['Vendor'],
 				attributes: ['id', 'vendor_name', 'contact_email']
 			}, {
-				model: model['OrdersNew'],
+				model: model['Order'],
 				attributes: ['id', 'ordered_date'],
 				include: [{
 					model: model['Address'],
@@ -89,7 +89,7 @@ module.exports = async function(job, done) {
 						attributes: ['id', 'name']
 					}]
 				}, {
-					model: model['OrdersItemsNew'],
+					model: model['OrderItem'],
 					attributes: ['id', 'order_id', 'product_id', 'quantity', 'price', 'shipping_cost', 'gtc_fees', 'plan_fees', 'final_price'],
 					include: [{
 						model: model['Product'],
@@ -114,15 +114,14 @@ module.exports = async function(job, done) {
 		userOrderResponse.ordered_date = moment(userOrderResponse.ordered_date).format('MMM D, Y');
 		var userOrderResult = userOrderTemplate(userOrderResponse);
 
-
 		await Promise.all(orderVendors.map(async (orderVendor, i) => {
-			orderVendors[i].OrdersNew.total_price = await _.sumBy(orderVendor.OrdersNew.OrdersItemsNews, function(o) {
+			orderVendors[i].Order.total_price = await _.sumBy(orderVendor.Order.OrderItems, function(o) {
 				return parseFloat(o.price);
 			});
 			var orderVendorSubject = orderVendorEmailTemplate.subject;
 			var orderVendorTemplate = Handlebars.compile(orderVendorEmailTemplate.body);
-			orderVendor.OrdersNew.ordered_date = moment(orderVendor.OrdersNew.ordered_date).format('MMM D, Y');
-			var orderVendorResult = orderVendorTemplate(orderVendor.OrdersNew);
+			orderVendor.Order.ordered_date = moment(orderVendor.Order.ordered_date).format('MMM D, Y');
+			var orderVendorResult = orderVendorTemplate(orderVendor.Order);
 			if (orderVendor.Vendor.contact_email) {
 				await sendEmail({
 					to: orderVendor.Vendor.contact_email,
@@ -141,7 +140,7 @@ module.exports = async function(job, done) {
 		}
 		done();
 	} catch (error) {
-		console.log("indexExample Error:::", error);
+		console.log("orderEmail Error:::", error);
 		return error;
 	}
 }

@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'order_id',
             allowNull: false,
             references: {
-                model: 'orders_new',
+                model: 'order',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -124,9 +124,10 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const OrderVendor = model.OrderVendor;
     const OrderVendorPayout = model.OrderVendorPayout;
-    const OrdersNew = model.OrdersNew;
+    const Order = model.Order;
     const Vendor = model.Vendor;
     const Shipping = model.Shipping;
+    const Payment = model.Payment;
 
     OrderVendor.hasMany(OrderVendorPayout, {
         foreignKey: 'order_vendor_id',
@@ -134,7 +135,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    OrderVendor.belongsTo(OrdersNew, {
+    OrderVendor.belongsTo(Order, {
         foreignKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -148,6 +149,14 @@ module.exports.initRelations = () => {
 
     OrderVendor.belongsTo(Shipping, {
         foreignKey: 'shipping_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    OrderVendor.belongsToMany(Payment, {
+        through: OrderVendorPayout,
+        foreignKey: 'order_vendor_id',
+        otherKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

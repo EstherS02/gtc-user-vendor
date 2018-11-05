@@ -38,9 +38,9 @@ export async function makePayment(req, res) {
 	const cartModelName = "Cart";
 	const productModelName = "Product";
 	const paymentModelName = "Payment";
-	const orderModelName = "OrdersNew";
+	const orderModelName = "Order";
 	const orderVendorModelName = "OrderVendor";
-	const orderItemModelName = "OrdersItemsNew";
+	const orderItemModelName = "OrderItem";
 	const paymentSettingModelName = "PaymentSetting";
 	const agenda = require('../../app').get('agenda');
 
@@ -319,7 +319,7 @@ export async function cancelOrderItem(req, res) {
 		orderItemStatus = ORDER_ITEM_NEW_STATUS['CANCELED'];
 
 	try {
-		const itemObj = await service.findRow('OrdersItemsNew', orderItemObj, includeArray);
+		const itemObj = await service.findRow('OrderItem', orderItemObj, includeArray);
 		if (itemObj) {
 			if ((itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['ORDER_INITIATED']) || 
 				(itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['CONFIRMED'])) {
@@ -330,7 +330,7 @@ export async function cancelOrderItem(req, res) {
 					last_updated_by: req.user.first_name,
 					last_updated_on: new Date()
 				};
-				const updatestatusRow = await service.updateRow('OrdersItemsNew', updateOrderItem, itemId);
+				const updatestatusRow = await service.updateRow('OrderItem', updateOrderItem, itemId);
 				if (updatestatusRow) {
 					let queryOrderVendor = {
 						order_id: itemObj.order_id,
@@ -391,7 +391,7 @@ export async function returnOrderItem(req, res) {
 		id: itemId
 	};
 	try {
-		const itemObj = await service.findRow('OrdersItemsNew', orderItemObj, includeArray);
+		const itemObj = await service.findRow('OrderItem', orderItemObj, includeArray);
 		if (itemObj) {
 			if ((itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['DELIVERED']) && checkingDays(itemObj.delivered_on)) {
 				let updateOrderItem = {
@@ -401,7 +401,7 @@ export async function returnOrderItem(req, res) {
 					last_updated_by: req.user.first_name,
 					last_updated_on: new Date()
 				};
-				const updatestatusRow = await service.updateRow('OrdersItemsNew', updateOrderItem, itemId);
+				const updatestatusRow = await service.updateRow('OrderItem', updateOrderItem, itemId);
 				if (updatestatusRow) {
 					let queryOrderVendor = {
 						order_id: itemObj.order_id,
@@ -474,7 +474,7 @@ export async function confirmOrderItem(req, res) {
 	};
 
 	try {
-		const itemObj = await service.findRow('OrdersItemsNew', orderItemObj, includeArray);
+		const itemObj = await service.findRow('OrderItem', orderItemObj, includeArray);
 		if (itemObj) {
 			if (itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['ORDER_INITIATED']) {
 				let updateOrderItem = {
@@ -483,7 +483,7 @@ export async function confirmOrderItem(req, res) {
 					last_updated_by: req.user.first_name,
 					last_updated_on: new Date()
 				};
-				const updatestatusRow = await service.updateRow('OrdersItemsNew', updateOrderItem, itemId);
+				const updatestatusRow = await service.updateRow('OrderItem', updateOrderItem, itemId);
 				if (updatestatusRow) {
 					return res.status(200).send(resMessage("SUCCESS", "Order item confirmed successfully"));
 				} else {
@@ -543,10 +543,10 @@ export function deleteCard(req, res) {
 		});
 }
 
-export function sendOrderMail(orderIdStore, req) { //export function sendOrderMail(req,res) {
+export function sendOrderMail(orderIdStore, req) { // export function sendOrderMail(req,res) {//
 	var user = {};
 	user = req.user;
-	var orderIdStore = orderIdStore;
+	var orderIdStore = orderIdStore;//[763,764];//
 	var includeArr = [{
 		model: model['OrderItem'],
 		include: [{
@@ -583,6 +583,7 @@ export function sendOrderMail(orderIdStore, req) { //export function sendOrderMa
 			usernotification(OrderList, user);
 			vendorMail(OrderList, user);
 			if (user.user_contact_email) {
+				var agenda = require('../../app').get('agenda');
 				var user_email = user.user_contact_email;
 				var orderNew = [];
 				var queryObjEmailTemplate = {};
@@ -600,20 +601,29 @@ export function sendOrderMail(orderIdStore, req) { //export function sendOrderMa
 							body = body.replace(/%currency%/g, '$');
 							body = body.replace('%UserName%', user.first_name)
 							_.forOwn(OrderList.rows, function(orders) {
+								_.forOwn(orders.OrderItems,function(orderEle){
+								orderEle.final_price = numeral(orderEle.final_price).format('$' + '0,0.00');
+								orders.total_price = numeral(orders.total_price).format('$' + '0,0.00');
+								})
 								body = body.replace('%placed_on%', moment(orders.created_on).format('MMM D, Y'));
+
 								total = total + orders.total_price;
 								orderNew.push(orders);
 							});
-							body = body.replace('%Total_Price%', numeral(total).format('$' + '0,0.00'))
+
 							var template = Handlebars.compile(body);
 							var data = {
 								order: orderNew
 							};
 							var result = template(data);
-							sendEmail({
+							var mailArray=[];
+							mailArray.push({
 								to: email,
 								subject: subject,
 								html: result
+							});
+							agenda.now(config.jobs.email, {
+								mailArray: mailArray
 							});
 							return;
 						}
@@ -641,6 +651,7 @@ export function vendorMail(OrderList, user) {
 }
 
 function sendVendorEmail(order, user) {
+	var agenda = require('../../app').get('agenda');
 	var queryObjEmailTemplate = {};
 	var emailTemplateModel = 'EmailTemplate';
 	queryObjEmailTemplate['name'] = config.email.templates.vendorNewOrder;
@@ -652,16 +663,14 @@ function sendVendorEmail(order, user) {
 				var subject = response.subject.replace('%ORDER_TYPE%', 'New Order');
 				var body;
 				body = response.body.replace('%ORDER_TYPE%', 'New Order');
+				body = body.replace(/%currency%/g, '$');
 				body = body.replace(/%Path%/g, 'https://gtc.ibcpods.com'); //req.protocol + '://' + req.get('host'));
 				body = body.replace('%VendorName%', order.OrderItems[0].Product.Vendor.vendor_name);
-				body = body.replace(/%currency%/g, '$');
-
-				_.forOwn(order, function(orders) {
-
+				_.forOwn(order.OrderItems, function(orders) {
 					body = body.replace('%placed_on%', moment(new Date()).format('MMM D, Y'));
-					body = body.replace('%Total_Price%', numeral(order.vendor_pay).format('$' + '0,0.00'))
+					body = body.replace('%Total_Price%', numeral(order.total_price).format('$' + '0,0.00'))
+					orders.final_price = numeral(orders.final_price).format('0,0.00');
 					orderNew.push(orders);
-
 				});
 				var template = Handlebars.compile(body);
 				var data = {
@@ -669,10 +678,14 @@ function sendVendorEmail(order, user) {
 				};
 
 				var result = template(data);
-				sendEmail({
+				var mailArray=[];
+				mailArray.push({
 					to: email,
 					subject: subject,
 					html: result
+				});
+				agenda.now(config.jobs.email, {
+					mailArray: mailArray
 				});
 			}
 			return;
@@ -719,9 +732,9 @@ function usernotification(order, user) {
 			bodyParams.user_id = user.id;
 			bodyParams.description = response.description
 			bodyParams.description = bodyParams.description.replace('%Firstname%', user.first_name);
-			bodyParams.description = bodyParams.description.replace('%LastName%', user.last_name);
-			bodyParams.description = bodyParams.description.replace('%orderEle%', orderEle);
-			bodyParams.description = bodyParams.description.replace('%url%', orderEle);
+			// bodyParams.description = bodyParams.description.replace('%LastName%', user.last_name);
+			bodyParams.description = bodyParams.description.replace('%orderEle%',orderEle);
+			bodyParams.description = bodyParams.description.replace('%url%',orderEle);
 			bodyParams.name = response.name;
 			bodyParams.code = response.code;
 			bodyParams.is_read = 1;
@@ -895,6 +908,7 @@ function sendUpgrademail(plan_id, user) {
 	let upgradePlanModel = {
 		id: plan_id
 	}
+	var agenda = require('../../app').get('agenda');
 	return service.findRow('Plan', upgradePlanModel, includeArray)
 		.then(upgradeplandetails => {
 			var upgradeplanobj = upgradeplandetails;
@@ -910,11 +924,16 @@ function sendUpgrademail(plan_id, user) {
 					body = body.replace('%first_name%', user.first_name);
 					body = body.replace('%name%', upgradeplanobj.name);
 					body = body.replace('%cost%', numeral(upgradeplanobj.cost).format('0,0.00'));
-					sendEmail({
+					var mailArray = [];
+					mailArray.push({
 						to: email,
 						subject: subject,
 						html: body
 					});
+					agenda.now(config.jobs.email, {
+						mailArray: mailArray
+					});
+					return;
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return;
@@ -1050,6 +1069,8 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 			var queryObjEmailTemplate = {};
 			var emailTemplateModel = 'EmailTemplate';
 			queryObjEmailTemplate['name'] = config.email.templates.refundRequest;
+			var agenda = require('../../app').get('agenda');
+			
 			service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 				.then(function(response) {
 					var email = vendor_email;
@@ -1069,10 +1090,14 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 						order: orderNew
 					};
 					var result = template(data);
-					sendEmail({
+					var mailArray = [];
+					mailArray.push({
 						to: email,
 						subject: subject,
 						html: result
+					});
+					agenda.now(config.jobs.email, {
+						mailArray: mailArray
 					});
 				}).catch(function(error) {
 					console.log('Error :::', error);

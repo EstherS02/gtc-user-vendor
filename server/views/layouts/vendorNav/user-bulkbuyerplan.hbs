@@ -3,8 +3,7 @@
 	var plans = {{{ DisplayJSON PlanDetails }}}
 	$(function() {
 		$('#planHide').show();
-		$('#userPlanShow').hide();
-		$('#vendorPlanShow').hide();
+		$('#planDetailShow').hide();
 		$('#selectplan').change(function() {
 			if (document.getElementById("selectplan").value != '') {
 				if (document.getElementById("selectplan").value == '1') {

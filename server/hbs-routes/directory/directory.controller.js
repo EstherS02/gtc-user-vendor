@@ -2,7 +2,6 @@
 
 const async = require('async');
 const sequelize = require('sequelize');
-
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
 const service = require('../../api/service');
@@ -16,9 +15,7 @@ export function directory(req, res) {
 	var marketplaceModel = "Marketplace";
 	var vendorModel = "VendorUserProduct";
 	var offset, limit, field, order;
-	var queryObj = {};
-	var LoggedInUser = {};
-	var bottomCategory = {};
+	var queryObj = {}, LoggedInUser = {}, bottomCategory = {};
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
 		LoggedInUser = req.gtcGlobalUserObj;
@@ -44,15 +41,17 @@ export function directory(req, res) {
 		},
 		categories: function(callback) {
 			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
 
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
@@ -94,7 +93,9 @@ export function directory(req, res) {
 				});
 		},
 		wholesalers: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			queryObj['type'] = 'Private Wholesale Marketplace';
 			field = 'sales_count';
 			order = 'desc';
@@ -129,10 +130,12 @@ export function directory(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		},
 		retailers: function(callback) {
-			console.log("retailers")
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*console.log("retailers")
 			var result = {};
 			queryObj['type'] = 'Public Marketplace';
 			field = 'sales_count';
@@ -168,10 +171,12 @@ export function directory(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		},
 		servicesProviders: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			queryObj['type'] = 'Services Marketplace';
 			field = 'sales_count';
 			order = 'desc';
@@ -206,10 +211,12 @@ export function directory(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		},
 		subscriptionProviders: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			queryObj['type'] = 'Lifestyle Marketplace';
 			field = 'sales_count';
 			order = 'desc';
@@ -244,7 +251,7 @@ export function directory(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		},
 	}, function(err, results) {
 		if (!err) {

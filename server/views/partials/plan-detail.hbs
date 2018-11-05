@@ -1,158 +1,559 @@
 <script type="text/javascript">
-    var plandetails = {{{DisplayJSON PlanDetails}}}
-    var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	function showDetails()
-    {
-       if(userInfo.Vendor)
-        {
-		  $('#planHide').hide();
-		  $('#userPlanShow').show();
-		  $('#userPlaninfo').show();
-          $('#vendorPlanShow').hide();
-          
-        }else{
-          $('#planHide').hide();
-          $('#userPlanShow').hide();
-          $('#vendorPlanShow').show();
-		  $('#userPlaninfo').show();
-          
-        }
-        
-    }
-	function usershowDetails()
-	{
-          $('#planHide').hide();
-          $('#userPlanShow').hide();
-          $('#vendorPlanShow').show();
-		  $('#userPlaninfo').show(); 		
+	var plandetails = {{{ DisplayJSON PlanDetails }}}
+	var userInfo = {{{ DisplayJSON LoggedInUser }}}
+	function showDetails() {
+		$('#planHide').hide();
+        $('#planDetailShow').show();
 	}
-	function showsplan()
-	{
+	function usershowDetails() {
+		$('#planHide').hide();
+		$('#planDetailShow').hide();
+	}
+	function showsplan() {
 		var uri = window.location.pathname;
-		window.location.href=uri;
+		window.location.href = uri;
 	}
-  </script>
-  
-<section id="userPlanShow">
-	    <div class="text-center which_pkg" style="margin-bottom: 0px;">
-			<div id="userPlaninfo" class="pull-right"> <a href="javascript:;" onclick="showsplan()"><b>Go Back</b></a></div>
-        <div class="container">
-            <h1 class="which_pkg_h1">Which Package Should I Choose?</h1>
-            <p class="which_pkg_p">We have a several options to get you started, or dive in with the our most robust offering. </p>
+</script>
+{{#if LoggedInUser.id}}
+<div class="login-banner-4 py-4 px-5" id="planDetailShow">
+    <div id="userPlaninfo" class="pull-right">
+        <a href="javascript:;" onclick="showsplan()">
+            <b>Go Back</b>
+        </a>
+    </div>
+    {{#ifCond LoggedInUser.role '==' 2}}
+        <div class="gtc-container">
+            <h1 class="text-m2 text-center font-weight-normal">Which Package Should I Choose?</h1>
+            <p class="text-center font-weight-normal">We have a several options to get you started, or dive in with the our most robust offering.</p>
             <div class="row">
-                <div class="starter_seller">
-                    <p class="starter_seller_p1">STARTER SELLER </p>
-                    <h1 class="starter_seller_h1">FREE</h1>
-                    <p>Build a GTC profile without the advanced reports, copuons, chat system and SEO support.</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> Maximum <b>20 Product</b> Inventory</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> Maxmium <b>1 Subscription</b></p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> Secure <b> Escrow</b> Online Transactions</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
-                    {{!-- <input type="submit" value="SIGNUP NOW" class="price_signup"> --}}
-                    <a class="price_signup btn" {{#if LoggedInUser}} {{else}}onclick="forceSignup()" {{/if}}>SIGNUP NOW</a>
-					
+                <div class="starter_seller plan-card">
+                    <h3 class="text-center">STARTER SELLER</h3>
+                    <h1 class="text-center">FREE</h1>
+                    <small class="font-weight-light m-b text-center">Build a GTC profile without the advanced reports, copuons, chat system and SEO support.</small>
+                    <ul>
+                        <li>Maximum
+                            <strong>20 Product</strong> Inventory</li>
+                        <li>Maxmium
+                            <strong>1 Subscription</strong>
+                        </li>
+                        <li>
+                            <strong>Unlimited</strong> Transactions Per Month</li>
+                        <li>Secure
+                            <strong>Escrow</strong>Online Transactions</li>
+                        <li>
+                            <strong>Paypal</strong> and/or
+                            <strong>Stripe</strong> Payment</li>
+                        <li>
+                            <strong>Custom Branded</strong> Store Front</li>
+                        <li>
+                            <strong>Volume</strong> Based Pricing</li>
+                        <li>
+                            <strong>Limited</strong> Support</li>
+                    </ul>
+                    <center>
+                        {{#if LoggedInUser}} {{else}}
+                            <button onclick="forceSignup()" class="btn btn-small m-t font-weight-bold btn-primary">SIGNUP NOW</button>
+                        {{/if}}
+                    </center>
                 </div>
-                <div class="service_provider">
-                    <p class="service_provider_p1">SERVICE PROVIDER </p>
-                    <h1 class="service_provider_h1">$30<span style="font-size: 20px;">/MO</span></h1>
-                    <p>Market your services to a massive audience for only 10% of subscription sales. </p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Services</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>No Assitinal Fee to</b> Buyers</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> Secure <b>Escrow</b> Online Transactions</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
-                    <input type="submit" value="SIGNUP NOW" {{#if LoggedInUser}} {{else}}onclick="forceSignup()" {{/if}} class="price_signup" style="cursor:pointer;">
+                <div class="service_provider plan-card">
+                    <h3 class="text-center">SERVICE PROVIDER</h3>
+                    <h1 class="text-center">$30
+                        <span class="sub-b">/MO</span>
+                    </h1>
+                    <small class="font-weight-light m-b text-center">Market your services to a massive audience for only 10% of subscription sales.</small>
+                    <ul>
+                        <li>
+                            <b>Unlimited</b> Services</li>
+                        <li>
+                            <b>Unlimited</b> Transactions Per Month</li>
+                        <li>
+                            <b>No Assitinal Fee to</b> Buyers</li>
+                        <li>Secure
+                            <b>Escrow</b> Online Transactions</li>
+                        <li>
+                            <strong>Paypal</strong> and/or
+                            <strong>Stripe</strong> Payment</li>
+                        <li>
+                            <strong>Custom Branded</strong> Store Front</li>
+                        <li>
+                            <strong>Volume</strong> Based Pricing</li>
+                        <li>
+                            <strong>Limited</strong> Support</li>
+                    </ul>
+                    <center>
+                        {{#if LoggedInUser}} {{else}}
+                            <button onclick="forceSignup()" class="btn btn-small m-t font-weight-bold btn-primary">SIGNUP NOW</button>
+                        {{/if}}
+                    </center>
                 </div>
-                <div class="lifestyle_provider">
-                    <p class="lifestyle_provider_p1">LIFESTYLE PROVIDER</p>
-                    <h1 class="lifestyle_provider_h1">10<sup>%</sup></h1>
-                    <p>Expose your subscriptions to a massive audience for only 10% of subscription sales.</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Subscriptions</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>No Assitinal Fee to</b> Buyers</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> Secure <b>Escrow</b> Online Transactions</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
-                    <input type="submit" value="SIGNUP NOW" {{#if LoggedInUser}} {{else}}onclick="forceSignup()" {{/if}} class="price_signup" style="cursor:pointer;">
+                <div class="lifestyle_provider plan-card">
+                    <h3 class="text-center">LIFESTYLE PROVIDER</h3>
+                    <h1 class="text-center">10%</h1>
+                    <small class="font-weight-light m-b text-center">Expose your subscriptions to a massive audience for only 10% of subscription sales.</small>
+                    <ul>
+                        <li>
+                            <b>Unlimited</b> Subscriptions</li>
+                        <li>
+                            <b>Unlimited</b> Transactions Per Month</li>
+                        <li>
+                            <b>No Additinal Fee to</b> Buyers</li>
+                        <li>Secure
+                            <b>Escrow</b> Online Transactions</li>
+                        <li>
+                            <strong>Paypal</strong> and/or
+                            <strong>Stripe</strong> Payment</li>
+                        <li>
+                            <strong>Custom Branded</strong> Store Front</li>
+                        <li>
+                            <strong>Prefered Advertising</strong> Access</li>
+                        <li>
+                            <strong>Limited</strong> Support</li>
+                    </ul>
+                    <center>
+                        {{#if LoggedInUser}} {{else}}
+                            <button onclick="forceSignup()" class="btn btn-small m-t font-weight-bold btn-primary">SIGNUP NOW</button>
+                        {{/if}}
+                    </center>
                 </div>
-                <div class="public_seller_pg">
-                    <p class="public_seller_pg_p1">PUBLIC SELLER PRICING GUIDE </p>
-                    <h1 class="public_seller_pg_h1">$99<span style="font-size: 20px;">/MO</span></h1>
-                    <p>Our Wholesaler monthly fee carries with it our highest tier access to Global Trade Connect, and all its features including: </p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> up To <b>2000 product</b> inventory</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Services</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Subscriptions</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> secure <b>Escrow</b> Online Transactions</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment Processing</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Prefered Advertising</b> Access</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Geo-Tartgeting</b> to Zero-in Audience</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> Real Time Transaction <b>Analytics</b></p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>24 Hour</b> Dedicated Support</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Access To The Buyer Network</b></p>
-                    <input type="submit" value="BUILD YOUR STORE NOW" {{#if LoggedInUser}} onclick="window.location.href='/dashboard-vendor-connect'" {{else}}onclick="forceSignup()" {{/if}}  class="price_signup"style="margin-left:30px;cursor:pointer;">
+                <div class="public_seller_pg plan-card">
+                    <h3 class="text-center">PUBLIC SELLER PRICING GUIDE</h3>
+                    <h1 class="text-center">$99
+                        <span class="sub-b">/MO</span>
+                    </h1>
+                    <small class="font-weight-light m-b text-center">Our Wholesaler monthly fee carries with it our highest tier access to Global Trade Connect, and all its features including:</small>
+                    <ul>
+                        <li>
+                            <b>2000 product</b> inventory</li>
+                        <li>
+                            <b>Unlimited</b> Services</li>
+                        <li>
+                            <b>Unlimited</b> Subscriptions</li>
+                        <li>
+                            <b>Unlimited</b> Transactions Per Month</li>
+                        <li>
+                            <b>No Additinal Fee to</b> Buyers</li>
+                        <li>Secure
+                            <b>Escrow</b> Online Transactions</li>
+                        <li>
+                            <strong>Paypal</strong> and/or
+                            <strong>Stripe</strong> Payment</li>
+                        <li>
+                            <strong>Custom Branded</strong> Store Front</li>
+                        <li>
+                            <strong>Prefered Advertising</strong> Access</li>
+                        <li>
+                            <strong>Volume</strong> Based Pricing</li>
+                        <li>
+                            <b>Geo-Tartgeting</b> to Zero-in Audience</li>
+                        <li>Real Time Transaction
+                            <b>Analytics</b>
+                        </li>
+                        <li>
+                            <b>24 Hour</b> Dedicated Support</li>
+                        <li>
+                            <strong>Limited</strong> Support</li>
+                        <li>
+                            <b>Access To The Buyer Network</b>
+                        </li>
+                    </ul>
+                    <center>
+                        {{#if LoggedInUser}} {{else}}
+                            <button onclick="forceSignup()" class="btn btn-small m-t font-weight-bold btn-primary">SIGNUP NOW</button>
+                        {{/if}}
+                    </center>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+        <div class="hr-line-dashed"></div>
+        <div class="gtc-container">
+            <h1 class="text-m2 text-center font-weight-normal">Which Package Should I Choose?</h1>
+            <p class="text-center font-weight-normal">Whether you're just networking, or looking to build your wholesale empire, we have the solution for you.</p>
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="lifestyle_provider plan-card" style="background-color: #7BA4D8;padding: 39px 58px 36px 20px;width:28%">
+                    <h3 class="text-center">BULK BUYER</h3>
+                    <h1 class="text-center">$99
+                        <span class="sub-b">/MO</span>
+                    </h1>
+                    <small class="font-weight-light m-b text-center">Full buyer access to the wholesale network connect, build relationships and buy wholesale with bulk distributors worldwide.</small>
+                    <ul>
+                        <li>
+                            <strong>Unlimited</strong> Transactions Per Month</li>
+                        <li>Maxmium
+                            <strong>1 Subscription</strong>
+                        </li>
+                        <li>
+                            <b>No Assitinal Fee to</b> Buyers</li>
+                        <li>Secure
+                            <strong>Escrow</strong>Online Transactions</li>
+                        <li>
+                            <strong>Paypal</strong> and/or
+                            <strong>Stripe</strong> Payment</li>
+                        <li>
+                            <strong>Custom Branded</strong> Store Front</li>
+                        <li>
+                            <strong>Volume</strong> Based Pricing</li>
+                        <li>
+                            <strong>Limited</strong> Support</li>
+                    </ul>
+                </div>
+                <div class="public_seller_pg plan-card" style="background-color:#D88505;padding:45px 40px 36px 40px;width:35%">
+                    <h3 class="text-center">WHOLESALE PRICING GUIDE</h3>
+                    <h1 class="text-center">$249
+                        <span class="sub-b">/MO</span>
+                    </h1>
+                    <small class="font-weight-light m-b text-center">Our Wholesaler monthly fee carries with it our highest tier access to Global Trade Connect, and all its features including:</small>
+                    <ul>
+                        <li>
+                            <b>2000 product</b> inventory</li>
+                        <li>
+                            <b>Unlimited</b> Services</li>
+                        <li>
+                            <b>Unlimited</b> Subscriptions</li>
+                        <li>
+                            <b>Unlimited</b> Transactions Per Month</li>
+                        <li>
+                            <b>No Additinal Fee to</b> Buyers</li>
+                        <li>Secure
+                            <b>Escrow</b> Online Transactions</li>
+                        <li>
+                            <strong>Paypal</strong> and/or
+                            <strong>Stripe</strong> Payment</li>
+                        <li>
+                            <strong>Custom Branded</strong> Store Front</li>
+                        <li>
+                            <strong>Prefered Advertising</strong> Access</li>
+                        <li>
+                            <strong>Volume</strong> Based Pricing</li>
+                        <li>
+                            <b>Geo-Tartgeting</b> to Zero-in Audience</li>
+                        <li>Real Time Transaction
+                            <b>Analytics</b>
+                        </li>
+                        <li>
+                            <b>24 Hour</b> Dedicated Support</li>
+                        <li>
+                            <strong>Limited</strong> Support</li>
+                        <li>
+                            <b>Access To The Buyer Network</b>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {{/ifCond}}
 
-<section id="vendorPlanShow">
-    <div class="text-center which_pkg" style="margin-bottom: 0px;">
-        <div class="container">
-			<div id="userPlaninfo" class="pull-right"> <a href="javascript:;" onclick="showsplan()"><b>Go Back</b></a></div>
-            <h1 class="which_pkg_h1">Which Package Should I Choose?</h1>
-            <p class="which_pkg_p">Whether you're just networking, or looking to build your wholesale empire, we have the solution for you </p>
-            <div class="row" >
-                 <div class="col-md-3"></div>
-                   <div class="lifestyle_provider" style="background-color: #7BA4D8;padding: 39px 58px 36px 20px;width:28%">
-                    <p class="lifestyle_provider_p1">BULK BUYER</p>
-                    <h1 class="lifestyle_provider_h1">$99<span style="font-size: 20px;">/MO</span></h1>
-                    <p>Full buyer access to the wholesale network connect, build relationships and buy wholesale with bulk distributors worldwide.</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> Maximum<b>1     Subscriptions</b></p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>No Assitinal Fee to</b> Buyers</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> Secure <b>Escrow</b> Online Transactions</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
-                    <input type="submit" value="SIGNUP NOW" class="price_signup" style="background-color:#4178B8;cursor:pointer;">
+    {{#ifCond LoggedInUser.role '==' 3}}
+        <div class="gtc-container">
+            <h1 class="text-m2 text-center font-weight-normal">Which Package Should I Choose?</h1>
+            <p class="text-center font-weight-normal">Whether you're just networking, or looking to build your wholesale empire, we have the solution for you.</p>
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="lifestyle_provider plan-card" style="background-color: #7BA4D8;padding: 39px 58px 36px 20px;width:28%">
+                    <h3 class="text-center">BULK BUYER</h3>
+                    <h1 class="text-center">$99
+                        <span class="sub-b">/MO</span>
+                    </h1>
+                    <small class="font-weight-light m-b text-center">Full buyer access to the wholesale network connect, build relationships and buy wholesale with bulk distributors worldwide.</small>
+                    <ul>
+                        <li>
+                            <strong>Unlimited</strong> Transactions Per Month</li>
+                        <li>Maxmium
+                            <strong>1 Subscription</strong>
+                        </li>
+                        <li>
+                            <b>No Assitinal Fee to</b> Buyers</li>
+                        <li>Secure
+                            <strong>Escrow</strong>Online Transactions</li>
+                        <li>
+                            <strong>Paypal</strong> and/or
+                            <strong>Stripe</strong> Payment</li>
+                        <li>
+                            <strong>Custom Branded</strong> Store Front</li>
+                        <li>
+                            <strong>Volume</strong> Based Pricing</li>
+                        <li>
+                            <strong>Limited</strong> Support</li>
+                    </ul>
                 </div>
-                <div class="public_seller_pg" style="background-color:#D88505;padding:45px 40px 36px 40px;width:35%">
-                    <p class="public_seller_pg_p1">WHOLESALE PRICING GUIDE</p>
-                    <h1 class="public_seller_pg_h1">$249<span style="font-size: 20px;">/MO</span></h1>
-                    <p>Our Wholesaler monthly fee carries with it our highest tier access to Global Trade Connect, and all its features including: </p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> up To <b>500 product</b> inventory</p>
-                    {{!-- <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Services</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Subscriptions</p> --}}
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> secure <b>Escrow</b> Online Transactions</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment Processing</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Prefered Advertising</b> Access</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Geo-Tartgeting</b> to Zero-in Audience</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> Real Time Transaction <b>Analytics</b></p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>24 Hour</b> Dedicated Support</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Access To The Buyer Network</b></p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Access To The Service Network</b></p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Access To The Subscription Network</b></p>
-                    <input type="submit" value="BUILD YOUR STORE NOW" class="price_signup"style="margin-left:30px;background-color:#925902;margin: 30px 52px;
-    padding: 12px 61px;cursor:pointer;">
+                <div class="public_seller_pg plan-card" style="background-color:#D88505;padding:45px 40px 36px 40px;width:35%">
+                    <h3 class="text-center">WHOLESALE PRICING GUIDE</h3>
+                    <h1 class="text-center">$249
+                        <span class="sub-b">/MO</span>
+                    </h1>
+                    <small class="font-weight-light m-b text-center">Our Wholesaler monthly fee carries with it our highest tier access to Global Trade Connect, and all its features including:</small>
+                    <ul>
+                        <li>
+                            <b>2000 product</b> inventory</li>
+                        <li>
+                            <b>Unlimited</b> Services</li>
+                        <li>
+                            <b>Unlimited</b> Subscriptions</li>
+                        <li>
+                            <b>Unlimited</b> Transactions Per Month</li>
+                        <li>
+                            <b>No Additinal Fee to</b> Buyers</li>
+                        <li>Secure
+                            <b>Escrow</b> Online Transactions</li>
+                        <li>
+                            <strong>Paypal</strong> and/or
+                            <strong>Stripe</strong> Payment</li>
+                        <li>
+                            <strong>Custom Branded</strong> Store Front</li>
+                        <li>
+                            <strong>Prefered Advertising</strong> Access</li>
+                        <li>
+                            <strong>Volume</strong> Based Pricing</li>
+                        <li>
+                            <b>Geo-Tartgeting</b> to Zero-in Audience</li>
+                        <li>Real Time Transaction
+                            <b>Analytics</b>
+                        </li>
+                        <li>
+                            <b>24 Hour</b> Dedicated Support</li>
+                        <li>
+                            <strong>Limited</strong> Support</li>
+                        <li>
+                            <b>Access To The Buyer Network</b>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
+    {{/ifCond}}
+</div>
+{{else}}
+<div class="login-banner-4 py-4 px-5">
+    <div class="gtc-container">
+        <h1 class="text-m2 text-center font-weight-normal">Which Package Should I Choose?</h1>
+        <p class="text-center font-weight-normal">We have a several options to get you started, or dive in with the our most robust offering.</p>
+        <div class="row">
+            <div class="starter_seller plan-card">
+                <h3 class="text-center">STARTER SELLER</h3>
+                <h1 class="text-center">FREE</h1>
+                <small class="font-weight-light m-b text-center">Build a GTC profile without the advanced reports, copuons, chat system and SEO support.</small>
+                <ul>
+                    <li>Maximum
+                        <strong>20 Product</strong> Inventory</li>
+                    <li>Maxmium
+                        <strong>1 Subscription</strong>
+                    </li>
+                    <li>
+                        <strong>Unlimited</strong> Transactions Per Month</li>
+                    <li>Secure
+                        <strong>Escrow</strong>Online Transactions</li>
+                    <li>
+                        <strong>Paypal</strong> and/or
+                        <strong>Stripe</strong> Payment</li>
+                    <li>
+                        <strong>Custom Branded</strong> Store Front</li>
+                    <li>
+                        <strong>Volume</strong> Based Pricing</li>
+                    <li>
+                        <strong>Limited</strong> Support</li>
+                </ul>
+                <center>
+                    {{#if LoggedInUser}} {{else}}
+                        <button onclick="forceSignup()" class="btn btn-small m-t font-weight-bold btn-primary">SIGNUP NOW</button>
+                    {{/if}}
+                </center>
+            </div>
+            <div class="service_provider plan-card">
+                <h3 class="text-center">SERVICE PROVIDER</h3>
+                <h1 class="text-center">$30
+                    <span class="sub-b">/MO</span>
+                </h1>
+                <small class="font-weight-light m-b text-center">Market your services to a massive audience for only 10% of subscription sales.</small>
+                <ul>
+                    <li>
+                        <b>Unlimited</b> Services</li>
+                    <li>
+                        <b>Unlimited</b> Transactions Per Month</li>
+                    <li>
+                        <b>No Assitinal Fee to</b> Buyers</li>
+                    <li>Secure
+                        <b>Escrow</b> Online Transactions</li>
+                    <li>
+                        <strong>Paypal</strong> and/or
+                        <strong>Stripe</strong> Payment</li>
+                    <li>
+                        <strong>Custom Branded</strong> Store Front</li>
+                    <li>
+                        <strong>Volume</strong> Based Pricing</li>
+                    <li>
+                        <strong>Limited</strong> Support</li>
+                </ul>
+                <center>
+                    {{#if LoggedInUser}} {{else}}
+                        <button onclick="forceSignup()" class="btn btn-small m-t font-weight-bold btn-primary">SIGNUP NOW</button>
+                    {{/if}}
+                </center>
+            </div>
+            <div class="lifestyle_provider plan-card">
+                <h3 class="text-center">LIFESTYLE PROVIDER</h3>
+                <h1 class="text-center">10%</h1>
+                <small class="font-weight-light m-b text-center">Expose your subscriptions to a massive audience for only 10% of subscription sales.</small>
+                <ul>
+                    <li>
+                        <b>Unlimited</b> Subscriptions</li>
+                    <li>
+                        <b>Unlimited</b> Transactions Per Month</li>
+                    <li>
+                        <b>No Additinal Fee to</b> Buyers</li>
+                    <li>Secure
+                        <b>Escrow</b> Online Transactions</li>
+                    <li>
+                        <strong>Paypal</strong> and/or
+                        <strong>Stripe</strong> Payment</li>
+                    <li>
+                        <strong>Custom Branded</strong> Store Front</li>
+                    <li>
+                        <strong>Prefered Advertising</strong> Access</li>
+                    <li>
+                        <strong>Limited</strong> Support</li>
+                </ul>
+                <center>
+                    {{#if LoggedInUser}} {{else}}
+                        <button onclick="forceSignup()" class="btn btn-small m-t font-weight-bold btn-primary">SIGNUP NOW</button>
+                    {{/if}}
+                </center>
+            </div>
+            <div class="public_seller_pg plan-card">
+                <h3 class="text-center">PUBLIC SELLER PRICING GUIDE</h3>
+                <h1 class="text-center">$99
+                    <span class="sub-b">/MO</span>
+                </h1>
+                <small class="font-weight-light m-b text-center">Our Wholesaler monthly fee carries with it our highest tier access to Global Trade Connect, and all its features including:</small>
+                <ul>
+                    <li>
+                        <b>2000 product</b> inventory</li>
+                    <li>
+                        <b>Unlimited</b> Services</li>
+                    <li>
+                        <b>Unlimited</b> Subscriptions</li>
+                    <li>
+                        <b>Unlimited</b> Transactions Per Month</li>
+                    <li>
+                        <b>No Additinal Fee to</b> Buyers</li>
+                    <li>Secure
+                        <b>Escrow</b> Online Transactions</li>
+                    <li>
+                        <strong>Paypal</strong> and/or
+                        <strong>Stripe</strong> Payment</li>
+                    <li>
+                        <strong>Custom Branded</strong> Store Front</li>
+                    <li>
+                        <strong>Prefered Advertising</strong> Access</li>
+                    <li>
+                        <strong>Volume</strong> Based Pricing</li>
+                    <li>
+                        <b>Geo-Tartgeting</b> to Zero-in Audience</li>
+                    <li>Real Time Transaction
+                        <b>Analytics</b>
+                    </li>
+                    <li>
+                        <b>24 Hour</b> Dedicated Support</li>
+                    <li>
+                        <strong>Limited</strong> Support</li>
+                    <li>
+                        <b>Access To The Buyer Network</b>
+                    </li>
+                </ul>
+                <center>
+                    {{#if LoggedInUser}} {{else}}
+                        <button onclick="forceSignup()" class="btn btn-small m-t font-weight-bold btn-primary">SIGNUP NOW</button>
+                    {{/if}}
+                </center>
+            </div>
+        </div>
     </div>
-</section>
+    <div class="hr-line-dashed"></div>
+    <div class="gtc-container">
+        <h1 class="text-m2 text-center font-weight-normal">Which Package Should I Choose?</h1>
+        <p class="text-center font-weight-normal">Whether you're just networking, or looking to build your wholesale empire, we have the solution for you.</p>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="lifestyle_provider plan-card" style="background-color: #7BA4D8;padding: 39px 58px 36px 20px;width:28%">
+                <h3 class="text-center">BULK BUYER</h3>
+                <h1 class="text-center">$99
+                    <span class="sub-b">/MO</span>
+                </h1>
+                <small class="font-weight-light m-b text-center">Full buyer access to the wholesale network connect, build relationships and buy wholesale with bulk distributors worldwide.</small>
+                <ul>
+                    <li>
+                        <strong>Unlimited</strong> Transactions Per Month</li>
+                    <li>Maxmium
+                        <strong>1 Subscription</strong>
+                    </li>
+                    <li>
+                        <b>No Assitinal Fee to</b> Buyers</li>
+                    <li>Secure
+                        <strong>Escrow</strong>Online Transactions</li>
+                    <li>
+                        <strong>Paypal</strong> and/or
+                        <strong>Stripe</strong> Payment</li>
+                    <li>
+                        <strong>Custom Branded</strong> Store Front</li>
+                    <li>
+                        <strong>Volume</strong> Based Pricing</li>
+                    <li>
+                        <strong>Limited</strong> Support</li>
+                </ul>
+                <center>
+                    {{#if LoggedInUser}} {{else}}
+                        <button onclick="forceSignup()" class="btn btn-small m-t font-weight-bold btn-primary">SIGNUP NOW</button>
+                    {{/if}}
+                </center>
+            </div>
+            <div class="public_seller_pg plan-card" style="background-color:#D88505;padding:45px 40px 36px 40px;width:35%">
+                <h3 class="text-center">WHOLESALE PRICING GUIDE</h3>
+                <h1 class="text-center">$249
+                    <span class="sub-b">/MO</span>
+                </h1>
+                <small class="font-weight-light m-b text-center">Our Wholesaler monthly fee carries with it our highest tier access to Global Trade Connect, and all its features including:</small>
+                <ul>
+                    <li>
+                        <b>2000 product</b> inventory</li>
+                    <li>
+                        <b>Unlimited</b> Services</li>
+                    <li>
+                        <b>Unlimited</b> Subscriptions</li>
+                    <li>
+                        <b>Unlimited</b> Transactions Per Month</li>
+                    <li>
+                        <b>No Additinal Fee to</b> Buyers</li>
+                    <li>Secure
+                        <b>Escrow</b> Online Transactions</li>
+                    <li>
+                        <strong>Paypal</strong> and/or
+                        <strong>Stripe</strong> Payment</li>
+                    <li>
+                        <strong>Custom Branded</strong> Store Front</li>
+                    <li>
+                        <strong>Prefered Advertising</strong> Access</li>
+                    <li>
+                        <strong>Volume</strong> Based Pricing</li>
+                    <li>
+                        <b>Geo-Tartgeting</b> to Zero-in Audience</li>
+                    <li>Real Time Transaction
+                        <b>Analytics</b>
+                    </li>
+                    <li>
+                        <b>24 Hour</b> Dedicated Support</li>
+                    <li>
+                        <strong>Limited</strong> Support</li>
+                    <li>
+                        <b>Access To The Buyer Network</b>
+                    </li>
+                </ul>
+                <center>
+                    {{#if LoggedInUser}} {{else}}
+                        <button onclick="forceSignup()" class="btn btn-small m-t font-weight-bold btn-primary">SIGNUP NOW</button>
+                    {{/if}}
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}

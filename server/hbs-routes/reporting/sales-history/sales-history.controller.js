@@ -131,7 +131,7 @@ export function salesHistory(req, res) {
 			offset = (page - 1) * limit;
 
 			includeArray = [{
-				model: model["OrdersNew"],
+				model: model["Order"],
 				attributes: ['id', 'ordered_date', 'status']
 			}];
 
@@ -210,7 +210,6 @@ export function orderView(req, res) {
 		orderView: function(callback) {
 			orderService.vendorOrderDetails(queryObj)
 				.then((response) => {
-					console.log("response ----", JSON.stringify(response));
 					return callback(null, response);
 				}).catch((error) => {
 					console.log("order Error:::", error);

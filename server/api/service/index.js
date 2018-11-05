@@ -1,13 +1,13 @@
 'use strict';
 
-const _ = require('lodash');
 const sequelize = require('sequelize');
-
 const status = require('../../config/status');
-const position = require('../../config/position');
 const model = require('../../sqldb/model-connect');
 const Sequelize_Instance = require('../../sqldb/index');
 const RawQueries = require('../../raw-queries/sql-queries');
+const _ = require('lodash');
+const mv = require('mv');
+const fs = require('fs');
 
 export function findRows(modelName, queryObj, offset, limit, field, order, includeArr) {
 	return new Promise((resolve, reject) => {
@@ -62,10 +62,11 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 	});
 }
 
-export function countRows(modelName, queryObj) {
+export function countRows(modelName, queryObj, includeArr) {
 	return new Promise((resolve, reject) => {
 		model[modelName].count({
-			where: queryObj
+			where: queryObj,
+			include: includeArr
 		}).then(function(count) {
 			resolve(count);
 		}).catch(function(error) {
@@ -194,9 +195,6 @@ export function updateRecord(modelName, bodyParams, queryObj) {
 }
 
 export function updateRecordNew(modelName, bodyParams, queryObj) {
-	console.log("modelName.......",modelName);
-	console.log("bodyParams......",bodyParams);
-	console.log("queryObj........",queryObj);
 	return new Promise((resolve, reject) => {
 		model[modelName].update(bodyParams, {
 			where: queryObj,
@@ -599,3 +597,28 @@ export function getAllFindRow(modelName, includeArr, queryObj, field, order) {
 	});
 }
 // Not use for limit getallfindrow query ends//
+export function move(copyFrom, moveTo) {
+	return new Promise((resolve, reject) => {
+		mv(copyFrom, moveTo, {
+			clobber: true,
+			mkdirp: true
+		}, function(error) {
+			if (!error) {
+				return resolve(true);
+			} else {
+				return reject(error);
+			}
+		});
+	});
+}
+export function imgDelete(imgPath) {
+	return new Promise((resolve, reject) => {
+		  try{
+		  	fs.unlinkSync(imgPath);
+		  	resolve(true);
+			}
+			catch(err){
+				return reject(err);
+			}
+		});
+}

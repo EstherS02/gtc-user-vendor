@@ -65,7 +65,11 @@ export function viewListings(req, res) {
 	if (req.query.status) {
 		queryURI['status'] = req.query.status;
 		queryParams['status'] = statusCode[req.query.status]
-	} 
+	}else{
+		queryParams['status'] = {
+			'$ne': statusCode["DELETED"]
+		}
+	}
 
 	async.series({
 		cartInfo: function(callback) {
@@ -93,15 +97,17 @@ export function viewListings(req, res) {
 		},
 		categories: function(callback) {
 			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
 
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+			
 			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);

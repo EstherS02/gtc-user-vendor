@@ -134,13 +134,11 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const Address = model.Address;
     const Order = model.Order;
-    const OrdersNew = model.OrdersNew;
     const User = model.User;
     const Country = model.Country;
     const State = model.State;
-    const Shipping = model.Shipping;
-    const Coupon = model.Coupon;
     const Payment = model.Payment;
+    const Shipping = model.Shipping;
 
     Address.hasMany(Order, {
         foreignKey: 'shipping_address_id',
@@ -149,18 +147,6 @@ module.exports.initRelations = () => {
     });
 
     Address.hasMany(Order, {
-        foreignKey: 'billing_address_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Address.hasMany(OrdersNew, {
-        foreignKey: 'shipping_address_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Address.hasMany(OrdersNew, {
         foreignKey: 'billing_address_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -192,74 +178,8 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Address.belongsToMany(Shipping, {
-        through: Order,
-        foreignKey: 'shipping_address_id',
-        otherKey: 'shipping_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Address.belongsToMany(Address, {
-        as: 'shippingAddress',
-        through: Order,
-        foreignKey: 'shipping_address_id',
-        otherKey: 'billing_address_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Address.belongsToMany(Coupon, {
-        through: Order,
-        foreignKey: 'shipping_address_id',
-        otherKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Address.belongsToMany(User, {
-        through: Order,
-        foreignKey: 'billing_address_id',
-        otherKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Address.belongsToMany(Shipping, {
-        through: Order,
-        foreignKey: 'billing_address_id',
-        otherKey: 'shipping_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Address.belongsToMany(Address, {
-        as: 'billingAddress',
-        through: Order,
-        foreignKey: 'billing_address_id',
-        otherKey: 'shipping_address_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Address.belongsToMany(Coupon, {
-        through: Order,
-        foreignKey: 'billing_address_id',
-        otherKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Address.belongsToMany(User, {
-        through: OrdersNew,
-        foreignKey: 'shipping_address_id',
-        otherKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
     Address.belongsToMany(Payment, {
-        through: OrdersNew,
+        through: Order,
         foreignKey: 'shipping_address_id',
         otherKey: 'payment_id',
         onDelete: 'NO ACTION',
@@ -267,7 +187,7 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Shipping, {
-        through: OrdersNew,
+        through: Order,
         foreignKey: 'shipping_address_id',
         otherKey: 'shipping_id',
         onDelete: 'NO ACTION',
@@ -276,7 +196,7 @@ module.exports.initRelations = () => {
 
     Address.belongsToMany(Address, {
         as: 'shippingAddress1',
-        through: OrdersNew,
+        through: Order,
         foreignKey: 'shipping_address_id',
         otherKey: 'billing_address_id',
         onDelete: 'NO ACTION',
@@ -284,7 +204,7 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(User, {
-        through: OrdersNew,
+        through: Order,
         foreignKey: 'billing_address_id',
         otherKey: 'user_id',
         onDelete: 'NO ACTION',
@@ -292,7 +212,7 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Payment, {
-        through: OrdersNew,
+        through: Order,
         foreignKey: 'billing_address_id',
         otherKey: 'payment_id',
         onDelete: 'NO ACTION',
@@ -300,7 +220,7 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Shipping, {
-        through: OrdersNew,
+        through: Order,
         foreignKey: 'billing_address_id',
         otherKey: 'shipping_id',
         onDelete: 'NO ACTION',
@@ -309,7 +229,7 @@ module.exports.initRelations = () => {
 
     Address.belongsToMany(Address, {
         as: 'billingAddress1',
-        through: OrdersNew,
+        through: Order,
         foreignKey: 'billing_address_id',
         otherKey: 'shipping_address_id',
         onDelete: 'NO ACTION',
