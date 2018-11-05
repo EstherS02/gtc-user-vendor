@@ -36,7 +36,6 @@ export function wholeSaleProductView(req, res) {
 }
 
 export function wholesale(req, res) {
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var countryModel = "Country";

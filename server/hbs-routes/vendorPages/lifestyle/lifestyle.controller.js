@@ -24,7 +24,6 @@ export function vendorLifestyle(req, res) {
 	let user_id = LoggedInUser.id;
 	var bottomCategory = {};
 
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var offset, limit, field, order, page;

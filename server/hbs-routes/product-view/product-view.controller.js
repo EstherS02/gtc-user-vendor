@@ -20,7 +20,6 @@ export function product(req, res) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
 	var categoryModel = "Category";
-	var productModel = 'MarketplaceProduct';
 	var wishlistModel = 'WishList';
 	var vendorID, productID, categoryID, marketplaceID;
 	if (req.params.product_id) {

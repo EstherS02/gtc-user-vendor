@@ -78,6 +78,15 @@
 										{{/if}}
 									</div>
 								{{/ifCond}}
+								{{#ifCond item.order_item_status '==' @root.orderItemStatus.AUTO_CANCELED}}
+									<div class="col-3">
+										{{#if item.cancelled_on}}
+											<p class="font-weigh-bold text-black m-b-none float-right">
+												<small>Canceled on {{formatTime item.cancelled_on "D MMM"}}</small>
+											</p>
+										{{/if}}
+									</div>
+								{{/ifCond}}
 								{{#ifCond item.order_item_status '==' @root.orderItemStatus.REQUEST_FOR_RETURN}}
 									<div class="col-3">
 										{{#if item.request_for_return_on}}
@@ -140,6 +149,10 @@
 										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}	
 										 		canceled by vendor.
 										 	{{/ifCond}}
+										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.AUTO_CANCELED}}	
+										 		canceled by Administrator.
+										 	{{/ifCond}}
+
 										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.REQUEST_FOR_RETURN}}	
 										 		request for return.
 										 	{{/ifCond}}

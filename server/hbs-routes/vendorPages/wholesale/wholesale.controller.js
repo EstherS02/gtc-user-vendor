@@ -25,7 +25,6 @@ export function vendorWholesale(req, res) {
 	var bottomCategory = {};
 	var vendorProductCategoryCount = {};
 
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var offset, limit, field, order, page;

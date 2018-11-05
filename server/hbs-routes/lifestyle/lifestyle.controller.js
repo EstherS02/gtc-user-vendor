@@ -10,7 +10,6 @@ const cartService = require('../../api/cart/cart.service');
 const async = require('async');
 
 export function lifestyle(req, res) {
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var offset, limit, field, order;
