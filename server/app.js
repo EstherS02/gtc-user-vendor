@@ -40,10 +40,10 @@ agenda.define(config.jobs.aliExpressScrape, aliExpressScrape);
 agenda.define(config.jobs.ebayInventory, ebayInventory);
 agenda.define(config.jobs.orderEmail, orderEmail);
 agenda.define(config.jobs.orderItemPayout, orderItemPayout);
-agenda.define(config.jobs.vendorPayouts, vendorPayouts);
+//agenda.define(config.jobs.vendorPayouts, vendorPayouts);
 agenda.define(config.jobs.planRenewal, planRenewal);
 agenda.define(config.jobs.bulkUserPlanRenewal, bulkUserPlanRenewal);
-agenda.define(config.jobs.subscriptionAutoRenewal, subscriptionAutoRenewal);
+//agenda.define(config.jobs.subscriptionAutoRenewal, subscriptionAutoRenewal);
 agenda.define(config.jobs.featureProductAutoRenewal, featureProductAutoRenewal);
 agenda.define(config.jobs.starterPlanExpire, starterPlanExpire);
 agenda.define(config.jobs.featureProductExpire, featureProductExpire);
@@ -52,11 +52,11 @@ agenda.define(config.jobs.amazonImportJob, amazonImportJob);
 
 agenda.on('ready', function() {
 	console.log('agenda onReady');
-	agenda.every('8 hours', 'vendorPayouts');
+	//agenda.every('8 hours', 'vendorPayouts');
 	agenda.every('8 hours', config.jobs.orderItemPayout);
 	agenda.every('12 hours', 'planRenewal');
 	agenda.every('12 hours', 'bulkUserPlanRenewal');
-	agenda.every('12 hours', 'subscriptionAutoRenewal');
+	//agenda.every('12 hours', 'subscriptionAutoRenewal');
 	agenda.every('12 hours', 'featureProductAutoRenewal');
 	agenda.every('12 hours', 'starterPlanExpire');
 	agenda.every('12 hours', 'featureProductExpire');
