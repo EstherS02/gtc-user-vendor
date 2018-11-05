@@ -22,7 +22,6 @@ export function vendorServices(req, res) {
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var offset, limit, field, order, page;

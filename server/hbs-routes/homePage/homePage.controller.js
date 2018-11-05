@@ -12,7 +12,6 @@ const marketplace_type = require('../../config/marketplace_type');
 const productService = require('../../api/product/product.service');
 
 export function homePage(req, res) {
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var bottomCategory = {};

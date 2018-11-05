@@ -23,7 +23,6 @@ export function vendorShop(req, res) {
 
 	let user_id = LoggedInUser.id;
 
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var bottomCategory = {};

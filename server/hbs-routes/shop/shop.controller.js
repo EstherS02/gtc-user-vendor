@@ -11,7 +11,6 @@ const async = require('async');
 
 export function shop(req, res) {
 	var categoryModel = "Category";
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var offset, limit, field, order;
 	var queryObj = {};
