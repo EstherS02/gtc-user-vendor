@@ -222,13 +222,15 @@ export function vendorWholesale(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-
 		},
 		categoryWithProductCount: function(callback) {
+			delete queryObj.marketplace_type_id;
 			var resultObj = {};
+			var categoryWithProductCount = {};
 			shopService.vendorProductCountForFilter(queryObj)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
+					var count = 0;
 					_.each(char, function(o) {
 						if (_.isUndefined(resultObj[o.categoryname])) {
 							resultObj[o.categoryname] = {};
@@ -244,8 +246,11 @@ export function vendorWholesale(req, res) {
 						subCatObj["count"] = o.subproductcount;
 						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+						count= count + o.subproductcount;
 					})
-					return callback(null, resultObj);
+					categoryWithProductCount.count = count;
+					categoryWithProductCount.rows = resultObj;
+					return callback(null, categoryWithProductCount);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);

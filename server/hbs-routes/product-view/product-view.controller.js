@@ -148,7 +148,6 @@ export function product(req, res) {
 				}
 				productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit)
 					.then(function(publicMarketplace) {
-						console.log(publicMarketplace);
 						return callback(null, publicMarketplace);
 					}).catch(function(error) {
 						console.log('Error :::', error);
@@ -231,11 +230,14 @@ export function product(req, res) {
 				if (vendorID) {
 					productQueryObj['vendor_id'] = vendorID;
 				}
+				productQueryObj['marketplace_id'] = marketplaceID;
 
 				var resultObj = {};
+				var categoryWithProductCount = {};
 				categoryService.productViewCategoryProductCount(queryObj, productQueryObj)
 					.then(function(response) {
 						var char = JSON.parse(JSON.stringify(response));
+						var count = 0;
 						_.each(char, function(o) {
 							if (_.isUndefined(resultObj[o.categoryname])) {
 								resultObj[o.categoryname] = {};
@@ -249,10 +251,13 @@ export function product(req, res) {
 							subCatObj["subCategoryName"] = o.subcategoryname;
 							subCatObj["subCategoryId"] = o.subcategoryid;
 							subCatObj["count"] = o.subproductcount;
+							count= count + o.subproductcount;
 							resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 							resultObj[o.categoryname]["subCategory"].push(subCatObj)
 						})
-						return callback(null, resultObj);
+						categoryWithProductCount.rows = resultObj;
+						categoryWithProductCount.count = count;
+						return callback(null, categoryWithProductCount);
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return callback(null);
@@ -369,8 +374,6 @@ export function product(req, res) {
 												.catch(function(err) {
 													callback(null);
 												})
-
-
 										}
 									}).catch(function(err) {
 										console.log("err", err)
@@ -424,6 +427,7 @@ export function product(req, res) {
 			} else {
 				selectedPage = null;
 			}
+
 			if (!error) {
 				res.render('product-view', {
 					title: "Global Trade Connect",

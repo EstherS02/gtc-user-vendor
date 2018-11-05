@@ -163,9 +163,11 @@ export function vendorLifestyle(req, res) {
 		},
 		categoryWithProductCount: function(callback) {
 			var resultObj = {};
+			var categoryWithProductCount = {};
 			shopService.vendorProductCountForFilter(queryObj)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
+					var count = 0;
 					_.each(char, function(o) {
 						if (_.isUndefined(resultObj[o.categoryname])) {
 							resultObj[o.categoryname] = {};
@@ -181,8 +183,12 @@ export function vendorLifestyle(req, res) {
 						subCatObj["count"] = o.subproductcount;
 						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+						count= count + o.subproductcount;
 					})
-					return callback(null, resultObj);
+					categoryWithProductCount.rows =resultObj;
+					categoryWithProductCount.count = count;
+					console.log("============================categoryWithProductCount",categoryWithProductCount)
+					return callback(null, categoryWithProductCount);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);

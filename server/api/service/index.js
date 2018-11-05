@@ -613,11 +613,12 @@ export function move(copyFrom, moveTo) {
 }
 export function imgDelete(imgPath) {
 	return new Promise((resolve, reject) => {
-		try {
-			fs.unlinkSync(imgPath);
-			resolve(true);
-		} catch (err) {
-			return reject(error);
-		}
-	});
+		  try{
+		  	fs.unlinkSync(imgPath);
+		  	resolve(true);
+			}
+			catch(err){
+				return reject(err);
+			}
+		});
 }

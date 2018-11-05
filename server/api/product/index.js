@@ -27,5 +27,6 @@ router.put('/discount/:product_id', auth.hasRole(roles['VENDOR']), controller.di
 router.post('/feature-payment', auth.isAuthenticated(), controller.featureProductWithPayment);
 router.post('/feature', auth.isAuthenticated(), controller.featureProductWithoutPayment);
 router.get('/vendor-marketplaces/:vendor_id', auth.isAuthenticated(), controller.vendorMarketplaces);
+router.get('/admin/vendors', auth.hasRole(roles['ADMIN']), controller.planActiveVendors);
 
 module.exports = router;

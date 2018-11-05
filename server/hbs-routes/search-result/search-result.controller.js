@@ -299,10 +299,11 @@ export function index(req, res) {
 		},
 		productCount: function(callback) {
 			var resultObj = {};
-
+			var productCount ={};
 			searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
+					var count = 0;
 					_.each(char, function(o) {
 						if (_.isUndefined(resultObj[o.categoryname])) {
 							resultObj[o.categoryname] = {};
@@ -318,8 +319,11 @@ export function index(req, res) {
 						subCatObj["count"] = o.subproductcount;
 						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+						count= count + o.subproductcount;
 					})
-					return callback(null, resultObj);
+					productCount.count = count;
+					productCount.rows = resultObj;
+					return callback(null, productCount);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -327,9 +331,11 @@ export function index(req, res) {
 		},
 		countryProductCount: function(callback) {
 			var resultObj = {};
+			var countryProductCount ={};
 			searchResultService.productCountForCountry(productCountCategory)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
+					var count = 0;
 					_.each(char, function(o) {
 						if (_.isUndefined(resultObj[o.regionname])) {
 							resultObj[o.regionname] = {};
@@ -345,8 +351,11 @@ export function index(req, res) {
 						subCatObj["count"] = o.productcount;
 						resultObj[o.regionname]["count"] += Number(o.productcount);
 						resultObj[o.regionname]["subCategory"].push(subCatObj)
+						count= count + o.productcount;
 					})
-					return callback(null, resultObj);
+					countryProductCount.count = count;
+					countryProductCount.rows = resultObj;
+					return callback(null, countryProductCount);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);

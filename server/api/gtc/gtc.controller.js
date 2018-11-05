@@ -442,7 +442,7 @@ exports.delete = function(req, res) {
 					service.destroyRecord(req.endpoint, paramsID)
 						.then(function(result) {
 							if (result) {
-								res.status(200).send('Deleted Successfully');
+								res.status(200).send({'response':'Deleted Successfully'});
 								return
 							} else {
 								return res.status(404).send("Unable to delete");
