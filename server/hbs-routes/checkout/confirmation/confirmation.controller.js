@@ -54,7 +54,7 @@ export function confirmation(req, res) {
 			const orderVendorModelName = "OrderVendor";
 			const groupBy = "id";
 			const includeArray = [{
-				model: model['OrdersNew'],
+				model: model['Order'],
 				where: {
 					user_id: req.user.id
 				},

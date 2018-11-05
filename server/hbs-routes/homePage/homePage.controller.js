@@ -157,7 +157,9 @@ export function homePage(req, res) {
 				});
 		},
 		topSellers: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			delete queryObj['featured_position_homepage'];
 			delete queryObj['is_featured_product'];
 			field = 'sales_count';
@@ -193,7 +195,7 @@ export function homePage(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(error, null);
-				});
+				});*/
 		},
 	}, function(err, results) {
 		if (!err) {

@@ -38,9 +38,9 @@ export async function makePayment(req, res) {
 	const cartModelName = "Cart";
 	const productModelName = "Product";
 	const paymentModelName = "Payment";
-	const orderModelName = "OrdersNew";
+	const orderModelName = "Order";
 	const orderVendorModelName = "OrderVendor";
-	const orderItemModelName = "OrdersItemsNew";
+	const orderItemModelName = "OrderItem";
 	const paymentSettingModelName = "PaymentSetting";
 	const agenda = require('../../app').get('agenda');
 
@@ -319,7 +319,7 @@ export async function cancelOrderItem(req, res) {
 		orderItemStatus = ORDER_ITEM_NEW_STATUS['CANCELED'];
 
 	try {
-		const itemObj = await service.findRow('OrdersItemsNew', orderItemObj, includeArray);
+		const itemObj = await service.findRow('OrderItem', orderItemObj, includeArray);
 		if (itemObj) {
 			if ((itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['ORDER_INITIATED']) || 
 				(itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['CONFIRMED'])) {
@@ -330,7 +330,7 @@ export async function cancelOrderItem(req, res) {
 					last_updated_by: req.user.first_name,
 					last_updated_on: new Date()
 				};
-				const updatestatusRow = await service.updateRow('OrdersItemsNew', updateOrderItem, itemId);
+				const updatestatusRow = await service.updateRow('OrderItem', updateOrderItem, itemId);
 				if (updatestatusRow) {
 					let queryOrderVendor = {
 						order_id: itemObj.order_id,
@@ -391,7 +391,7 @@ export async function returnOrderItem(req, res) {
 		id: itemId
 	};
 	try {
-		const itemObj = await service.findRow('OrdersItemsNew', orderItemObj, includeArray);
+		const itemObj = await service.findRow('OrderItem', orderItemObj, includeArray);
 		if (itemObj) {
 			if ((itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['DELIVERED']) && checkingDays(itemObj.delivered_on)) {
 				let updateOrderItem = {
@@ -401,7 +401,7 @@ export async function returnOrderItem(req, res) {
 					last_updated_by: req.user.first_name,
 					last_updated_on: new Date()
 				};
-				const updatestatusRow = await service.updateRow('OrdersItemsNew', updateOrderItem, itemId);
+				const updatestatusRow = await service.updateRow('OrderItem', updateOrderItem, itemId);
 				if (updatestatusRow) {
 					let queryOrderVendor = {
 						order_id: itemObj.order_id,
@@ -474,7 +474,7 @@ export async function confirmOrderItem(req, res) {
 	};
 
 	try {
-		const itemObj = await service.findRow('OrdersItemsNew', orderItemObj, includeArray);
+		const itemObj = await service.findRow('OrderItem', orderItemObj, includeArray);
 		if (itemObj) {
 			if (itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['ORDER_INITIATED']) {
 				let updateOrderItem = {
@@ -483,7 +483,7 @@ export async function confirmOrderItem(req, res) {
 					last_updated_by: req.user.first_name,
 					last_updated_on: new Date()
 				};
-				const updatestatusRow = await service.updateRow('OrdersItemsNew', updateOrderItem, itemId);
+				const updatestatusRow = await service.updateRow('OrderItem', updateOrderItem, itemId);
 				if (updatestatusRow) {
 					return res.status(200).send(resMessage("SUCCESS", "Order item confirmed successfully"));
 				} else {

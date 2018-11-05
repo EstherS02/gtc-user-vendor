@@ -15,9 +15,9 @@ const stripe = require('../payment/stripe.payment');
 
 module.exports = async function(job, done) {
 	const paymentModelName = "Payment";
-	const orderModelName = "OrdersNew";
+	const orderModelName = "Order";
 	const orderItemPayoutModelName = "OrderItemPayout";
-	const orderItemModelName = "OrdersItemsNew";
+	const orderItemModelName = "OrderItem";
 
 	try {
 		const response = await model[orderItemModelName].findAll({
@@ -63,12 +63,12 @@ module.exports = async function(job, done) {
 		const cancelItems = JSON.parse(JSON.stringify(response));
 		await Promise.all(cancelItems.map(async (item) => {
 			const refundAmt = item.price;
-			const chargedPaymentRes = await JSON.parse(item.OrdersNew.Payment.payment_response);
+			const chargedPaymentRes = await JSON.parse(item.Order.Payment.payment_response);
 			const refundResponse = await stripe.refundCustomerCard(chargedPaymentRes.id, refundAmt);
 
 			const newPayment = await service.createRow(paymentModelName, {
-				date: new Date(refundResponse.created),
-				amount: refundResponse.amountupdateOrderItemRow / 100.0,
+				date: new Date(refundResponse.created * 1000),
+				amount: refundResponse.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
 				payment_response: JSON.stringify(refundResponse),

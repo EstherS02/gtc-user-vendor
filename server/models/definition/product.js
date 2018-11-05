@@ -119,7 +119,7 @@ module.exports = (sequelize, DataTypes) => {
         state_id: {
             type: DataTypes.BIGINT,
             field: 'state_id',
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'state',
                 key: 'id'
@@ -232,8 +232,6 @@ module.exports.initRelations = () => {
     const CouponProduct = model.CouponProduct;
     const Discount = model.Discount;
     const FeaturedProduct = model.FeaturedProduct;
-    const OrderItem = model.OrderItem;
-    const OrdersItemsNew = model.OrdersItemsNew;
     const ProductAdsSetting = model.ProductAdsSetting;
     const ProductAttribute = model.ProductAttribute;
     const ProductMedia = model.ProductMedia;
@@ -250,10 +248,9 @@ module.exports.initRelations = () => {
     const User = model.User;
     const Coupon = model.Coupon;
     const Payment = model.Payment;
-    const Order = model.Order;
-    const Tax = model.Tax;
-    const OrdersNew = model.OrdersNew;
     const Attribute = model.Attribute;
+    const OrderItem = model.OrderItem;
+    const Order = model.Order;
 
     Product.hasMany(Cart, {
         foreignKey: 'product_id',
@@ -286,12 +283,6 @@ module.exports.initRelations = () => {
     });
 
     Product.hasMany(OrderItem, {
-        foreignKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Product.hasMany(OrdersItemsNew, {
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -415,24 +406,8 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Product.belongsToMany(Tax, {
+     Product.belongsToMany(Coupon, {
         through: OrderItem,
-        foreignKey: 'product_id',
-        otherKey: 'tax_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Product.belongsToMany(OrdersNew, {
-        through: OrdersItemsNew,
-        foreignKey: 'product_id',
-        otherKey: 'order_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Product.belongsToMany(Coupon, {
-        through: OrdersItemsNew,
         foreignKey: 'product_id',
         otherKey: 'coupon_id',
         onDelete: 'NO ACTION',

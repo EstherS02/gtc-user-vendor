@@ -99,7 +99,7 @@
 				}).serialize();
 
 				$.ajax({
-					url: '/api/order/dispatch/' + {{ order.OrdersNew.id }},
+					url: '/api/order/dispatch/' + {{ order.Order.id }},
 					type: 'PUT',
 					data: dispatchInput,
 					success: function (result) {
@@ -180,10 +180,10 @@
 			<div class="row no-margins">
 				<div class="col-sm-9half no-padding bg-white cart-custom-notify">
 					<div class="header-left header-lg gtc-p-l-r">
-						<h2 class="header-lg-text alignleft text-white">Order #{{order.OrdersNew.id}}</h2>
-						<span class="header-lg-span text-white">({{order.OrdersNew.total_order_items}} Items Total)</span>
+						<h2 class="header-lg-text alignleft text-white">Order #{{order.Order.id}}</h2>
+						<span class="header-lg-span text-white">({{order.Order.total_order_items}} Items Total)</span>
 					</div>
-					{{#if order.OrdersNew.total_order_items}}
+					{{#if order.Order.total_order_items}}
 						{{#each order.marketplace_products}}
 							{{#ifCond @root.marketPlace.WHOLESALE '==' @key}}
 								<div class="mini-header bg{{@key}}">WHOLESALE ITEMS ({{this.count}})</div>
@@ -644,7 +644,7 @@
 						<h2 class="header-lg-text">YOUR SUMMARY</h2>
 					</div>
 					<div class="cart-summary">
-						{{#if order.OrdersNew.total_order_items}}
+						{{#if order.Order.total_order_items}}
 							{{#each order.marketplace_summary}}
 								{{#ifCond @root.marketPlace.WHOLESALE '==' @key}}
 									<h2 class="text-marketplace-{{@key}}">Wholesale Summary</h2>

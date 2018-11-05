@@ -195,9 +195,6 @@ export function updateRecord(modelName, bodyParams, queryObj) {
 }
 
 export function updateRecordNew(modelName, bodyParams, queryObj) {
-	console.log("modelName.......",modelName);
-	console.log("bodyParams......",bodyParams);
-	console.log("queryObj........",queryObj);
 	return new Promise((resolve, reject) => {
 		model[modelName].update(bodyParams, {
 			where: queryObj,
@@ -616,12 +613,11 @@ export function move(copyFrom, moveTo) {
 }
 export function imgDelete(imgPath) {
 	return new Promise((resolve, reject) => {
-		  try{
-		  	fs.unlinkSync(imgPath);
-		  	resolve(true);
-			}
-			catch(err){
-				return reject(error);
-			}
-		});
+		try {
+			fs.unlinkSync(imgPath);
+			resolve(true);
+		} catch (err) {
+			return reject(error);
+		}
+	});
 }

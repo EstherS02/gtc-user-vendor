@@ -134,7 +134,9 @@ export function index(req, res) {
 				});
 		},
 		locations: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			var locationQueryObj = {};
 			var vendorCountQueryParams = {};
 			var vendorMarketPlaceQueryParams = {};
@@ -180,7 +182,7 @@ export function index(req, res) {
 			}).catch(function(error) {
 				console.log('Error:::', error);
 				return callback(error, null);
-			});
+			});*/
 		},
 		vendorCountByCountry: function(callback) {
 			var countryCountParams = [];
@@ -243,14 +245,16 @@ export function index(req, res) {
 			}
 		},
 		vendors: function(callback) {
-			service.findAllRows(vendorModel, includeArr, queryParameters, offset, limit, field, order)
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*service.findAllRows(vendorModel, includeArr, queryParameters, offset, limit, field, order)
 				.then(function(vendors) {
 					return callback(null, vendors);
 				})
 				.catch(function(error) {
 					console.log('Error:::', error);
 					return callback(error, null);
-				});
+				});*/
 		},
 		selectedMarketPlace: function(callback) {
 			service.findIdRow(marketPlaceModel, selectedMarketPlaceID, [])

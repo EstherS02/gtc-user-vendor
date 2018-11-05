@@ -226,7 +226,7 @@ module.exports.initRelations = () => {
     const SubCategory = model.SubCategory;
     const Payment = model.Payment;
     const VendorNotification = model.VendorNotification;
-    const OrdersNew = model.OrdersNew;
+    const Order = model.Order;
     const Plan = model.Plan;
 
     Vendor.hasMany(BusinessHour, {
@@ -461,7 +461,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Vendor.belongsToMany(OrdersNew, {
+    Vendor.belongsToMany(Order, {
         through: OrderVendor,
         foreignKey: 'vendor_id',
         otherKey: 'order_id',

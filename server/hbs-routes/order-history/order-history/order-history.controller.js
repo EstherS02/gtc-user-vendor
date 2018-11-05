@@ -115,7 +115,7 @@ export function orderHistory(req, res) {
 			var order = "DESC";
 			var includeArray = [];
 			var field = "ordered_date";
-			var orderModelName = "OrdersNew";
+			var orderModelName = "Order";
 			var limit = req.query.limit ? parseInt(req.query.limit) : 10;
 			var offset = req.query.offset ? parseInt(req.query.offset) : 0;
 			var page = req.query.page ? parseInt(req.query.page) : 1;

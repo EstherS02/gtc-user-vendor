@@ -26,7 +26,7 @@ const paymentMethod = require('../../config/payment-method');
 const stripe = require('../../payment/stripe.payment');
 
 export async function indexExample(req, res) {
-	const orderItemModelName = "OrdersItemsNew";
+	const orderItemModelName = "OrderItem";
 
 	try {
 		const response = await model[orderItemModelName].findAll({
@@ -53,7 +53,7 @@ export async function indexExample(req, res) {
 				'$OrderItemPayouts.order_item_id$': null
 			},
 			include: [{
-				model: model['OrdersNew'],
+				model: model['Order'],
 				attributes: ['id', 'user_id', 'payment_id', 'status'],
 				include: [{
 					model: model['Payment'],
@@ -67,7 +67,7 @@ export async function indexExample(req, res) {
 		const cancelItems = JSON.parse(JSON.stringify(response));
 		await Promise.all(cancelItems.map(async (item) => {
 			const refundAmt = item.price;
-			const chargedPaymentRes = JSON.parse(item.OrdersNew.Payment.payment_response);
+			const chargedPaymentRes = JSON.parse(item.Order.Payment.payment_response);
 			const refundResponse = await stripe.refundCustomerCard(chargedPaymentRes.id, refundAmt);
 
 			const newPayment = await service.createRow('Payment', {

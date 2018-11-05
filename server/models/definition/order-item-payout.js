@@ -1,4 +1,4 @@
- /* eslint new-cap: "off", global-require: "off" */
+/* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('OrderItemPayout', {
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'order_item_id',
             allowNull: false,
             references: {
-                model: 'orders_items_new',
+                model: 'order_item',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -39,12 +39,12 @@ module.exports = (sequelize, DataTypes) => {
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
-            allowNull: false
+            allowNull: true
         },
         created_on: {
             type: DataTypes.DATE,
             field: 'created_on',
-            allowNull: false
+            allowNull: true
         },
         last_updated_by: {
             type: DataTypes.STRING(64),
@@ -72,10 +72,10 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const OrderItemPayout = model.OrderItemPayout;
-    const OrdersItemsNew = model.OrdersItemsNew;
+    const OrderItem = model.OrderItem;
     const Payment = model.Payment;
 
-    OrderItemPayout.belongsTo(OrdersItemsNew, {
+    OrderItemPayout.belongsTo(OrderItem, {
         foreignKey: 'order_item_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

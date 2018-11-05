@@ -44,8 +44,8 @@ export async function findAllOrders(modelName, includeArr, queryObj, offset, lim
 export async function trackOrderItem(orderId, orderItemId, userId) {
 	var queryObj = {};
 	var shippingModelName = "Shipping";
-	var orderModelName = "OrdersNew";
-	var orderItemModelName = "OrdersItemsNew";
+	var orderModelName = "Order";
+	var orderItemModelName = "OrderItem";
 	var orderVendorModelName = "OrderVendor";
 
 	var includeArray = [{
@@ -92,7 +92,7 @@ export async function trackOrderItem(orderId, orderItemId, userId) {
 			const orderItem = await service.findOneRow(orderItemModelName, {
 				id: orderItemId,
 				order_id: orderId,
-				'$OrdersNew->OrderVendors.vendor_id$': {
+				'$Order->OrderVendors.vendor_id$': {
 					$col: 'Product.vendor_id'
 				}
 			}, includeArray);
@@ -107,10 +107,10 @@ export async function trackOrderItem(orderId, orderItemId, userId) {
 
 export async function userOrderDeatils(queryObj) {
 	var order = {};
-	const orderModelName = "OrdersNew";
+	const orderModelName = "Order";
 
 	var includeArray = [{
-		model: model['OrdersItemsNew'],
+		model: model['OrderItem'],
 		attributes: ['id', 'order_id', 'product_id', 'quantity', 'price', 'shipping_cost', 'is_coupon_applied', 'coupon_id', 'coupon_amount', 'is_on_sale_item', 'discount_amount', 'delivered_on', 'order_item_status', 'expected_delivery_date'],
 		include: [{
 			model: model['Product'],
@@ -156,7 +156,7 @@ export async function userOrderDeatils(queryObj) {
 			});
 			const marketplace = JSON.parse(JSON.stringify(marketplaceResponse));
 
-			await Promise.all(order.OrdersItemsNews.map((aProduct) => {
+			await Promise.all(order.OrderItems.map((aProduct) => {
 				const index = marketplace.findIndex((obj) => obj.id == aProduct.Product.marketplace_id);
 				const existsMarketplace = order['marketplace_products'].hasOwnProperty(marketplace[index].id);
 
@@ -178,7 +178,7 @@ export async function userOrderDeatils(queryObj) {
 				order['marketplace_products'][aProduct.Product.marketplace_id].count += 1;
 				order['marketplace_products'][aProduct.Product.marketplace_id].products.push(aProduct);
 			}));
-			delete order.OrdersItemsNews;
+			delete order.OrderItems;
 			return order;
 		} else {
 			return null;
@@ -198,10 +198,10 @@ export async function vendorOrderDetails(queryObj) {
 				required: false,
 				attributes: ['id', 'provider_name', 'tracking_id', 'status']
 			}, {
-				model: model['OrdersNew'],
+				model: model['Order'],
 				attributes: ['id', 'user_id', 'invoice_id', 'purchase_order_id', 'ordered_date'],
 				include: [{
-					model: model['OrdersItemsNew'],
+					model: model['OrderItem'],
 					include: [{
 						model: model['Product'],
 						where: {
@@ -246,7 +246,7 @@ export async function vendorOrderDetails(queryObj) {
 			});
 			const marketplace = JSON.parse(JSON.stringify(marketplaceResponse));
 
-			await Promise.all(order.OrdersNew.OrdersItemsNews.map((aProduct) => {
+			await Promise.all(order.Order.OrderItems.map((aProduct) => {
 				const index = marketplace.findIndex((obj) => obj.id == aProduct.Product.marketplace_id);
 				const existsMarketplace = order['marketplace_products'].hasOwnProperty(marketplace[index].id);
 
@@ -266,10 +266,10 @@ export async function vendorOrderDetails(queryObj) {
 				order['marketplace_summary'][aProduct.Product.marketplace_id].total = order['marketplace_summary'][aProduct.Product.marketplace_id].sub_total + order['marketplace_summary'][aProduct.Product.marketplace_id].shipping_ground;
 
 				order['marketplace_products'][aProduct.Product.marketplace_id].count += 1;
-				order['OrdersNew'].total_order_items = order['marketplace_products'][aProduct.Product.marketplace_id].count;
+				order['Order'].total_order_items = order['marketplace_products'][aProduct.Product.marketplace_id].count;
 				order['marketplace_products'][aProduct.Product.marketplace_id].products.push(aProduct);
 			}));
-			delete order.OrdersNew.OrdersItemsNews;
+			delete order.Order.OrderItems;
 			return order;
 		} else {
 			return;

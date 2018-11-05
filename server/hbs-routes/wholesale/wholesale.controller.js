@@ -174,7 +174,9 @@ export function wholesale(req, res) {
 				});
 		},
 		wholesalers: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			const tempLimit = 6;
 			queryObj['type'] = 'Private Wholesale Marketplace';
 			field = 'sales_count';
@@ -211,7 +213,7 @@ export function wholesale(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		},
 	}, function(err, results) {
 		if (!err) {

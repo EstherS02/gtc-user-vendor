@@ -131,7 +131,7 @@ export function salesHistory(req, res) {
 			offset = (page - 1) * limit;
 
 			includeArray = [{
-				model: model["OrdersNew"],
+				model: model["Order"],
 				attributes: ['id', 'ordered_date', 'status']
 			}];
 

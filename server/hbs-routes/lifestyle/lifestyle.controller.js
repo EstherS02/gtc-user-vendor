@@ -91,7 +91,9 @@ export function lifestyle(req, res) {
 				});
 		},
 		subscriptionProviders: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			delete queryObj['marketplace'];
 			queryObj['type'] = 'Lifestyle Marketplace';
 			field = 'sales_count';
@@ -127,7 +129,7 @@ export function lifestyle(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		}
 	}, function(err, results) {
 		if (!err) {

@@ -89,7 +89,9 @@ export function services(req, res) {
 				});
 		},
 		servicesProviders: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			delete queryObj['marketplace_id'];
 			queryObj['type'] = 'Services Marketplace';
 			field = 'sales_count';
@@ -125,7 +127,7 @@ export function services(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		}
 	}, function(err, results) {
 		if (!err) {

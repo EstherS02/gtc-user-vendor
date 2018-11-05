@@ -39,7 +39,7 @@ export async function dispatchOrder(req, res) {
 	const vendorId = req.user.Vendor.id;
 	const shippingModelName = "Shipping";
 	const orderVendorModelName = "OrderVendor";
-	const orderItemModelName = "OrdersItemsNew";
+	const orderItemModelName = "OrderItem";
 
 	req.checkBody('select_courier', 'Missing Query Param').notEmpty();
 	req.checkBody('expected_delivery_date', 'Missing Query Param').notEmpty();
@@ -64,10 +64,10 @@ export async function dispatchOrder(req, res) {
 	bodyParams['created_by'] = req.user.first_name;
 
 	var includeArray = [{
-		model: model['OrdersNew'],
+		model: model['Order'],
 		attributes: ['id', 'user_id', 'ordered_date', 'status'],
 		include: [{
-			model: model['OrdersItemsNew'],
+			model: model['OrderItem'],
 			attributes: ['id', 'order_id', 'product_id', 'order_item_status'],
 			include: [{
 				model: model['Product'],
@@ -85,7 +85,7 @@ export async function dispatchOrder(req, res) {
 			vendor_id: req.user.Vendor.id
 		}, includeArray);
 		if (vendorOrder) {
-			for (let item of vendorOrder.OrdersNew.OrdersItemsNews) {
+			for (let item of vendorOrder.Order.OrderItems) {
 				if (item.order_item_status == orderItemStatus['ORDER_INITIATED']) {
 					return res.status(400).send("Please confirm all items.");
 				}
@@ -98,7 +98,7 @@ export async function dispatchOrder(req, res) {
 						last_updated_on: new Date()
 					}, {
 						id: item.id,
-						order_id: vendorOrder.OrdersNew.id
+						order_id: vendorOrder.Order.id
 					}));
 				}
 			}
@@ -111,7 +111,7 @@ export async function dispatchOrder(req, res) {
 					last_updated_on: new Date()
 				}, {
 					id: vendorOrder.id,
-					order_id: vendorOrder.OrdersNew.id,
+					order_id: vendorOrder.Order.id,
 					vendor_id: vendorId
 				});
 				await Promise.all(orderItemPromises);

@@ -23,52 +23,43 @@ module.exports = (sequelize, DataTypes) => {
         invoice_id: {
             type: DataTypes.STRING(64),
             field: 'invoice_id',
-            allowNull: true
+            allowNull: false
         },
         purchase_order_id: {
             type: DataTypes.STRING(64),
             field: 'purchase_order_id',
-            allowNull: true
+            allowNull: false
         },
         po_number: {
             type: DataTypes.INTEGER,
             field: 'po_number',
             allowNull: true
         },
-        ordered_date: {
-            type: DataTypes.DATEONLY,
-            field: 'ordered_date',
-            allowNull: true
-        },
-        status: {
+        total_order_items: {
             type: DataTypes.INTEGER,
-            field: 'status',
+            field: 'total_order_items',
             allowNull: false
         },
-        expected_delivery_date: {
-            type: DataTypes.DATEONLY,
-            field: 'expected_delivery_date',
-            allowNull: true
+        total_price: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'total_price',
+            allowNull: false
         },
-        shipped_on: {
+        ordered_date: {
             type: DataTypes.DATE,
-            field: 'shipped_on',
-            allowNull: true
+            field: 'ordered_date',
+            allowNull: false
         },
-        cancelled_on: {
-            type: DataTypes.DATE,
-            field: 'cancelled_on',
-            allowNull: true
-        },
-        delivered_on: {
-            type: DataTypes.DATE,
-            field: 'delivered_on',
-            allowNull: true
-        },
-        returned_on: {
-            type: DataTypes.DATEONLY,
-            field: 'returned_on',
-            allowNull: true
+        payment_id: {
+            type: DataTypes.BIGINT,
+            field: 'payment_id',
+            allowNull: false,
+            references: {
+                model: 'payment',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         },
         shipping_id: {
             type: DataTypes.BIGINT,
@@ -80,52 +71,6 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-        },
-        total_price: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'total_price',
-            allowNull: true
-        },
-        gtc_fees: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'gtc_fees',
-            allowNull: false
-        },
-        plan_fees: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'plan_fees',
-            allowNull: true
-        },
-        vendor_pay: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'vendor_pay',
-            allowNull: false
-        },
-        coupon_id: {
-            type: DataTypes.BIGINT,
-            field: 'coupon_id',
-            allowNull: true,
-            references: {
-                model: 'coupon',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
-        coupon_amount: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'coupon_amount',
-            allowNull: true
-        },
-        coupon_applied_on: {
-            type: DataTypes.DATEONLY,
-            field: 'coupon_applied_on',
-            allowNull: true
-        },
-        tracking_id: {
-            type: DataTypes.INTEGER,
-            field: 'tracking_id',
-            allowNull: true
         },
         shipping_address_id: {
             type: DataTypes.BIGINT,
@@ -149,20 +94,20 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        order_status: {
+        status: {
             type: DataTypes.INTEGER,
-            field: 'order_status',
+            field: 'status',
             allowNull: false
         },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
-            allowNull: true
+            allowNull: false
         },
         created_on: {
             type: DataTypes.DATE,
             field: 'created_on',
-            allowNull: true
+            allowNull: false
         },
         last_updated_by: {
             type: DataTypes.STRING(64),
@@ -180,7 +125,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'orders',
+        tableName: 'order',
         timestamps: false
     });
 };
@@ -191,15 +136,12 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const Order = model.Order;
     const OrderItem = model.OrderItem;
-    const OrderPayment = model.OrderPayment;
-    const OrderPaymentEscrow = model.OrderPaymentEscrow;
+    const OrderVendor = model.OrderVendor;
     const User = model.User;
+    const Payment = model.Payment;
     const Shipping = model.Shipping;
     const Address = model.Address;
     const Coupon = model.Coupon;
-    const Product = model.Product;
-    const Tax = model.Tax;
-    const Payment = model.Payment;
 
     Order.hasMany(OrderItem, {
         foreignKey: 'order_id',
@@ -207,13 +149,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Order.hasMany(OrderPayment, {
-        foreignKey: 'order_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Order.hasMany(OrderPaymentEscrow, {
+    Order.hasMany(OrderVendor, {
         foreignKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -225,6 +161,12 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Order.belongsTo(Payment, {
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Order.belongsTo(Shipping, {
         foreignKey: 'shipping_id',
         onDelete: 'NO ACTION',
@@ -232,51 +174,31 @@ module.exports.initRelations = () => {
     });
 
     Order.belongsTo(Address, {
+        as: "shippingAddress1",
         foreignKey: 'shipping_address_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Order.belongsTo(Address, {
+        as: "billingAddress1",
         foreignKey: 'billing_address_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Order.belongsTo(Coupon, {
-        foreignKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Order.belongsToMany(Product, {
+    Order.belongsToMany(Coupon, {
         through: OrderItem,
         foreignKey: 'order_id',
-        otherKey: 'product_id',
+        otherKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Order.belongsToMany(Tax, {
-        through: OrderItem,
+    Order.belongsToMany(Shipping, {
+        through: OrderVendor,
         foreignKey: 'order_id',
-        otherKey: 'tax_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Order.belongsToMany(Payment, {
-        through: OrderPayment,
-        foreignKey: 'order_id',
-        otherKey: 'payment_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Order.belongsToMany(Payment, {
-        through: OrderPaymentEscrow,
-        foreignKey: 'order_id',
-        otherKey: 'payment_id',
+        otherKey: 'shipping_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

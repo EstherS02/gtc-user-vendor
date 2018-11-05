@@ -71,29 +71,22 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const Payment = model.Payment;
     const FeaturedProduct = model.FeaturedProduct;
-    const OrderPayment = model.OrderPayment;
-    const OrderPaymentEscrow = model.OrderPaymentEscrow;
-    const OrdersNew = model.OrdersNew;
+    const Order = model.Order;
     const OrderItemPayout = model.OrderItemPayout;
     const OrderVendorPayout = model.OrderVendorPayout;
     const ProductAdsSetting = model.ProductAdsSetting;
     const UserPlan = model.UserPlan;
     const VendorPlan = model.VendorPlan;
     const Product = model.Product;
-    const Order = model.Order;
     const User = model.User;
     const Shipping = model.Shipping;
     const Address = model.Address;
+    const OrderItem = model.OrderItem;
+    const OrderVendor = model.OrderVendor;
     const Country = model.Country;
     const State = model.State;
     const Vendor = model.Vendor;
     const Plan = model.Plan;
-
-    Payment.hasMany(OrderVendorPayout, {
-        foreignKey: 'payment_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
 
     Payment.hasMany(FeaturedProduct, {
         foreignKey: 'payment_id',
@@ -101,25 +94,19 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Payment.hasMany(OrderPayment, {
-        foreignKey: 'payment_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Payment.hasMany(OrderPaymentEscrow, {
-        foreignKey: 'payment_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Payment.hasMany(OrdersNew, {
+    Payment.hasMany(Order, {
         foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Payment.hasMany(OrderItemPayout, {
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.hasMany(OrderVendorPayout, {
         foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -151,24 +138,8 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Payment.belongsToMany(Order, {
-        through: OrderPayment,
-        foreignKey: 'payment_id',
-        otherKey: 'order_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Payment.belongsToMany(Order, {
-        through: OrderPaymentEscrow,
-        foreignKey: 'payment_id',
-        otherKey: 'order_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
     Payment.belongsToMany(User, {
-        through: OrdersNew,
+        through: Order,
         foreignKey: 'payment_id',
         otherKey: 'user_id',
         onDelete: 'NO ACTION',
@@ -176,7 +147,7 @@ module.exports.initRelations = () => {
     });
 
     Payment.belongsToMany(Shipping, {
-        through: OrdersNew,
+        through: Order,
         foreignKey: 'payment_id',
         otherKey: 'shipping_id',
         onDelete: 'NO ACTION',
@@ -184,7 +155,7 @@ module.exports.initRelations = () => {
     });
 
     Payment.belongsToMany(Address, {
-        through: OrdersNew,
+        through: Order,
         foreignKey: 'payment_id',
         otherKey: 'shipping_address_id',
         onDelete: 'NO ACTION',
@@ -192,9 +163,25 @@ module.exports.initRelations = () => {
     });
 
     Payment.belongsToMany(Address, {
-        through: OrdersNew,
+        through: Order,
         foreignKey: 'payment_id',
         otherKey: 'billing_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.belongsToMany(OrderItem, {
+        through: OrderItemPayout,
+        foreignKey: 'payment_id',
+        otherKey: 'order_item_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.belongsToMany(OrderVendor, {
+        through: OrderVendorPayout,
+        foreignKey: 'payment_id',
+        otherKey: 'order_vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

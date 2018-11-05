@@ -93,7 +93,9 @@ export function directory(req, res) {
 				});
 		},
 		wholesalers: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			queryObj['type'] = 'Private Wholesale Marketplace';
 			field = 'sales_count';
 			order = 'desc';
@@ -128,10 +130,12 @@ export function directory(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		},
 		retailers: function(callback) {
-			console.log("retailers")
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*console.log("retailers")
 			var result = {};
 			queryObj['type'] = 'Public Marketplace';
 			field = 'sales_count';
@@ -167,10 +171,12 @@ export function directory(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		},
 		servicesProviders: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			queryObj['type'] = 'Services Marketplace';
 			field = 'sales_count';
 			order = 'desc';
@@ -205,10 +211,12 @@ export function directory(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		},
 		subscriptionProviders: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			queryObj['type'] = 'Lifestyle Marketplace';
 			field = 'sales_count';
 			order = 'desc';
@@ -243,7 +251,7 @@ export function directory(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		},
 	}, function(err, results) {
 		if (!err) {

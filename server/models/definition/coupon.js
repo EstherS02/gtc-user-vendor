@@ -135,15 +135,11 @@ module.exports.initRelations = () => {
     const CouponExcludedCategory = model.CouponExcludedCategory;
     const CouponExcludedProduct = model.CouponExcludedProduct;
     const CouponProduct = model.CouponProduct;
-    const Order = model.Order;
-    const OrdersItemsNew = model.OrdersItemsNew;
+    const OrderItem = model.OrderItem;
     const Vendor = model.Vendor;
     const Category = model.Category;
     const Product = model.Product;
-    const User = model.User;
-    const Shipping = model.Shipping;
-    const Address = model.Address;
-    const OrdersNew = model.OrdersNew;
+    const Order = model.Order;
 
     Coupon.hasMany(CouponCategory, {
         foreignKey: 'coupon_id',
@@ -169,13 +165,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Coupon.hasMany(Order, {
-        foreignKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Coupon.hasMany(OrdersItemsNew, {
+    Coupon.hasMany(OrderItem, {
         foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -219,50 +209,10 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Coupon.belongsToMany(User, {
-        through: Order,
-        foreignKey: 'coupon_id',
-        otherKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Coupon.belongsToMany(Shipping, {
-        through: Order,
-        foreignKey: 'coupon_id',
-        otherKey: 'shipping_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Coupon.belongsToMany(Address, {
-        through: Order,
-        foreignKey: 'coupon_id',
-        otherKey: 'shipping_address_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Coupon.belongsToMany(Address, {
-        through: Order,
-        foreignKey: 'coupon_id',
-        otherKey: 'billing_address_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Coupon.belongsToMany(OrdersNew, {
-        through: OrdersItemsNew,
+    Coupon.belongsToMany(Order, {
+        through: OrderItem,
         foreignKey: 'coupon_id',
         otherKey: 'order_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Coupon.belongsToMany(Product, {
-        through: OrdersItemsNew,
-        foreignKey: 'coupon_id',
-        otherKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

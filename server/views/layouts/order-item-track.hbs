@@ -24,7 +24,7 @@
 							</div>
 							<div class="row">
 								<div class="col">
-									<small class="text-muted font-weight-light m-b-sm float-right">{{item.OrdersNew.shippingAddress1.address_line1}} {{item.OrdersNew.shippingAddress1.city}}, {{item.OrdersNew.shippingAddress1.State.name}}, {{item.OrdersNew.shippingAddress1.Country.name}}</small>
+									<small class="text-muted font-weight-light m-b-sm float-right">{{item.Order.shippingAddress1.address_line1}} {{item.Order.shippingAddress1.city}}, {{item.Order.shippingAddress1.State.name}}, {{item.Order.shippingAddress1.Country.name}}</small>
 								</div>
 							</div>
 							<div class="progress">
@@ -166,11 +166,11 @@
 											{{#ifCond item.order_item_status '==' @root.orderItemStatus.SHIPPED}}
 											<div class="d-block">
 												<small class="font-weight-light d-inline-block m-r-md">Carrier</small>
-												<small class="font-weight-light m-l-sm">{{objectKey carriersCode item.OrdersNew.OrderVendors.[0].Shipping.provider_name}}</small>
+												<small class="font-weight-light m-l-sm">{{objectKey carriersCode item.Order.OrderVendors.[0].Shipping.provider_name}}</small>
 											</div>
 											<div class="d-block">
 												<small class="font-weight-light d-inline-block">Tracking #</small>
-												<small class="font-weight-light m-l-sm">{{item.OrdersNew.OrderVendors.[0].Shipping.tracking_id}}</small>
+												<small class="font-weight-light m-l-sm">{{item.Order.OrderVendors.[0].Shipping.tracking_id}}</small>
 											</div>
 											{{/ifCond}}
 											<div class="d-block">
