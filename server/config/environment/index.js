@@ -114,6 +114,7 @@ var all = {
 		"email": "email-notification",
 		"orderEmail": "order-email",
 		"orderItemPayout": "order-item-payout",
+		"noresponseOrderItemPayout": "noresponse-order-item-payout",
 		"couponExpiry": "couponExpiry",
 		"vendorPayouts": "vendorPayouts",
 		"aliExpressScrape": "aliexpress-scrape",
@@ -139,7 +140,8 @@ var all = {
 	},
 	payment: {
 		"cancelOrderItem": 3,
-		"returnOrderItem": 3
+		"returnOrderItem": 3,
+		"noresposeOrderItem": 3
 	},
 	sesTransporter: {
 		accessKeyId: process.env.SES_ACCESS_KEY_ID,
