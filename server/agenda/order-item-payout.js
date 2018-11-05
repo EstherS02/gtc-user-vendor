@@ -25,19 +25,19 @@ module.exports = async function(job, done) {
 				'$or': [{
 					order_item_status: orderItemStatus['CANCELED'],
 					cancelled_on: {
-						$gte: moment().subtract(config.payment.cancelOrderItem, 'days').startOf('day').utc().toDate(),
+						//$gte: moment().subtract(config.payment.cancelOrderItem, 'days').startOf('day').utc().toDate(),
 						$lte: moment().subtract(config.payment.cancelOrderItem, 'days').endOf('day').utc().toDate()
 					}
 				}, {
 					order_item_status: orderItemStatus['VENDOR_CANCELED'],
 					cancelled_on: {
-						$gte: moment().subtract(config.payment.cancelOrderItem, 'days').startOf('day').utc().toDate(),
+						//$gte: moment().subtract(config.payment.cancelOrderItem, 'days').startOf('day').utc().toDate(),
 						$lte: moment().subtract(config.payment.cancelOrderItem, 'days').endOf('day').utc().toDate()
 					}
 				}, {
 					order_item_status: orderItemStatus['RETURN_RECIVED'],
 					return_received_on: {
-						$gte: moment().subtract(config.payment.returnOrderItem, 'days').startOf('day').utc().toDate(),
+						//$gte: moment().subtract(config.payment.returnOrderItem, 'days').startOf('day').utc().toDate(),
 						$lte: moment().subtract(config.payment.cancelOrderItem, 'days').endOf('day').utc().toDate()
 					}
 				}],

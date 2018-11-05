@@ -24,22 +24,19 @@ export function messages(req, res) {
 	var order = "desc";
 	async.series({
 			cartInfo: function(callback) {
-				if (LoggedInUser.id) {
-					cartService.cartCalculation(LoggedInUser.id, req, res)
-						.then((cartResult) => {
-							return callback(null, cartResult);
-						}).catch((error) => {
-							return callback(error);
-						});
-				} else {
-					return callback(null);
-				}
+				cartService.cartCalculation(LoggedInUser.id, req, res)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						console.log("cartInfo Error:::", error);
+						return callback(error);
+					});
 			},
 			messages_count: function(callback) {
-				model['TalkThreadUsers'].findAll({
+				model['TalkThreadUser'].findAll({
 					where: {
 						user_id: LoggedInUser.id
-					},
+					}
 				}).then(function(instances) {
 					for (var i = 0, iLen = instances.length; i < iLen; i++) {
 						threadsUnRead.push(instances[i].thread_id);
@@ -64,7 +61,7 @@ export function messages(req, res) {
 				})
 			},
 			messages: function(callback) {
-				model['TalkThreadUsers'].findAll({
+				model['TalkThreadUser'].findAll({
 					where: {
 						user_id: LoggedInUser.id
 					},
@@ -73,7 +70,7 @@ export function messages(req, res) {
 						threads.push(instances[i].thread_id);
 					}
 				}).then(function(results) {
-					model['TalkThreadUsers'].findAll({
+					model['TalkThreadUser'].findAll({
 						where: {
 							thread_id: threads,
 							user_id: {
@@ -107,14 +104,14 @@ export function messages(req, res) {
 				var includeArr = [];
 				var categoryOffset, categoryLimit, categoryField, categoryOrder;
 				var categoryQueryObj = {};
-	
+
 				categoryOffset = 0;
 				categoryLimit = null;
 				categoryField = "id";
 				categoryOrder = "asc";
-				
+
 				categoryQueryObj['status'] = statusCode["ACTIVE"];
-	
+
 				service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {
 						var categories = category.rows;
