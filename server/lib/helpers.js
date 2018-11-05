@@ -7,7 +7,7 @@ import {
 } from 'url';
 const numeral = require('numeral');
 const planPermissions = require('../config/plan-marketplace-permission.js');
-const config  = require('../config/environment');
+const config = require('../config/environment');
 const orderItemStatus = require("../config/order-item-new-status");
 
 Handlebars.registerHelper('starCount', function(rating, color) {
@@ -98,30 +98,30 @@ Handlebars.registerHelper('ifCond', function(v1, operator, v2, options) {
 //HELPER TO HANDLE NESTED OPERATIONS
 
 Handlebars.registerHelper({
-    eq: function (v1, v2) {
-        return v1 === v2;
-    },
-    ne: function (v1, v2) {
-        return v1 !== v2;
-    },
-    lt: function (v1, v2) {
-        return v1 < v2;
-    },
-    gt: function (v1, v2) {
-        return v1 > v2;
-    },
-    lte: function (v1, v2) {
-        return v1 <= v2;
-    },
-    gte: function (v1, v2) {
-        return v1 >= v2;
-    },
-    and: function () {
-        return Array.prototype.slice.call(arguments).every(Boolean);
-    },
-    or: function () {
-        return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
-    }
+	eq: function(v1, v2) {
+		return v1 === v2;
+	},
+	ne: function(v1, v2) {
+		return v1 !== v2;
+	},
+	lt: function(v1, v2) {
+		return v1 < v2;
+	},
+	gt: function(v1, v2) {
+		return v1 > v2;
+	},
+	lte: function(v1, v2) {
+		return v1 <= v2;
+	},
+	gte: function(v1, v2) {
+		return v1 >= v2;
+	},
+	and: function() {
+		return Array.prototype.slice.call(arguments).every(Boolean);
+	},
+	or: function() {
+		return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
+	}
 });
 
 Handlebars.registerHelper('formatTime', function(date, format) {
@@ -754,7 +754,28 @@ Handlebars.registerHelper('sizeInKB', function(value) {
 	var valueInKB = value / 1000;
 	return valueInKB.toFixed(2);
 });
-
+Handlebars.registerHelper('verificationStatus', function(obj, status, content, option) {
+	var text = '';
+	if (obj.APPROVED == status) {
+		text = `<span class="id-verified">
+                    <i class="fas fa-check-circle"></i>
+                </span>`;
+	} else {
+		text = `<span class="id-verified">
+                    <i class="fas fa-exclamation-circle"></i>
+                </span>`;
+	}
+	if (obj.WAITING == status) {
+		text = text + 'Your ' + content + ' verification request is awaiting';
+	} else if (obj.APPROVED == status) {
+		text = text + 'Your ' + content + ' verification request is approved';
+	} else if (obj.REJECTED == status) {
+		text = text + option;
+	} else {
+		text = text + `You haven't submitted this yet.`;
+	}
+	return text;
+});
 Handlebars.registerHelper('returnCond', function(date) {
 	const deliveredDate = new Date(date);
 	const currentDate = new Date();

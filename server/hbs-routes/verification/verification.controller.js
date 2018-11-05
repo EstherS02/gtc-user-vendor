@@ -31,16 +31,12 @@ export function verification(req, res) {
 
 	async.series({
 			cartInfo: function(callback) {
-				if (LoggedInUser.id) {
-					cartService.cartCalculation(LoggedInUser.id, req, res)
-						.then((cartResult) => {
-							return callback(null, cartResult);
-						}).catch((error) => {
-							return callback(error);
-						});
-				} else {
-					return callback(null);
-				}
+				cartService.cartCalculation(LoggedInUser.id, req, res)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
 			},
 			verification: function(callback) {
 				service.findOneRow(modelName, queryObj, includeArr)
