@@ -40,6 +40,11 @@ module.exports = async function(job, done) {
 						//$gte: moment().subtract(config.payment.returnOrderItem, 'days').startOf('day').utc().toDate(),
 						$lte: moment().subtract(config.payment.cancelOrderItem, 'days').endOf('day').utc().toDate()
 					}
+				}, {
+					order_item_status: orderItemStatus['ORDER_INITIATED'],
+					created_on: {
+						$lte: moment().subtract(config.payment.noResposeOrderItem, 'days').endOf('day').utc().toDate()
+					}
 				}],
 				'$OrderItemPayouts.order_item_id$': null
 			},
@@ -63,13 +68,22 @@ module.exports = async function(job, done) {
 
 			const newPayment = await service.createRow(paymentModelName, {
 				date: new Date(refundResponse.created),
-				amount: refundResponse.amount / 100.0,
+				amount: refundResponse.amountupdateOrderItemRow / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
 				payment_response: JSON.stringify(refundResponse),
 				created_by: "Administrator",
 				created_on: new Date()
 			});
+
+			if (item.order_item_status == orderItemStatus['ORDER_INITIATED']) {
+				const updateOrderItemRow = await service.updateRow(orderItemModelName, {
+					order_item_status: rderItemStatus['AUTO_CANCELED'],
+					cancelled_on: new Date(),
+					last_updated_by: "Administrator",
+					last_updated_on: new Date()
+				}, item.id);
+			}
 
 			const orderItemPayoutResponse = await service.createRow(orderItemPayoutModelName, {
 				order_item_id: item.id,
