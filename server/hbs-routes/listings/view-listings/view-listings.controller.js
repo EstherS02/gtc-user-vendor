@@ -7,13 +7,18 @@ const marketPlaceType = require('../../../config/marketplace');
 const service = require('../../../api/service');
 const vendorPlan = require('../../../config/gtc-plan');
 const cartService = require('../../../api/cart/cart.service');
+const productService = require('../../../api/product/product.service');
 const marketplace = require('../../../config/marketplace');
 const url = require('url');
 
 export function viewListings(req, res) {
 
 	var offset, limit, field, order, page, type, maxSize;;
-	var queryParams = {}, LoggedInUser = {}, bottomCategory = {}, queryURI = {}, queryPaginationObj = {};
+	var queryParams = {},
+		LoggedInUser = {},
+		bottomCategory = {},
+		queryURI = {},
+		queryPaginationObj = {};
 
 	var productModel = "MarketplaceProduct";
 	var categoryModel = "Category";
@@ -65,7 +70,7 @@ export function viewListings(req, res) {
 	if (req.query.status) {
 		queryURI['status'] = req.query.status;
 		queryParams['status'] = statusCode[req.query.status]
-	}else{
+	} else {
 		queryParams['status'] = {
 			'$ne': statusCode["DELETED"]
 		}
@@ -73,23 +78,17 @@ export function viewListings(req, res) {
 
 	async.series({
 		cartInfo: function(callback) {
-			if (LoggedInUser.id) {
-				cartService.cartCalculation(LoggedInUser.id, req, res)
-					.then((cartResult) => {
-						return callback(null, cartResult);
-					}).catch((error) => {
-						return callback(error);
-					});
-			} else {
-				return callback(null);
-			}
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
 		},
 		products: function(callback) {
-
-			service.findRows(productModel, queryParams, offset, limit, field, order)
+			productService.vendorProducts(queryParams, offset, limit, field, order)
 				.then(function(products) {
 					return callback(null, products);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -104,7 +103,7 @@ export function viewListings(req, res) {
 			categoryLimit = null;
 			categoryField = "id";
 			categoryOrder = "asc";
-			
+
 			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
 			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
@@ -119,16 +118,13 @@ export function viewListings(req, res) {
 				});
 		},
 	}, function(err, results) {
-		
+
 		if (!err) {
 			maxSize = results.products.count / limit;
 			if (results.products.count % limit)
 				maxSize++;
 
 			queryPaginationObj['maxSize'] = maxSize;
-
-			var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-			var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
 
 			res.render('vendorNav/listings/view-listings', {
 				title: "Global Trade Connect",
@@ -147,7 +143,6 @@ export function viewListings(req, res) {
 				type: type,
 				selectedPage: type,
 				vendorPlan: vendorPlan,
-				dropDownUrl: dropDownUrl,
 				queryURI: queryURI,
 				queryPaginationObj: queryPaginationObj
 			});

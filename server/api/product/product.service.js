@@ -8,6 +8,7 @@ const sequelize = require('sequelize');
 const service = require('../service');
 const config = require('../../config/environment');
 const status = require('../../config/status');
+const orderItemStatus = require('../../config/order-item-new-status');
 const marketplace = require('../../config/marketplace');
 const Sequelize_Instance = require('../../sqldb/index');
 const RawQueries = require('../../raw-queries/sql-queries');
@@ -187,7 +188,7 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 				include: includeCountArray,
 				where: queryObj
 			});
-			results.count = (productCount? productCount:0);
+			results.count = (productCount ? productCount : 0);
 			return results;
 		} else {
 			return results;
@@ -361,6 +362,63 @@ export function productReviews(queryObj, offset, limit, field, order) {
 			reject(error);
 		});
 	});
+}
+
+export async function vendorProducts(queryObj, offset, limit, field, order) {
+	var result = {};
+	var productModelName = "Product";
+	var orderItemModelName = "OrderItem";
+	var productMediaModelName = "ProductMedia";
+	var includeArray = [{
+		model: model[orderItemModelName],
+		attributes: [],
+		where: {
+			'$or': [{
+				order_item_status: orderItemStatus['DELIVERED']
+			}, {
+				order_item_status: orderItemStatus['COMPLETED']
+			}]
+		},
+		required: false
+	}, {
+		model: model[productMediaModelName],
+		where: {
+			status: status['ACTIVE'],
+			base_image: 1
+		},
+		attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
+		required: false
+	}];
+
+	try {
+		const vendorProductResponse = await model[productModelName].findAll({
+			where: queryObj,
+			attributes: ['id', 'sku', 'product_name', 'product_slug', 'vendor_id', 'status', 'marketplace_id', 'marketplace_type_id', 'publish_date', 'price', [sequelize.fn('SUM', sequelize.col('OrderItems.quantity')), 'sales_count']],
+			include: includeArray,
+			offset: offset,
+			limit: limit,
+			order: [
+				[field, order]
+			],
+			subQuery: false,
+			group: ['id']
+		});
+		const vendorProducts = JSON.parse(JSON.stringify(vendorProductResponse));
+		if (vendorProducts.length > 0) {
+			const vendorProductsCount = await model[productModelName].count({
+				where: queryObj
+			});
+			result['count'] = vendorProductsCount;
+			result['rows'] = vendorProducts;
+		} else {
+			result['count'] = 0;
+			result['rows'] = vendorProducts;
+		}
+		return result;
+	} catch (error) {
+		console.log("vendorProducts Error:::", error);
+		return error;
+	}
 }
 
 export function importAliExpressProducts(product, user) {

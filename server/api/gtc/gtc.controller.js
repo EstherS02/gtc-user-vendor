@@ -26,69 +26,65 @@ const paymentMethod = require('../../config/payment-method');
 const stripe = require('../../payment/stripe.payment');
 
 export async function indexExample(req, res) {
-	const orderItemModelName = "OrderItem";
+	var offset = 0;
+	var limit = 10;
+	var result = {};
+	var field = "id";
+	var order = "ASC";
+	var queryObj = {};
+	var includeArray = [];
+	var productModelName = "Product";
+	var orderItemModelName = "OrderItem";
+	var productMediaModelName = "ProductMedia";
+
+	queryObj['vendor_id'] = req.user.Vendor.id;
+
+	includeArray = [{
+		model: model[orderItemModelName],
+		attributes: [],
+		where: {
+			'$or': [{
+				order_item_status: orderItemStatus['DELIVERED']
+			}, {
+				order_item_status: orderItemStatus['COMPLETED']
+			}]
+		},
+		required: false
+	}, {
+		model: model[productMediaModelName],
+		where: {
+			status: status['ACTIVE'],
+			base_image: 1
+		},
+		attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
+		required: false
+	}];
 
 	try {
-		const response = await model[orderItemModelName].findAll({
-			where: {
-				'$or': [{
-					order_item_status: orderItemStatus['CANCELED'],
-					cancelled_on: {
-						$gte: moment().subtract(config.payment.cancelOrderItem, 'days').startOf('day').utc().toDate(),
-						$lte: moment().subtract(config.payment.cancelOrderItem, 'days').endOf('day').utc().toDate()
-					}
-				}, {
-					order_item_status: orderItemStatus['VENDOR_CANCELED'],
-					cancelled_on: {
-						$gte: moment().subtract(config.payment.cancelOrderItem, 'days').startOf('day').utc().toDate(),
-						$lte: moment().subtract(config.payment.cancelOrderItem, 'days').endOf('day').utc().toDate()
-					}
-				}, {
-					order_item_status: orderItemStatus['RETURN_RECIVED'],
-					return_received_on: {
-						$gte: moment().subtract(config.payment.returnOrderItem, 'days').startOf('day').utc().toDate(),
-						$lte: moment().subtract(config.payment.cancelOrderItem, 'days').endOf('day').utc().toDate()
-					}
-				}],
-				'$OrderItemPayouts.order_item_id$': null
-			},
-			include: [{
-				model: model['Order'],
-				attributes: ['id', 'user_id', 'payment_id', 'status'],
-				include: [{
-					model: model['Payment'],
-					attributes: ['id', 'date', 'amount', 'payment_response']
-				}]
-			}, {
-				model: model['OrderItemPayout'],
-				attributes: []
-			}]
+		const vendorProductResponse = await model[productModelName].findAll({
+			where: queryObj,
+			attributes: ['id', 'sku', 'product_name', 'product_slug', 'vendor_id', 'status', 'marketplace_id', 'marketplace_type_id', 'publish_date', 'price', [sequelize.fn('SUM', sequelize.col('OrderItems.quantity')), 'sales_count']],
+			include: includeArray,
+			offset: offset,
+			limit: limit,
+			order: [
+				[field, order]
+			],
+			subQuery: false,
+			group: ['id']
 		});
-		const cancelItems = JSON.parse(JSON.stringify(response));
-		await Promise.all(cancelItems.map(async (item) => {
-			const refundAmt = item.price;
-			const chargedPaymentRes = JSON.parse(item.Order.Payment.payment_response);
-			const refundResponse = await stripe.refundCustomerCard(chargedPaymentRes.id, refundAmt);
-
-			const newPayment = await service.createRow('Payment', {
-				date: new Date(refundResponse.created),
-				amount: refundResponse.amount / 100.0,
-				payment_method: paymentMethod['STRIPE'],
-				status: status['ACTIVE'],
-				payment_response: JSON.stringify(refundResponse),
-				created_by: "Administrator",
-				created_on: new Date()
+		const vendorProducts = JSON.parse(JSON.stringify(vendorProductResponse));
+		if (vendorProducts.length > 0) {
+			const vendorProductsCount = await model[productModelName].count({
+				where: queryObj
 			});
-
-			const orderItemPayout = await service.createRow('OrderItemPayout', {
-				order_item_id: item.id,
-				payment_id: newPayment.id,
-				status: status['ACTIVE'],
-				created_by: "Administrator",
-				created_on: new Date()
-			});
-		}));
-		return res.status(200).send("Success");
+			result['count'] = vendorProductsCount;
+			result['rows'] = vendorProducts;
+		} else {
+			result['count'] = 0;
+			result['rows'] = vendorProducts;
+		}
+		return res.status(200).send(result);
 	} catch (error) {
 		console.log("indexExample Error:::", error);
 		return res.status(500).send(error);
@@ -442,7 +438,9 @@ exports.delete = function(req, res) {
 					service.destroyRecord(req.endpoint, paramsID)
 						.then(function(result) {
 							if (result) {
-								res.status(200).send({'response':'Deleted Successfully'});
+								res.status(200).send({
+									'response': 'Deleted Successfully'
+								});
 								return
 							} else {
 								return res.status(404).send("Unable to delete");
