@@ -19,7 +19,7 @@ var socketMsg = require('./sockets/socket-messages').socketMsg;
 var mailListener = require('./components/mail-listener');
 var agenda = require('./agenda');
 var sendEmailNew = require('./agenda/send-email-new');
-var vendorPayouts = require('./agenda/vendor-payouts').vendorPayouts;
+//var vendorPayouts = require('./agenda/vendor-payouts').vendorPayouts;
 var planRenewal = require('./agenda/plan-auto-renewal').planRenewal;
 var bulkUserPlanRenewal = require('./agenda/bulk-user-plan-auto-renewal').bulkUserPlanRenewal;
 var subscriptionAutoRenewal = require('./agenda/subscription-auto-renewal').subscriptionAutoRenewal;
@@ -56,7 +56,7 @@ agenda.on('ready', function() {
 	console.log('agenda onReady');
 	//agenda.every('8 hours', 'vendorPayouts');
 	agenda.every('8 hours', config.jobs.orderItemPayout);
-	agenda.every('1 minutes', config.jobs.vendorPayoutsNew);
+	agenda.every('8 hours', config.jobs.vendorPayoutsNew);
 	agenda.every('12 hours', 'planRenewal');
 	agenda.every('12 hours', 'bulkUserPlanRenewal');
 	//agenda.every('12 hours', 'subscriptionAutoRenewal');
