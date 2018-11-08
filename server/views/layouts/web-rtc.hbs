@@ -98,7 +98,6 @@
 					}).catch((e) => {
 						console.log(e);
 						alert('getUserMedia() error: ' + e.name);
-						//return socket.emit('call:init', callerCallObj);
 					});
 			} else if (initQueryString === 'false' && initCallTo) {
 				let calleeCallObj = localStorage.getItem('calleeParams');

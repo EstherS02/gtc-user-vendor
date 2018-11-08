@@ -1,11 +1,12 @@
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var auth = require('../../auth/auth.service');
+const express = require('express');
+const router = express.Router();
+const auth = require('../../auth/auth.service');
+const roles = require('../../config/roles');
 
-var controller = require('./webrtc.controller');
+const controller = require('./webrtc.controller');
 
-router.get('/:videoCallId', auth.isAuthenticated(), controller.webRTC);
+router.get('/:videoCallId', auth.hasRole(roles['USER']), controller.webRTC);
 
 module.exports = router;
