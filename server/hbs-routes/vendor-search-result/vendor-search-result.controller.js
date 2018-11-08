@@ -5,7 +5,7 @@ const sequelize = require('sequelize');
 var _ = require('lodash');
 
 const service = require('../../api/service');
-const vendorService = require('../../api/vendor/vendor-service')
+const vendorService = require('../../api/vendor/vendor.service')
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');

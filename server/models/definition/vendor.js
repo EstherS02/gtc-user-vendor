@@ -413,13 +413,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Vendor.belongsToMany(Product, {
+    /*Vendor.belongsToMany(Product, {
         through: ProductAdsSetting,
         foreignKey: 'vendor_id',
         otherKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Vendor.belongsToMany(Country, {
         through: ProductAdsSetting,
