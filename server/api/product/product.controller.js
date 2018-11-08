@@ -141,7 +141,6 @@ export async function create(req, res) {
 	//req.checkBody('price', 'Missing Query Param').notEmpty();
 	req.checkBody('exclusive_sale', 'Missing Query Param').notEmpty();
 
-	//if (req.body.marketplace_id === marketplace['WHOLESALE']) { // Not correct syntax
 	if (req.body.marketplace_id == marketplace['WHOLESALE']) {
 		req.checkBody('marketplace_type_id', 'Missing Query Param').notEmpty();
 		req.checkBody('moq', 'Missing Query Param').notEmpty();
@@ -179,8 +178,16 @@ export async function create(req, res) {
 		delete req.body.product_attributes;
 	}
 
+	// If created by admin vendor_id present in body
+	var vendorId;
+	if(!req.body.vendor_id){      
+		vendorId = req.user.Vendor.id
+	}else{
+		vendorId = req.body.vendor_id
+	}
+
 	bodyParams = req.body;
-	bodyParams['vendor_id'] = req.user.Vendor.id;
+ 	bodyParams['vendor_id'] = vendorId;
 	bodyParams['publish_date'] = new Date();
 	bodyParams['product_slug'] = string_to_slug(req.body.product_name);
 	bodyParams['created_by'] = req.user.first_name;
@@ -189,7 +196,7 @@ export async function create(req, res) {
 	try {
 		const existsVendorSKU = await service.findOneRow(productModelName, {
 			sku: req.body.sku,
-			vendor_id: req.user.Vendor.id
+			vendor_id: vendorId
 		});
 		if (!existsVendorSKU) {
 			const newProduct = await service.createRow(productModelName, bodyParams);
@@ -259,6 +266,7 @@ export async function create(req, res) {
 }
 
 export async function edit(req, res) {
+	
 	var productID = req.params.id;
 	var bodyParams = {};
 	var productMediaPromises = [];
@@ -294,15 +302,12 @@ export async function edit(req, res) {
 		req.body.exclusive_offer = parseInt(req.body.exclusive_offer);
 		req.checkBody('exclusive_start_date', 'Missing Query Param').notEmpty();
 		req.checkBody('exclusive_end_date', 'Missing Query Param').notEmpty();
-		req.checkBody('exclusive_offer', 'Missing Query Param').notEmpty().isInt({
-			gt: 0
-		});
+		req.checkBody('exclusive_offer', 'Missing Query Param').notEmpty();
 
 		const startDate = new Date(req.body.exclusive_start_date);
 		const endDate = new Date(req.body.exclusive_end_date);
-		const currentDate = new Date();
 
-		if (startDate >= currentDate && endDate > startDate) {
+		if (startDate < endDate && endDate > startDate) {
 			req.body.exclusive_end_date = new Date(req.body.exclusive_end_date);
 			req.body.exclusive_start_date = new Date(req.body.exclusive_start_date);
 		} else {
@@ -1229,6 +1234,42 @@ export function vendorMarketplaces(req, res){
 		}else{
 			return res.status(200).send(planMarketplaces);
 		}		
+	}).catch(function(error){
+		console.log("Error::",error);
+		return res.status(500).send(error);
+	})
+}
+
+export function planActiveVendors(req, res){	
+	var currentDate = new Date();
+	var offset, limit, field, order;
+	var vendorIncludeArr = [];
+	var vendorQueryObj = {};
+
+	vendorQueryObj = {
+		status: status.ACTIVE	
+	}
+
+	vendorIncludeArr = [
+		{
+			model:model['VendorPlan'],
+			where: { 	status: status.ACTIVE,
+						start_date:{ '$lte': currentDate },
+						end_date:{ '$gte': currentDate }
+					},
+			attributes:['id']
+		}
+	]
+	
+	offset = 0;
+	limit = null;
+	field = 'id';
+	order = 'asc';
+
+	service.findRows('Vendor', vendorQueryObj, offset, limit, field, order, vendorIncludeArr)
+	.then(function(vendor){
+		return res.status(200).send(vendor);
+
 	}).catch(function(error){
 		console.log("Error::",error);
 		return res.status(500).send(error);

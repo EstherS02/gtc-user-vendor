@@ -238,7 +238,6 @@ export function topMarketPlace(req, res) {
 }
 
 export function topCategories(req, res) {
-	console.log('req user', req.user);
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];	
@@ -263,7 +262,6 @@ export function topCategories(req, res) {
 }
 
 export function recentRevenueChanges(req, res) {
-	console.log('req user', req.user);
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];	

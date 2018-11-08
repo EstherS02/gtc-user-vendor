@@ -161,25 +161,22 @@ let sqlQueries = {
 		if (queryObj.status && productQueryObj.vendor_id) {
 			let query = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.id) as subproductcount FROM 
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
-			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id and product.status=(` + queryObj.status + `) and product.vendor_id=(` + productQueryObj.vendor_id + `)
+			LEFT OUTER JOIN (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') on sub_category.id = product.sub_category_id and product.status=(` + queryObj.status + `) and product.vendor_id=(` + productQueryObj.vendor_id + `) and product.marketplace_id = (`+productQueryObj.marketplace_id+`)
 			GROUP BY sub_category.id ORDER by category.id`;
 			return query;
 		}
 	},
 	vendorFilterCatogoryCount: function(params) {
-		if (params.vendor_id && params.marketplace_id && !params.marketplace_type_id) {
-			let query = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.vendor_id) as subproductcount FROM 
+		let baseQuery = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.vendor_id) as subproductcount FROM 
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
-			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id and product.status=(` + params.status + `) and product.marketplace_id=(` + params.marketplace_id + `) and product.vendor_id=(` + params.vendor_id + `)
-			GROUP BY sub_category.id ORDER by category.id`;
+			LEFT OUTER JOIN (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`')  on sub_category.id = product.sub_category_id`;
+		let groupQuery = `GROUP BY sub_category.id ORDER by category.id`;
+		for (var j in params) {
+				var condition = " AND " + "product." + j + " = " + params[j]
+				baseQuery = baseQuery.concat(condition)
+			}
+			let query = baseQuery + " " + groupQuery;
 			return query;
-		} else if (params.vendor_id && params.marketplace_id && params.marketplace_type_id) {
-			let query = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.vendor_id) as subproductcount FROM 
-			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
-			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id and product.status=(` + params.status + `) and product.marketplace_id=(` + params.marketplace_id + `) and product.vendor_id=(` + params.vendor_id + `)
-			GROUP BY sub_category.id ORDER by category.id`;
-			return query;
-		}
 	},
 	productCountBasedCountry: function(productCountQueryParams) {
 		let baseQuery = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN ((product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') `

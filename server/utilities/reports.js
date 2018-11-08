@@ -2,7 +2,7 @@
 
 const status = require('../config/status');
 const orderStatus = require('../config/order_status');
-const orderItemStatus = require('../config/order-item-status');
+const orderItemStatus = require('../config/order-item-new-status');
 const model = require('../sqldb/model-connect');
 const sequelize = require('sequelize');
 const SequelizeInstance = require('../sqldb/index');
@@ -60,27 +60,26 @@ function sumofCount(modelName, queryObj) {
 
 function getAllPerformance(queryObj, limit, offset) {
     return new Promise((resolve, reject) => {
-        SequelizeInstance.query(`SELECT
-				orders.id AS order_id,
-				order_items.product_id AS product_id,
-    			( SELECT product_name FROM product WHERE product.id = order_items.product_id
-     				LIMIT 1 ) AS product_name,
-     			( SELECT url FROM product_media WHERE product_media.product_id = product.id
-					LIMIT 1 ) AS product_url,
-    			( SELECT NAME FROM marketplace WHERE product.marketplace_id = marketplace.id
-					LIMIT 1 ) AS marketplace_name,
-    			SUM(orders.total_price) AS total_sales,
-    			SUM(orders.total_price) - SUM(orders.gtc_fees) AS vendor_fee,
-    			SUM(orders.gtc_fees) AS gtc_fees
-				FROM
-    					orders
-					LEFT OUTER JOIN order_items ON orders.id = order_items.order_id
-					LEFT OUTER JOIN product ON order_items.product_id = product.id
+        SequelizeInstance.query(`SELECT orderVendor.order_id AS order_id,
+                order_item.product_id AS product_id,
+                ( SELECT product_name FROM product WHERE product.id = order_item.product_id
+                    LIMIT 1 ) AS product_name,
+                ( SELECT url FROM product_media WHERE product_media.product_id = product.id
+                    LIMIT 1 ) AS product_url,
+                ( SELECT NAME FROM marketplace WHERE product.marketplace_id = marketplace.id
+                    LIMIT 1 ) AS marketplace_name,
+                SUM(orderVendor.total_price) AS total_sales,
+                SUM(orderVendor.total_price) - SUM(orderVendor.gtc_fees) AS vendor_fee,
+                SUM(orderVendor.gtc_fees) AS gtc_fees
+                FROM
+                        order_vendor as orderVendor
+                    LEFT OUTER JOIN order_item ON orderVendor.order_id = order_item.order_id
+                    LEFT OUTER JOIN product ON order_item.product_id = product.id
 				WHERE
-    				product.vendor_id = :vendor_id and order_items.created_on between :from and :to
+    				product.vendor_id = :vendor_id and order_item.created_on between :from and :to
 				GROUP BY
-    				order_items.product_id
-    			ORDER BY SUM(orders.total_price) DESC
+    				order_item.product_id
+    			ORDER BY SUM(orderVendor.total_price) DESC
 				LIMIT :limit OFFSET :offset`, {
             replacements: {
                 vendor_id: queryObj.vendor_id,
@@ -115,7 +114,7 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
         };
         console.log('pastRange', pastRange);
         console.log('currentRange', currentRange);
-        model['OrderItemsOverview'].findAll({
+        model['OrderItemOverview'].findAll({
             raw: true,
             where: orderItemQueryObj,
             attributes: ['product_name', [sequelize.fn('sum', sequelize.col('final_price')), 'amount']],
@@ -130,17 +129,17 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
                 result.rows = results;
             else
                 result.rows = [];
-            return sumofPrice('OrderItemsOverview', orderItemQueryObj).then(function(total) {
+            return sumofPrice('OrderItemOverview', orderItemQueryObj).then(function(total) {
                 result.total = total;
                 return result;
             });
         }).then(function() {
-            return sumofPrice('OrderItemsOverview', pastRange).then(function(total) {
+            return sumofPrice('OrderItemOverview', pastRange).then(function(total) {
                 result.past_total = total;
                 return result;
             });
         }).then(function() {
-            return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
+            return sumofPrice('OrderItemOverview', currentRange).then(function(total) {
                 result.current_total = total;
                 result.diff_total = result.past_total - result.current_total;
                 console.log(result);
@@ -165,7 +164,7 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
         currentRange.item_created_on = {
             $between: rhsBetween
         };
-        model['OrderItemsOverview'].findAll({
+        model['OrderItemOverview'].findAll({
             raw: true,
             where: orderItemQueryObj,
             attributes: ['marketplace_name', [sequelize.fn('sum', sequelize.col('final_price')), 'amount']],
@@ -180,17 +179,17 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
                 result.rows = results;
             else
                 result.rows = [];
-            return sumofPrice('OrderItemsOverview', orderItemQueryObj).then(function(total) {
+            return sumofPrice('OrderItemOverview', orderItemQueryObj).then(function(total) {
                 result.total = total;
                 return result;
             });
         }).then(function() {
-            return sumofPrice('OrderItemsOverview', pastRange).then(function(total) {
+            return sumofPrice('OrderItemOverview', pastRange).then(function(total) {
                 result.past_total = total;
                 return result;
             });
         }).then(function() {
-            return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
+            return sumofPrice('OrderItemOverview', currentRange).then(function(total) {
                 result.current_total = total;
                 result.diff_total = result.past_total - result.current_total;
                 return resolve(result);
@@ -214,7 +213,7 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
         currentRange.item_created_on = {
             $between: rhsBetween
         };
-        model['OrderItemsOverview'].findAll({
+        model['OrderItemOverview'].findAll({
             raw: true,
             where: orderItemQueryObj,
             attributes: ['category_name', [sequelize.fn('sum', sequelize.col('final_price')), 'amount']],
@@ -229,17 +228,17 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
                 result.rows = results;
             else
                 result.rows = [];
-            return sumofPrice('OrderItemsOverview', orderItemQueryObj).then(function(total) {
+            return sumofPrice('OrderItemOverview', orderItemQueryObj).then(function(total) {
                 result.total = total;
                 return result;
             });
         }).then(function() {
-            return sumofPrice('OrderItemsOverview', pastRange).then(function(total) {
+            return sumofPrice('OrderItemOverview', pastRange).then(function(total) {
                 result.past_total = total;
                 return result;
             });
         }).then(function() {
-            return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
+            return sumofPrice('OrderItemOverview', currentRange).then(function(total) {
                 result.current_total = total;
                 result.diff_total = result.past_total - result.current_total;
                 return resolve(result);
@@ -263,7 +262,7 @@ export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
     };
     return new Promise((resolve, reject) => {
         var result = {};
-        model['OrderItemsOverview'].findAll({
+        model['OrderItemOverview'].findAll({
             raw: true,
             where: pastRange,
             attributes: ['item_created_on', [sequelize.fn('sum', sequelize.col('final_price')), 'amount']],
@@ -273,7 +272,7 @@ export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
             ]
         }).then(function(pastResults) {
             result.past_range = pastResults;
-            return model['OrderItemsOverview'].findAll({
+            return model['OrderItemOverview'].findAll({
                 raw: true,
                 where: currentRange,
                 attributes: ['item_created_on', [sequelize.fn('sum', sequelize.col('final_price')), 'amount']],
@@ -307,11 +306,11 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
         async.series({
                 revenue: function(callback) {
                     var result = {};
-                    return sumofPrice('OrderItemsOverview', pastRange).then(function(total) {
+                    return sumofPrice('OrderItemOverview', pastRange).then(function(total) {
                         result.past_revenue = total;
                         return result;
                     }).then(function() {
-                        return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
+                        return sumofPrice('OrderItemOverview', currentRange).then(function(total) {
                             result.current_revenue = total;
                             result.diff_revenue = result.past_revenue - result.current_revenue;
                             return callback(null, result);
@@ -323,13 +322,15 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
                 },
                 revenue_count: function(callback) {
                     var result = {};
-                    return sumofCount('OrderItemsOverview', pastRange).then(function(total) {
+                    return sumofCount('OrderItemOverview', pastRange).then(function(total) {
                         result.past_count = total;
                         return result;
                     }).then(function() {
-                        return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
+                        return sumofCount('OrderItemOverview', currentRange).then(function(total) {
                             result.current_count = total;
-                            let per = (parseFloat(result.past_count) - parseFloat(result.current_count)) / parseFloat(result.current_count) * 100 || 0;
+                            let per = 0;
+                            if( result.current_count > 0 )
+                                per = (parseFloat(result.past_count) - parseFloat(result.current_count)) / parseFloat(result.current_count) * 100;
                             result.diff_count = per.toString() + '%';
                             return callback(null, result);
                         });
@@ -340,13 +341,13 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
                 },
                 completed_count: function(callback) {
                     var result = {};
-                    pastRange.order_status = orderStatus["CONFIRMEDORDER"];
-                    return sumofCount('OrderItemsOverview', pastRange).then(function(total) {
+                    pastRange.order_item_status = orderItemStatus["DELIVERED"];
+                    return sumofCount('OrderItemOverview', pastRange).then(function(total) {
                         result.past_completed = total;
                         return result;
                     }).then(function() {
-                        currentRange.order_status = orderStatus["CONFIRMEDORDER"];
-                        return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
+                        currentRange.order_item_status = orderItemStatus["DELIVERED"];
+                        return sumofCount('OrderItemOverview', currentRange).then(function(total) {
                             result.current_completed = total;
                             result.diff_completed = result.past_completed - result.current_completed;
                             return callback(null, result);
@@ -358,13 +359,13 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
                 },
                 returns_count: function(callback) {
                     var result = {};
-                    pastRange.order_status = orderStatus["RETURNEDORDER"];
-                    return sumofCount('OrderItemsOverview', pastRange).then(function(total) {
+                    pastRange.order_item_status = orderItemStatus["RETURN_RECIVED"];
+                    return sumofCount('OrderItemOverview', pastRange).then(function(total) {
                         result.past_returned = total;
                         return result;
                     }).then(function() {
-                        currentRange.order_status = orderStatus["RETURNEDORDER"];
-                        return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
+                        currentRange.order_item_status = orderItemStatus["RETURN_RECIVED"];
+                        return sumofCount('OrderItemOverview', currentRange).then(function(total) {
                             result.current_returned = total;
                             result.diff_returned = result.past_returned - result.current_returned;
                             return callback(null, result);
@@ -376,13 +377,13 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
                 },
                 refunds_count: function(callback) {
                     var result = {};
-                    pastRange.order_item_status = orderItemStatus["ORDER_CANCELLED_AND_REFUND_INITIATED"];
-                    return sumofCount('OrderItemsOverview', pastRange).then(function(total) {
+                    pastRange.order_item_status = orderItemStatus["REFUND"];
+                    return sumofCount('OrderItemOverview', pastRange).then(function(total) {
                         result.past_refunds = total;
                         return result;
                     }).then(function() {
-                        currentRange.order_item_status = orderItemStatus["ORDER_CANCELLED_AND_REFUND_INITIATED"];
-                        return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
+                        currentRange.order_item_status = orderItemStatus["REFUND"];
+                        return sumofCount('OrderItemOverview', currentRange).then(function(total) {
                             result.current_refunds = total;
                             result.diff_refunds = result.past_refunds - result.current_refunds;
                             return callback(null, result);
@@ -394,13 +395,17 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
                 },
                 cancelled_count: function(callback) {
                     var result = {};
-                    pastRange.order_status = orderStatus["CANCELLEDORDER"];
-                    return sumofCount('OrderItemsOverview', pastRange).then(function(total) {
+                    pastRange.order_item_status = {
+                        $in: [orderItemStatus["CANCELED"], orderItemStatus["VENDOR_CANCELED"], orderItemStatus["AUTO_CANCELED"]]
+                    };
+                    return sumofCount('OrderItemOverview', pastRange).then(function(total) {
                         result.past_cancelled = total;
                         return result;
                     }).then(function() {
-                        currentRange.order_status = orderStatus["CANCELLEDORDER"];
-                        return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
+                        currentRange.order_item_status = {
+                            $in: [orderItemStatus["CANCELED"], orderItemStatus["VENDOR_CANCELED"], orderItemStatus["AUTO_CANCELED"]]
+                        }
+                        return sumofCount('OrderItemOverview', currentRange).then(function(total) {
                             result.current_cancelled = total;
                             result.diff_cancelled = result.past_cancelled - result.current_cancelled;
                             return callback(null, result);
@@ -412,13 +417,13 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
                 },
                 disputes_count: function(callback) {
                     var result = {};
-                    pastRange.order_status = orderStatus["DISPATCHEDORDER"];
-                    return sumofPrice('OrderItemsOverview', pastRange).then(function(total) {
+                    pastRange.order_item_status = orderItemStatus["SHIPPED"];
+                    return sumofPrice('OrderItemOverview', pastRange).then(function(total) {
                         result.past_disputes = total;
                         return result;
                     }).then(function() {
-                        currentRange.order_status = orderStatus["DISPATCHEDORDER"];
-                        return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
+                        currentRange.order_item_status = orderItemStatus["SHIPPED"];
+                        return sumofPrice('OrderItemOverview', currentRange).then(function(total) {
                             result.current_disputes = total;
                             result.diff_disputes = result.past_disputes - result.current_disputes;
                             return callback(null, result);

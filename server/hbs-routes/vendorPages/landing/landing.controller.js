@@ -71,11 +71,21 @@ export function vendor(req, res) {
 		featuredProducts: function(callback) {
 			queryObj['position'] = 'position_profilepage';
 			queryObj['is_featured_product'] = 1;
-			// queryObj['vendor_id'] = LoggedInUser.Vendor.id
 			limit = 2;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 				.then(function(results) {
+					console.log("================",results)
+					if(results.count == 0){
+						delete queryObj['position'];
+						delete queryObj['is_featured_product'];
+						console.log("--------------queryObj",queryObj)
+							productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+							.then(function(results) {
+								return callback(null, results);
+							});
+					}else{
 					return callback(null, results);
+				}
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -160,7 +170,7 @@ export function vendor(req, res) {
 				'$eq': status["ACTIVE"]
 			}
 
-			model['ProductRatings'].findAll({
+			model['ProductRating'].findAll({
 				where: vendorAvgRating,
 				attributes: [
 					[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']

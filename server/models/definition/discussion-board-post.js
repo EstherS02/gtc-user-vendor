@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'user_id',
             allowNull: false,
             references: {
-                model: 'user',
+                model: 'users',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',

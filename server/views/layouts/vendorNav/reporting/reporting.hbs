@@ -30,7 +30,7 @@
 		var Cfrom = $('#com_from').val();
 		var Cto = $('#com_to').val();
 		var Compare = $('#compare').val();
-		location.href = "/reporting?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
+		location.href = "/store/reports?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
 	}
 
 	$(document).ready(function() {
@@ -435,8 +435,8 @@
 													<div class="card chart_top_performing_height">
 														<div class="card-body chat_top_performing_padding">
 															<p class="top_perf_price">{{currency topProducts.total '$'}}</p>
-															<p class="top_perf_price_gain">+ {{currency topProducts.diff_total '$'}}</p>
-															<p class="top_perf_price_versus">{{currency topProducts.current_total '$'}} vs {{currency topProducts.past_total '$'}}</p>
+															<p class="top_perf_price_gain">{{currency topProducts.diff_total '$'}}</p>
+															<p class="top_perf_price_versus">{{currency topProducts.past_total '$'}} vs {{currency topProducts.current_total '$'}}</p>
 															<p class="top_perf_title">Top Performing Products by total sales</p>
 															{{#ifCond topProducts.rows.length '==' "0"}}
 																<div class="top_perf_product_name" style="text-align:center">
@@ -469,8 +469,8 @@
 													<div class="card chart_top_performing_height">
 														<div class="card-body chat_top_performing_padding">
 															<p class="top_perf_price">{{currency topMarketPlace.total '$'}}</p>
-															<p class="top_perf_price_gain">+ {{currency topMarketPlace.diff_total '$'}}</p>
-															<p class="top_perf_price_versus">{{currency topMarketPlace.current_total '$'}} vs {{currency topMarketPlace.past_total '$'}}</p>
+															<p class="top_perf_price_gain">{{currency topMarketPlace.diff_total '$'}}</p>
+															<p class="top_perf_price_versus">{{currency topMarketPlace.past_total '$'}} vs {{currency topMarketPlace.current_total '$'}}</p>
 															<p class="top_perf_title top_perf_margin_override">Top Performing Marketplaces by total sales</p>
 															<div class="top_perf_marketplace_content row">
 																<ul class="chart top_perf_marketplace_vertical_chart">
@@ -505,12 +505,12 @@
 															<div class="row">
 																<div class="col-md-6 no-padding">
 																	<div class="stat_title">Revenue($)</div>
-																	<div class="stat_price">+ {{currency revenueCounts.revenue.diff_revenue '$'}}</div>
+																	<div class="stat_price">{{currency revenueCounts.revenue.diff_revenue '$'}}</div>
 																	<div class="stat_price_compare">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</div>
 																</div>
 																<div class="col-md-6 no-padding">
 																	<div class="stat_title">Revenue(%)</div>
-																	<div class="stat_price">+ {{revenueCounts.revenue_count.diff_count}}</div>
+																	<div class="stat_price">{{revenueCounts.revenue_count.diff_count}}</div>
 																	<div class="stat_price_compare">{{revenueCounts.revenue_count.current_count}} vs
 																		{{revenueCounts.revenue_count.past_count}}</div>
 																</div>
@@ -520,7 +520,7 @@
 															<div class="row">
 																<div class="col-md-4 stat_padding">
 																	<div class="stat_title">Transactions</div>
-																	<div class="stat_price">+ {{revenueCounts.completed_count.diff_completed}}</div>
+																	<div class="stat_price">{{revenueCounts.completed_count.diff_completed}}</div>
 																	<div class="stat_price_compare">{{revenueCounts.completed_count.current_completed}} vs
 																		{{revenueCounts.completed_count.past_completed}}</div>
 																</div>
@@ -532,7 +532,7 @@
 																</div>
 																<div class="col-md-4 stat_padding">
 																	<div class="stat_title">Disputes</div>
-																	<div class="stat_price">- ${{revenueCounts.disputes_count.diff_disputes}}</div>
+																	<div class="stat_price">${{revenueCounts.disputes_count.diff_disputes}}</div>
 																	<div class="stat_price_compare">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs
 																		{{currency revenueCounts.disputes_count.past_disputes
 															'$'}}</div>

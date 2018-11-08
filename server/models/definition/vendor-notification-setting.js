@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'vendor_notification_id',
             allowNull: false,
             references: {
-                model: 'vendor-notification',
+                model: 'vendor_notification',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -78,9 +78,16 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const VendorNotificationSetting = model.VendorNotificationSetting;
     const Vendor = model.Vendor;
+    const VendorNotification = model.VendorNotification;
 
     VendorNotificationSetting.belongsTo(Vendor, {
         foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    VendorNotificationSetting.belongsTo(VendorNotification, {
+        foreignKey: 'vendor_notification_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

@@ -77,39 +77,12 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const TalkSetting = model.TalkSetting;
-    // const Talk = model.Talk;
     const Vendor = model.Vendor;
-    const User = model.User;
-    const TalkThread = model.TalkThread;
-
-   /* TalkSetting.hasMany(Talk, {
-        foreignKey: 'talk_setting_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
 
     TalkSetting.belongsTo(Vendor, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    /*TalkSetting.belongsToMany(User, {
-        through: Talk,
-        foreignKey: 'talk_setting_id',
-        otherKey: 'from_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-   
-
-    /*TalkSetting.belongsToMany(TalkThread, {
-        through: Talk,
-        foreignKey: 'talk_setting_id',
-        otherKey: 'last_thread_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
 
 };

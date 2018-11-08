@@ -36,7 +36,6 @@ export function wholeSaleProductView(req, res) {
 }
 
 export function wholesale(req, res) {
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var countryModel = "Country";
@@ -175,7 +174,9 @@ export function wholesale(req, res) {
 				});
 		},
 		wholesalers: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			const tempLimit = 6;
 			queryObj['type'] = 'Private Wholesale Marketplace';
 			field = 'sales_count';
@@ -190,7 +191,7 @@ export function wholesale(req, res) {
 					}
 					async.mapSeries(result.rows, function(aVendor, cb) {
 						vendorAvgRating['vendor_id'] = aVendor.id;
-						model['ProductRatings'].findOne({
+						model['ProductRating'].findOne({
 							where: vendorAvgRating,
 							attributes: [
 								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
@@ -212,7 +213,7 @@ export function wholesale(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		},
 	}, function(err, results) {
 		if (!err) {

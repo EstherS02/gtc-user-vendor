@@ -203,12 +203,12 @@
 														<td scope="row"><input type="checkbox" class="checkbox" name="selected" value={{this.id}}></td>
 														<td scope="row">
 															<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">
-															<img src="{{this.product_base_image}}" onError="imgError(this)" style="width: 30px;" />
+															<img src="{{this.ProductMedia.[0].url}}" onError="imgError(this)" style="width: 30px;" />
 															{{this.product_name}}</a>
 														</td>
 														<td scope="row">{{formatTime this.publish_date "MMM DD, YYYY"}}</td>
-														<td scope="row">{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}</td>
-														<td>{{currency this.product_price '$'}} CAD</td>
+														<td scope="row">{{#if this.sales_count}}{{this.sales_count}}{{else}}0{{/if}}</td>
+														<td>{{currency this.price '$'}} CAD</td>
 														<td class={{#ifCond this.status '==' ../statusCode.ACTIVE}} "text_green_color"
 																	{{else ifCond this.status '==' ../statusCode.INACTIVE}} "text_red_color"
 																	{{else ifCond this.status '==' ../statusCode.SUSPENDED}} "text_orange_color"
@@ -220,7 +220,7 @@
 															{{else ifCond this.status '==' ../statusCode.SOLDOUT}}Sold Out
 															{{/ifCond}} 
 														</td>
-														<td class="text_blue_color">{{this.stock_keep_unit}}</td>
+														<td class="text_blue_color">{{this.sku}}</td>
 													</tr>
 													{{/each}}
 													{{else}}

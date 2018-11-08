@@ -1,5 +1,5 @@
 'use strict';
-// import Handlebars from 'handlebars';
+
 const async = require('async');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
@@ -8,11 +8,13 @@ const Handlebars = require('handlebars');
 const populate = require('../../utilities/populate');
 const status = require('../../config/status');
 const orderStatus = require('../../config/order_status');
+const orderStatusNew = require("../../config/order-item-new-status");
 const paymentMethod = require('../../config/payment-method');
 const marketPlaceCode = require('../../config/marketplace');
 const _ = require('lodash');
 const moment = require('moment');
 const ORDER_ITEM_STATUS = require('../../config/order-item-status');
+const ORDER_ITEM_NEW_STATUS = require('../../config/order-item-new-status');
 const ORDER_PAYMENT_TYPE = require('../../config/order-payment-type');
 const uuidv1 = require('uuid/v1');
 const sendEmail = require('../../agenda/send-email');
@@ -26,196 +28,182 @@ const stripe = require('../../payment/stripe.payment');
 
 const CURRENCY = 'usd';
 
-export function makePayment(req, res) {
-	res.clearCookie('applied_coupon');
-	let user = req.user;
-	let paymentSettingId = req.body.paymentSettingId;
+export async function makePayment(req, res) {
+	var vendorArray = [];
+	var cartItems = [];
+	var cartEmptyPromises = [];
+	var orderItemsPromises = [];
+	var orderVendorPromises = [];
+	var productQuantityPromises = [];
+	const cartModelName = "Cart";
+	const productModelName = "Product";
+	const paymentModelName = "Payment";
+	const orderModelName = "Order";
+	const orderVendorModelName = "OrderVendor";
+	const orderItemModelName = "OrderItem";
+	const paymentSettingModelName = "PaymentSetting";
+	const agenda = require('../../app').get('agenda');
 
-	var checkoutObj;
+	req.checkBody('payment_setting_id', 'Missing Query Param').notEmpty();
+	req.checkBody('selected_billing_address_id', 'Missing Query Param').notEmpty();
+	req.checkBody('selected_shipping_address_id', 'Missing Query Param').notEmpty();
 
-	var paymentSetting;
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
 
-	var createdOrders;
+	try {
+		const paymentSetting = await service.findOneRow(paymentSettingModelName, {
+			id: req.body.payment_setting_id,
+			user_id: req.user.id
+		});
 
-	var orderIdStore = [];
+		if (paymentSetting) {
+			const cartResult = await cartService.cartCalculation(req.user.id, req, res);
 
-	processCheckout(req)
-		.then(checkoutObjResult => {
-			checkoutObj = checkoutObjResult;
-			return service.findOneRow('PaymentSetting', {
-				id: paymentSettingId,
-				user_id: user.id
-			}, []);
-		}).then(paymentSettingResult => {
-			paymentSetting = paymentSettingResult;
-
-			var ordersByVendor = checkoutObj.ordersByVendor;
-			var orderPromises = [];
-
-			_.forOwn(ordersByVendor, function(order, vendorId) {
-				orderPromises.push(createOrder(order));
-			});
-
-			return Promise.all(orderPromises);
-
-		}).then(ordersWithItems => {
-			createdOrders = ordersWithItems;
-			var orderIds = [];
-			for (var i = 0; i < ordersWithItems.length; i++) {
-				orderIds.push(ordersWithItems[i].order.id);
+			for (var marketplace in cartResult.marketplace_products) {
+				if (cartResult.marketplace_products.hasOwnProperty(marketplace)) {
+					cartItems = await cartItems.concat(cartResult.marketplace_products[marketplace].products);
+				}
 			}
-			console.log("stripe calling");
-			let card_details = JSON.parse(paymentSetting.card_details);
-			var desc = "GTC ORDER";
+
 			var metadata = {};
-			metadata.orders = JSON.stringify(orderIds);
-			console.log("metadata", metadata);
-			let amt = checkoutObj.grand_total;
-			return stripe.chargeCustomerCard(user.stripe_customer_id, card_details.id, amt, desc, CURRENCY, metadata);
-		}).then(charge => {
-			console.log("charge", charge);
-			var paymentModel = {
+			var description = "GTC ORDER";
+			let amount = cartResult.grand_total_with_discounted_amount;
+			let cardDetails = JSON.parse(paymentSetting.card_details);
+
+			const charge = await stripe.chargeCustomerCard(req.user.stripe_customer_id, cardDetails.id, amount, description, config.order.currency, metadata);
+			const newPayment = await service.createRow(paymentModelName, {
 				date: new Date(charge.created),
 				amount: charge.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
-				payment_response: JSON.stringify(charge)
-			};
-			return service.createRow('Payment', paymentModel);
-		}).then(paymentRow => {
-			let orderPayments = [];
-			for (let i = 0; i < createdOrders.length; i++) {
-				var orderPaymentObj = {
-					order_id: createdOrders[i].order.id,
-					payment_id: paymentRow.id,
-					order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT'],
-					status: status['ACTIVE'],
-					created_on: new Date(),
-					created_by: req.user.first_name
-				}
-				orderPayments.push(service.createRow('OrderPayment', orderPaymentObj));
-			}
-			return Promise.all(orderPayments);
-		}).then(orderPaymentRows => {
-			let statusPromises = [];
-			for (var i = 0; i < createdOrders.length; i++) {
-				createdOrders[i].order.order_status = orderStatus['NEWORDER'];
-				// createdOrders[i].order.gtc_fees = 1.00;
-				orderIdStore.push(createdOrders[i].order.id);
-				statusPromises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
-			}
-			return Promise.all(statusPromises);
-		}).then(orderUpdatedRows => {
-			let quantityPromises = [];
-			for (var i = 0; i < createdOrders.length; i++) {
+				payment_response: JSON.stringify(charge),
+				created_by: req.user.first_name,
+				created_on: new Date()
+			});
 
-				for (var j = 0; j < createdOrders[i].items.length; j++) {
-					quantityPromises.push(updateQuantity(createdOrders[i].items[j].product_id, createdOrders[i].items[j].quantity));
-				}
-			}
-			return Promise.all(quantityPromises);
-		}).then(productQuantityUpdatedRow => {
-			let subscribePromises = [];
-			for (var i = 0; i < createdOrders.length; i++) {
+			const newOrder = await service.createRow(orderModelName, {
+				user_id: req.user.id,
+				invoice_id: uuidv1(),
+				purchase_order_id: "PO-" + uuidv1(),
+				po_number: null,
+				total_order_items: cartResult.total_items,
+				total_price: newPayment.amount,
+				ordered_date: new Date(),
+				payment_id: newPayment.id,
+				shipping_id: null,
+				shipping_address_id: req.body.selected_shipping_address_id,
+				billing_address_id: req.body.selected_billing_address_id,
+				status: status['ACTIVE'],
+				created_by: req.user.first_name,
+				created_on: new Date()
+			});
 
-				for (var j = 0; j < createdOrders[i].items.length; j++) {
-					subscribePromises.push(updateSubscription(createdOrders[i].order, createdOrders[i].items[j]));
+			for (let cartItem of cartItems) {
+				var newProductItem = {};
+
+				newProductItem['order_id'] = newOrder.id;
+				newProductItem['product_id'] = cartItem.product_id;
+				newProductItem['quantity'] = cartItem.quantity;
+				newProductItem['price'] = cartItem.total_price;
+				newProductItem['shipping_cost'] = 0;
+				newProductItem['gtc_fees'] = (cartItem.total_price / 100 * config.order.gtc_fees).toFixed(2);
+
+				if (cartItem.Product.marketplace_id == marketPlaceCode['SERVICE']) {
+					newProductItem['plan_fees'] = (cartItem.total_price / 100 * config.order.service_fee).toFixed(2);
+				} else if (cartItem.Product.marketplace_id == marketPlaceCode['LIFESTYLE']) {
+					newProductItem['plan_fees'] = (cartItem.total_price / 100 * config.order.lifestyle_fee).toFixed(2);
+				} else {
+					newProductItem['plan_fees'] = 0;
 				}
-			}
-			return Promise.all(subscribePromises);
-		})
-		.then(subscriptionRow => {
-			let clearCart = [];
-			let allCartItems = checkoutObj.cartItems.rows;
-			for (let j = 0; j < allCartItems.length; j++) {
-				clearCart.push(allCartItems[j].id)
-			}
-			if (req.user.user_contact_email) {
-				sendOrderMail(orderIdStore, req);
-			}
-			service.destroyManyRow('Cart', clearCart).then(clearedCartRow => {
-				if (!(_.isNull(clearedCartRow))) {
-					return res.status(200).send({
-						createdOrders: createdOrders
+
+				newProductItem['is_coupon_applied'] = cartItem.is_coupon_applied ? 1 : 0;
+				if (newProductItem['is_coupon_applied']) {
+					newProductItem['coupon_id'] = cartResult.coupon_id;
+					newProductItem['coupon_amount'] = parseFloat(cartResult.discount_amount);
+				} else {
+					newProductItem['coupon_amount'] = 0;
+				}
+				newProductItem['is_on_sale_item'] = 0;
+				newProductItem['final_price'] = (parseFloat(newProductItem['price']) - (parseFloat(newProductItem['gtc_fees']) + parseFloat(newProductItem['plan_fees']) + parseFloat(newProductItem['coupon_amount'])));
+				newProductItem['is_on_sale_item'] = cartItem.Product.is_exclusive_sale ? 1 : 0;
+				if (newProductItem['is_on_sale_item']) {
+					newProductItem['discount_amount'] = cartItem.Product.discount;
+				}
+				newProductItem['order_item_status'] = orderStatusNew['ORDER_INITIATED'];
+				newProductItem['status'] = status['ACTIVE'];
+				newProductItem['created_by'] = req.user.first_name;
+				newProductItem['created_on'] = new Date();
+
+				orderItemsPromises.push(service.createRow(orderItemModelName, newProductItem));
+
+				const index = await vendorArray.findIndex((obj) => obj.vendor_id == cartItem.Product.vendor_id);
+				if (index > -1) {
+					vendorArray[index].total_price += parseFloat(newProductItem['price']);
+					vendorArray[index].shipping_cost += parseFloat(newProductItem['shipping_cost']);
+					vendorArray[index].gtc_fees += parseFloat(newProductItem['gtc_fees']);
+					vendorArray[index].plan_fees += parseFloat(newProductItem['plan_fees']);
+					vendorArray[index].coupon_amount += parseFloat(newProductItem['coupon_amount']);
+					vendorArray[index].final_price += parseFloat(newProductItem['final_price']);
+				} else {
+					vendorArray.push({
+						order_id: newOrder.id,
+						vendor_id: cartItem.Product.vendor_id,
+						total_price: parseFloat(newProductItem['price']),
+						shipping_cost: parseFloat(newProductItem['shipping_cost']),
+						gtc_fees: parseFloat(newProductItem['gtc_fees']),
+						gtc_fees_percent: config.order.gtc_fees,
+						plan_fees: parseFloat(newProductItem['plan_fees']),
+						plan_fees_percent: config.order.service_fee,
+						coupon_amount: parseFloat(newProductItem['coupon_amount']),
+						final_price: parseFloat(newProductItem['final_price']),
+						status: status['ACTIVE'],
+						created_by: req.user.first_name,
+						created_on: new Date()
 					});
-				} else return res.status(500).send(err);
-			});
-		}).catch(err => {
-			console.log("err3", err);
-			if (createdOrders && createdOrders.length > 0) {
-				var promises = [];
-				for (var i = 0; i < createdOrders.length; i++) {
-					createdOrders[i].order.order_status = orderStatus['FAILEDORDER'];
-					createdOrders[i].order.last_updated_on = new Date();
-					// createdOrders[i].order.gtc_fees = 1.00;
-					promises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
 				}
-				Promise.all(promises).then(result => {
-					return res.status(500).send(err);
-				}).catch(error => {
-					return res.status(500).send(err);
-				});
-			} else {
-				return res.status(500).send(err);
-			}
-		});
-}
 
-function createOrder(orderWithItems) {
-	var orderItems = JSON.parse(JSON.stringify(orderWithItems.items));
-	delete orderWithItems.items;
-	var order = orderWithItems;
-	return service.createRow('Order', order).then(orderResult => {
-		order.id = orderResult.id;
-		console.log("order.id", order.id);
-		var orderItemsPromises = [];
-		for (var i = 0; i < orderItems.length; i++) {
-			orderItems[i].order_id = orderResult.id;
-			orderItems[i].order_item_status = 0;
-			orderItems[i].created_on = new Date();
-			orderItemsPromises.push(createOrderItem(orderItems[i]));
-		}
-		return Promise.all(orderItemsPromises).then(itemsResults => {
-			return Promise.resolve({
-				order: orderResult,
-				items: itemsResults
+				productQuantityPromises.push(model[productModelName].decrement({
+					'quantity_available': cartItem.quantity
+				}, {
+					where: {
+						id: cartItem.product_id
+					}
+				}));
+
+				cartEmptyPromises.push(service.updateRecordNew(cartModelName, {
+					status: status['DELETED'],
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				}, {
+					id: cartItem.id
+				}));
+			}
+			await Promise.all(orderItemsPromises);
+			await Promise.all(productQuantityPromises);
+			await Promise.all(cartEmptyPromises);
+			await Promise.all(vendorArray.map(async (vendorOrder) => {
+				orderVendorPromises.push(service.createRow(orderVendorModelName, vendorOrder));
+			}));
+			agenda.now(config.jobs.orderEmail, {
+				order: newOrder.id
 			});
-		}).catch(err => {
-			return Promise.reject(err);
-		});
-	}).catch(err => {
-		return Promise.reject(err);
-	});
+			return res.status(200).send({
+				order: newOrder.id
+			});
+		} else {
+			return res.status(404).send("Payment card details not found");
+		}
+	} catch (error) {
+		console.log("makePayment Error:::", error);
+		return res.status(500).send(error);
+	}
 }
 
-function createOrderItem(orderItem) {
-	return service.createRow('OrderItem', orderItem);
-}
-
-function updateQuantity(productId, placedQuantity) {
-	return service.findIdRow('Product', productId)
-		.then(product => {
-			let quantityUpdate = {};
-			let currentQuantity = product.quantity_available - placedQuantity;
-
-			quantityUpdate.quantity_available = currentQuantity;
-
-			if (currentQuantity == 0) {
-				quantityUpdate.status = status['SOLDOUT'];
-			}
-
-			return service.updateRow('Product', quantityUpdate, productId)
-				.then(upadtedRow => {
-					return Promise.resolve(upadtedRow);
-				}).catch(err => {
-					return Promise.reject(err);
-				})
-		}).catch(err => {
-			return Promise.reject(err);
-		})
-}
-
-function updateSubscription(order, item) {
+/*function updateSubscription(order, item) {
 
 	var subscriptionBodyParam = {
 		user_id: order.user_id,
@@ -254,114 +242,7 @@ function updateSubscription(order, item) {
 		}).catch(err => {
 			return Promise.reject(err);
 		})
-}
-
-function processCheckout(req) {
-	return new Promise((resolve, reject) => {
-		var products = [];
-		cartService.cartCalculation(req.user.id, req)
-			.then((cartResult) => {
-				_.forOwn(cartResult['marketplace_products'], function(element) {
-
-					_.forOwn(element.products, function(newElement) {
-						products.push(newElement);
-					})
-
-				});
-
-				var seperatedItemsByVendor = _.groupBy(products, "Product.Vendor.id");
-				var totalPriceByVendor = {};
-				var ordersByVendor = {};
-				var checkoutObj = {};
-				totalPriceByVendor['grandTotal'] = 0;
-				var user_id = req.user.id
-				_.forOwn(seperatedItemsByVendor, function(itemsValue, vendorId) {
-					ordersByVendor[vendorId] = {};
-
-					totalPriceByVendor[vendorId] = {};
-					totalPriceByVendor[vendorId]['price'] = 0;
-					totalPriceByVendor[vendorId]['shipping'] = 0;
-					totalPriceByVendor[vendorId]['total'] = 0;
-					var gtc_fees = 0;
-					var plan_fees = 0;
-					var vendor_pay = 0;
-
-					for (var i = 0; i < itemsValue.length; i++) {
-
-						if ((vendorId == itemsValue[i].Product.Vendor.id)) {
-
-							var order = ordersByVendor[vendorId];
-							if (Object.keys(order).length == 0) {
-								// create order
-								order['user_id'] = user_id;
-								order['ordered_date'] = new Date();
-								order['order_status'] = orderStatus['NEWORDER'];
-								order['status'] = status['ACTIVE'];
-								order['invoice_id'] = uuidv1();
-								order['purchase_order_id'] = 'PO-' + uuidv1();
-								order['created_by'] = req.user.first_name;
-								order['created_on'] = new Date();
-								order['billing_address_id'] = req.body.selected_billing_address_id;
-								order['shipping_address_id'] = req.body.selected_shipping_address_id;
-
-								order['items'] = [];
-							}
-							// var calulatedSum = 0;//(itemsValue[i].quantity * itemsValue[i].Product.price);
-
-							var calulatedShippingSum = 0; //(itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
-
-
-							if (parseFloat(itemsValue[i].Product.product_discounted_price)) {
-								var calulatedSum = (parseFloat(itemsValue[i].Product.product_discounted_price) * parseFloat(itemsValue[i].quantity)).toFixed(2);
-								totalPriceByVendor[vendorId]['total'] = (parseFloat(itemsValue[i].Product.product_discounted_price) + totalPriceByVendor[vendorId]['shipping']).toFixed(2);
-
-							} else {
-								var calulatedSum = itemsValue[i].Product.price * itemsValue[i].quantity;
-							}
-							totalPriceByVendor[vendorId]['price'] = parseFloat(parseFloat(totalPriceByVendor[vendorId]['price']) + parseFloat(calulatedSum)).toFixed(2);
-							totalPriceByVendor[vendorId]['total'] = totalPriceByVendor[vendorId]['price'] + totalPriceByVendor[vendorId]['shipping'];
-							// totalPriceByVendor[vendorId]['shipping'] = totalPriceByVendor[vendorId]['shipping'] + calulatedShippingSum;
-
-							gtc_fees = parseFloat(gtc_fees) + (parseFloat(totalPriceByVendor[vendorId]['price']) * config.fee.gtc_fees);
-							if ((itemsValue[i].Product.marketplace_id == marketPlaceCode.LIFESTYLE) || (itemsValue[i].Product.marketplace_id == marketPlaceCode.SERVICE)) {
-								plan_fees = parseFloat(plan_fees) + (parseFloat(totalPriceByVendor[vendorId]['price']) * config.fee.plan_fees);
-							}
-							vendor_pay = (parseFloat(totalPriceByVendor[vendorId]['price']) - parseFloat(gtc_fees) - parseFloat(plan_fees));
-
-							var final_price = parseFloat(totalPriceByVendor[vendorId]['price'] + calulatedShippingSum).toFixed(2);
-							var orderItem = {
-								product_id: itemsValue[i].Product.id,
-								quantity: itemsValue[i].quantity,
-								subtotal: totalPriceByVendor[vendorId]['price'], //calulatedSum,
-								shipping_total: calulatedShippingSum,
-								final_price: final_price,
-								status: status['ACTIVE']
-							};
-
-							order['total_price'] = parseFloat(totalPriceByVendor[vendorId]['total']);
-							order['items'].push(orderItem);
-							order['gtc_fees'] = gtc_fees;
-							order['plan_fees'] = plan_fees;
-							order['vendor_pay'] = parseFloat(vendor_pay);
-						}
-
-					}
-					totalPriceByVendor['grandTotal'] = parseFloat(parseFloat(totalPriceByVendor['grandTotal']) + parseFloat(totalPriceByVendor[vendorId]['total'])).toFixed(2);
-
-				});
-				cartResult.ordersByVendor = ordersByVendor;
-				cartResult.totalPriceByVendor = totalPriceByVendor;
-				cartResult.cartItems = [];
-				cartResult.cartItems.rows = products;
-				cartResult.cartItems.count = products.length;
-				return resolve(cartResult);
-
-			}).catch(function(error) {
-				console.log('Error:::', error);
-				return reject(error);
-			});
-	});
-}
+}*/
 
 export function createCard(req, res) {
 	let user = req.user;
@@ -371,31 +252,26 @@ export function createCard(req, res) {
 			.then(customer => {
 				user.stripe_customer_id = customer.id;
 				let card = customer.sources.data[0];
-				//console.log(card);
 				return savePaymentSetting(user, card, req.body.isPrimary);
 			}).then(paymentSettingRes => {
-				//console.log(paymentSetting);
 				paymentSetting = paymentSettingRes;
 				return service.updateRow('User', user, user.id);
 			}).then(result => {
-				//console.log(result);
 				return res.status(200).send(paymentSetting);
-			}).catch(err => {
-				console.log(err);
-				return res.status(500).send(err);
+			}).catch((error) => {
+				console.log("createCustomer Error:::", error);
+				return res.status(500).send(error);
 			});
 	} else {
 		stripe.addCard(user.stripe_customer_id, req.body.token.id, req.body.isPrimary)
 			.then(card => {
-				//console.log("card", card);
 				return savePaymentSetting(user, card, req.body.isPrimary);
 			}).then(result => {
-				//console.log("result", result);
 				paymentSetting = result;
 				return res.status(200).send(paymentSetting);
-			}).catch(err => {
-				console.log("err", err);
-				return res.status(500).send(err);
+			}).catch((error) => {
+				console.log("addCard Error:::", error);
+				return res.status(500).send(error);
 			});
 	}
 }
@@ -410,7 +286,6 @@ function savePaymentSetting(user, card, isPrimary) {
 		isPrimary: isPrimary,
 		card_details: JSON.stringify(card)
 	};
-
 	return service.createRow('PaymentSetting', paymentSetting);
 }
 
@@ -421,93 +296,209 @@ function resMessage(message, messageDetails) {
 	};
 }
 
-export function cancelOrder(req, res) {
-	if (!req.body)
-		return res.status(400).send(resMessage("BAD_REQUEST", "Missing one or more required Parameters"));
-	if (!req.body.reason_for_cancellation)
-		return res.status(400).send(resMessage("BAD_REQUEST", "No Reason for cancellation"));
+export async function cancelOrderItem(req, res) {
+	req.checkBody('item_id', 'Missing Query Param').notEmpty();
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
 
-	let orderItem, paymentObj, refundObj;
+	let itemId = parseInt(req.body.item_id);
 
-	processCancelOrder(req)
-		.then(orderItemObj => {
-			orderItem = orderItemObj;
-			let includeArray = [];
-			includeArray = populate.populateData("Payment");
-			let orderPaymentQueryObj = {
-				order_id: orderItemObj.order_id,
-				order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT']
-			}
-			return service.findRow('OrderPayment', orderPaymentQueryObj, includeArray);
-		}).then(paymentRow => {
-			paymentObj = JSON.parse(JSON.stringify(paymentRow));
-			let chargedPaymentRes = JSON.parse(paymentObj.Payment.payment_response);
-			let refundAmt = parseInt(orderItem.final_price);
-			return stripe.refundCustomerCard(chargedPaymentRes.id, refundAmt);
-		}).then(refundRow => {
-			refundObj = refundRow;
-			let paymentModel = {
-				date: new Date(refundRow.created),
-				amount: refundRow.amount / 100.0,
-				payment_method: paymentMethod['STRIPE'],
-				status: status['ACTIVE'],
-				payment_response: JSON.stringify(refundRow),
-				created_by: req.user.first_name,
-				created_on: new Date()
-			};
-			return service.createRow('Payment', paymentModel);
-		}).then(createdPaymentRow => {
-			let orderPaymentModel = {
-				order_id: orderItem.order_id,
-				payment_id: createdPaymentRow.id,
-				order_payment_type: ORDER_PAYMENT_TYPE['REFUND'],
-				status: status['ACTIVE'],
-				created_by: req.user.first_name,
-				created_on: new Date()
-			}
-			return service.createRow('OrderPayment', orderPaymentModel);
-		}).then(createdOrderPaymentRow => {
-			let updateOrderItem = {
-				reason_for_cancellation: req.body.reason_for_cancellation,
-				cancelled_on: new Date(),
-				order_item_status: ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED'],
-				last_updated_by: req.user.first_name,
-				last_updated_on: new Date()
-			}
-			return service.updateRow('OrderItem', updateOrderItem, orderItem.id);
-		}).then(updatestatusRow => {
-			let includeArr = [];
-			refundObj = {
-				order_id: orderItem.order_id,
-				order_item_status: {
-					$ne: ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED']
-				},
-			};
-			var field = 'created_on';
-			var order = "asc";
-			return service.findAllRows('OrderItem', includeArr, refundObj, 0, null, field, order);
-		}).then(successPromise => {
-			if (successPromise.count == "0") {
-				let OrderItemRefund = {
-					reason_for_cancellation: req.body.reason_for_cancellation,
+	let includeArray = [];
+	let orderItemStatus;
+	includeArray = populate.populateData("Product");
+	let orderItemObj = {
+		id: itemId
+	};
+
+	if (req.user.Vendor)
+		orderItemStatus = ORDER_ITEM_NEW_STATUS['VENDOR_CANCELED'];
+	else
+		orderItemStatus = ORDER_ITEM_NEW_STATUS['CANCELED'];
+
+	try {
+		const itemObj = await service.findRow('OrderItem', orderItemObj, includeArray);
+		if (itemObj) {
+			if ((itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['ORDER_INITIATED']) || 
+				(itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['CONFIRMED'])) {
+				let updateOrderItem = {
+					order_item_status: orderItemStatus,
 					cancelled_on: new Date(),
-					order_status: orderStatus['CANCELLEDORDER'],
+					reason_for_cancel: req.body.reason_for_cancel,
 					last_updated_by: req.user.first_name,
 					last_updated_on: new Date()
 				};
-				refundObj = {
-					id: orderItem.order_id
-				};
-				service.updateRecord('Order', OrderItemRefund, refundObj);
-				return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+				const updatestatusRow = await service.updateRow('OrderItem', updateOrderItem, itemId);
+				if (updatestatusRow) {
+					let queryOrderVendor = {
+						order_id: itemObj.order_id,
+						vendor_id: itemObj.Product.vendor_id
+					};
 
+					const orderVendorObj = await service.findRow('OrderVendor', queryOrderVendor, []);
+
+					if (orderVendorObj) {
+						let orderVendorUpdateObj = {
+							total_price: (parseFloat(orderVendorObj.total_price) - parseFloat(itemObj.price)).toFixed(2),
+							shipping_cost: (parseFloat(orderVendorObj.shipping_cost) - parseFloat(itemObj.shipping_cost)).toFixed(2),
+							gtc_fees: (parseFloat(orderVendorObj.gtc_fees) - parseFloat(itemObj.gtc_fees)).toFixed(2),
+							plan_fees: (parseFloat(orderVendorObj.plan_fees) - parseFloat(itemObj.plan_fees)).toFixed(2),
+							final_price: (parseFloat(orderVendorObj.final_price) - parseFloat(itemObj.final_price)).toFixed(2),
+							coupon_amount: (parseFloat(orderVendorObj.coupon_amount) - parseFloat(itemObj.coupon_amount)).toFixed(2),
+							last_updated_by: req.user.first_name,
+							last_updated_on: new Date()
+						};
+
+						const updateStatus = await service.updateRow('OrderVendor', orderVendorUpdateObj, orderVendorObj.id);
+						if (updateStatus) {
+							return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+						} else {
+							return res.status(400).send("Order vendor update failed.");
+						}
+					} else {
+						return res.status(404).send("Order vendor not found.");
+					}
+				} else {
+					return res.status(400).send("Orderitem update failed.");
+				}
 			} else {
-				return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+				return res.status(400).send("Orderitem out for shipping.");
 			}
-		}).catch(error => {
-			console.log("Error", error)
-			return res.status(500).send(error);
-		});
+		} else {
+			return res.status(404).send("Orderitem not found.");
+		}
+	} catch (error) {
+		console.log('cancel Item Error:::', error);
+		return res.status(500).send(error);
+	}
+}
+
+export async function returnOrderItem(req, res) {
+	req.checkBody('return_item_id', 'Missing Query Param').notEmpty();
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+	let itemId = parseInt(req.body.return_item_id);
+
+	let includeArray = [];
+	includeArray = populate.populateData("Product");
+	let orderItemObj = {
+		id: itemId
+	};
+	try {
+		const itemObj = await service.findRow('OrderItem', orderItemObj, includeArray);
+		if (itemObj) {
+			if ((itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['DELIVERED']) && checkingDays(itemObj.delivered_on)) {
+				let updateOrderItem = {
+					order_item_status: ORDER_ITEM_NEW_STATUS['REQUEST_FOR_RETURN'],
+					request_for_return_on: new Date(),
+					reason_for_return: req.body.reason_for_return,
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				};
+				const updatestatusRow = await service.updateRow('OrderItem', updateOrderItem, itemId);
+				if (updatestatusRow) {
+					let queryOrderVendor = {
+						order_id: itemObj.order_id,
+						vendor_id: itemObj.Product.vendor_id
+					};
+
+					const orderVendorObj = await service.findRow('OrderVendor', queryOrderVendor, []);
+
+					if (orderVendorObj) {
+						let orderVendorUpdateObj = {
+							total_price: (parseFloat(orderVendorObj.total_price) - parseFloat(itemObj.price)).toFixed(2),
+							shipping_cost: (parseFloat(orderVendorObj.shipping_cost) - parseFloat(itemObj.shipping_cost)).toFixed(2),
+							gtc_fees: (parseFloat(orderVendorObj.gtc_fees) - parseFloat(itemObj.gtc_fees)).toFixed(2),
+							plan_fees: (parseFloat(orderVendorObj.plan_fees) - parseFloat(itemObj.plan_fees)).toFixed(2),
+							final_price: (parseFloat(orderVendorObj.final_price) - parseFloat(itemObj.final_price)).toFixed(2),
+							coupon_amount: (parseFloat(orderVendorObj.coupon_amount) - parseFloat(itemObj.coupon_amount)).toFixed(2),
+							last_updated_by: req.user.first_name,
+							last_updated_on: new Date()
+						};
+
+						const updateStatus = await service.updateRow('OrderVendor', orderVendorUpdateObj, orderVendorObj.id);
+						if (updateStatus) {
+							return res.status(200).send(resMessage("SUCCESS", "Order Return Initiated. Credited to bank account to 5 to 7 bussiness days"));
+						} else {
+							return res.status(400).send("Order vendor update failed.");
+						}
+					} else {
+						return res.status(404).send("Order vendor not found.");
+					}
+
+				} else {
+					return res.status(400).send("Orderitem update failed.");
+				}
+			} else {
+				return res.status(400).send("Orderitem return days excedded.");
+			}
+		} else {
+			return res.status(404).send("Orderitem not found.");
+		}
+	} catch(error) {
+		console.log('Return item Error:::', error);
+		return res.status(500).send(error);
+	}
+}
+
+function checkingDays(date) {
+	const deliveredDate = new Date(date);
+	const currentDate = new Date();
+	deliveredDate.setDate(deliveredDate.getDate() + parseInt(config.returnItemDays));
+	if (deliveredDate >= currentDate) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+export async function confirmOrderItem(req, res) {
+	req.checkBody('item_id', 'Missing Query Param').notEmpty();
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+	let itemId = parseInt(req.body.item_id);
+
+	let includeArray = [];
+	let orderItemObj = {
+		id: itemId
+	};
+
+	try {
+		const itemObj = await service.findRow('OrderItem', orderItemObj, includeArray);
+		if (itemObj) {
+			if (itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['ORDER_INITIATED']) {
+				let updateOrderItem = {
+					order_item_status: ORDER_ITEM_NEW_STATUS['CONFIRMED'],
+					item_confirmed_on: new Date(),
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				};
+				const updatestatusRow = await service.updateRow('OrderItem', updateOrderItem, itemId);
+				if (updatestatusRow) {
+					return res.status(200).send(resMessage("SUCCESS", "Order item confirmed successfully"));
+				} else {
+					return res.status(400).send("Orderitem update failed.");
+				}
+			} else {
+				return res.status(400).send("Orderitem is already forword.");
+			}
+		} else {
+			return res.status(404).send("Orderitem not found.");
+		}
+	} catch(error) {
+		console.log('confirm order Error:::', error);
+		return res.status(500).send(error);
+	}
 }
 
 function processCancelOrder(req) {
@@ -606,7 +597,7 @@ export function sendOrderMail(orderIdStore, req) { // export function sendOrderM
 							var body;
 							var total = 0;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
-							body = body.replace(/%Path%/g,'https://gtc.ibcpods.com');// req.protocol + '://' + req.get('host'));
+							body = body.replace(/%Path%/g, 'https://gtc.ibcpods.com'); // req.protocol + '://' + req.get('host'));
 							body = body.replace(/%currency%/g, '$');
 							body = body.replace('%UserName%', user.first_name)
 							_.forOwn(OrderList.rows, function(orders) {
@@ -643,12 +634,12 @@ export function sendOrderMail(orderIdStore, req) { // export function sendOrderM
 			}
 			return;
 		}
-
 	}).catch(function(error) {
 		console.log('Error :::', error);
 		return;
 	});
 }
+
 export function vendorMail(OrderList, user) {
 	var orderNew = [];
 	var notification = [];
@@ -728,15 +719,15 @@ function usernotification(order, user) {
 	var queryObjNotification = {};
 	var NotificationTemplateModel = 'NotificationSetting';
 	queryObjNotification['code'] = config.notification.templates.orderDetail;
-	var orderEle='';
+	var orderEle = '';
 	service.findOneRow(NotificationTemplateModel, queryObjNotification)
 		.then(function(response) {
 			var bodyParams = {};
 			_.forOwn(order.rows, function(orders) {
-				if(orderEle.length>0){
-				orderEle = `, <a href="https://gtc.ibcpods.com/order-history/"`+orders.id+`>#`+orders.id+`</a>`;	
+				if (orderEle.length > 0) {
+					orderEle = `, <a href="https://gtc.ibcpods.com/order-history/"` + orders.id + `>#` + orders.id + `</a>`;
 				}
-				orderEle = `<a href="https://gtc.ibcpods.com/order-history/"`+orders.id+`>#`+orders.id+`</a>`;
+				orderEle = `<a href="https://gtc.ibcpods.com/order-history/"` + orders.id + `>#` + orders.id + `</a>`;
 			});
 			bodyParams.user_id = user.id;
 			bodyParams.description = response.description
@@ -759,7 +750,10 @@ function usernotification(order, user) {
 
 export function makePlanPayment(req, res) {
 	var upgradingPlan, desc, convertMoment, start_date, end_date, vendorId;
-	var paymentBodyParam = {}, vendorPlanBodyParam = {}, userPlanBodyParam = {},refundObj={};
+	var paymentBodyParam = {},
+		vendorPlanBodyParam = {},
+		userPlanBodyParam = {},
+		refundObj = {};
 
 	vendorId = req.body.vendor_id;
 	upgradingPlan = req.body.plan_id;
@@ -769,27 +763,27 @@ export function makePlanPayment(req, res) {
 	end_date = moment().add(28, 'd').toDate();
 
 	stripe.chargeCustomerCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY)
-	.then(function(paymentResponse){
-		if(paymentResponse.paid){
-			paymentBodyParam = {
-				date: new Date(paymentResponse.created),
-				amount: paymentResponse.amount / 100.0,
-				payment_method: paymentMethod['STRIPE'],
-				status: status['ACTIVE'],
-				payment_response: JSON.stringify(paymentResponse),
-				created_by: req.user.first_name,
-				created_on: new Date()
+		.then(function(paymentResponse) {
+			if (paymentResponse.paid) {
+				paymentBodyParam = {
+					date: new Date(paymentResponse.created),
+					amount: paymentResponse.amount / 100.0,
+					payment_method: paymentMethod['STRIPE'],
+					status: status['ACTIVE'],
+					payment_response: JSON.stringify(paymentResponse),
+					created_by: req.user.first_name,
+					created_on: new Date()
 
-			};
-			return service.createRow('Payment', paymentBodyParam);
-		}else{
-			return res.status(200).send({
-				"message": "ERROR",
-				"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes"
-			});
-		}
-	}).then(function(paymentRow) {
-			if((vendorId != 0 && upgradingPlan != 5)) {
+				};
+				return service.createRow('Payment', paymentBodyParam);
+			} else {
+				return res.status(200).send({
+					"message": "ERROR",
+					"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes"
+				});
+			}
+		}).then(function(paymentRow) {
+			if ((vendorId != 0 && upgradingPlan != 5)) {
 				vendorPlanBodyParam = {
 					vendor_id: vendorId,
 					plan_id: req.body.plan_id,
@@ -804,31 +798,33 @@ export function makePlanPayment(req, res) {
 				if (req.user.user_contact_email) {
 					sendUpgrademail(req.body.plan_id, req.user);
 				}
-				 service.createRow('VendorPlan', vendorPlanBodyParam).then(function(currentplanrow){
+				service.createRow('VendorPlan', vendorPlanBodyParam).then(function(currentplanrow) {
 					let includeArr = [];
-		         	refundObj = {
-					vendor_id: vendorId,	 
-				    status:status['ACTIVE'],
-				    id: {
-					$ne: currentplanrow.id
-				     },
-			       };
-			      var field = 'created_on';
-			       var order = "asc";
-			      service.findAllRows('VendorPlan', includeArr, refundObj, 0, null, field, order).then(function(successPromise){
-			      if (successPromise.count != "0") {
-				  let plandeactivestatus = {
-					status:status['INACTIVE'],
-					last_updated_by: req.user.first_name,
-					last_updated_on: new Date()
-				  };
-				   refundObj = {
-					vendor_id: vendorId,
-					id: {$ne: currentplanrow.id},
-				  };
-				  return service.updateManyRecord('VendorPlan', plandeactivestatus, refundObj);
-				}
-			  });
+					refundObj = {
+						vendor_id: vendorId,
+						status: status['ACTIVE'],
+						id: {
+							$ne: currentplanrow.id
+						},
+					};
+					var field = 'created_on';
+					var order = "asc";
+					service.findAllRows('VendorPlan', includeArr, refundObj, 0, null, field, order).then(function(successPromise) {
+						if (successPromise.count != "0") {
+							let plandeactivestatus = {
+								status: status['INACTIVE'],
+								last_updated_by: req.user.first_name,
+								last_updated_on: new Date()
+							};
+							refundObj = {
+								vendor_id: vendorId,
+								id: {
+									$ne: currentplanrow.id
+								},
+							};
+							return service.updateManyRecord('VendorPlan', plandeactivestatus, refundObj);
+						}
+					});
 				});
 			} else {
 				userPlanBodyParam = {
@@ -846,7 +842,8 @@ export function makePlanPayment(req, res) {
 			}
 		}).then(function(updatedPlanRow) {
 			if (vendorId != 0) {
-				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
+				var productDeactivateQueryObj = {},
+					productDeactivateBodyParam = {};
 
 				productDeactivateQueryObj = {
 					vendor_id: vendorId,
@@ -861,7 +858,8 @@ export function makePlanPayment(req, res) {
 			}
 		}).then(function(deactivatedProducts) {
 			if (vendorId != 0) {
-				var productActivateQueryObj = {}, productActivateBodyParam = {};
+				var productActivateQueryObj = {},
+					productActivateBodyParam = {};
 
 				productActivateQueryObj.vendor_id = vendorId;
 				productActivateQueryObj.status = status["GTC_INACTIVE"];
@@ -962,7 +960,7 @@ export function refundOrder(req, res) {
 	refundAmt = req.body.total_refund;
 	let includeArray = [];
 	includeArray = populate.populateData("Payment");
-	
+
 	let orderPaymentQueryObj = {
 		order_id: order_id,
 		order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT']

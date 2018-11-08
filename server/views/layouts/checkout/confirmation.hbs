@@ -1,44 +1,56 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <script type="text/javascript">
-function followVendor(e){
-	var dataItem = {};
-			dataItem.vendor_id = e;
-			$.ajax({
-				type: "PUT",
-				url: "/api/users/user-vendor-follow",
-				data: dataItem,
-				success: function(result) {
-					if (result) {
-						location.reload();
-					}
+	function followVendor(e) {
+		var dataItem = {};
+		dataItem.vendor_id = e;
+		$.ajax({
+			type: "PUT",
+			url: "/api/users/user-vendor-follow",
+			data: dataItem,
+			success: function (result) {
+				if (result) {
+					location.reload();
 				}
-			});
-}
+			}
+		});
+	}
 </script>
-
 <section>
+	{{#if orderVendors}}
 	<div class="jumbotron checkout_jempo text-center">
 		<h4>WE HAVE RECEIVED YOUR ORDER</h4>
 		<h2>Thank You!</h2>
 		<p>Your order is being processed.</p>
-		<p>This will appear is your <a href="/order-history" class="checkout_thank_para_span_1">account billing history.</a></p>
-		<p class="checkout_thank_para_1">Your confirmation email has been sent and your order is being processed and will be shipped in accordance with each Vendor Shipping policy.</p>
+		<p>This will appear is your
+			<a href="/order-history" class="checkout_thank_para_span_1">account billing history.</a>
+		</p>
+		<p class="checkout_thank_para_1">Your confirmation email has been sent and your order is being processed and will be shipped in accordance with each Vendor
+			Shipping policy.</p>
 		<h6>What's Next?</h6>
-		{{#each vendors.rows}}
-		<p><img src="..{{this.vendor_profile_pic_url}}" alt="icon_logo" style="width: 35px; height: 35px;" onerror="UserImgError(this)">
-		{{!-- <a href="javascript:;" class="checkout_jempo_a"><i class="fas fa-user-plus"></i> Follow</a> --}}
-		{{#ifCond LoggedInUser.Vendor.id "!=" this.id}}
-			{{#if this.VendorFollowers}}
-			<a href="javascript:;" ondblclick="followVendor({{this.id}})" class="checkout_jempo_a"><img src="../img/unfollow.png" alt="Follow"  height="30px" /></a>
+		{{#each orderVendors}}
+		<p>
+			<img src="..{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.Vendor.vendor_name}}" title="{{this.Vendor.vendor_name}}" style="width: 35px; height: 35px;" onerror="UserImgError(this)"> {{#ifCond LoggedInUser.id "!=" this.Vendor.user_id}} {{#if this.Vendor.is_vendor_follower}}
+			<a href="javascript:;" class="checkout_jempo_a">
+				<img src="../img/unfollow.png" alt="Follow" height="30px" />
+			</a>
 			{{else}}
-			<a href="javascript:;"  ondblclick="followVendor({{this.id}})" class="checkout_jempo_a"><img src="../img/follow.png" alt="Follow" height="30px" /></a>
-			{{/if}}
-		{{/ifCond}}
+			<a href="javascript:;" onclick="followVendor({{this.Vendor.id}})" class="checkout_jempo_a">
+				<img src="../img/follow.png" alt="Follow" height="30px" />
+			</a>
+			{{/if}} {{/ifCond}}
 		</p>
 		{{/each}}
 		<p>You can follow Merchant and Stay Updated on their latest promotions, and product updates. </p>
-		<p>You can also <a href="/order-track" class="checkout_thank_para_span_1">track your order,</a> find us on <a href="//www.facebook.com" class="checkout_thank_para_span_1">facebook, search for more products,</a> Or <a href="/" class="checkout_thank_para_span_1">return to the homepage.</a></p>
+		<p>You can also
+			<a href="/order-track" class="checkout_thank_para_span_1">track your order,</a> find us on
+			<a href="//www.facebook.com" class="checkout_thank_para_span_1">facebook, search for more products,</a> Or
+			<a href="/" class="checkout_thank_para_span_1">return to the homepage.</a>
+		</p>
 	</div>
-</section> 
-
+	{{else}}
+	<div class="jumbotron checkout_jempo text-center">
+		<h4>ORDER NOT FOUND</h4>
+	</div>
+	{{/if}}
+</section>
 {{> footer/bottom-footer}}

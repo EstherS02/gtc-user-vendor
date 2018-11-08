@@ -1,122 +1,129 @@
 'use strict';
 
+var async = require('async');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
+const status = require('../../config/status');
+const orderItemStatus = require('../../config/order-item-new-status');
 const ORDER_ITEM_STATUS = require('../../config/order-item-status');
 const statusCode = require('../../config/status');
 const populate = require('../../utilities/populate')
-var async = require('async');
-const _ = require('lodash');
+const orderService = require('./order.service');
 
 export function orderItemdetails(req, res) {
-	var refundObj ={};
+	var refundObj = {};
 	var paramsID = req.params.id;
 	let includeArr = populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Vendor.User,Order');
 	refundObj = {
 		order_id: req.params.id,
 		order_item_status: {
-		 	$ne: ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED']
-		 },
+			$ne: ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED']
+		},
 	};
 	var field = 'created_on';
 	var order = "asc";
-	service.findAllRows('OrderItem', includeArr, refundObj, 0, null, field, order)
-		.then(function(result) {
-			if (result) {
-				return res.status(200).send(result.rows);
-				} else {
-					return res.status(200).send(null);
-				}
-		}).catch(function(error){
-			console.log("Error::",error);
-		})
-}
-
-export function subscriptionOrder(req,res){
-
-	var subscriptionOrderIncludeArr = [];
-	var subscriptionQueryObj = {};
-	var limit, offset, field, order;
-
-	offset = req.query.offset ? parseInt(req.query.offset) : null;
-	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : null;
-	delete req.query.limit;
-	field = req.query.field ? req.query.field : "id";
-	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
-	delete req.query.order;	
-
-	subscriptionOrderIncludeArr = [
-		{
-			model: model['User'],
-			attributes:['id', 'first_name'],
-		},
-		{
-			model: model['Product'],
-			attributes:['id', 'product_name', 'sku', 'vendor_id'],
-			include:[
-				{
-					model: model['Vendor'],
-					attributes:['id', 'vendor_name'],
-				}]
-		}]
-
-	if (!req.query.status) {
-		subscriptionQueryObj['status'] = {
-			'$ne': statusCode["DELETED"]
+	service.findAllRows('OrderItem', includeArr, refundObj, 0, null, field, order).then(function(result) {
+		if (result) {
+			return res.status(200).send(result.rows);
+		} else {
+			return res.status(200).send(err);
 		}
-	}else{
-		subscriptionQueryObj['status'] = req.query.status;
-	}
-
-	service.findAllRows('Subscription', subscriptionOrderIncludeArr, subscriptionQueryObj, offset, limit, field, order)
-		.then(function(subscriptions) {
-			if (subscriptions) {
-				var subscriptionPromise = [];
-
-				_.forOwn(subscriptions.rows, function(eachSubscription) {
-
-					subscriptionPromise.push(subscriptionSalesCount(eachSubscription));
-				});
-				return Promise.all(subscriptionPromise)
-				.then(function(subscriptionRows){
-					subscriptions.rows = subscriptionRows;
-					return res.status(200).send(subscriptions);
-				}).catch(function(error){
-					return res.status(400).send(error);
-				})
-			} else {
-				return res.status(200).send(null);
-			}
-		}).catch(function(error){
-			console.log("Error::",error);
-			return res.status(400).send(error);
-		});
+	});
 }
 
-function subscriptionSalesCount(eachSubscription){
-	var subscriptionCountIncludeArr = [], subscriptionCountQueryObj = {};
-	subscriptionCountIncludeArr = [{
-					model:model['OrderItem'],
-					where:{
-						product_id: eachSubscription.product_id
-					}
-				}]
-	subscriptionCountQueryObj = {
-		user_id: eachSubscription.user_id
+export async function dispatchOrder(req, res) {
+	var bodyParams = {};
+	var orderItemPromises = [];
+	const orderId = req.params.orderId;
+	const vendorId = req.user.Vendor.id;
+	const shippingModelName = "Shipping";
+	const orderVendorModelName = "OrderVendor";
+	const orderItemModelName = "OrderItem";
+
+	req.checkBody('select_courier', 'Missing Query Param').notEmpty();
+	req.checkBody('expected_delivery_date', 'Missing Query Param').notEmpty();
+	req.checkBody('tracking_id', 'Missing Query Param').notEmpty();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
 	}
-	return service.countRows('Order', subscriptionCountQueryObj, subscriptionCountIncludeArr)
-		.then(function(salesCount) {
-			if (salesCount) {
-				eachSubscription.sales = salesCount;
-			} else {
-				eachSubscription.sales = 0;
+
+	var expectedDeliveryDate = new Date(req.body.expected_delivery_date);
+
+	if (new Date() > expectedDeliveryDate) {
+		return res.status(400).send("Invalid delivery date.");
+	}
+
+	bodyParams['provider_name'] = req.body.select_courier;
+	bodyParams['tracking_id'] = req.body.tracking_id;
+	bodyParams['status'] = status['ACTIVE'];
+	bodyParams['created_on'] = new Date();
+	bodyParams['created_by'] = req.user.first_name;
+
+	var includeArray = [{
+		model: model['Order'],
+		attributes: ['id', 'user_id', 'ordered_date', 'status'],
+		include: [{
+			model: model['OrderItem'],
+			attributes: ['id', 'order_id', 'product_id', 'order_item_status'],
+			include: [{
+				model: model['Product'],
+				where: {
+					vendor_id: vendorId
+				},
+				attributes: []
+			}]
+		}]
+	}];
+
+	try {
+		const vendorOrder = await service.findOneRow(orderVendorModelName, {
+			order_id: orderId,
+			vendor_id: req.user.Vendor.id
+		}, includeArray);
+		if (vendorOrder) {
+			for (let item of vendorOrder.Order.OrderItems) {
+				if (item.order_item_status == orderItemStatus['ORDER_INITIATED']) {
+					return res.status(400).send("Please confirm all items.");
+				}
+				if (item.order_item_status == orderItemStatus['CONFIRMED']) {
+					orderItemPromises.push(service.updateRecordNew(orderItemModelName, {
+						order_item_status: orderItemStatus['SHIPPED'],
+						expected_delivery_date: expectedDeliveryDate,
+						shipped_on: new Date(),
+						last_updated_by: req.user.first_name,
+						last_updated_on: new Date()
+					}, {
+						id: item.id,
+						order_id: vendorOrder.Order.id
+					}));
+				}
 			}
-			return Promise.resolve(eachSubscription);
-		}).catch(function(error){
-			console.log("Error::",error);
-			return Promise.reject(error);
-		});		
+
+			if (Array.isArray(orderItemPromises) && orderItemPromises.length > 0) {
+				const newShipping = await service.createRow(shippingModelName, bodyParams);
+				const updateVendorOrder = await service.updateRecordNew(orderVendorModelName, {
+					shipping_id: newShipping.id,
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				}, {
+					id: vendorOrder.id,
+					order_id: vendorOrder.Order.id,
+					vendor_id: vendorId
+				});
+				await Promise.all(orderItemPromises);
+				return res.status(200).send(updateVendorOrder);
+			} else {
+				return res.status(404).send("Sorry!, there is no order items proceed to dispatch.");
+			}
+		} else {
+			return res.status(404).send("Sorry!, there is no order items proceed to dispatch.");
+		}
+	} catch (error) {
+		console.log("dispatchOrder Error:::", error);
+		return res.status(500).send(error);
+	}
 }

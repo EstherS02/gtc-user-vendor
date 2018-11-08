@@ -93,9 +93,9 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const VendorPlan = model.VendorPlan;
-    const Payment = model.Payment;
     const Vendor = model.Vendor;
     const Plan = model.Plan;
+    const Payment = model.Payment;
 
     VendorPlan.belongsTo(Vendor, {
         foreignKey: 'vendor_id',
@@ -103,14 +103,14 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    VendorPlan.belongsTo(Payment, {
-        foreignKey: 'payment_id',
+    VendorPlan.belongsTo(Plan, {
+        foreignKey: 'plan_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    VendorPlan.belongsTo(Plan, {
-        foreignKey: 'plan_id',
+    VendorPlan.belongsTo(Payment, {
+        foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

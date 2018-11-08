@@ -2,15 +2,17 @@
 
 Address
 -------
-has many          orders                                   as FkOrder3s 
-has many          orders                                   as FkOrder4s 
+has many          order                                    as FkOrder4s 
+has many          order                                    as FkOrder5s 
 belongs to        users                                    as User 
 belongs to        country                                  as Country 
 belongs to        state                                    as Province 
 belongs to many   users                                    as OrderUsers 
+belongs to many   payment                                  as OrderPayments 
 belongs to many   shipping                                 as OrderShippings 
 belongs to many   address                                  as OrderBillingAddresses 
 belongs to many   users                                    as OrderUsers 
+belongs to many   payment                                  as OrderPayments 
 belongs to many   shipping                                 as OrderShippings 
 belongs to many   address                                  as OrderShippingAddresses 
 
@@ -96,7 +98,10 @@ belongs to many   sub_category                             as ProductSubCategori
 belongs to many   state                                    as ProductStates 
 belongs to many   product                                  as ProductAdsSettingProducts 
 belongs to many   state                                    as ProductAdsSettingStates 
+belongs to many   vendor                                   as ProductAdsSettingVendors 
+belongs to many   payment                                  as ProductAdsSettingPayments 
 belongs to many   users                                    as VendorUsers 
+belongs to many   state                                    as VendorProvinces 
 belongs to many   currency                                 as VendorCurrencies 
 belongs to many   timezone                                 as VendorTimezones 
 belongs to many   vendor                                   as VendorShippingLocationVendors 
@@ -108,15 +113,13 @@ has many          coupon_category                          as FkCouponCategory1s
 has many          coupon_excluded_category                 as FkCouponExcludedCategory1s 
 has many          coupon_excluded_product                  as FkCouponExcludedProduct1s 
 has many          coupon_product                           as FkCouponProduct1s 
-has many          order_items                              as FkOrderItems3s 
+has many          order_item                               as FkOrderItem3s 
 belongs to        vendor                                   as Vendor 
 belongs to many   category                                 as CouponCategoryCategories 
 belongs to many   category                                 as CouponExcludedCategoryCategories 
 belongs to many   product                                  as CouponExcludedProductProducts 
 belongs to many   product                                  as CouponProductProducts 
-belongs to many   orders                                   as OrderItemOrders 
-belongs to many   product                                  as OrderItemProducts 
-belongs to many   tax                                      as OrderItemTaxes 
+belongs to many   order                                    as OrderItemOrders 
 
 
 CouponCategory
@@ -150,6 +153,7 @@ has many          vendor                                   as FkVendor4s
 belongs to many   region                                   as CountryRegions 
 belongs to many   users                                    as VendorUsers 
 belongs to many   country                                  as VendorBaseLocations 
+belongs to many   state                                    as VendorProvinces 
 belongs to many   timezone                                 as VendorTimezones 
 
 
@@ -174,6 +178,7 @@ DiscussionBoardPost
 has many          discussion_board_post_comment            as FkDiscussionBoardPostComment1s 
 has many          discussion_board_post_like               as FkDiscussionBoardPostLike1s 
 belongs to        vendor                                   as Vendor 
+belongs to        users                                    as User 
 belongs to many   users                                    as DiscussionBoardPostCommentUsers 
 belongs to many   users                                    as DiscussionBoardPostLikeUsers 
 
@@ -197,10 +202,19 @@ EmailTemplate
 FeaturedProduct
 ---------------
 belongs to        product                                  as Product 
+belongs to        payment                                  as Payment 
 
 
 GlobalSetting
 -------------
+
+
+Mail
+----
+has many          user_mail                                as FkUserMail1s 
+belongs to        users                                    as From 
+belongs to        users                                    as To 
+belongs to many   users                                    as UserMailUsers 
 
 
 Marketplace
@@ -229,48 +243,80 @@ belongs to many   country                                  as ProductProductLoca
 belongs to many   state                                    as ProductStates 
 
 
-OrderItem
----------
-belongs to        orders                                   as Order 
-belongs to        product                                  as Product 
-belongs to        coupon                                   as Coupon 
-belongs to        tax                                      as Tax 
-
-
-OrderPayment
+Notification
 ------------
-belongs to        orders                                   as Order 
-belongs to        payment                                  as Payment 
+belongs to        users                                    as User 
 
 
-OrderPaymentEscrow
-------------------
-belongs to        payment                                  as Payment 
-belongs to        orders                                   as Order 
+NotificationSetting
+-------------------
 
 
 Order
 -----
-has many          order_items                              as FkOrderItems1s 
-has many          order_payment                            as FkOrderPayment1s 
-has many          order_payment_escrow                     as FkOrderPaymentEscrow2s 
+has many          order_item                               as FkOrderItem1s 
+has many          order_vendor                             as FkVendorOrder1s 
 belongs to        users                                    as User 
+belongs to        payment                                  as Payment 
 belongs to        shipping                                 as Shipping 
 belongs to        address                                  as ShippingAddress 
 belongs to        address                                  as BillingAddress 
-belongs to many   product                                  as OrderItemProducts 
 belongs to many   coupon                                   as OrderItemCoupons 
-belongs to many   tax                                      as OrderItemTaxes 
-belongs to many   payment                                  as OrderPaymentPayments 
-belongs to many   payment                                  as OrderPaymentEscrowPayments 
+belongs to many   shipping                                 as OrderVendorShippings 
+
+
+OrderItem
+---------
+has many          order_item_payout                        as FkOrderItemPayout1s 
+belongs to        order                                    as Order 
+belongs to        coupon                                   as Coupon 
+belongs to many   payment                                  as OrderItemPayoutPayments 
+
+
+OrderItemPayout
+---------------
+belongs to        order_item                               as OrderItem 
+belongs to        payment                                  as Payment 
+
+
+OrderVendor
+-----------
+has many          order_vendor_payout                      as FkOrderVendorPaymentEscrow1s 
+belongs to        order                                    as Order 
+belongs to        shipping                                 as Shipping 
+belongs to many   payment                                  as OrderVendorPayoutPayments 
+
+
+OrderVendorPayout
+-----------------
+belongs to        order_vendor                             as OrderVendor 
+belongs to        payment                                  as Payment 
 
 
 Payment
 -------
-has many          order_payment                            as FkOrderPayment2s 
-has many          order_payment_escrow                     as FkOrderPaymentEscrow1s 
-belongs to many   orders                                   as OrderPaymentOrders 
-belongs to many   orders                                   as OrderPaymentEscrowOrders 
+has many          featured_product                         as FkFeaturedProduct2s 
+has many          order                                    as FkOrder2s 
+has many          order_item_payout                        as FkOrderItemPayout2s 
+has many          order_vendor_payout                      as FkOrderVendorPaymentEscrow2s 
+has many          product_ads_setting                      as FkProductAdsSetting5s 
+has many          user_plan                                as FkUserPlan3s 
+has many          vendor_plan                              as FkVendorPlan3s 
+belongs to many   product                                  as FeaturedProductProducts 
+belongs to many   users                                    as OrderUsers 
+belongs to many   shipping                                 as OrderShippings 
+belongs to many   address                                  as OrderShippingAddresses 
+belongs to many   address                                  as OrderBillingAddresses 
+belongs to many   order_item                               as OrderItemPayoutOrderItems 
+belongs to many   order_vendor                             as OrderVendorPayoutOrderVendors 
+belongs to many   product                                  as ProductAdsSettingProducts 
+belongs to many   country                                  as ProductAdsSettingCountries 
+belongs to many   state                                    as ProductAdsSettingStates 
+belongs to many   vendor                                   as ProductAdsSettingVendors 
+belongs to many   users                                    as UserPlanUsers 
+belongs to many   plan                                     as UserPlanPlans 
+belongs to many   vendor                                   as VendorPlanVendors 
+belongs to many   plan                                     as VendorPlanPlans 
 
 
 PaymentSetting
@@ -282,9 +328,13 @@ Plan
 ----
 has many          plan_limit                               as FkPlanLimit1s 
 has many          plan_marketplace                         as FkPlanMarketplace1s 
+has many          user_plan                                as FkUserPlan2s 
 has many          vendor_plan                              as FkVendorPlan2s 
 belongs to many   marketplace                              as PlanMarketplaceMarketplaces 
+belongs to many   users                                    as UserPlanUsers 
+belongs to many   payment                                  as UserPlanPayments 
 belongs to many   vendor                                   as VendorPlanVendors 
+belongs to many   payment                                  as VendorPlanPayments 
 
 
 PlanLimit
@@ -305,7 +355,6 @@ has many          coupon_excluded_product                  as FkCouponExcludedPr
 has many          coupon_product                           as FkCouponProduct2s 
 has many          discount                                 as FkDiscount1s 
 has many          featured_product                         as FkFeaturedProduct1s 
-has many          order_items                              as FkOrderItems2s 
 has many          product_ads_setting                      as FkProductAdsSetting1s 
 has many          product_attribute                        as FkProductAttribute2s 
 has many          product_media                            as FkProductMedia1s 
@@ -322,11 +371,11 @@ belongs to        state                                    as State
 belongs to many   users                                    as CartUsers 
 belongs to many   coupon                                   as CouponExcludedProductCoupons 
 belongs to many   coupon                                   as CouponProductCoupons 
-belongs to many   orders                                   as OrderItemOrders 
-belongs to many   coupon                                   as OrderItemCoupons 
-belongs to many   tax                                      as OrderItemTaxes 
+belongs to many   payment                                  as FeaturedProductPayments 
 belongs to many   country                                  as ProductAdsSettingCountries 
 belongs to many   state                                    as ProductAdsSettingStates 
+belongs to many   vendor                                   as ProductAdsSettingVendors 
+belongs to many   payment                                  as ProductAdsSettingPayments 
 belongs to many   attribute                                as ProductAttributeAttributes 
 belongs to many   users                                    as ReviewUsers 
 belongs to many   users                                    as SubscriptionUsers 
@@ -338,6 +387,8 @@ ProductAdsSetting
 belongs to        product                                  as Product 
 belongs to        country                                  as Country 
 belongs to        state                                    as State 
+belongs to        vendor                                   as Vendor 
+belongs to        payment                                  as Payment 
 
 
 ProductAttribute
@@ -346,7 +397,7 @@ belongs to        attribute                                as Attribute
 belongs to        product                                  as Product 
 
 
-ProductMedium
+ProductMedia
 -------------
 belongs to        product                                  as Product 
 
@@ -365,10 +416,13 @@ belongs to        users                                    as User
 
 Shipping
 --------
-has many          orders                                   as FkOrder2s 
+has many          order                                    as FkOrder3s 
+has many          order_vendor                             as FkVendorOrder3s 
 belongs to many   users                                    as OrderUsers 
+belongs to many   payment                                  as OrderPayments 
 belongs to many   address                                  as OrderShippingAddresses 
 belongs to many   address                                  as OrderBillingAddresses 
+belongs to many   order                                    as OrderVendorOrders 
 
 
 State
@@ -376,6 +430,7 @@ State
 has many          address                                  as FkAddress3s 
 has many          product                                  as FkProduct8s 
 has many          product_ads_setting                      as FkProductAdsSetting3s 
+has many          vendor                                   as FkVendor3s 
 belongs to        country                                  as Country 
 belongs to many   users                                    as AddressUsers 
 belongs to many   country                                  as AddressCountries 
@@ -387,6 +442,12 @@ belongs to many   sub_category                             as ProductSubCategori
 belongs to many   country                                  as ProductProductLocations 
 belongs to many   product                                  as ProductAdsSettingProducts 
 belongs to many   country                                  as ProductAdsSettingCountries 
+belongs to many   vendor                                   as ProductAdsSettingVendors 
+belongs to many   payment                                  as ProductAdsSettingPayments 
+belongs to many   users                                    as VendorUsers 
+belongs to many   country                                  as VendorBaseLocations 
+belongs to many   currency                                 as VendorCurrencies 
+belongs to many   timezone                                 as VendorTimezones 
 
 
 SubCategory
@@ -409,37 +470,37 @@ belongs to        product                                  as Product
 
 Talk
 ----
-belongs to        talk_setting                             as TalkSetting 
 belongs to        users                                    as From 
-belongs to        users                                    as To 
-belongs to        talk_thread                              as LastThread 
+belongs to        talk_thread                              as TalkThread 
 
 
 TalkSetting
 -----------
-has many          talk                                     as FkTalk1s 
 belongs to        vendor                                   as Vendor 
-belongs to many   users                                    as TalkFroms 
-belongs to many   users                                    as TalkTos 
-belongs to many   talk_thread                              as TalkLastThreads 
 
 
 TalkThread
 ----------
-has many          talk                                     as FkTalk4s 
-belongs to        users                                    as From 
-belongs to many   talk_setting                             as TalkTalkSettings 
+has many          talk                                     as TalkIbfk2s 
+has many          talk_thread_users                        as UsersIbfk1s 
 belongs to many   users                                    as TalkFroms 
-belongs to many   users                                    as TalkTos 
+belongs to many   users                                    as TalkThreadUserUsers 
+
+
+TalkThreadUser
+--------------
+belongs to        talk_thread                              as Thread 
+belongs to        users                                    as User 
 
 
 Tax
 ---
-has many          order_items                              as FkOrderItems4s 
 belongs to        country                                  as Country 
-belongs to many   orders                                   as OrderItemOrders 
-belongs to many   product                                  as OrderItemProducts 
-belongs to many   coupon                                   as OrderItemCoupons 
+
+
+TermsAndCond
+------------
+belongs to        vendor                                   as Vendor 
 
 
 Ticket
@@ -463,7 +524,21 @@ belongs to        country                                  as Country
 belongs to many   vendor                                   as BusinessHourVendors 
 belongs to many   users                                    as VendorUsers 
 belongs to many   country                                  as VendorBaseLocations 
+belongs to many   state                                    as VendorProvinces 
 belongs to many   currency                                 as VendorCurrencies 
+
+
+UserMail
+--------
+belongs to        mail                                     as Mail 
+belongs to        users                                    as User 
+
+
+UserPlan
+--------
+belongs to        users                                    as User 
+belongs to        plan                                     as Plan 
+belongs to        payment                                  as Payment 
 
 
 User
@@ -471,17 +546,22 @@ User
 has many          address                                  as FkAddress1s 
 has many          admin                                    as FkAdmin1s 
 has many          cart                                     as FkCart1s 
+has many          discussion_board_post                    as FkDiscussionBoardPost2s 
 has many          discussion_board_post_comment            as FkDiscussionBoardPostComment2s 
 has many          discussion_board_post_like               as FkDiscussionBoardPostLike2s 
-has many          orders                                   as FkOrder1s 
+has many          mail                                     as FkMail1s 
+has many          mail                                     as FkMail2s 
+has many          notification                             as FkNotification1s 
+has many          order                                    as FkOrder1s 
 has many          payment_setting                          as FkPaymentSetting1s 
 has many          reviews                                  as FkProductReview2s 
 has many          subscription                             as FkSubscription1s 
-has many          talk                                     as FkTalk2s 
-has many          talk                                     as FkTalk3s 
-has many          talk_thread                              as FkTalkThread1s 
+has many          talk                                     as TalkIbfk1s 
+has many          talk_thread_users                        as TalkThreadUsersIbfk2s 
 has many          ticket                                   as FkTicket1s 
 has many          ticket_thread                            as FkTicketThread2s 
+has many          user_mail                                as FkUserMail2s 
+has many          user_plan                                as FkUserPlan1s 
 has many          user_token                               as FkUserToken1s 
 has many          vendor                                   as FkVendor1s 
 has many          vendor_follower                          as FkVendorFollower2s 
@@ -490,22 +570,26 @@ has many          wish_list                                as FkWishList1s
 belongs to many   country                                  as AddressCountries 
 belongs to many   state                                    as AddressProvinces 
 belongs to many   product                                  as CartProducts 
+belongs to many   vendor                                   as DiscussionBoardPostVendors 
 belongs to many   discussion_board_post                    as DiscussionBoardPostCommentDiscussionBoardPosts 
 belongs to many   discussion_board_post                    as DiscussionBoardPostLikeDiscussionBoardPosts 
+belongs to many   users                                    as MailTos 
+belongs to many   users                                    as MailFroms 
+belongs to many   payment                                  as OrderPayments 
 belongs to many   shipping                                 as OrderShippings 
 belongs to many   address                                  as OrderShippingAddresses 
 belongs to many   address                                  as OrderBillingAddresses 
 belongs to many   product                                  as ReviewProducts 
 belongs to many   product                                  as SubscriptionProducts 
-belongs to many   talk_setting                             as TalkTalkSettings 
-belongs to many   users                                    as TalkTos 
-belongs to many   talk_thread                              as TalkLastThreads 
-belongs to many   talk_setting                             as TalkTalkSettings 
-belongs to many   users                                    as TalkFroms 
-belongs to many   talk_thread                              as TalkLastThreads 
+belongs to many   talk_thread                              as TalkTalkThreads 
+belongs to many   talk_thread                              as TalkThreadUserThreads 
 belongs to many   ticket                                   as TicketThreadTickets 
+belongs to many   mail                                     as UserMailMails 
+belongs to many   plan                                     as UserPlanPlans 
+belongs to many   payment                                  as UserPlanPayments 
 belongs to many   appclients                               as UserTokenClients 
 belongs to many   country                                  as VendorBaseLocations 
+belongs to many   state                                    as VendorProvinces 
 belongs to many   currency                                 as VendorCurrencies 
 belongs to many   timezone                                 as VendorTimezones 
 belongs to many   vendor                                   as VendorFollowerVendors 
@@ -526,7 +610,9 @@ has many          coupon                                   as FkCoupon1s
 has many          discussion_board                         as FkDiscussionBoard1s 
 has many          discussion_board_post                    as FkDiscussionBoardPost1s 
 has many          product                                  as FkProduct1s 
+has many          product_ads_setting                      as FkProductAdsSetting4s 
 has many          talk_setting                             as FkTalkSetting1s 
+has many          terms_and_cond                           as TermsAndCondIbfk1s 
 has many          vendor_follower                          as FkVendorFollower1s 
 has many          vendor_notification_setting              as FkVendorNotificationSetting1s 
 has many          vendor_plan                              as FkVendorPlan1s 
@@ -535,17 +621,25 @@ has many          vendor_shipping_location                 as FkVendorShippingLo
 has many          vendor_verification                      as FkVendorVerification1s 
 belongs to        users                                    as User 
 belongs to        country                                  as RelatedBaseLocation 
+belongs to        state                                    as Province 
 belongs to        currency                                 as Currency 
 belongs to        timezone                                 as Timezone 
 belongs to many   timezone                                 as BusinessHourTimezones 
+belongs to many   users                                    as DiscussionBoardPostUsers 
 belongs to many   marketplace                              as ProductMarketplaces 
 belongs to many   marketplace_type                         as ProductMarketplaceTypes 
 belongs to many   category                                 as ProductProductCategories 
 belongs to many   sub_category                             as ProductSubCategories 
 belongs to many   country                                  as ProductProductLocations 
 belongs to many   state                                    as ProductStates 
+belongs to many   product                                  as ProductAdsSettingProducts 
+belongs to many   country                                  as ProductAdsSettingCountries 
+belongs to many   state                                    as ProductAdsSettingStates 
+belongs to many   payment                                  as ProductAdsSettingPayments 
 belongs to many   users                                    as VendorFollowerUsers 
+belongs to many   vendor_notification                      as VendorNotificationSettingVendorNotifications 
 belongs to many   plan                                     as VendorPlanPlans 
+belongs to many   payment                                  as VendorPlanPayments 
 belongs to many   users                                    as VendorRatingUsers 
 belongs to many   country                                  as VendorShippingLocationCountries 
 
@@ -556,15 +650,23 @@ belongs to        vendor                                   as Vendor
 belongs to        users                                    as User 
 
 
+VendorNotification
+------------------
+has many          vendor_notification_setting              as FkVendorNotificationSetting2s 
+belongs to many   vendor                                   as VendorNotificationSettingVendors 
+
+
 VendorNotificationSetting
 -------------------------
 belongs to        vendor                                   as Vendor 
+belongs to        vendor_notification                      as VendorNotification 
 
 
 VendorPlan
 ----------
 belongs to        vendor                                   as Vendor 
 belongs to        plan                                     as Plan 
+belongs to        payment                                  as Payment 
 
 
 VendorRating

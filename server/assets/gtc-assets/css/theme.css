@@ -351,6 +351,9 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 	color: #535353;
 	font-weight: bold;
 }
+.order-table > tbody > tr > td {
+	line-height: 18px !important;
+}
 .table > tbody > tr > td {
 	border-bottom: 1px solid #e7eaec;
 	border-top: 0;
@@ -1058,6 +1061,7 @@ input[type=number]::-webkit-outer-spin-button {
 	color: #000;
 	text-align: center;
 	opacity: 0;
+	font-size: 1.125rem;
 	position: absolute;
 	left: 2px;
 	font-weight: bold;

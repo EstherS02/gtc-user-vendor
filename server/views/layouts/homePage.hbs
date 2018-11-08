@@ -749,71 +749,70 @@
 	<div class="gtc-container py-lg-3">
 		<div class="row justify-content-center">
 			<div class="col">
-				<div class="progress yellow">
-					<span class="progress-left">
-						<span class="progress-bar"></span>
+				<div class="progress-circle yellow">
+					<span class="progress-circle-left">
+						<span class="progress-circle-bar"></span>
 					</span>
-					<span class="progress-right">
-						<span class="progress-bar"></span>
+					<span class="progress-circle-right">
+						<span class="progress-circle-bar"></span>
 					</span>
-					<div class="progress-value">
-						<span>32,871+</span><br/>
-						<span>Products Listed</span>
+					<div class="progress-circle-value">
+						<span>32,871+</span>
 					</div>
 				</div>
-				<p class="text-white text-center progress-texts mt-3">PRIVATE WHOLESALE</p>
+				<p class="text-white text-center progress-circle-texts mt-3">PRIVATE WHOLESALE</p>
 				<p class="text-center text-white font-weight-light font-md1">Broadcast rea-time inventory & requests of what you want buy or sale.</p>
 			</div>
 			<div class="col">
-				<div class="progress blue">
-					<span class="progress-left">
-						<span class="progress-bar"></span>
+				<div class="progress-circle blue">
+					<span class="progress-circle-left">
+						<span class="progress-circle-bar"></span>
 					</span>
-					<span class="progress-right">
-						<span class="progress-bar"></span>
+					<span class="progress-circle-right">
+						<span class="progress-circle-bar"></span>
 					</span>
-					<div class="progress-value">32,871+</div>
+					<div class="progress-circle-value">32,871+</div>
 				</div>
-				<p class="text-white text-center progress-texts mt-3">PUBLIC SALE</p>
+				<p class="text-white text-center progress-circle-texts mt-3">PUBLIC SALE</p>
 				<p class="text-center text-white font-weight-light font-md1">Sell your single SKU to <b>volume based</b> products & commodities to the open market!</p>
 			</div>
 			<div class="col">
-				<div class="progress white">
-					<span class="progress-left">
-						<span class="progress-bar"></span>
+				<div class="progress-circle white">
+					<span class="progress-circle-left">
+						<span class="progress-circle-bar"></span>
 					</span>
-					<span class="progress-right">
-						<span class="progress-bar"></span>
+					<span class="progress-circle-right">
+						<span class="progress-circle-bar"></span>
 					</span>
-					<div class="progress-value">32,871+</div>
+					<div class="progress-circle-value">32,871+</div>
 				</div>
-				<p class="text-white text-center progress-texts mt-3">SECURED & SUPERPOWERED</p>
+				<p class="text-white text-center progress-circle-texts mt-3">SECURED & SUPERPOWERED</p>
 				<p class="text-center text-white font-weight-light font-md1">Get your Global Trade Connect digital profile, storefront & warehouse. <b>The last profile page you will ever need.</b></p>
 			</div>
 			<div class="col">
-				<div class="progress green">
-					<span class="progress-left">
-						<span class="progress-bar"></span>
+				<div class="progress-circle green">
+					<span class="progress-circle-left">
+						<span class="progress-circle-bar"></span>
 					</span>
-					<span class="progress-right">
-						<span class="progress-bar"></span>
+					<span class="progress-circle-right">
+						<span class="progress-circle-bar"></span>
 					</span>
-					<div class="progress-value">32,871+</div>
+					<div class="progress-circle-value">32,871+</div>
 				</div>
-				<p class="text-white text-center progress-texts mt-3">SERVICE MARKET</p>
+				<p class="text-white text-center progress-circle-texts mt-3">SERVICE MARKET</p>
 				<p class="text-center text-white font-weight-light font-md1">List the services you provide & <strong>let people you know what and where you offer it.</strong></p>
 			</div>
 			<div class="col">
-				<div class="progress red">
-					<span class="progress-left">
-						<span class="progress-bar"></span>
+				<div class="progress-circle red">
+					<span class="progress-circle-left">
+						<span class="progress-circle-bar"></span>
 					</span>
-					<span class="progress-right">
-						<span class="progress-bar"></span>
+					<span class="progress-circle-right">
+						<span class="progress-circle-bar"></span>
 					</span>
-					<div class="progress-value">32,871+</div>
+					<div class="progress-circle-value">32,871+</div>
 				</div>
-				<p class="text-white text-center progress-texts mt-3">LIFESTYLE SUBSCRIPTIONS</p>
+				<p class="text-white text-center progress-circle-texts mt-3">LIFESTYLE SUBSCRIPTIONS</p>
 				<p class="text-center text-white font-weight-light font-md1">Selling items on a <strong>monthly basis is fun</strong>, now you have a place to share it.</p>
 			</div>
 		</div>
@@ -842,7 +841,9 @@
 													</td>
 													<td class="col-3">
 														<div class="product-left-col">
-															<img class="object-fit" src="{{this.url}}" onError="imgError(this)" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+															<a href="vendor/{{this.id}}" title="{{this.vendor_name}}">
+																<img class="object-fit" src="{{this.url}}" onError="imgError(this)" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+															</a>
 														</div>
 													</td>
 													<td class="col-7">

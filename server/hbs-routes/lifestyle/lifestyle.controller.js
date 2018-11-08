@@ -10,7 +10,6 @@ const cartService = require('../../api/cart/cart.service');
 const async = require('async');
 
 export function lifestyle(req, res) {
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var offset, limit, field, order;
@@ -92,7 +91,9 @@ export function lifestyle(req, res) {
 				});
 		},
 		subscriptionProviders: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			delete queryObj['marketplace'];
 			queryObj['type'] = 'Lifestyle Marketplace';
 			field = 'sales_count';
@@ -107,7 +108,7 @@ export function lifestyle(req, res) {
 					}
 					async.mapSeries(result.rows, function(aVendor, cb) {
 						vendorAvgRating['vendor_id'] = aVendor.id;
-						model['ProductRatings'].findOne({
+						model['ProductRating'].findOne({
 							where: vendorAvgRating,
 							attributes: [
 								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
@@ -128,7 +129,7 @@ export function lifestyle(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		}
 	}, function(err, results) {
 		if (!err) {

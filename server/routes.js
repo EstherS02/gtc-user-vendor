@@ -17,8 +17,8 @@ export default function(app) {
     app.use('/api/auth', require('./api/auth'));
     app.use('/api/cart', require('./api/cart'));
     app.use('/api/appclients', require('./api/appclients'));
-	app.use('/api/admin', require('./api/admin'));
-	app.use('/api/order', require('./api/order'));
+    app.use('/api/admin', require('./api/admin'));
+    app.use('/api/order', require('./api/order'));
     app.use('/api/order-history', require('./api/order-history'));
     app.use('/api/product', require('./api/product'));
     app.use('/api/upgrade-plan', require('./api/upgrade-plan'));
@@ -39,10 +39,10 @@ export default function(app) {
     app.use('/api/payment', require('./api/payment'));
     app.use('/api/shipping-setting', require('./api/shipping-setting'));
     app.use('/api/reports', require('./api/reports'));
-	app.use('/api/export-csv', require('./api/export-csv'));
-	app.use('/api/stripe', require('./api/stripe'));
-	app.use('/api/paypal', require('./api/paypal'));
-	app.use('/api/advertisement', require('./api/advertisement'));
+    app.use('/api/export-csv', require('./api/export-csv'));
+    app.use('/api/stripe', require('./api/stripe'));
+    app.use('/api/paypal', require('./api/paypal'));
+    app.use('/api/advertisement', require('./api/advertisement'));
     app.use('/api', require('./api/gtc'));
     app.post('/auth/google', controller.googleLogin);
 
@@ -65,10 +65,10 @@ export default function(app) {
     app.use('/messages', require('./hbs-routes/messages'));
     app.use('/notifications', require('./hbs-routes/notifications'));
     app.use('/vendor-notification', require('./hbs-routes/vendor-notification'));
-	app.use('/listings', require('./hbs-routes/listings'));
-	app.use('/subscription', require('./hbs-routes/subscription'));
+    app.use('/listings', require('./hbs-routes/listings'));
+    app.use('/subscription', require('./hbs-routes/subscription'));
     app.use('/terms-and-cond', require('./hbs-routes/terms-and-cond'));
-    app.use('/reporting', require('./hbs-routes/reporting'));
+    app.use('/store', require('./hbs-routes/reporting'));
     app.use('/my-order', require('./hbs-routes/reporting'));
     app.use('/coupons', require('./hbs-routes/coupons'));
     app.use('/wishlist', require('./hbs-routes/wishlist'));

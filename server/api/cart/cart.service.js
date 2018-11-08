@@ -153,20 +153,24 @@ export async function cartCalculation(userID, req, res) {
 
 								if (totalAmount >= coupon.minimum_spend && totalAmount <= coupon.maximum_spend) {
 									cart['coupon_applied'] = true;
+									cart['coupon_id'] = coupon.id;
 									cart['coupon_code'] = coupon.code;
 									cart['discount_type'] = coupon.discount_type;
 									cart['discount_value'] = coupon.discount_value;
 									discountProduct = cartProduct;
+									cartProduct['is_coupon_applied'] = true;
 									break;
 								}
 							} else if ((!coupon.excluse_sale_item && (cartProduct.Product.exclusive_sale || !cartProduct.Product.exclusive_sale) && (!exclusiveEndDate || exclusiveEndDate < currentDate))) {
 								totalAmount = cartProduct.Product.price * cartProduct.quantity;
 								if (totalAmount >= coupon.minimum_spend && totalAmount <= coupon.maximum_spend) {
 									cart['coupon_applied'] = true;
+									cart['coupon_id'] = coupon.id;
 									cart['coupon_code'] = coupon.code;
 									cart['discount_type'] = coupon.discount_type;
 									cart['discount_value'] = coupon.discount_value;
 									discountProduct = cartProduct;
+									cartProduct['is_coupon_applied'] = true;
 									break;
 								}
 							} else {
@@ -192,6 +196,7 @@ export async function cartCalculation(userID, req, res) {
 
 				if (aCart.Product.exclusive_sale && (exclusiveStartDate <= currentDate && exclusiveEndDate >= currentDate)) {
 					const discount = ((aCart.Product.price / 100) * aCart.Product.exclusive_offer).toFixed(2);
+					aCart.Product['is_exclusive_sale'] = true;
 					aCart.Product['discount'] = parseFloat(discount).toFixed(2);
 					aCart.Product['product_discounted_price'] = (parseFloat(aCart.Product['price']) - parseFloat(discount)).toFixed(2);
 					aCart['total_price'] = aCart.Product['product_discounted_price'] * aCart.quantity;
@@ -226,10 +231,6 @@ export async function cartCalculation(userID, req, res) {
 				} else if (coupon.discount_type == 2 && parseFloat(totalAmount).toFixed(2) >= parseFloat(coupon.discount_value).toFixed(2)) {
 					cart['discount_amount'] = parseFloat(coupon.discount_value).toFixed(2);
 				}
-			}
-			 else {
-			 	if(req.cookie)
-				res.clearCookie('applied_coupon');
 			}
 
 			await Promise.all(Object.keys(cart['marketplace_summary']).map(async (key) => {

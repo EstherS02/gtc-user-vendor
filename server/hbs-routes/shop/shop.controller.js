@@ -11,7 +11,6 @@ const async = require('async');
 
 export function shop(req, res) {
 	var categoryModel = "Category";
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var offset, limit, field, order;
 	var queryObj = {};
@@ -90,7 +89,9 @@ export function shop(req, res) {
 				});
 		},
 		retailers: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			delete queryObj['marketplace_id'];
 			queryObj['type'] = 'Public Marketplace';
 			field = 'sales_count';
@@ -105,7 +106,7 @@ export function shop(req, res) {
 					}
 					async.mapSeries(result.rows, function(aVendor, cb) {
 						vendorAvgRating['vendor_id'] = aVendor.id;
-						model['ProductRatings'].findOne({
+						model['ProductRating'].findOne({
 							where: vendorAvgRating,
 							attributes: [
 								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
@@ -127,7 +128,7 @@ export function shop(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+				});*/
 		},
 	}, function(err, results) {
 		if (!err) {

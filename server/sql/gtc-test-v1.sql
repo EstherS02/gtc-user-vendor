@@ -283,9 +283,9 @@ CREATE VIEW `vendor_user_product` AS
     GROUP BY `vendor`.`vendor_name`
 
 
-CREATE VIEW `order_items_overview` AS SELECT
+CREATE OR REPLACE VIEW `order_item_overview` AS SELECT
     oItem.id AS id,
-    oItem.order_id AS order_id,    
+    oItem.order_id AS order_id,
     ord.user_id AS user_id,
     p.id AS product_id,
     p.product_name AS product_name,
@@ -293,9 +293,7 @@ CREATE VIEW `order_items_overview` AS SELECT
     p.marketplace_id AS marketplace_id,
     oItem.final_price AS final_price,
     oItem.order_item_status AS order_item_status,
-    ord.order_status AS order_status,
-    (
-    SELECT NAME
+    ( SELECT NAME
 FROM
     marketplace mp
 WHERE

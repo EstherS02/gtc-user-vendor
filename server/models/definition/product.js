@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         product_slug: {
             type: DataTypes.STRING(255),
             field: 'product_slug',
-            allowNull: true
+            allowNull: false
         },
         vendor_id: {
             type: DataTypes.BIGINT,
@@ -97,7 +97,8 @@ module.exports = (sequelize, DataTypes) => {
         price: {
             type: DataTypes.DECIMAL(10, 2),
             field: 'price',
-            allowNull: true
+            allowNull: true,
+            defaultValue: 0.00
         },
         description: {
             type: DataTypes.TEXT,
@@ -118,7 +119,7 @@ module.exports = (sequelize, DataTypes) => {
         state_id: {
             type: DataTypes.BIGINT,
             field: 'state_id',
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'state',
                 key: 'id'
@@ -149,12 +150,14 @@ module.exports = (sequelize, DataTypes) => {
         individual_sale_only: {
             type: DataTypes.INTEGER,
             field: 'individual_sale_only',
-            allowNull: true
+            allowNull: true,
+            defaultValue: "0"
         },
         exclusive_sale: {
             type: DataTypes.INTEGER,
             field: 'exclusive_sale',
-            allowNull: true
+            allowNull: true,
+            defaultValue: "0"
         },
         exclusive_start_date: {
             type: DataTypes.DATE,
@@ -169,7 +172,8 @@ module.exports = (sequelize, DataTypes) => {
         exclusive_offer: {
             type: DataTypes.DECIMAL(10, 2),
             field: 'exclusive_offer',
-            allowNull: true
+            allowNull: true,
+            defaultValue: 0.00
         },
         exchanging_product_quantity: {
             type: DataTypes.INTEGER,
@@ -184,7 +188,8 @@ module.exports = (sequelize, DataTypes) => {
         shipping_cost: {
             type: DataTypes.DECIMAL(10, 2),
             field: 'shipping_cost',
-            allowNull: true
+            allowNull: true,
+            defaultValue: 0.00
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -227,7 +232,6 @@ module.exports.initRelations = () => {
     const CouponProduct = model.CouponProduct;
     const Discount = model.Discount;
     const FeaturedProduct = model.FeaturedProduct;
-    const OrderItem = model.OrderItem;
     const ProductAdsSetting = model.ProductAdsSetting;
     const ProductAttribute = model.ProductAttribute;
     const ProductMedia = model.ProductMedia;
@@ -243,9 +247,10 @@ module.exports.initRelations = () => {
     const State = model.State;
     const User = model.User;
     const Coupon = model.Coupon;
-    const Order = model.Order;
-    const Tax = model.Tax;
+    const Payment = model.Payment;
     const Attribute = model.Attribute;
+    const OrderItem = model.OrderItem;
+    const Order = model.Order;
 
     Product.hasMany(Cart, {
         foreignKey: 'product_id',
@@ -271,7 +276,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Product.hasOne(FeaturedProduct, {
+    Product.hasMany(FeaturedProduct, {
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -385,6 +390,14 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Product.belongsToMany(Payment, {
+        through: FeaturedProduct,
+        foreignKey: 'product_id',
+        otherKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Product.belongsToMany(Order, {
         through: OrderItem,
         foreignKey: 'product_id',
@@ -393,18 +406,10 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*Product.belongsToMany(Coupon, {
+     Product.belongsToMany(Coupon, {
         through: OrderItem,
         foreignKey: 'product_id',
         otherKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    Product.belongsToMany(Tax, {
-        through: OrderItem,
-        foreignKey: 'product_id',
-        otherKey: 'tax_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -421,6 +426,22 @@ module.exports.initRelations = () => {
         through: ProductAdsSetting,
         foreignKey: 'product_id',
         otherKey: 'state_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Product.belongsToMany(Vendor, {
+        through: ProductAdsSetting,
+        foreignKey: 'product_id',
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Product.belongsToMany(Payment, {
+        through: ProductAdsSetting,
+        foreignKey: 'product_id',
+        otherKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

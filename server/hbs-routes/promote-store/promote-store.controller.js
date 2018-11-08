@@ -60,7 +60,6 @@ export function promoteStore(req, res) {
 			}
 		},
 		function(err, results) {
-			console.log(results)
 			if (!err) {
 				res.render('vendorNav/promote-store', {
 					title: "Global Trade Connect",
@@ -71,7 +70,7 @@ export function promoteStore(req, res) {
 					marketPlace: marketplace,
 					selectedPage: 'promote-store',
 					vendorPlan: vendorPlan,
-					statusCode:statusCode
+					statusCode: statusCode
 				});
 			} else {
 				res.render('promote-store', err);

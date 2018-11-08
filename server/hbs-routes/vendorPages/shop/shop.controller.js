@@ -10,7 +10,7 @@ const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const marketplace_type = require('../../../config/marketplace_type');
 const cartService = require('../../../api/cart/cart.service');
-const shopService=require('../../../api/vendor/vendor-service')
+const shopService=require('../../../api/vendor/vendor.service')
 const Plan = require('../../../config/gtc-plan');
 const async = require('async');
 const _ = require('lodash');
@@ -23,7 +23,6 @@ export function vendorShop(req, res) {
 
 	let user_id = LoggedInUser.id;
 
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var bottomCategory = {};
@@ -162,9 +161,11 @@ export function vendorShop(req, res) {
 		},
 		categoryWithProductCount: function(callback) {
 			var resultObj = {};
+			var categoryWithProductCount = {};
 			shopService.vendorProductCountForFilter(queryObj)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
+					var count = 0;
 					_.each(char, function(o) {
 						if (_.isUndefined(resultObj[o.categoryname])) {
 							resultObj[o.categoryname] = {};
@@ -180,8 +181,11 @@ export function vendorShop(req, res) {
 						subCatObj["count"] = o.subproductcount;
 						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+						count= count + o.subproductcount;
 					})
-					return callback(null, resultObj);
+					categoryWithProductCount.rows = resultObj;
+					categoryWithProductCount.count = count;
+					return callback(null, categoryWithProductCount);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);

@@ -1,28 +1,26 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('ProductRatings', {
-        product_id : {
+    return sequelize.define('ProductRating', {
+        product_id: {
             type: DataTypes.BIGINT,
             field: 'product_id',
-            allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            allowNull: true
         },
         product_rating: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.DECIMAL(14, 4),
             field: 'product_rating',
             allowNull: true
         },
         sku: {
             type: DataTypes.STRING(32),
             field: 'sku',
-            allowNull: false
+            allowNull: true
         },
         product_name: {
             type: DataTypes.STRING(255),
             field: 'product_name',
-            allowNull: false
+            allowNull: true
         },
         product_slug: {
             type: DataTypes.STRING(255),
@@ -32,17 +30,17 @@ module.exports = (sequelize, DataTypes) => {
         vendor_id: {
             type: DataTypes.BIGINT,
             field: 'vendor_id',
-            allowNull: false
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: false
+            allowNull: true
         },
         marketplace_id: {
             type: DataTypes.BIGINT,
             field: 'marketplace_id',
-            allowNull: false
+            allowNull: true
         },
         marketplace_type_id: {
             type: DataTypes.BIGINT,
@@ -52,31 +50,26 @@ module.exports = (sequelize, DataTypes) => {
         publish_date: {
             type: DataTypes.DATEONLY,
             field: 'publish_date',
-            allowNull: false
+            allowNull: true
         },
         product_category_id: {
             type: DataTypes.BIGINT,
             field: 'product_category_id',
-            allowNull: false
+            allowNull: true
         },
         quantity_available: {
             type: DataTypes.INTEGER,
             field: 'quantity_available',
-            allowNull: false
+            allowNull: true
         },
         sub_category_id: {
             type: DataTypes.BIGINT,
             field: 'sub_category_id',
-            allowNull: false
-        },
-        price: {
-            type: DataTypes.DECIMAL(10, 1),
-            field: 'price',
             allowNull: true
         },
-        shipping_cost: {
-            type: DataTypes.DECIMAL(10, 1),
-            field: 'shipping_cost',
+        price: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'price',
             allowNull: true
         },
         description: {
@@ -87,7 +80,7 @@ module.exports = (sequelize, DataTypes) => {
         product_location: {
             type: DataTypes.BIGINT,
             field: 'product_location',
-            allowNull: false
+            allowNull: true
         },
         state_id: {
             type: DataTypes.BIGINT,
@@ -102,6 +95,31 @@ module.exports = (sequelize, DataTypes) => {
         moq: {
             type: DataTypes.INTEGER,
             field: 'moq',
+            allowNull: true
+        },
+        individual_sale_only: {
+            type: DataTypes.INTEGER,
+            field: 'individual_sale_only',
+            allowNull: true
+        },
+        exclusive_sale: {
+            type: DataTypes.INTEGER,
+            field: 'exclusive_sale',
+            allowNull: true
+        },
+        exchanging_product_quantity: {
+            type: DataTypes.INTEGER,
+            field: 'exchanging_product_quantity',
+            allowNull: true
+        },
+        exchanging_product: {
+            type: DataTypes.STRING(255),
+            field: 'exchanging_product',
+            allowNull: true
+        },
+        shipping_cost: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'shipping_cost',
             allowNull: true
         },
         created_by: {
