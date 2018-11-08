@@ -198,7 +198,13 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 	}
 }
 
-export function productView(productID) {
+export function productView(productID,isUserId) {
+	var vendorAttributes = [];
+	if (isUserId) {
+		vendorAttributes = ['id', 'vendor_name', 'vendor_profile_pic_url'];
+	} else {
+		vendorAttributes = ['vendor_profile_pic_url'];
+	}
 	return new Promise((resolve, reject) => {
 		model['Product'].findOne({
 			where: {
@@ -211,11 +217,26 @@ export function productView(productID) {
 					status: status['ACTIVE']
 				},
 				attributes: ['id', 'name', 'code', 'status']
-			},{
-				model :model['Vendor'],
+			}, {
+				model: model['Vendor'],
+				include: [{
+					model: model['VendorPlan'],
+					attributes: [],
+					where: {
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					}
+				}],
+				attributes: vendorAttributes,
 				where: {
 					status: status['ACTIVE']
-				},
+				}
+
 			}, {
 				model: model['Marketplace'],
 				where: {

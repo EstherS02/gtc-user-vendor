@@ -87,7 +87,7 @@ export function product(req, res) {
 					});
 			},
 			productDetail: function(callback) {
-				productService.productView(productID)
+				productService.productView(productID,LoggedInUser.id)
 					.then((product) => {
 						if (product.Reviews.length > 0) {
 							var newProductRating = parseFloat(product.Reviews[0].productRating);
@@ -310,7 +310,7 @@ export function product(req, res) {
 							talkThreadUsersQueryObj['user_id'] = {
 								'$in': [response.user_id, LoggedInUser.id]
 							}
-							model['TalkThreadUsers'].findAll({
+							model['TalkThreadUser'].findAll({
 								where: talkThreadUsersQueryObj,
 								attributes: ['id', 'thread_id', 'user_id']
 							}).then(function(instance) {
