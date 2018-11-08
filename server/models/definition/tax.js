@@ -76,46 +76,12 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const Tax = model.Tax;
-    const OrderItem = model.OrderItem;
     const Country = model.Country;
-    const Order = model.Order;
-    const Product = model.Product;
-    const Coupon = model.Coupon;
-
-    Tax.hasMany(OrderItem, {
-        foreignKey: 'tax_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
 
     Tax.belongsTo(Country, {
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    Tax.belongsToMany(Order, {
-        through: OrderItem,
-        foreignKey: 'tax_id',
-        otherKey: 'order_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Tax.belongsToMany(Product, {
-        through: OrderItem,
-        foreignKey: 'tax_id',
-        otherKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-   /* Tax.belongsToMany(Coupon, {
-        through: OrderItem,
-        foreignKey: 'tax_id',
-        otherKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
 
 };

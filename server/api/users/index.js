@@ -10,11 +10,11 @@ router.get('/', auth.isAuthenticated(), controller.index);
 router.post('/', controller.create);
 router.post('/resend', controller.resend);
 router.put('/user-authenticate', controller.userAuthenticate);
-router.put('/change-password', auth.isAuthenticated() , controller.changePassword);
-router.put('/user-profile', auth.isAuthenticated() , controller.userProfile);
-router.put('/user-vendor-follow', auth.isAuthenticated() , controller.vendorFollow);
-router.get('/forgot-password/:email', controller.forgotPassword);
-router.put('/reset-password', controller.resetPassword);
+router.put('/change-password', auth.isAuthenticated(), controller.changePassword);
+router.put('/user-profile', auth.isAuthenticated(), controller.userProfile);
+router.put('/user-vendor-follow', auth.isAuthenticatedUser(), controller.vendorFollow);
+router.get('/forgot-password/:email', auth.isAuthenticated(), controller.forgotPassword);
+router.put('/reset-password', auth.isAuthenticated(), controller.resetPassword);
 router.put('/contact-email', auth.isAuthenticated(), controller.updateContactEmail);
 
 module.exports = router;

@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         vendor_id: {
             type: DataTypes.BIGINT,
             field: 'vendor_id',
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'vendor',
                 key: 'id'
@@ -83,4 +83,5 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
+
 };

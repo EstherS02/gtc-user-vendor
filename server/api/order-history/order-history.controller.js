@@ -8,67 +8,25 @@ const statusCode = require('../../config/status');
 const _ = require('lodash');
 const carrierCode = require('../../config/carriers');
 const orderStatusCode = require('../../config/order_status');
+const sendEmail = require('../../agenda/send-email');
 const async = require('async');
 const populate = require('../../utilities/populate');
 const orderItemStatus = require('../../config/order-item-status');
-const addressCode = require('../../config/address');
-const trackingUrlCode = require('../../config/tracking-url');
 const moment = require('moment');
 const numeral = require('numeral');
 const Handlebars = require('handlebars');
 
 var emailTemplateModel = "EmailTemplate";
-var notificationTemplateModel = 'NotificationSetting';
 
-export function updateStatus(req, res) {
+export function updateStatusOld(req, res) {
 
-	var paramsID, date;
+	var paramsID, order_status, date;
 	var bodyParams = {}, shippingInput = {};
+	var orderStatusIncludeArr = [];
 
 	paramsID = req.params.id;
 	bodyParams = req.body;
 	date = new Date();
-
-	if (bodyParams.provider_name) {
-		shippingInput['provider_name'] = bodyParams.provider_name;
-		delete bodyParams.provider_name;
-	}
-
-	if (bodyParams.tracking_id) {
-		shippingInput['tracking_id'] = bodyParams.tracking_id;
-		delete bodyParams.tracking_id;
-	}
-
-	if (bodyParams.order_status == orderStatusCode.DISPATCHEDORDER){
-		bodyParams['shipped_on'] = date;
-	}
-
-	if (bodyParams.order_status == orderStatusCode.DELIVEREDORDER){
-		bodyParams['delivered_on'] = date;
-	}
-
-	bodyParams["last_updated_by"] = req.user.Vendor.vendor_name;
-	bodyParams["last_updated_on"] = new Date();
-
-	if (shippingInput.provider_name) {
-
-		shippingInput['status'] = statusCode.ACTIVE;
-		service.createRow('Shipping', shippingInput)
-			.then(function(res) {
-				
-				bodyParams["shipping_id"] = res.id;
-				return orderStatusUpdate(paramsID, bodyParams);
-			}).catch(function(error) {
-				return orderStatusUpdate(paramsID, bodyParams);
-			})
-	} else{
-		orderStatusUpdate(paramsID, bodyParams);
-	}
-	return res.status(201).send("Updated");
-}
-
-function orderStatusUpdate(paramsID, bodyParams) {
-	var orderStatusIncludeArr = [], updateOrder = {};
 
 	orderStatusIncludeArr = [
 		{
@@ -91,7 +49,9 @@ function orderStatusUpdate(paramsID, bodyParams) {
 						{ 
 							model: model['Vendor'],
 							attributes:['id', 'vendor_name'],
-						},
+						}
+					],
+					include: [
 						{ 
 							model: model['ProductMedia'],
 							attributes:['id', 'url'],
@@ -100,313 +60,191 @@ function orderStatusUpdate(paramsID, bodyParams) {
 					attributes:['id', 'vendor_id', 'product_name', 'product_slug'],
 				}
 			]
-		}		
+		}
 	]
 
-	return service.findIdRow("Order", paramsID, orderStatusIncludeArr)
-		.then(function(Order){
-			updateOrder = Order;
-			delete bodyParams['id'];
-			return service.updateRow("Order", bodyParams, paramsID);
+	if (bodyParams.provider_name) {
+		shippingInput['provider_name'] = bodyParams.provider_name;
+		delete bodyParams.provider_name;
+	}
 
-		}).then(function(updatedOrder){
-			if (updatedOrder) {
-				if (updateOrder.User.user_contact_email) {
-					if(bodyParams.order_status == orderStatusCode.CONFIRMEDORDER){
-						orderConfirmedByVendorMail(updateOrder);
-						return;
-					}else if(bodyParams.order_status == orderStatusCode.DISPATCHEDORDER){
-						orderShippedByVendorMail(updateOrder);
-						return;
-					}else if(bodyParams.order_status == orderStatusCode.DELIVEREDORDER){
-						orderDeliveredMail(updateOrder);
-						return;
-					}
-				}
+	if (bodyParams.tracking_id) {
+		shippingInput['tracking_id'] = bodyParams.tracking_id;
+		delete bodyParams.tracking_id;
+	}
+
+	if (bodyParams.order_status == orderStatusCode.CONFIRMEDORDER){
+		order_status = orderStatusCode.CONFIRMEDORDER;
+	}
+
+	if (bodyParams.order_status == orderStatusCode.PROCESSINGORDER){
+		order_status = 'processed';
+	}
+
+	if (bodyParams.order_status == orderStatusCode.DISPATCHEDORDER){
+		order_status = 'dispatched';
+		bodyParams['shipped_on'] = date;
+	}
+
+	if (bodyParams.order_status == orderStatusCode.DELIVEREDORDER){
+		order_status = 'delivered';
+		bodyParams['delivered_on'] = date;
+	}
+
+	bodyParams["last_updated_on"] = new Date();
+
+	if (shippingInput.provider_name) {
+
+		shippingInput['status'] = statusCode.ACTIVE;
+		service.createRow('Shipping', shippingInput)
+			.then(function(res) {
+				
+				bodyParams["shipping_id"] = res.id;
+				orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, function(response) {
+					console.log(response);
+				});
+			}).catch(function(err) {
+				console.log(err);
+				orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, function(response) {
+					console.log(response);
+				});
+			})
+	} else{
+		
+		orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, function(response) {
+			console.log(response);
+		});
+	}
+	return res.status(201).send("Updated");
+}
+
+export async function updateStatus(req, res) {
+	req.checkBody('select_courier', 'Missing Query Param').notEmpty();
+	req.checkBody('expected_delivery_date', 'Missing Query Param').notEmpty();
+	req.checkBody('tracking_id', 'Missing Query Param').notEmpty();
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+	if (new Date() > new Date(req.body.expected_delivery_date)) {
+		return res.status(400).send("Invalid delivery date.");
+	}
+
+	let oredrId = req.params.id;
+
+	try {
+		
+	} catch(error) {
+		console.log('dispatch product Error:::', error);
+		return res.status(500).send(error);
+	}
+}
+
+function orderStatusUpdate(paramsID, orderStatusIncludeArr, bodyParams, order_status, res) {
+
+	service.findIdRow("Order", paramsID, orderStatusIncludeArr)
+		.then(function(updateOrder) {
+			if (updateOrder) {
+				delete bodyParams["id"];
+
+				service.updateRow("Order", bodyParams, paramsID)
+					.then(function(result) {
+						if (result) {
+							if (updateOrder.User.user_contact_email) {
+
+								if(order_status == orderStatusCode.CONFIRMEDORDER){
+									orderConfirmedByVendorMail(updateOrder);
+								}else{
+
+									var order_id = updateOrder.id;
+									var user_email = updateOrder.User.user_contact_email;
+
+									var queryObjEmailTemplate = {};
+									queryObjEmailTemplate['name'] = config.email.templates.orderMail;
+
+									service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+										.then(function(response) {
+											if (response) {
+												var email = user_email;
+												var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
+												var body;
+
+												body = response.body.replace('%ORDER_MSG%', order_status);
+												body = body.replace('%ORDER_TYPE%', 'Order Status');
+												body = body.replace('%ORDER_NUMBER%', order_id);
+												
+												sendEmail({
+													to: email,
+													subject: subject,
+													html: body
+												});
+												return result;
+											} else {
+												return result;
+											}
+										}).catch(function(error) {
+											console.log('Error :::', error);
+											return error;
+										});
+								}
+							} else {
+								return "Unable to sent";
+							}
+						} else {
+							return null;
+						}
+					}).catch(function(error) {
+						console.log('Error:::', error);
+						return error;
+					})
+			}else{
+				return null;
 			}
-			return;
 		}).catch(function(error) {
 			console.log('Error :::', error);
 			return error;
-		})
+		});
 }
 
 function orderConfirmedByVendorMail(updateOrder){
-	var queryObjEmailTemplate = {}, data = {};
-	var mailArray = [], orderItems = [];
+	var queryObjEmailTemplate = {}, data = {}, orderItems = [];
 	var email, subject, body, template, result;
 
 	queryObjEmailTemplate['name'] = config.email.templates.vendorOrderConformation;
-	var agenda = require('../../app').get('agenda');
 
-	return service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+	service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 		.then(function(mailTemplate) {
+			if(mailTemplate){
 
-			orderItems = updateOrder.OrderItems;
+				orderItems = updateOrder.OrderItems;
 
-			email = updateOrder.User.user_contact_email;
-			subject = mailTemplate.subject;
-			body = mailTemplate.body.replace(/%CURRENCY%/g, '$');
-			body = body.replace('%USER_NAME%', updateOrder.User.first_name);
-			body = body.replace(/%VENDOR_NAME%/g,updateOrder.OrderItems[0].Product.Vendor.vendor_name);
-			body = body.replace(/%ORDER_ID%/g, updateOrder.id);
-			body = body.replace('%PLACED_ON%', moment(updateOrder.ordered_date).format('MMM D, Y'));
-			body = body.replace('%TOTAL_PRICE%', numeral(updateOrder.total_price).format('$' + '0,0.00'));
+				email = updateOrder.User.user_contact_email;
+				subject = mailTemplate.subject;
+				body = mailTemplate.body.replace(/%CURRENCY%/g, '$');
+				body = body.replace('%USER_NAME%', updateOrder.User.first_name);
+				//body = body.replace(/%VENDOR_NAME%/g, orderItems[0].Product.Vendor.vendor_name);
+				body = body.replace(/%ORDER_ID%/g, updateOrder.id);
+				body = body.replace('%PLACED_ON%', moment(updateOrder.created_on).format('MMM D, Y'));
+				body = body.replace('%TOTAL_PRICE%', numeral(updateOrder.total_price).format('$' + '0,0.00'));
 
-			template = Handlebars.compile(body);
-			data = {
-				OrderItems: orderItems
-			};
-			result = template(data);
+				template = Handlebars.compile(body);
+				data = {
+					OrderItems: orderItems
+				};
+				result = template(data);
 
-			mailArray.push({
-				to: email,
-				subject: subject,
-				html: result
-			});
-			agenda.now(config.jobs.email, {
-				mailArray: mailArray
-			});
-			var notificationQueryObj ={};
-			notificationQueryObj['code'] = config.notification.templates.orderStatus;
-
-			return service.findOneRow(notificationTemplateModel, notificationQueryObj);
-		}).then(function(notificationTemplate){
-			var description, notificationBodyParam = {};
-			description = notificationTemplate.description.replace(/%ORDER_ID%/g,updateOrder.id);
-			description = description.replace('%ORDER_STATUS%', 'Confirmed by seller');
-
-			notificationBodyParam.user_id = updateOrder.User.id;
-			notificationBodyParam.description = description;
-			notificationBodyParam.name = notificationTemplate.name;
-			notificationBodyParam.code = notificationTemplate.code;
-			notificationBodyParam.is_read = 1;
-			notificationBodyParam.status = statusCode.ACTIVE;
-			notificationBodyParam.created_on = new Date();
-			notificationBodyParam.created_by = updateOrder.OrderItems[0].Product.Vendor.vendor_name;
-
-			return service.createRow('Notification', notificationBodyParam);
+				sendEmail({
+					to: email,
+					subject: subject,
+					html: result
+				});
+				return;
+			}
 		}).catch(function(error){
 			console.log("Error::",error);
-			return;
 		})
-}
-
-function orderShippedByVendorMail(updateOrder){
-	var queryObjEmailTemplate = {}, order = {}, orderIncludeArr=[];
-	var email, subject, body, trackingUrl, totalItems;
-
-	totalItems = updateOrder.OrderItems.length;
-
-	queryObjEmailTemplate['name'] = config.email.templates.vendorOrderShipped;
-
-	orderIncludeArr = [
-		{
-			model: model['Shipping'],
-			where:{
-				status: statusCode.ACTIVE
-			},
-			attributes:['id', 'provider_name', 'tracking_id']
-		},
-		{
-			model: model['Address'],
-			as: 'shippingAddress',
-			where:{
-				status: statusCode.ACTIVE
-			},
-			include: [
-				{ 
-					model: model['State'],
-					attributes:['id', 'name'],
-					where:{
-						status: statusCode.ACTIVE
-					}
-				},
-				{ 
-					model: model['Country'],
-					attributes:['id', 'name'],
-					where:{
-					status: statusCode.ACTIVE
-					}
-				}
-			],
-			attributes:['id', 'address_line1', 'address_line2','province_id','country_id', 'city']
-		},
-		{
-			model: model['Address'],
-			as: 'billingAddress',
-			where:{
-				status: statusCode.ACTIVE
-			},
-			include: [
-				{ 
-					model: model['State'],
-					attributes:['id', 'name'],
-					where:{
-						status: statusCode.ACTIVE
-					}
-				},
-				{ 
-					model: model['Country'],
-					attributes:['id', 'name'],
-					where:{
-					status: statusCode.ACTIVE
-					}
-				}
-			],
-			attributes:['id', 'address_line1', 'address_line2','province_id','country_id', 'city']
-		}
-	];
-	return service.findIdRow('Order', updateOrder.id,orderIncludeArr)
-	.then(function(Order){
-		order = Order;
-		return service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-	}).then(function(mailTemplate){
-		var agenda = require('../../app').get('agenda');
-		var mailArray = [];
-		trackingUrl = (_.invert(trackingUrlCode))[order.Shipping.provider_name]+'/'+ order.Shipping.tracking_id;
-
-		email = updateOrder.User.user_contact_email;
-		subject = mailTemplate.subject.replace('%ORDER_ID%',updateOrder.id);
-		body = mailTemplate.body.replace('%USER_NAME%', updateOrder.User.first_name);
-		body = body.replace(/%VENDOR_NAME%/g, updateOrder.OrderItems[0].Product.Vendor.vendor_name);
-		body = body.replace('%ORDER_ID%',updateOrder.id);
-		body = body.replace('%ORDERED_DATE%', moment(updateOrder.ordered_date).format('MMM D, Y'));
-		body = body.replace('%SHIPPED_DATE%', moment(order.shipped_on).format('MMM D, Y'));
-		body = body.replace('%TOTAL_CHARGE%', numeral(updateOrder.total_price).format('$' + '0,0.00'));
-		body = body.replace('%SHIPPING_METHOD%', 'Standard Shipping');
-		body = body.replace('%SHIPPING_ADDRESS_LINE1%', order.shippingAddress.address_line1);
-		body = body.replace('%SHIPPING_ADDRESS_LINE2%', order.shippingAddress.address_line2);
-		body = body.replace('%SHIPPING_CITY%', order.shippingAddress.city);
-		body = body.replace('%SHIPPING_STATE%', order.shippingAddress.State.name);
-		body = body.replace('%SHIPPING_COUNTRY%', order.shippingAddress.Country.name);
-		body = body.replace('%BILLING_ADDRESS_LINE1%', order.billingAddress.address_line1);
-		body = body.replace('%BILLING_ADDRESS_LINE2%', order.billingAddress.address_line2);
-		body = body.replace('%BILLING_CITY%', order.billingAddress.city);
-		body = body.replace('%BILLING_STATE%', order.billingAddress.State.name);
-		body = body.replace('%BILLING_COUNTRY%', order.billingAddress.Country.name);
-		body = body.replace('%TRACKING_URL%', trackingUrl);
-		body = body.replace('%TOTAL_ITEM%', totalItems);
-
-		mailArray.push({
-			to: email,
-			subject: subject,
-			html: body
-		});
-		agenda.now(config.jobs.email, {
-			mailArray: mailArray
-		});
-
-		var notificationQueryObj ={};
-		notificationQueryObj['code'] = config.notification.templates.orderStatus;
-
-		return service.findOneRow(notificationTemplateModel, notificationQueryObj);
-	}).then(function(notificationTemplate){
-		
-		var description, notificationBodyParam = {};
-		description = notificationTemplate.description.replace(/%ORDER_ID%/g,updateOrder.id);
-		description = description.replace('%ORDER_STATUS%', 'Shipped');
-
-		notificationBodyParam.user_id = updateOrder.User.id;
-		notificationBodyParam.description = description;
-		notificationBodyParam.name = notificationTemplate.name;
-		notificationBodyParam.code = notificationTemplate.code;
-		notificationBodyParam.is_read = 1;
-		notificationBodyParam.status = statusCode.ACTIVE;
-		notificationBodyParam.created_on = new Date();
-		notificationBodyParam.created_by = updateOrder.OrderItems[0].Product.Vendor.vendor_name;
-
-		return service.createRow('Notification', notificationBodyParam);
-	}).catch(function(error){
-		console.log("Error::",error);
-		return;
-	})
-}
-
-function orderDeliveredMail(updateOrder){
-
-	var queryObjEmailTemplate = {}, orderIncludeArr=[],order={};
-	var email, subject, body;
-
-	queryObjEmailTemplate['name'] = config.email.templates.orderDelivered;
-
-	orderIncludeArr = [
-		{
-			model: model['Address'],
-			as: 'shippingAddress',
-			where:{
-				status: statusCode.ACTIVE
-			},
-			include: [
-				{ 
-					model: model['State'],
-					attributes:['id', 'name'],
-					where:{
-						status: statusCode.ACTIVE
-					}
-				},
-				{ 
-					model: model['Country'],
-					attributes:['id', 'name'],
-					where:{
-					status: statusCode.ACTIVE
-					}
-				}
-			],
-		}
-	];
-
-	return service.findIdRow('Order', updateOrder.id,orderIncludeArr)
-	.then(function(Order){
-		order = Order;
-		return service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-	}).then(function(mailTemplate){
-		var agenda = require('../../app').get('agenda');
-		var mailArray = []
-		
-		email = updateOrder.User.user_contact_email;
-		subject = mailTemplate.subject.replace('%ORDER_ID%',updateOrder.id);
-		body = mailTemplate.body.replace('%USER_NAME%', updateOrder.User.first_name);
-		body = body.replace('%ORDER_ID%', updateOrder.id);
-		body = body.replace('%DELIVERED_DATE%', moment(order.delivered_on).format('MMM D, Y'));
-		body = body.replace('%ADDRESS_LINE1%', order.shippingAddress.address_line1);
-		body = body.replace('%ADDRESS_LINE2%', order.shippingAddress.address_line2);
-		body = body.replace('%CITY%', order.shippingAddress.city);
-		body = body.replace('%STATE%', order.shippingAddress.State.name);
-		body = body.replace('%COUNTRY%', order.shippingAddress.Country.name);
-
-		mailArray.push({
-			to: email,
-			subject: subject,
-			html: body
-		});
-		agenda.now(config.jobs.email, {
-			mailArray: mailArray
-		});
-
-		var notificationQueryObj ={};
-		notificationQueryObj['code'] = config.notification.templates.orderStatus;
-
-		return service.findOneRow(notificationTemplateModel, notificationQueryObj);
-	}).then(function(notificationTemplate){
-		var description, notificationBodyParam = {};
-		description = notificationTemplate.description.replace(/%ORDER_ID%/g,updateOrder.id);
-		description = description.replace('%ORDER_STATUS%', 'Delivered');
-
-		notificationBodyParam.user_id = updateOrder.User.id;
-		notificationBodyParam.description = description;
-		notificationBodyParam.name = notificationTemplate.name;
-		notificationBodyParam.code = notificationTemplate.code;
-		notificationBodyParam.is_read = 1;
-		notificationBodyParam.status = statusCode.ACTIVE;
-		notificationBodyParam.created_on = new Date();
-		notificationBodyParam.created_by = updateOrder.OrderItems[0].Product.Vendor.vendor_name;
-
-		return service.createRow('Notification', notificationBodyParam);
-	}).catch(function(error){
-		console.log("Error::",error);
-		return;
-	})
 }
 
 export function vendorCancel(req, res) {
@@ -439,9 +277,6 @@ export function vendorCancel(req, res) {
 						service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 							.then(function(response) {
 								if (response) {
-									
-									var agenda = require('../../app').get('agenda');
-									var mailArray = [];
 									var email = user_email;
 									reason_for_cancellation = bodyParams.reason_for_cancellation;
 									var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
@@ -455,13 +290,10 @@ export function vendorCancel(req, res) {
 
 									//body = body.replace('%LINK%', config.baseUrl + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
 
-									mailArray.push({
+									sendEmail({
 										to: email,
 										subject: subject,
 										html: body
-									});
-									agenda.now(config.jobs.email, {
-										mailArray: mailArray
 									});
 									return res.status(201).send(response);
 								} else {
@@ -528,6 +360,7 @@ export function returnRequest(req, res) {
 									id: req.body.order_id
 								};
 								service.updateRecord('Order', OrderItem, refundObj);
+
 							}
 
 							if(item.Product.Vendor.User.user_contact_email){
@@ -540,8 +373,6 @@ export function returnRequest(req, res) {
 								reason_for_return = req.body.reason_for_return;
 								email = item.Product.Vendor.User.user_contact_email;
 								returnRequestnotification(req.params.id,req.user);
-								var agenda = require('../../app').get('agenda');
-
 								service.findOneRow(emailTemplateModel, emailTemplateQueryObj)
 									.then(function(template) {
 										var mailBody;
@@ -554,16 +385,11 @@ export function returnRequest(req, res) {
 										mailBody = mailBody.replace('%USER%', user_name);
 										mailBody = mailBody.replace('%REASON_FOR_RETURN%', reason_for_return);
 
-										var mailArray = [];
-										mailArray.push({
+										sendEmail({
 											to: email,
 											subject: subject,
 											html: mailBody
 										});
-										agenda.now(config.jobs.email, {
-											mailArray: mailArray
-										});
-
 										return res.status(201).send("Return Request Email Sent");
 
 									}).catch(function(error) {
@@ -595,8 +421,9 @@ function returnRequestnotification(refundOrderitemsID, user) {
 		if (OrderRefundList) {
 			var orderRefundList = OrderRefundList.rows;
 			var queryObjNotification = {};
+	        var NotificationTemplateModel = 'NotificationSetting';
 	        queryObjNotification['code'] = config.notification.templates.refundRequest;
-	        service.findOneRow(notificationTemplateModel, queryObjNotification)
+	        service.findOneRow(NotificationTemplateModel, queryObjNotification)
 		    .then(function(response) {
 			var bodyParams = {};
 			bodyParams.user_id = user.id;

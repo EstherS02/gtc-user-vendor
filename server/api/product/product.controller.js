@@ -141,7 +141,6 @@ export async function create(req, res) {
 	//req.checkBody('price', 'Missing Query Param').notEmpty();
 	req.checkBody('exclusive_sale', 'Missing Query Param').notEmpty();
 
-	//if (req.body.marketplace_id === marketplace['WHOLESALE']) { // Not correct syntax
 	if (req.body.marketplace_id == marketplace['WHOLESALE']) {
 		req.checkBody('marketplace_type_id', 'Missing Query Param').notEmpty();
 		req.checkBody('moq', 'Missing Query Param').notEmpty();
@@ -303,15 +302,12 @@ export async function edit(req, res) {
 		req.body.exclusive_offer = parseInt(req.body.exclusive_offer);
 		req.checkBody('exclusive_start_date', 'Missing Query Param').notEmpty();
 		req.checkBody('exclusive_end_date', 'Missing Query Param').notEmpty();
-		req.checkBody('exclusive_offer', 'Missing Query Param').notEmpty().isInt({
-			gt: 0
-		});
+		req.checkBody('exclusive_offer', 'Missing Query Param').notEmpty();
 
 		const startDate = new Date(req.body.exclusive_start_date);
 		const endDate = new Date(req.body.exclusive_end_date);
-		const currentDate = new Date();
 
-		if (startDate >= currentDate && endDate > startDate) {
+		if (startDate < endDate && endDate > startDate) {
 			req.body.exclusive_end_date = new Date(req.body.exclusive_end_date);
 			req.body.exclusive_start_date = new Date(req.body.exclusive_start_date);
 		} else {

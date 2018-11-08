@@ -10,17 +10,22 @@ const vendorPlan = require('../../config/gtc-plan');
 
 export function adList(req, res) {
 
-	var LoggedInUser = {}, bottomCategory = {}, queryObj = {}, queryURI = {}, queryPaginationObj = {};
+	var LoggedInUser = {},
+		bottomCategory = {},
+		queryObj = {},
+		queryURI = {},
+		queryPaginationObj = {};
 	var offset, limit, order, page, field, user_id;
 	var includeArrAds = [];
 
 	if (req.user)
 		LoggedInUser = req.user;
 
-	includeArrAds = [
-		{ model: model['Country'] }, 
-		{ model: model['State']}
-	];
+	includeArrAds = [{
+		model: model['Country']
+	}, {
+		model: model['State']
+	}];
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -76,7 +81,7 @@ export function adList(req, res) {
 			categoryLimit = null;
 			categoryField = "id";
 			categoryOrder = "asc";
-			
+
 			categoryQueryObj['status'] = status["ACTIVE"];
 
 			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
@@ -123,7 +128,10 @@ export function adList(req, res) {
 
 export function adForm(req, res) {
 
-	var LoggedInUser = {}, bottomCategory = {}, queryObj = {}, queryObjAds = {};
+	var LoggedInUser = {},
+		bottomCategory = {},
+		queryObj = {},
+		queryObjAds = {};
 	var user_id;
 	var includeArrAds = [];
 
@@ -132,10 +140,11 @@ export function adForm(req, res) {
 
 	user_id = LoggedInUser.id;
 
-	includeArrAds = [
-		{ model: model['Country'] },
-		{ model: model['State']	}
-	];
+	includeArrAds = [{
+		model: model['Country']
+	}, {
+		model: model['State']
+	}];
 
 	if (req.params.id) {
 		queryObjAds['id'] = req.params.id;
@@ -166,7 +175,7 @@ export function adForm(req, res) {
 			categoryLimit = null;
 			categoryField = "id";
 			categoryOrder = "asc";
-			
+
 			categoryQueryObj['status'] = status["ACTIVE"];
 
 			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)

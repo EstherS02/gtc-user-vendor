@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('OrderPayment', {
+    return sequelize.define('OrderVendorPayout', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        order_id: {
+        order_vendor_id: {
             type: DataTypes.BIGINT,
-            field: 'order_id',
+            field: 'order_vendor_id',
             allowNull: false,
             references: {
-                model: 'orders',
+                model: 'order_vendor',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -31,11 +31,6 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        order_payment_type: {
-            type: DataTypes.INTEGER,
-            field: 'order_payment_type',
-            allowNull: true
-        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
@@ -44,12 +39,12 @@ module.exports = (sequelize, DataTypes) => {
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
-            allowNull: true
+            allowNull: false
         },
         created_on: {
             type: DataTypes.DATE,
             field: 'created_on',
-            allowNull: true
+            allowNull: false
         },
         last_updated_by: {
             type: DataTypes.STRING(64),
@@ -67,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'order_payment',
+        tableName: 'order_vendor_payout',
         timestamps: false
     });
 };
@@ -76,17 +71,17 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const OrderPayment = model.OrderPayment;
-    const Order = model.Order;
+    const OrderVendorPayout = model.OrderVendorPayout;
+    const OrderVendor = model.OrderVendor;
     const Payment = model.Payment;
 
-    OrderPayment.belongsTo(Order, {
-        foreignKey: 'order_id',
+    OrderVendorPayout.belongsTo(OrderVendor, {
+        foreignKey: 'order_vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    OrderPayment.belongsTo(Payment, {
+    OrderVendorPayout.belongsTo(Payment, {
         foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

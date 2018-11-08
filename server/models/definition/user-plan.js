@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         user_id: {
             type: DataTypes.BIGINT,
             field: 'user_id',
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'users',
                 key: 'id'
@@ -23,15 +23,15 @@ module.exports = (sequelize, DataTypes) => {
         plan_id: {
             type: DataTypes.BIGINT,
             field: 'plan_id',
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'plan',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-		},
-		payment_id: {
+        },
+        payment_id: {
             type: DataTypes.BIGINT,
             field: 'payment_id',
             allowNull: true,
@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-		start_date: {
+        start_date: {
             type: DataTypes.DATEONLY,
             field: 'start_date',
             allowNull: false
@@ -56,8 +56,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
-		},
-		auto_renewal: {
+        },
+        auto_renewal: {
             type: DataTypes.INTEGER,
             field: 'auto_renewal',
             allowNull: true
@@ -99,10 +99,10 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const UserPlan = model.UserPlan;
     const User = model.User;
-	const Plan = model.Plan;
+    const Plan = model.Plan;
     const Payment = model.Payment;
-  	
-	UserPlan.belongsTo(User, {
+
+    UserPlan.belongsTo(User, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -120,5 +120,4 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
- 
 };

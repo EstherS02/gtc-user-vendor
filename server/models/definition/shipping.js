@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'provider_name',
             allowNull: true
         },
-		tracking_id: {
+        tracking_id: {
             type: DataTypes.STRING(64),
             field: 'tracking_id',
             allowNull: true
@@ -61,10 +61,18 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const Shipping = model.Shipping;
     const Order = model.Order;
+    const OrderVendor = model.OrderVendor;
     const User = model.User;
+    const Payment = model.Payment;
     const Address = model.Address;
 
     Shipping.hasMany(Order, {
+        foreignKey: 'shipping_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Shipping.hasMany(OrderVendor, {
         foreignKey: 'shipping_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -74,6 +82,14 @@ module.exports.initRelations = () => {
         through: Order,
         foreignKey: 'shipping_id',
         otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Shipping.belongsToMany(Payment, {
+        through: Order,
+        foreignKey: 'shipping_id',
+        otherKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -90,6 +106,14 @@ module.exports.initRelations = () => {
         through: Order,
         foreignKey: 'shipping_id',
         otherKey: 'billing_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Shipping.belongsToMany(Order, {
+        through: OrderVendor,
+        foreignKey: 'shipping_id',
+        otherKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

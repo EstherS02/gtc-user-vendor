@@ -12,38 +12,38 @@ const model = require('../../sqldb/model-connect');
 export function talkCounts(req, res) {
 	//console.log("REQUEST", req);
 	var threadsUnRead = [];
-		model['TalkThreadUsers'].findAll({
+	model['TalkThreadUsers'].findAll({
+		where: {
+			user_id: req.user.id
+		},
+	}).then(function(instances) {
+		for (var i = 0, iLen = instances.length; i < iLen; i++) {
+			threadsUnRead.push(instances[i].thread_id);
+		}
+	}).then(function(results) {
+		model['Talk'].findAll({
+			raw: true,
 			where: {
-				user_id: req.user.id
-			},
-		}).then(function(instances) {
-			for (var i = 0, iLen = instances.length; i < iLen; i++) {
-				threadsUnRead.push(instances[i].thread_id);
-			}
-		}).then(function(results) {
-			model['Talk'].findAll({
-				raw: true,
-				where: {
-					from_id: {
-						$ne: req.user.id
-					},
-					talk_thread_id: {
-						$in: threadsUnRead
-					},
-					is_read: 0
+				from_id: {
+					$ne: req.user.id
 				},
-				attributes: ['talk_thread_id', [sequelize.fn('count', 1), 'count']],
-				group: ['talk_thread_id']
-			}).then(function(results1) {
-				
-				console.log("RESULTS1", results1.length)
-				res.status(200).send(results1);
-				return;
-			});
-		}).catch(function(err){
-			res.status(500).send(err);
+				talk_thread_id: {
+					$in: threadsUnRead
+				},
+				is_read: 0
+			},
+			attributes: ['talk_thread_id', [sequelize.fn('count', 1), 'count']],
+			group: ['talk_thread_id']
+		}).then(function(results1) {
+
+			console.log("RESULTS1", results1.length)
+			res.status(200).send(results1);
 			return;
-		})
+		});
+	}).catch(function(err) {
+		res.status(500).send(err);
+		return;
+	})
 }
 
 export function talkCreate(talk) {
@@ -109,7 +109,7 @@ export function talkCount(user) {
 			}).then(function(results1) {
 				resolve(results1.length);
 			});
-		}).catch(function(err){
+		}).catch(function(err) {
 			reject(err)
 		})
 	})

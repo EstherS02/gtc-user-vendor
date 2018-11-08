@@ -15,13 +15,8 @@ const cartObj = require('../../../api/cart/cart.controller');
 const querystring = require('querystring');
 
 function processCheckout(req, res, callback) {
-	let LoggedInUser = {}, bottomCategory = {};
-	var user_id;
-
-	if (req.user)
-		LoggedInUser = req.user;
-
-	user_id = LoggedInUser.id;
+	var bottomCategory = {};
+	const LoggedInUser = req.user;
 
 	async.series({
 		cartInfo: function(callback) {
@@ -40,22 +35,21 @@ function processCheckout(req, res, callback) {
 			let searchObj = {};
 			let includeArr = [];
 
-			includeArr = [
-				{
-					"model": model["User"],
-					attributes: {
-						exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-					}
-				}, 
-				{ "model": model["Country"] }, 
-				{ "model": model["State"] }
-			];
+			includeArr = [{
+				"model": model["User"],
+				attributes: {
+					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+				}
+			}, {
+				"model": model["Country"]
+			}, {
+				"model": model["State"]
+			}];
 
 			searchObj['status'] = {
 				'$eq': status["ACTIVE"]
 			}
-
-			searchObj['user_id'] = user_id;
+			searchObj['user_id'] = LoggedInUser.id;
 
 			return service.findRows('Address', searchObj, null, null, 'address_type', "asc", includeArr)
 				.then(function(addressData) {
@@ -101,38 +95,35 @@ function processCheckout(req, res, callback) {
 					return cb(error);
 				});
 		},
-		categories: function(callback) {
+		categories: function(cb) {
 			var includeArr = [];
-			var categoryOffset, categoryLimit, categoryField, categoryOrder;
-			var categoryQueryObj = {};
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			var categoryModel = "Category";
+			const categoryQueryObj = {};
 
-			categoryOffset = 0;
-			categoryLimit = null;
-			categoryField = "id";
-			categoryOrder = "asc";
-			
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
 					bottomCategory['right'] = categories.slice(8, 16);
-					return callback(null, category.rows);
+					return cb(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
-					return callback(null);
+					return cb(null);
 				});
 		},
 		cards: function(callback) {
 			var includeArr = [];
+			const offset = 0;
+			const limit = null;
+			const field = "id";
+			const order = "asc";
 			var queryObjCategory = {};
-			var offset, limit, field, order;
-			offset = 0;
-			limit = null;
-			field = "id";
-			order = "asc";
-	
 			queryObjCategory.user_id = req.user.id;
 
 			service.findAllRows('PaymentSetting', includeArr, queryObjCategory, offset, limit, field, order)

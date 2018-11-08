@@ -12,7 +12,6 @@ const marketplace_type = require('../../config/marketplace_type');
 const productService = require('../../api/product/product.service');
 
 export function homePage(req, res) {
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var bottomCategory = {};
@@ -158,7 +157,9 @@ export function homePage(req, res) {
 				});
 		},
 		topSellers: function(callback) {
-			var result = {};
+			return callback(null, null);
+			// CHECK_IT_LATER
+			/*var result = {};
 			delete queryObj['featured_position_homepage'];
 			delete queryObj['is_featured_product'];
 			field = 'sales_count';
@@ -173,7 +174,7 @@ export function homePage(req, res) {
 					}
 					async.mapSeries(result.rows, function(aVendor, cb) {
 						vendorAvgRating['vendor_id'] = aVendor.id;
-						model['ProductRatings'].findOne({
+						model['ProductRating'].findOne({
 							where: vendorAvgRating,
 							attributes: [
 								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
@@ -194,7 +195,7 @@ export function homePage(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(error, null);
-				});
+				});*/
 		},
 	}, function(err, results) {
 		if (!err) {

@@ -9,7 +9,7 @@ const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
-const shopService=require('../../../api/vendor/vendor-service')
+const shopService=require('../../../api/vendor/vendor.service')
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const async = require('async');
@@ -24,7 +24,6 @@ export function vendorLifestyle(req, res) {
 	let user_id = LoggedInUser.id;
 	var bottomCategory = {};
 
-	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var offset, limit, field, order, page;

@@ -72,9 +72,11 @@ module.exports.initRelations = () => {
     const Plan = model.Plan;
     const PlanLimit = model.PlanLimit;
     const PlanMarketplace = model.PlanMarketplace;
-    const VendorPlan = model.VendorPlan;
     const UserPlan = model.UserPlan;
+    const VendorPlan = model.VendorPlan;
     const Marketplace = model.Marketplace;
+    const User = model.User;
+    const Payment = model.Payment;
     const Vendor = model.Vendor;
 
     Plan.hasMany(PlanLimit, {
@@ -89,13 +91,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Plan.hasMany(VendorPlan, {
+    Plan.hasMany(UserPlan, {
         foreignKey: 'plan_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Plan.hasMany(UserPlan, {
+    Plan.hasMany(VendorPlan, {
         foreignKey: 'plan_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -109,10 +111,34 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Plan.belongsToMany(User, {
+        through: UserPlan,
+        foreignKey: 'plan_id',
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Plan.belongsToMany(Payment, {
+        through: UserPlan,
+        foreignKey: 'plan_id',
+        otherKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Plan.belongsToMany(Vendor, {
         through: VendorPlan,
         foreignKey: 'plan_id',
         otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Plan.belongsToMany(Payment, {
+        through: VendorPlan,
+        foreignKey: 'plan_id',
+        otherKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

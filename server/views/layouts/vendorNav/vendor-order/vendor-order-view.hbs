@@ -1,0 +1,769 @@
+<script type="text/javascript">
+	$(function() {
+		$("#expected_delivery_date").datepicker({
+			autoHide: true
+		});
+	});
+
+	$(document).ready(function() {
+		$('#cancel-alert').hide();
+		$("#dispatch-alert").hide();
+
+		$('#cancelReason').validate({
+			rules: {
+				reason_for_cancel: {
+					required: true,
+					maxlength: 255
+				},
+			},
+			messages: {
+				reason_for_cancel: {
+					required: "Please enter the reason for order cancellation",
+					maxlength: "Maximum 255 characters"
+				}
+			}
+		});
+
+		$('#dispatchForm').validate({
+			rules: {
+				select_courier: {
+					required: true
+				},
+				expected_delivery_date: {
+					required: true
+				},
+				tracking_id: {
+					required: true,
+					maxlength: 20,
+					minlength: 8
+				}
+			},
+			messages: {
+				select_courier: {
+					required: "Please select courier"
+				},
+				expected_delivery_date: {
+					required: "Please select expected delivary date"
+				},
+				tracking_id: {
+					required: "Please select tracking id",
+					maxlength: "Maximum 20 characters",
+					minlength: "Minimun 8 characters"
+				}
+
+			}
+		});
+
+
+		$('#cancelReason').submit(function(e) {
+			e.preventDefault();
+			if ($('#cancelReason').valid()) {
+
+				let cancelObj = $("#cancelReason :input").filter(function(index, element) {
+					return $(element).val() != '';
+				}).serialize();
+
+				$.ajax({
+					url: '/api/payment/cancel-order-item/',
+					type: 'POST',
+					data: cancelObj,
+					success: function(result) {
+						$('#cancel-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#cancel-alert .cancel-message').text("Cancel Item Successfully")
+						$('#cancel-alert').fadeTo(7000, 500).slideUp(500, function() {
+							$('#cancel-alert').slideUp(500);
+						});
+						setTimeout(function() {
+							location.reload(true);
+						}, 3000);
+
+					},
+					error: function(error) {
+						$('#cancel-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#cancel-alert .cancel-message').text(error.responseText);
+						$('#cancel-alert').fadeTo(7000, 500).slideUp(500, function() {
+							$('#cancel-alert').slideUp(500);
+						});
+						$('#cancelReason')[0].reset();
+					}
+				});
+			}
+		});
+
+		$('#dispatchForm').submit(function(e) {
+			e.preventDefault();
+			if ($('#dispatchForm').valid()) {
+
+				let dispatchInput = $("#dispatchForm :input").filter(function(index, element) {
+					return $(element).val() != '';
+				}).serialize();
+
+				$.ajax({
+					url: '/api/order/dispatch/' + {{ order.Order.id }},
+					type: 'PUT',
+					data: dispatchInput,
+					success: function (result) {
+						$('#dispatch-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#dispatch-alert .dispatch-message').text("Item dispatched Successfully")
+						$('#dispatch-alert').fadeTo(7000, 500).slideUp(500, function() {
+							$('#dispatch-alert').slideUp(500);
+						});
+						setTimeout(function() {
+							location.reload(true);
+						}, 3000);
+					},
+					error: function (error) {
+						$('#dispatch-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#dispatch-alert .dispatch-message').text(error.responseText);
+						$('#dispatch-alert').fadeTo(7000, 500).slideUp(500, function() {
+							$('#dispatch-alert').slideUp(500);
+						});
+						$('#dispatchForm')[0].reset();
+					}
+				});
+			}
+		});
+
+	});
+
+	function cancelOrderItem(item_id) {
+		$('#item_id').val(item_id);
+		$('#itemCancelModal').modal('show');
+	};
+
+	function confirmOrderItem(item_id) {
+		if (item_id) {
+			$.ajax({
+				url: '/api/payment/confirm-order-item/',
+				type: 'POST',
+				data: {
+					item_id: item_id
+				},
+				success: function(result) {
+					location.reload(true);
+				},
+				error: function(error) {
+					console.log("error",error);
+				}
+			});
+		}
+	};
+</script>
+{{> header/top-header LoggedInUser = LoggedInUser}}
+<div class="wrapper-content">
+	<div class="container-sm">
+		<div class="title-header-1 gtc-p-l-r">
+			<div class="alignleft">
+				<ul class="breadcrumb">
+					<li>
+						<a href="/user/my-profile" class="active">My Account</a>
+					</li>
+					<li>
+						<a href="/my-order/order" class="active">My Orders</a>
+					</li>
+					<li>Order Items</li>
+				</ul>
+			</div>
+			<div class="alignright">
+				{{#if LoggedInUser.id}}
+					<span class="text-sm">You're logged in as </span>
+					<a class="text-sm" href="javascript:;">{{LoggedInUser.first_name}}</a>
+					<button type="button" class="btn btn-sm btn-primary" onclick="gtcLogout()">SWITCH ACCOUNT</button>
+				{{else}}
+					<span class="text-sm">
+						<a href="/login">LOGIN</a> to see seller information</span>
+				{{/if}}
+			</div>
+			<div style="clear: both;"></div>
+		</div>
+		<div class="body-content-1">
+			<div class="row no-margins">
+				<div class="col-sm-9half no-padding bg-white cart-custom-notify">
+					<div class="header-left header-lg gtc-p-l-r">
+						<h2 class="header-lg-text alignleft text-white">Order #{{order.Order.id}}</h2>
+						<span class="header-lg-span text-white">({{order.Order.total_order_items}} Items Total)</span>
+					</div>
+					{{#if order.Order.total_order_items}}
+						{{#each order.marketplace_products}}
+							{{#ifCond @root.marketPlace.WHOLESALE '==' @key}}
+								<div class="mini-header bg{{@key}}">WHOLESALE ITEMS ({{this.count}})</div>
+								<div class="m-cart-body">
+									<table class="table cart-inner-table m-b-none">
+										<thead>
+											<tr>
+												<th width="45%">Product</th>
+												<th width="25%">Status</th>
+												<th width="10%">QTY</th>
+												<th width="10%">Price</th>
+												<th width="10%" class="text-right"></th>
+											</tr>
+										</thead>
+										<tbody>
+											{{#each this.products}}
+												<tr>
+													<td class="d-flex">
+														<div class="col-4 product-left-col">
+															<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}">
+																<img class="object-fit" onError="imgError(this)" src="{{this.Product.ProductMedia.[0].url}}">
+															</a>
+														</div>
+														<div class="col-8">
+															<div class="product-middle-col">
+																<h3 class="m-cart-title">
+																	<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
+																	 class="text-black">{{this.Product.product_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<span class="text-500">{{this.Product.Country.name}}</span>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Category</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<a class="text-500" href="../shop/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
+																		 title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</td>
+													<td>
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+															<span class="font-weight-bold text-warning">Waiting for Confirmation</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
+															<span class="font-weight-bold text-info">Item Confirmed</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.SHIPPED}}
+															<span class="font-weight-bold text-info">Item Dispatched</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.AUTO_CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
+															<span class="font-weight-bold text-black">Item Delivered</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.REQUEST_FOR_RETURN}}
+															<span class="font-weight-bold text-black">Item Requested for Return</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.APPROVED_REQUEST_FOR_RETURN}}
+															<span class="font-weight-bold text-black">Item Approved to Requested for Return</span>
+														{{/ifCond}}
+													</td>
+													<td><span class="font-weight-normal text-black">{{this.quantity}}</span></td>
+													<td>
+														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
+													</td>
+													<td class="text-right">
+
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+															<button type="button" class="btn btn-sm btn-info m-b w-100" onclick="confirmOrderItem(`{{this.id}}`)">CONFIRM</button>
+														{{/ifCond}}
+
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+															<button type="button" class="btn btn-sm btn-danger w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														{{/ifCond}}
+
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
+															<button type="button" class="btn btn-sm btn-danger w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														{{/ifCond}}
+
+													</td>
+												</tr>
+											{{/each}}
+										</tbody>
+									</table>
+								</div>
+							{{/ifCond}}
+							{{#ifCond @root.marketPlace.PUBLIC '==' @key}}
+								<div class="mini-header bg{{@key}}">SHOP ITEMS ({{this.count}})</div>
+								<div class="m-cart-body">
+									<table class="table cart-inner-table m-b-none">
+										<thead>
+											<tr>
+												<th width="45%">Product</th>
+												<th width="25%">Status</th>
+												<th width="10%">QTY</th>
+												<th width="10%">Price</th>
+												<th width="10%" class="text-right"></th>
+											</tr>
+										</thead>
+										<tbody>
+											{{#each this.products}}
+												<tr>
+													<td class="d-flex">
+														<div class="col-4 product-left-col">
+															<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}">
+																<img class="object-fit" onError="imgError(this)" src="{{this.Product.ProductMedia.[0].url}}">
+															</a>
+														</div>
+														<div class="col-8">
+															<div class="product-middle-col">
+																<h3 class="m-cart-title">
+																	<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
+																	 class="text-black">{{this.Product.product_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<span class="text-500">{{this.Product.Country.name}}</span>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Category</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<a class="text-500" href="../shop/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
+																		 title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</td>
+													<td>
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+															<span class="font-weight-bold text-warning">Waiting for Confirmation</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
+															<span class="font-weight-bold text-info">Item Confirmed</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.SHIPPED}}
+															<span class="font-weight-bold text-info">Item Dispatched</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.AUTO_CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
+															<span class="font-weight-bold text-black">Item Delivered</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.REQUEST_FOR_RETURN}}
+															<span class="font-weight-bold text-black">Item Requested for Return</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.APPROVED_REQUEST_FOR_RETURN}}
+															<span class="font-weight-bold text-black">Item Approved to Requested for Return</span>
+														{{/ifCond}}
+													</td>
+													<td><span class="font-weight-normal text-black">{{this.quantity}}</span></td>
+													<td>
+														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
+													</td>
+													<td class="text-right">
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+															<button type="button" class="btn btn-sm btn-info m-b w-100" onclick="confirmOrderItem(`{{this.id}}`)">CONFIRM</button>
+														{{/ifCond}}
+
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+															<button type="button" class="btn btn-sm btn-danger w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														{{/ifCond}}
+
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
+															<button type="button" class="btn btn-sm btn-danger w-100"onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														{{/ifCond}}
+													</td>
+												</tr>
+											{{/each}}
+										</tbody>
+									</table>
+								</div>
+							{{/ifCond}}
+							{{#ifCond @root.marketPlace.SERVICE '==' @key}}
+								<div class="mini-header bg{{@key}}">SERVICE ITEMS ({{this.count}})</div>
+								<div class="m-cart-body">
+									<table class="table cart-inner-table m-b-none">
+										<thead>
+											<tr>
+												<th width="45%">Product</th>
+												<th width="25%">Status</th>
+												<th width="10%">QTY</th>
+												<th width="10%">Price</th>
+												<th width="10%" class="text-right"></th>
+											</tr>
+										</thead>
+										<tbody>
+											{{#each this.products}}
+												<tr>
+													<td class="d-flex">
+														<div class="col-4 product-left-col">
+															<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}">
+																<img class="object-fit" onError="imgError(this)" src="{{this.Product.ProductMedia.[0].url}}">
+															</a>
+														</div>
+														<div class="col-8">
+															<div class="product-middle-col">
+																<h3 class="m-cart-title">
+																	<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
+																	 class="text-black">{{this.Product.product_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<span class="text-500">{{this.Product.Country.name}}</span>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Category</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<a class="text-500" href="../shop/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
+																		 title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</td>
+													<td>
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+															<span class="font-weight-bold text-warning">Waiting for Confirmation</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
+															<span class="font-weight-bold text-info">Item Confirmed</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.SHIPPED}}
+															<span class="font-weight-bold text-info">Item Dispatched</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.AUTO_CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
+															<span class="font-weight-bold text-black">Item Delivered</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.REQUEST_FOR_RETURN}}
+															<span class="font-weight-bold text-black">Item Requested for Return</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.APPROVED_REQUEST_FOR_RETURN}}
+															<span class="font-weight-bold text-black">Item Approved to Requested for Return</span>
+														{{/ifCond}}
+													</td>
+													<td><span class="font-weight-normal text-black">{{this.quantity}}</span></td>
+													<td>
+														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
+													</td>
+													<td class="text-right">
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+															<button type="button" class="btn btn-sm btn-info m-b w-100" onclick="confirmOrderItem(`{{this.id}}`)">CONFIRM</button>
+														{{/ifCond}}
+
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+															<button type="button" class="btn btn-sm btn-danger w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														{{/ifCond}}
+
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
+															<button type="button" class="btn btn-sm btn-danger w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														{{/ifCond}}
+													</td>
+												</tr>
+											{{/each}}
+										</tbody>
+									</table>
+								</div>
+							{{/ifCond}}
+							{{#ifCond @root.marketPlace.LIFESTYLE '==' @key}}
+								<div class="mini-header bg{{@key}}">LIFESTYLE SUBSCRIPTION ITEMS ({{this.count}})</div>
+								<div class="m-cart-body">
+									<table class="table cart-inner-table m-b-none">
+										<thead>
+											<tr>
+												<th width="45%">Product</th>
+												<th width="25%">Status</th>
+												<th width="10%">QTY</th>
+												<th width="10%">Price</th>
+												<th width="10%" class="text-right"></th>
+											</tr>
+										</thead>
+										<tbody>
+											{{#each this.products}}
+												<tr>
+													<td class="d-flex">
+														<div class="col-4 product-left-col">
+															<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}">
+																<img class="object-fit" onError="imgError(this)" src="{{this.Product.ProductMedia.[0].url}}">
+															</a>
+														</div>
+														<div class="col-8">
+															<div class="product-middle-col">
+																<h3 class="m-cart-title">
+																	<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
+																	 class="text-black">{{this.Product.product_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<span class="text-500">{{this.Product.Country.name}}</span>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Category</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<a class="text-500" href="../shop/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
+																		 title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</td>
+													<td>
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+															<span class="font-weight-bold text-warning">Waiting for Confirmation</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
+															<span class="font-weight-bold text-info">Item Confirmed</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.SHIPPED}}
+															<span class="font-weight-bold text-info">Item Dispatched</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.AUTO_CANCELED}}
+															<span class="font-weight-bold text-danger">Item Canceled</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.DELIVERED}}
+															<span class="font-weight-bold text-black">Item Delivered</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.REQUEST_FOR_RETURN}}
+															<span class="font-weight-bold text-black">Item Requested for Return</span>
+														{{/ifCond}}
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.APPROVED_REQUEST_FOR_RETURN}}
+															<span class="font-weight-bold text-black">Item Approved to Requested for Return</span>
+														{{/ifCond}}
+													</td>
+													<td><span class="font-weight-normal text-black">{{this.quantity}}</span></td>
+													<td>
+														<span class="price-tag m-b-xs d-block">{{currency this.price '$'}}</span>
+													</td>
+													<td class="text-right">
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+															<button type="button" class="btn btn-sm btn-info m-b w-100" onclick="confirmOrderItem(`{{this.id}}`)">CONFIRM</button>
+														{{/ifCond}}
+
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}
+															<button type="button" class="btn btn-sm btn-danger w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														{{/ifCond}}
+
+														{{#ifCond this.order_item_status '==' @root.orderItemStatus.CONFIRMED}}
+															<button type="button" class="btn btn-sm btn-danger w-100" onclick="cancelOrderItem(`{{this.id}}`)">CANCEL</button>
+														{{/ifCond}}
+													</td>
+												</tr>
+											{{/each}}
+										</tbody>
+									</table>
+								</div>
+							{{/ifCond}}
+						{{/each}}
+					{{else}}
+						<div class="gtc-p-l-r">
+							<h3 class="empty-msg text-primary">Order Not found</h3>
+						</div>
+					{{/if}}
+					<div class="py-4 px-5">
+					<div class="card">
+					<div class="card-header">Dispatch Order</div>
+					<div class="alert" id="dispatch-alert">
+						<button type="button" class="close" data-dismiss="alert">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span class="dispatch-message"></span>
+					</div>
+					<div class="card-body">
+					<form class="form" id="dispatchForm">
+						<div class="form-group row">
+							<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Select Carrier</label>
+							<div class="col-sm-8">
+								<div class="select-container">
+								<select class="form-control-customized form-control-sm" name="select_courier">
+									{{#if order.Shipping.provider_name}}
+										<option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
+									{{else}}
+										<option disabled selected>Select Carrier</option>
+									{{/if}}
+									{{#each carriersCode}}
+										<option value="{{this}}">{{@key}}</option>
+									{{/each}}
+								</select>
+								</div>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Expected Delivery Date</label>
+							<div class="col-sm-8">
+								<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date"
+								value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm">
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Enter Tracking Id</label>
+							<div class="col-sm-8">
+								<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm">
+							</div>
+						</div>
+						<div class="form-group row">
+							<div class="col-sm-8 offset-md-4">
+								<button class="btn btn-md btn-primary" id="dispatchBtn" type="submit" data-style="expand-left">
+									<span class="ladda-label">Dispatch Order</span>
+									<span class="ladda-spinner"></span>
+								</button>
+							</div>
+						</div>
+					</form>
+					</div>
+					</div>
+					</div>
+				</div>
+				<div class="col-sm-3half no-padding">
+					<div class="header-right header-lg gtc-p-l-r">
+						<h2 class="header-lg-text">YOUR SUMMARY</h2>
+					</div>
+					<div class="cart-summary">
+						{{#if order.Order.total_order_items}}
+							{{#each order.marketplace_summary}}
+								{{#ifCond @root.marketPlace.WHOLESALE '==' @key}}
+									<h2 class="text-marketplace-{{@key}}">Wholesale Summary</h2>
+									<div class="cart-hr-line"></div>
+									<div class="summary-m-total">
+										<p class="summary-info">Subtotal
+											<span>{{currency this.sub_total '$'}}</span>
+										</p>
+										<p class="summary-info">Shipping Ground
+											<span>{{currency this.shipping_ground '$'}}</span>
+										</p>
+									</div>
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">WHOLESALE TOTAL
+										<span>{{currency this.total '$'}}</span>
+									</p>
+								{{/ifCond}}
+								{{#ifCond @root.marketPlace.PUBLIC '==' @key}}
+									<h2 class="text-marketplace-{{@key}}">Shop Summary</h2>
+									<div class="cart-hr-line"></div>
+									<div class="summary-m-total">
+										<p class="summary-info">Subtotal
+											<span>{{currency this.sub_total '$'}}</span>
+										</p>
+										<p class="summary-info">Shipping Ground
+											<span>{{currency this.shipping_ground '$'}}</span>
+										</p>
+									</div>
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SHOP TOTAL
+										<span>{{currency this.total '$'}}</span>
+									</p>
+								{{/ifCond}}
+								{{#ifCond @root.marketPlace.SERVICE '==' @key}}
+									<h2 class="text-marketplace-{{@key}}">Service Summary</h2>
+									<div class="cart-hr-line"></div>
+									<div class="summary-m-total">
+										<p class="summary-info">Subtotal
+											<span>{{currency this.sub_total '$'}}</span>
+										</p>
+										<p class="summary-info">Shipping Ground
+											<span>{{currency this.shipping_ground '$'}}</span>
+										</p>
+									</div>
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SERVICE TOTAL
+										<span>{{currency this.total '$'}}</span>
+									</p>
+								{{/ifCond}}
+								{{#ifCond @root.marketPlace.LIFESTYLE '==' @key}}
+									<h2 class="text-marketplace-{{@key}}">Subscription Summary</h2>
+									<div class="cart-hr-line"></div>
+									<div class="summary-m-total">
+										<p class="summary-info">Subtotal
+											<span>{{currency this.sub_total '$'}}</span>
+										</p>
+										<p class="summary-info">Shipping Ground
+											<span>{{currency this.shipping_ground '$'}}</span>
+										</p>
+									</div>
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SUBSCRIPTION TOTAL
+										<span>{{currency this.total '$'}}</span>
+									</p>
+								{{/ifCond}}
+							{{/each}}
+							<div class="grand-total">
+								<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL
+									<span>{{currency order.total_price '$'}}</span>
+								</p>
+							</div>
+						{{/if}}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{> footer/bottom-footer}}
+
+<div class="modal fade" id="itemCancelModal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Reason for Cancellation</h5>
+			</div>
+			<div class="alert" id="cancel-alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<span class="cancel-message"></span>
+			</div>
+			<form id="cancelReason" class="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control">Please enter the reason for order cancellation:<span class="text-danger">*</span></label>
+								<textarea type="text" class="form-control-customized form-control-sm" name="reason_for_cancel" id="reason_for_cancel" required></textarea>
+							</div>
+						</div>
+						<input type="hidden" id="item_id" name="item_id" value="">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<input class="required" type="checkbox" onclick="document.getElementById('submitBtn').disabled=false;" name="checkbox" />
+								<label class="label-control">Are you sure you want to cancel this item from your order?</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
+
+					<button class="ladda-button btn btn-small btn-primary" id="submitBtn" disabled="disabled" type="submit" data-style="expand-left">
+						<span class="ladda-label">Submit</span>
+						<span class="ladda-spinner"></span>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

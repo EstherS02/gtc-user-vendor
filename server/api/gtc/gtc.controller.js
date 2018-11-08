@@ -6,30 +6,133 @@ const path = require('path');
 const sequelize = require('sequelize');
 const async = require('async');
 const moment = require('moment');
+const Handlebars = require('handlebars');
+
 const service = require('../service');
 const productService = require('../product/product.service');
+const cartService = require("../cart/cart.service");
+const orderService = require("../order/order.service");
 const reportsService = require('../reports/reports.service');
+const sendEmail = require('../../agenda/send-email');
 const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+const orderItemStatus = require('../../config/order-item-new-status');
 const marketplace = require('../../config/marketplace');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
-export function indexExample(req, res) {
-	var serviceQueryParams = {};
+const paymentMethod = require('../../config/payment-method');
+const stripe = require('../../payment/stripe.payment');
 
-	serviceQueryParams['start_date'] = new Date(req.query.start_date);
-	serviceQueryParams['end_date'] = new Date(req.query.end_date);
+export async function indexExample(req, res) {
+	var limit = 6;
+	var offset = 0;
+	var result = {};
+	var field = "id";
+	var order = "ASC";
+	var includeArray = [];
+	var orderModelName = "Order";
+	var vendorModelName = "Vendor";
+	var countryModelName = "Country";
+	var productModelName = "Product";
+	var orderItemModelName = "OrderItem";
+	var vendorPlanModelName = "VendorPlan";
+	var orderVendorModelName = "OrderVendor";
+	var vendorRatingModelName = "VendorRating";
 
-	reportsService.AccountingReport(req.user.Vendor.id, serviceQueryParams)
-		.then((response) => {
-			return res.status(200).send(response);
-		})
-		.catch((error) => {
-			console.log("index Error :::", error);
-			return res.status(500).send(error);
+	includeArray = [{
+		model: model[vendorPlanModelName],
+		attributes: [],
+		where: {
+			status: status['ACTIVE'],
+			start_date: {
+				'$lte': moment().format('YYYY-MM-DD')
+			},
+			end_date: {
+				'$gte': moment().format('YYYY-MM-DD')
+			}
+		}
+	}, {
+		model: model[orderVendorModelName],
+		attributes: [],
+		include: [{
+			model: model[orderModelName],
+			attributes: [],
+			include: [{
+				model: model[orderItemModelName],
+				attributes: [],
+				where: {
+					'$or': [{
+						order_item_status: orderItemStatus['DELIVERED']
+					}, {
+						order_item_status: orderItemStatus['COMPLETED']
+					}]
+				},
+				include: [{
+					model: model[productModelName],
+					attributes: [],
+					where: {
+						marketplace_id: marketplace['PUBLIC']
+					}
+				}]
+			}]
+		}]
+	}, {
+		model: model[countryModelName],
+		attributes: ['id', 'name']
+	}, {
+		model: model[vendorRatingModelName],
+		attributes: []
+	}, {
+		model: model[productModelName],
+		attributes: []
+	}];
+
+	try {
+		const vendorResponse = await model[vendorModelName].findAll({
+			where: {
+				status: status['ACTIVE'],
+				id: {
+					$col: 'OrderVendors->Order->OrderItems->Product.vendor_id'
+				}
+			},
+			attributes: ['id', 'vendor_name', 'vendor_profile_pic_url', [sequelize.fn('SUM', sequelize.col('OrderVendors->Order->OrderItems.quantity')), 'sales_count'],
+				[sequelize.literal('(SUM(VendorRatings.rating) / COUNT(VendorRatings.user_id))'), 'vendor_rating'],
+				[sequelize.literal('(COUNT(Products.id))'), 'product_count']
+			],
+			include: includeArray,
+			subQuery: false,
+			offset: offset,
+			limit: limit,
+			order: sequelize.literal('sales_count DESC'),
+			group: ['OrderVendors->Order->OrderItems.id']
 		});
+		const vendors = JSON.parse(JSON.stringify(vendorResponse));
+		await Promise.all(vendors.map(async (vendor) => {
+			vendor['products_count'] = await service.countRows(productModelName, {
+				vendor_id: vendor.id,
+				marketplace_id: marketplace['PUBLIC'],
+				status: status['ACTIVE']
+			});
+			vendor['exclusive_product_sale'] = await service.countRows(productModelName, {
+				vendor_id: vendor.id,
+				marketplace_id: marketplace['PUBLIC'],
+				status: status['ACTIVE'],
+				exclusive_sale: 1,
+				exclusive_start_date: {
+					'$lte': new Date()
+				},
+				exclusive_end_date: {
+					'$gte': new Date()
+				}
+			});
+		}));
+		return res.status(200).send(vendors);
+	} catch (error) {
+		console.log("indexExample Error:::", error);
+		return res.status(500).send(error);
+	}
 }
 
 export function index(req, res) {
@@ -379,7 +482,9 @@ exports.delete = function(req, res) {
 					service.destroyRecord(req.endpoint, paramsID)
 						.then(function(result) {
 							if (result) {
-								res.status(200).send({'response':'Deleted Successfully'});
+								res.status(200).send({
+									'response': 'Deleted Successfully'
+								});
 								return
 							} else {
 								return res.status(404).send("Unable to delete");

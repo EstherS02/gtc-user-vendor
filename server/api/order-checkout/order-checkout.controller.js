@@ -55,7 +55,9 @@ function processBillingAddress(req) {
 					city: req.body.billing_city,
 					postal_code: req.body.billing_postal,
 					phone: req.body.billing_phone,
-					status: status['ACTIVE']
+					status: status['ACTIVE'],
+					created_by: req.user.first_name,
+					created_on: new Date()
 				};
 				service.createRow('Address', billing_address).then(address => {
 					resolve(address.id);
@@ -93,7 +95,9 @@ function processShippingAddress(req, billing_address_id) {
 						city: req.body.shipping_city,
 						postal_code: req.body.shipping_postal,
 						phone: req.body.shipping_phone,
-						status: status['ACTIVE']
+						status: status['ACTIVE'],
+						created_by: req.user.first_name,
+						created_on: new Date()
 					};
 					service.createRow('Address', shipping_address).then(address => {
 						resolve(address.id);

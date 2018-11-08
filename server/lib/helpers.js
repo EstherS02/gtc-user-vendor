@@ -2,541 +2,569 @@
 import Handlebars from 'handlebars';
 const moment = require('moment');
 const _ = require('lodash');
+import {
+	URLSearchParams
+} from 'url';
 const numeral = require('numeral');
+const planPermissions = require('../config/plan-marketplace-permission.js');
+const config = require('../config/environment');
+const orderItemStatus = require("../config/order-item-new-status");
 
 Handlebars.registerHelper('starCount', function(rating, color) {
 
-    var rating = Math.ceil(rating);
+	var rating = Math.ceil(rating);
 
-    var colored = "";
-    var colorless = "",
-        tag1, tag2;
+	var colored = "";
+	var colorless = "",
+		tag1, tag2;
 
-    tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #ffa700;"></i>';
-    tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
+	tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #ffa700;"></i>';
+	tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
 
-    for (var i = 0; i <= rating - 1; i++) {
-        colored = tag1 + colored;
-    }
-    for (var i = 1; i <= 7 - rating; i++) {
-        colorless = tag2 + colorless;
-    }
-    return new Handlebars.SafeString(colored + colorless);
+	for (var i = 0; i <= rating - 1; i++) {
+		colored = tag1 + colored;
+	}
+	for (var i = 1; i <= 7 - rating; i++) {
+		colorless = tag2 + colorless;
+	}
+	return new Handlebars.SafeString(colored + colorless);
 });
 
 Handlebars.registerHelper('convertUpperCase', function(msg) {
-    return msg.toUpperCase();
+	return msg.toUpperCase();
 });
 
 Handlebars.registerHelper('Titlecase', function(str) {
-    if (str) {
-        return str.replace(/\w\S*/g, function(txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        });
-    } else {
-        return '';
-    }
+	if (str) {
+		return str.replace(/\w\S*/g, function(txt) {
+			return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+		});
+	} else {
+		return '';
+	}
 
 });
 
 Handlebars.registerHelper('DisplayJSON', function(context, options) {
-    if (!context)
-        return 'null';
+	if (!context)
+		return 'null';
 
-    return JSON.stringify(context);
+	return JSON.stringify(context);
 });
 
 Handlebars.registerHelper('toURL', function(text, options) {
-    if (!text)
-        return 'null';
+	if (!text)
+		return 'null';
 
-    return text.split(' ').join('-');
+	return text.split(' ').join('-');
 });
 
 Handlebars.registerHelper("prettifyDate", function(timestamp) {
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    ];
-    var d = new Date();
-    var curr_date = d.getDate();
-    var curr_month = monthNames[d.getMonth()]
-    var curr_year = d.getFullYear();
-    return curr_month + ' ' + curr_date + ', ' + curr_year;
+	const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+	];
+	var d = new Date();
+	var curr_date = d.getDate();
+	var curr_month = monthNames[d.getMonth()]
+	var curr_year = d.getFullYear();
+	return curr_month + ' ' + curr_date + ', ' + curr_year;
 });
 
 Handlebars.registerHelper('ifCond', function(v1, operator, v2, options) {
-    switch (operator) {
-        case '!=':
-            return (v1 != v2) ? options.fn(this) : options.inverse(this);
-        case '==':
-            return (v1 == v2) ? options.fn(this) : options.inverse(this);
-        case '===':
-            return (v1 === v2) ? options.fn(this) : options.inverse(this);
-        case '<':
-            return (v1 < v2) ? options.fn(this) : options.inverse(this);
-        case '<=':
-            return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-        case '>':
-            return (v1 > v2) ? options.fn(this) : options.inverse(this);
-        case '>=':
-            return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-        case '&&':
-            return (v1 && v2) ? options.fn(this) : options.inverse(this);
-        case 'or':
-            return (v1 || v2) ? options.fn(this) : options.inverse(this);
-        default:
-            return options.inverse(this);
-    }
+	switch (operator) {
+		case '!=':
+			return (v1 != v2) ? options.fn(this) : options.inverse(this);
+		case '==':
+			return (v1 == v2) ? options.fn(this) : options.inverse(this);
+		case '===':
+			return (v1 === v2) ? options.fn(this) : options.inverse(this);
+		case '<':
+			return (v1 < v2) ? options.fn(this) : options.inverse(this);
+		case '<=':
+			return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+		case '>':
+			return (v1 > v2) ? options.fn(this) : options.inverse(this);
+		case '>=':
+			return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+		case '&&':
+			return (v1 && v2) ? options.fn(this) : options.inverse(this);
+		case '||':
+			return (v1 || v2) ? options.fn(this) : options.inverse(this);
+		default:
+			return options.inverse(this);
+	}
 });
 
 //HELPER TO HANDLE NESTED OPERATIONS
 
 Handlebars.registerHelper({
-    eq: function (v1, v2) {
-        return v1 === v2;
-    },
-    ne: function (v1, v2) {
-        return v1 !== v2;
-    },
-    lt: function (v1, v2) {
-        return v1 < v2;
-    },
-    gt: function (v1, v2) {
-        return v1 > v2;
-    },
-    lte: function (v1, v2) {
-        return v1 <= v2;
-    },
-    gte: function (v1, v2) {
-        return v1 >= v2;
-    },
-    and: function () {
-        return Array.prototype.slice.call(arguments).every(Boolean);
-    },
-    or: function () {
-        return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
-    }
+	eq: function(v1, v2) {
+		return v1 === v2;
+	},
+	ne: function(v1, v2) {
+		return v1 !== v2;
+	},
+	lt: function(v1, v2) {
+		return v1 < v2;
+	},
+	gt: function(v1, v2) {
+		return v1 > v2;
+	},
+	lte: function(v1, v2) {
+		return v1 <= v2;
+	},
+	gte: function(v1, v2) {
+		return v1 >= v2;
+	},
+	and: function() {
+		return Array.prototype.slice.call(arguments).every(Boolean);
+	},
+	or: function() {
+		return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
+	}
 });
 
 Handlebars.registerHelper('formatTime', function(date, format) {
-    var mmnt = moment(date);
-    return mmnt.format(format);
+	var gmtDateTime = moment.utc(date);
+	return gmtDateTime.local().format(format);
 });
 
 Handlebars.registerHelper('progressBar', function(value, total) {
-    var rating = 0;
-    if (total != 0) {
-        rating = (value / total) * 100;
-    }
-    return rating;
+	var rating = 0;
+	if (total != 0) {
+		rating = (value / total) * 100;
+	}
+	return rating;
 });
 
 Handlebars.registerHelper('SUMFloat', function(v1, v2, options) {
-    return parseFloat(v1) + parseFloat(v2);
+	return parseFloat(v1) + parseFloat(v2);
 });
 
 Handlebars.registerHelper('quantityPrice', function(quantity, price, symbol, options) {
-    var amt = parseInt(quantity) * parseFloat(price);
-    return numeral(amt).format(symbol + '0,0.00');
+	var amt = parseInt(quantity) * parseFloat(price);
+	return numeral(amt).format(symbol + '0,0.00');
 });
 
 Handlebars.registerHelper('cartPageClass', function(marketPlace, classType, options) {
-    var displayClassLeft = "";
-    var displayClassRight = "";
-    var displayLabel = "";
+	var displayClassLeft = "";
+	var displayClassRight = "";
+	var displayLabel = "";
 
-    if (marketPlace.code === 'PWM') {
-        displayClassLeft = 'shop_wholesale_items';
-        displayClassRight = 'yourorder_wholesalesum_head';
-        displayLabel = 'Wholesale';
-    } else if (marketPlace.code === 'PM') {
-        displayClassLeft = 'shop_shop_items';
-        displayClassRight = 'yourorder_shopsum_head';
-        displayLabel = 'Shop';
-    } else if (marketPlace.code === 'SM') {
-        displayClassLeft = 'shop_service_items';
-        displayClassRight = 'yourorder_servicesum_head';
-        displayLabel = 'Service';
-    } else if (marketPlace.code === 'LM') {
-        displayClassLeft = 'shop_subscription_items';
-        displayClassRight = 'yourorder_subscriptionsum_head'
-        displayLabel = 'Subscription';
-    }
+	if (marketPlace.code === 'PWM') {
+		displayClassLeft = 'shop_wholesale_items';
+		displayClassRight = 'yourorder_wholesalesum_head';
+		displayLabel = 'Wholesale';
+	} else if (marketPlace.code === 'PM') {
+		displayClassLeft = 'shop_shop_items';
+		displayClassRight = 'yourorder_shopsum_head';
+		displayLabel = 'Shop';
+	} else if (marketPlace.code === 'SM') {
+		displayClassLeft = 'shop_service_items';
+		displayClassRight = 'yourorder_servicesum_head';
+		displayLabel = 'Service';
+	} else if (marketPlace.code === 'LM') {
+		displayClassLeft = 'shop_subscription_items';
+		displayClassRight = 'yourorder_subscriptionsum_head'
+		displayLabel = 'Subscription';
+	}
 
-    if (classType === 'CART-LEFT')
-        return displayClassLeft;
-    else if (classType === 'CART-RIGHT')
-        return displayClassRight;
-    else if (classType === 'LABEL')
-        return displayLabel;
-    else
-        return '';
+	if (classType === 'CART-LEFT')
+		return displayClassLeft;
+	else if (classType === 'CART-RIGHT')
+		return displayClassRight;
+	else if (classType === 'LABEL')
+		return displayLabel;
+	else
+		return '';
 
 });
 
 Handlebars.registerHelper('DiffFloat', function(v1, v2, options) {
-    return parseFloat(v1) - parseFloat(v2);
+	return parseFloat(v1) - parseFloat(v2);
 });
 
 Handlebars.registerHelper('select', function(selected, options) {
-    return options.fn(this).replace(
-        new RegExp(' value=\"' + selected + '\"'),
-        '$& selected="selected"');
+	return options.fn(this).replace(
+		new RegExp(' value=\"' + selected + '\"'),
+		'$& selected="selected"');
 });
 
 Handlebars.registerHelper("setChecked", function(value, currentValue) {
-    if (value == currentValue) {
-        return "checked";
-    } else {
-        return "";
-    }
+	if (value == currentValue) {
+		return "checked";
+	} else {
+		return "";
+	}
 });
 
 Handlebars.registerHelper("days", function(value) {
-    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-    return days[value];
+	var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+	return days[value];
 });
 
 Handlebars.registerHelper('optionsSelected', function(context, test) {
-    var ret = '';
-    for (var i = 0, len = context.length; i < len; i++) {
-        var option = '<option value="' + context[i].id + '"';
-        if (test.indexOf(context[i].id) >= 0) {
-            option += ' selected="selected"';
-        }
-        option += '>' + context[i].product_name + '</option>';
-        ret += option;
-    }
-    return new Handlebars.SafeString(ret);
+	var ret = '';
+	for (var i = 0, len = context.length; i < len; i++) {
+		var option = '<option value="' + context[i].id + '"';
+		if (test.indexOf(context[i].id) >= 0) {
+			option += ' selected="selected"';
+		}
+		option += '>' + context[i].product_name + '</option>';
+		ret += option;
+	}
+	return new Handlebars.SafeString(ret);
 });
 
 Handlebars.registerHelper('optionsSelectedCategory', function(context, test) {
-    var ret = '';
-    for (var i = 0, len = context.length; i < len; i++) {
-        var option = '<option value="' + context[i].id + '"';
-        if (test.indexOf(context[i].id) >= 0) { // you may also use some  test.some(context[i].id)
-            option += ' selected="selected"';
-        }
-        option += '>' + context[i].name + '</option>';
-        ret += option;
-    }
-    return new Handlebars.SafeString(ret);
+	var ret = '';
+	for (var i = 0, len = context.length; i < len; i++) {
+		var option = '<option value="' + context[i].id + '"';
+		if (test.indexOf(context[i].id) >= 0) { // you may also use some  test.some(context[i].id)
+			option += ' selected="selected"';
+		}
+		option += '>' + context[i].name + '</option>';
+		ret += option;
+	}
+	return new Handlebars.SafeString(ret);
 });
 
 Handlebars.registerHelper('each_upto', function(ary, max, id, options) {
-    if (!ary || ary.length == 0)
-        return options.inverse(this);
-    var result = [];
-    for (var i = 0; result.length < max && i < ary.length; ++i)
-        if (ary[i].category_id == id) {
-            result.push(options.fn(ary[i]));
-        }
-    return result.join('');
+	if (!ary || ary.length == 0)
+		return options.inverse(this);
+	var result = [];
+	for (var i = 0; result.length < max && i < ary.length; ++i)
+		if (ary[i].category_id == id) {
+			result.push(options.fn(ary[i]));
+		}
+	return result.join('');
 });
 
 Handlebars.registerHelper('each_limit', function(ary, max, options) {
-    if (!ary || ary.length == 0)
-        return options.inverse(this);
-    var result = [];
-    for (var i = 0; result.length < max && i < ary.length; ++i)
-        result.push(options.fn(ary[i]));
-    return result.join('');
+	if (!ary || ary.length == 0)
+		return options.inverse(this);
+	var result = [];
+	for (var i = 0; result.length < max && i < ary.length; ++i)
+		result.push(options.fn(ary[i]));
+	return result.join('');
 });
 
 Handlebars.registerHelper('FormatDate', function(context, options) {
-    if (context) {
-        let newdate = moment(new Date(context)).fromNow()
-        return newdate;
-    }
+	if (context) {
+		let newdate = moment(new Date(context)).fromNow()
+		return newdate;
+	}
 });
 Handlebars.registerHelper('timeLeft', function(context, options) {
-    var currentDate = moment().utc().format('YYYY-M-DD HH:mm:ss');
-    var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
-    var secondsDiff = '';
-    if (endDate.diff(currentDate) > 0) {
-        var intervals = ['years', 'months', 'days', 'hours', 'minutes'],
-            out = [];
-        var arrayEle = [];
-        for (var i = 0; i < intervals.length; i++) {
-            var diff = endDate.diff(currentDate, intervals[i]);
-            endDate.add(diff, intervals[i]);
-            arrayEle[intervals[i]] = diff;
-            out.push(diff + ' ' + intervals[i]);
-        }
-        if (arrayEle['minutes'] < 60) {
-            secondsDiff = arrayEle['minutes'] + 'm left!';
-        } else if (arrayEle['hours'] < 24) {
-            secondsDiff = arrayEle['hours'] + 'h ';
-            if (arrayEle['minutes'] % 60 != 0)
-                secondsDiff = secondsDiff+ arrayEle['minutes'] % 60 + 'm';
-            secondsDiff = secondsDiff + ' left!';
-        } else if (arrayEle['days'] < 30) {
-            secondsDiff = arrayEle['days'] + 'd ';
-            if (arrayEle['hours'] % 24 != 0)
-                secondsDiff = secondsDiff+arrayEle['hours'] % 24 + 'h';
-            secondsDiff = secondsDiff + ' left!';
-        } else if (arrayEle['months'] < 12) {
-            secondsDiff = arrayEle['months'] + 'mon ';
-            if (arrayEle['days'] % 30 != 0)
-                secondsDiff = secondsDiff+arrayEle['days'] % 30 + 'd ';
-            secondsDiff = secondsDiff + ' left!';
-        } else {
-            secondsDiff = arrayEle['years'] + 'Y '; 
-            if(arrayEle['months'] % 12 + 'mon left!' !=0)
-            secondsDiff=secondsDiff+ arrayEle['months'] % 12 + 'mon';
-        secondsDiff = secondsDiff + ' left!';
-        }
-    }
-    return secondsDiff;
+	var currentDate = moment().utc().format('YYYY-M-DD HH:mm:ss');
+	var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
+	var secondsDiff = '';
+	if (endDate.diff(currentDate) > 0) {
+		var intervals = ['days', 'hours', 'minutes'],
+			out = [];
+		var arrayEle = [];
+		for (var i = 0; i < intervals.length; i++) {
+			var diff = endDate.diff(currentDate, intervals[i]);
+			endDate.add(diff, intervals[i]);
+			arrayEle[intervals[i]] = diff;
+			out.push(diff + ' ' + intervals[i]);
+		}
+		if (arrayEle['minutes'] < 60) {
+			secondsDiff = arrayEle['minutes'] + 'm left!';
+		} else if (arrayEle['hours'] < 24) {
+			secondsDiff = arrayEle['hours'] + 'h ' + arrayEle['minutes'] % 60 + 'm left!';
+		} else if (arrayEle['days'] < 30) {
+			secondsDiff = arrayEle['days'] + 'd ' + arrayEle['hours'] % 24 + 'h left!';
+		}
+	}
+	return secondsDiff;
 });
 
 var serialize = function(obj) {
-    var str = [];
-    for (var p in obj)
-        if (obj.hasOwnProperty(p)) {
-            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-        }
-    return str.join("&");
+	var str = [];
+	for (var p in obj)
+		if (obj.hasOwnProperty(p)) {
+			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+		}
+	return str.join("&");
 }
 
 Handlebars.registerHelper('DurationCalculator', function(existingQueryObj, durationType, duration, options) {
-    var existingObj = JSON.parse(JSON.stringify(existingQueryObj));
-    if (durationType == 'DAY') {
-        existingObj['start_date'] = moment().subtract(parseInt(duration), 'day').format('YYYY-MM-DD');
-        existingObj['end_date'] = moment().format('YYYY-MM-DD');
-    } else if (durationType == 'WEEK') {
-        existingObj['start_date'] = moment().subtract(parseInt(duration), 'week').format('YYYY-MM-DD');
-        existingObj['end_date'] = moment().format('YYYY-MM-DD');
-    } else if (durationType == 'MONTH') {
-        existingObj['start_date'] = moment().month(parseInt(duration)).startOf('month').format('YYYY-MM-DD');
-        existingObj['end_date'] = moment().month(parseInt(duration)).endOf('month').format('YYYY-MM-DD');
-    } else if (true) {
-        existingObj['start_date'] = moment().year(parseInt(duration)).startOf('year').format('YYYY-MM-DD');
-        existingObj['end_date'] = moment().year(parseInt(duration)).endOf('year').format('YYYY-MM-DD');
-    }
-    return serialize(existingObj);
+	var existingObj = JSON.parse(JSON.stringify(existingQueryObj));
+	if (durationType == 'DAY') {
+		existingObj['start_date'] = moment().subtract(parseInt(duration), 'day').format('YYYY-MM-DD');
+		existingObj['end_date'] = moment().format('YYYY-MM-DD');
+	} else if (durationType == 'WEEK') {
+		existingObj['start_date'] = moment().subtract(parseInt(duration), 'week').format('YYYY-MM-DD');
+		existingObj['end_date'] = moment().format('YYYY-MM-DD');
+	} else if (durationType == 'MONTH') {
+		existingObj['start_date'] = moment().month(parseInt(duration)).startOf('month').format('YYYY-MM-DD');
+		existingObj['end_date'] = moment().month(parseInt(duration)).endOf('month').format('YYYY-MM-DD');
+	} else if (true) {
+		existingObj['start_date'] = moment().year(parseInt(duration)).startOf('year').format('YYYY-MM-DD');
+		existingObj['end_date'] = moment().year(parseInt(duration)).endOf('year').format('YYYY-MM-DD');
+	}
+	return serialize(existingObj);
 });
 
 Handlebars.registerHelper('QueryParams', function(existingQueryObj, newObj, deleteKey, options) {
-    var existingObj = JSON.parse(JSON.stringify(existingQueryObj));
-    if (Object.keys(newObj).length > 0) {
-        existingObj = Object.assign(existingObj, newObj);
-    }
-    if (deleteKey != null) {
-        var tmpArray = deleteKey.split('&');
-        tmpArray.forEach(function(tmpKey) {
-            delete existingObj[tmpKey];
-        });
-    }
-    return serialize(existingObj);
+	var existingObj = JSON.parse(JSON.stringify(existingQueryObj));
+	if (Object.keys(newObj).length > 0) {
+		existingObj = Object.assign(existingObj, newObj);
+	}
+	if (deleteKey != null) {
+		var tmpArray = deleteKey.split('&');
+		tmpArray.forEach(function(tmpKey) {
+			delete existingObj[tmpKey];
+		});
+	}
+	return serialize(existingObj);
 });
 
+Handlebars.registerHelper('paginationParams', function(existingQueryParams, newQueryObj, options) {
+	var urlParams = new URLSearchParams(existingQueryParams);
+	for (var property in newQueryObj) {
+		if (newQueryObj.hasOwnProperty(property)) {
+			urlParams.set(property, newQueryObj[property]);
+		}
+	}
+	return urlParams;
+});
+
+Handlebars.registerHelper('marketplacePermission', function(vendorPlanId, marketplaceId, options) {
+	var actionsValues = planPermissions[vendorPlanId][marketplaceId];
+	if (actionsValues && Array.isArray(actionsValues) && actionsValues.length > 0) {
+		if (getIndexOfAction(actionsValues, '*') > -1) {
+			return options.fn(this);
+		} else {
+			return options.inverse(this);
+		}
+	} else {
+		return options.inverse(this);
+	}
+});
+
+function getIndexOfAction(array, value) {
+	if (value) {
+		if (array.length > 0) {
+			for (var i = 0; i < array.length; i++) {
+				if (array[i]) {
+					if (array[i] == value) {
+						return i;
+					}
+				}
+			}
+		}
+		return -1;
+	}
+}
+
 Handlebars.registerHelper('FrameObject', function(options) {
-    return options.hash;
+	return options.hash;
 });
 
 Handlebars.registerHelper('ProfilePicture', function(context, options) {
-    if (context && context.user_pic_url)
-        return context.user_pic_url;
-    return '/img/avatar.png'
+	if (context && context.user_pic_url)
+		return context.user_pic_url;
+	return '/img/avatar.png'
 });
 
 Handlebars.registerHelper('objectKey', function(obj, value_pass, options) {
 	var val;
-    Object.keys(obj).forEach(function(key) {
-        if (value_pass == obj[key]) {
-            var val1 = key.toLowerCase();
-            val = val1.charAt(0).toUpperCase() + val1.slice(1);
-            val = val.replace("order", " "); //Order
-        }
+	Object.keys(obj).forEach(function(key) {
+		if (value_pass == obj[key]) {
+			var val1 = key.toLowerCase();
+			val = val1.charAt(0).toUpperCase() + val1.slice(1);
+			val = val.replace("order", " "); //Order
+		}
 	});
-    return val;
+	return val;
 });
 
 Handlebars.registerHelper('countrySelected', function(context, test) {
-    var ret = '';
-    var option;
-    for (var i = 0, len = context.length; i < len; i++) {
-        if (test.indexOf(context[i].id) == -1) {
-            option = '<option value="' + context[i].id + '">' + context[i].name + '</option>'
-            ret += option;
+	var ret = '';
+	var option;
+	for (var i = 0, len = context.length; i < len; i++) {
+		if (test.indexOf(context[i].id) == -1) {
+			option = '<option value="' + context[i].id + '">' + context[i].name + '</option>'
+			ret += option;
 
-        }
-    }
-    return new Handlebars.SafeString(ret);
+		}
+	}
+	return new Handlebars.SafeString(ret);
 });
 
 Handlebars.registerHelper('vendorSelectedcountry', function(context, test) {
-    var ret = '';
-    var option;
-    for (var i = 0, len = context.length; i < len; i++) {
-        if (test.indexOf(context[i].id) >= 0) {
-            option = '<option value="' + context[i].id + '">' + context[i].name + '</option>'
-            ret += option;
-        }
+	var ret = '';
+	var option;
+	for (var i = 0, len = context.length; i < len; i++) {
+		if (test.indexOf(context[i].id) >= 0) {
+			option = '<option value="' + context[i].id + '">' + context[i].name + '</option>'
+			ret += option;
+		}
 
-    }
-    return new Handlebars.SafeString(ret);
+	}
+	return new Handlebars.SafeString(ret);
 });
 
 Handlebars.registerHelper('upperCount', function(limit, offset, count, option) {
-    return count - (limit * offset);
+	return count - (limit * offset);
 });
 
 Handlebars.registerHelper('bgColor', function(type, option) {
-    if (type == 1) {
-        return 'pmp4';
-    } else if (type == 2) {
-        return 'pmp1';
-    } else if (type == 3) {
-        return 'pmp2';
-    } else {
-        return 'pmp3';
-    }
+	if (type == 1) {
+		return 'pmp4';
+	} else if (type == 2) {
+		return 'pmp1';
+	} else if (type == 3) {
+		return 'pmp2';
+	} else {
+		return 'pmp3';
+	}
 });
 
 Handlebars.registerHelper('navbarSetting', function(user, type, options) {
-    if (type == "wholesale") {
-        if (user) {
-            return options.fn(this);
-        } else {
-            return options.inverse(this);
-        }
-    } else {
-        return options.fn(this);
-    }
+	if (type == "wholesale") {
+		if (user) {
+			return options.fn(this);
+		} else {
+			return options.inverse(this);
+		}
+	} else {
+		return options.fn(this);
+	}
 });
 
 Handlebars.registerHelper('json', function(jsonStr, key) {
-    if (_.isUndefined(jsonStr) || _.isNull(jsonStr)) {
-        return '';
-    }
-    let obj = JSON.parse(jsonStr);
-    return obj[key];
+	if (_.isUndefined(jsonStr) || _.isNull(jsonStr)) {
+		return '';
+	}
+	let obj = JSON.parse(jsonStr);
+	return obj[key];
 });
 
 Handlebars.registerHelper('padZero', function(str, len, isJson, key) {
-    var s = "";
-    if (isJson == 'true') {
-        if (_.isUndefined(str) || _.isNull(str)) {
-            s = '';
-        } else {
-            let obj = JSON.parse(str);
-            if (_.isUndefined(obj[key]) || _.isNull(obj[key])) {
-                s = '';
-            } else {
-                s = obj[key];
-            }
-        }
-    } else {
-        s = str;
-    }
-    return _.padStart(s, len, '0');
+	var s = "";
+	if (isJson == 'true') {
+		if (_.isUndefined(str) || _.isNull(str)) {
+			s = '';
+		} else {
+			let obj = JSON.parse(str);
+			if (_.isUndefined(obj[key]) || _.isNull(obj[key])) {
+				s = '';
+			} else {
+				s = obj[key];
+			}
+		}
+	} else {
+		s = str;
+	}
+	return _.padStart(s, len, '0');
 });
 
 Handlebars.registerHelper('last2', function(str, isJson, key) {
-    var s = "";
-    if (isJson == 'true') {
-        if (_.isUndefined(str) || _.isNull(str)) {
-            s = '';
-        } else {
-            let obj = JSON.parse(str);
-            if (_.isUndefined(obj[key]) || _.isNull(obj[key])) {
-                s = '';
-            } else {
-                s = obj[key];
-            }
-        }
-    } else {
-        s = str;
-    }
-    s = s + '';
-    return s.length >= 2 ? s.substring(s.length - 2, s.length) : '';
+	var s = "";
+	if (isJson == 'true') {
+		if (_.isUndefined(str) || _.isNull(str)) {
+			s = '';
+		} else {
+			let obj = JSON.parse(str);
+			if (_.isUndefined(obj[key]) || _.isNull(obj[key])) {
+				s = '';
+			} else {
+				s = obj[key];
+			}
+		}
+	} else {
+		s = str;
+	}
+	s = s + '';
+	return s.length >= 2 ? s.substring(s.length - 2, s.length) : '';
 });
 
 Handlebars.registerHelper('currency', function(amt, symbol) {
-    return numeral(amt).format(symbol + '0,0.00');
+	return numeral(amt).format(symbol + '0,0.00');
 });
 
 Handlebars.registerHelper('if_eq', function(a, b, opts) {
-    if (a == b) {
-        return opts.fn(this);
-    } else {
-        return opts.inverse(this);
-    }
+	if (a == b) {
+		return opts.fn(this);
+	} else {
+		return opts.inverse(this);
+	}
 });
 
 Handlebars.registerHelper('Attributes', function(id, arrayEle, options) {
-    let name;
-    arrayEle.forEach(function(element) {
-        if (element.id == id) {
-            name = element.attr_name;
-        }
-    });
-    return name;
+	let name;
+	arrayEle.forEach(function(element) {
+		if (element.id == id) {
+			name = element.attr_name;
+		}
+	});
+	return name;
 });
 
 Handlebars.registerHelper("LikeUnlike", function(likes, user) {
-    let name;
-    likes.forEach(function(element) {
-        if (element.user_id == user.id) {
-            name = 'Unlike';
-        }
-    });
-    if (name != 'Unlike') {
-        name = "Like";
-    }
-    return name;
+	let name;
+	likes.forEach(function(element) {
+		if (element.user_id == user.id) {
+			name = 'Unlike';
+		}
+	});
+	if (name != 'Unlike') {
+		name = "Like";
+	}
+	return name;
 });
 
 Handlebars.registerHelper('marketPlaceChart', function(totalAmt, marketPlaceArr) {
-    var ret = '';
-    var mpKeyValue = {
-        "Private Wholesale Marketplace": "wholesale",
-        "Public Marketplace": "shop",
-        "Services Marketplace": "service",
-        "Lifestyle Marketplace": "lifestyle"
-    }
-    var option;
-    for (var i = 0, len = marketPlaceArr.length; i < len; i++) {
-        let amt = parseFloat(marketPlaceArr[i].amount).toFixed(2);
-        var mPlaceClass = mpKeyValue[marketPlaceArr[i].marketplace_name] ? mpKeyValue[marketPlaceArr[i].marketplace_name] : "wholesale";
-        option = `<li><p class="top_perf_marketplace_chart_price">$ ${amt}</p>
-		<span class = "` + mPlaceClass + ` reporting_chart_` + mPlaceClass + `_color" style = "height:` + calculatePercentage(totalAmt, marketPlaceArr[i].amount) + `" title = "` + marketPlaceArr[i].marketplace_name + `"></span></li>`
-        ret += option;
-    }
-    return new Handlebars.SafeString(ret);
+	var ret = '';
+	var mpKeyValue = {
+		"Private Wholesale Marketplace": "wholesale",
+		"Public Marketplace": "shop",
+		"Services Marketplace": "service",
+		"Lifestyle Marketplace": "lifestyle"
+	}
+	var option;
+	for (var i = 0, len = marketPlaceArr.length; i < len; i++) {
+		let amt = parseFloat(marketPlaceArr[i].amount).toFixed(2);
+		var mPlaceClass = mpKeyValue[marketPlaceArr[i].marketplace_name] ? mpKeyValue[marketPlaceArr[i].marketplace_name] : "wholesale";
+		option = `<li><p class="top_perf_marketplace_chart_price">$ ${amt}</p>
+        <span class = "` + mPlaceClass + ` reporting_chart_` + mPlaceClass + `_color" style = "height:` + calculatePercentage(totalAmt, marketPlaceArr[i].amount) + `" title = "` + marketPlaceArr[i].marketplace_name + `"></span></li>`
+		ret += option;
+	}
+	return new Handlebars.SafeString(ret);
 });
 
 Handlebars.registerHelper('percentage', function(amtA, amtB) {
-    let per = parseFloat(amtB) / parseFloat(amtA) * 100;
-    return numeral(per).format('0.00').toString() + '%';
+	let per = parseFloat(amtB) / parseFloat(amtA) * 100;
+	return numeral(per).format('0.00').toString() + '%';
 });
 
 function currencyFormat(amt) {
-    return numeral(amt).format('$' + '0,0.00').toString();
+	return numeral(amt).format('$' + '0,0.00').toString();
 };
 
 function calculatePercentage(amtA, amtB) {
-    let per = amtB / amtA * 100;
-    return numeral(per).format('0.00').toString() + '%';
+	let per = amtB / amtA * 100;
+	return numeral(per).format('0.00').toString() + '%';
 };
 
 function getTextColor(amtA, amtB) {
-    let total = (amtA - amtB);
-    if (total < 0)
-        return "text_red_color";
-    else
-        return "text_green_color";
+	let total = (amtA - amtB);
+	if (total < 0)
+		return "text_red_color";
+	else
+		return "text_green_color";
 };
 
 Handlebars.registerHelper('compareSalePerformance', function(obj, compareProducts) {
-    var ret = '';
-    var matchedObj = _.find(compareProducts, function(aObj) {
-        return aObj.product_id == obj.product_id;
-    });
-    if (matchedObj) {
-        ret = `<td> ` + currencyFormat(obj.total_sales) + `
+	var ret = '';
+	var matchedObj = _.find(compareProducts, function(aObj) {
+		return aObj.product_id == obj.product_id;
+	});
+	if (matchedObj) {
+		ret = `<td> ` + currencyFormat(obj.total_sales) + `
          <span class = "` + getTextColor(obj.total_sales, matchedObj.total_sales) + `">` + currencyFormat(obj.total_sales - matchedObj.total_sales) + `</span>
          <span class = "text_grey_color"> vs ` + currencyFormat(matchedObj.total_sales) + `(` + calculatePercentage(obj.total_sales, matchedObj.total_sales) + `) </span>
          </td>
@@ -548,8 +576,8 @@ Handlebars.registerHelper('compareSalePerformance', function(obj, compareProduct
          <span class = "` + getTextColor(obj.gtc_fees, matchedObj.gtc_fees) + `">` + currencyFormat(obj.gtc_fees - matchedObj.gtc_fees) + `</span>
          <span class = "text_grey_color"> vs ` + currencyFormat(matchedObj.gtc_fees) + `(` + calculatePercentage(obj.gtc_fees, matchedObj.gtc_fees) + `) </span>
          </td>`
-    } else {
-        ret = `<td> ` + currencyFormat(obj.total_sales) + `
+	} else {
+		ret = `<td> ` + currencyFormat(obj.total_sales) + `
          <span class = "text_red_color"> N/A </span>
          <span class = "text_grey_color"> vs N/A (N/A % ) </span>
          </td>
@@ -561,62 +589,62 @@ Handlebars.registerHelper('compareSalePerformance', function(obj, compareProduct
          <span class = "text_red_color"> N/A </span>
          <span class = "text_grey_color"> vs N/A (N/A % ) </span>
          </td>`
-    }
-    return new Handlebars.SafeString(ret);
+	}
+	return new Handlebars.SafeString(ret);
 });
 
 Handlebars.registerHelper('socialIcon', function(obj, options) {
-    if (obj == '' || obj == null || obj == 'null')
-        return options.inverse(this);
-    return options.fn(this);
+	if (obj == '' || obj == null || obj == 'null')
+		return options.inverse(this);
+	return options.fn(this);
 });
 
 Handlebars.registerHelper('ifIsZero', function(value, options) {
-    if (value === 0) {
-        return options.fn(this);
-    }
-    return options.inverse(this);
+	if (value === 0) {
+		return options.fn(this);
+	}
+	return options.inverse(this);
 });
 
 Handlebars.registerHelper('MarketPlaceURL', function(marketPlace_id, options) {
-    if (!marketPlace_id)
-        return 'products';
-    let marketPlace;
-    switch (marketPlace_id) {
-        case 1:
-            marketPlace = "wholesale";
-            break;
-        case 2:
-            marketPlace = "shop";
-            break;
-        case 3:
-            marketPlace = "services";
-            break;
-        case 4:
-            marketPlace = "lifestyle";
-            break;
-        default:
-            marketPlace = "products";
-            break;
-    }
-    return marketPlace;
+	if (!marketPlace_id)
+		return 'products';
+	let marketPlace;
+	switch (marketPlace_id) {
+		case 1:
+			marketPlace = "wholesale";
+			break;
+		case 2:
+			marketPlace = "shop";
+			break;
+		case 3:
+			marketPlace = "services";
+			break;
+		case 4:
+			marketPlace = "lifestyle";
+			break;
+		default:
+			marketPlace = "products";
+			break;
+	}
+	return marketPlace;
 });
 
 Handlebars.registerHelper('OrderStatusText', function(order_status, options) {
-    if (!order_status)
-        return ' ';
-    let orderStatus;
-    switch (order_status) {
-        case 1:
+	if (!order_status)
+		return ' ';
+	let orderStatus;
+	switch (order_status) {
+		case 1:
 			orderStatus = "Order not yet confirmed by seller";
-            break;
-        case 2:
+			break;
+		case 2:
 			orderStatus = "Order confirmed by seller";
-            break;
-        case 3:
+			break;
+		case 3:
 			orderStatus = "Seller is processing your order";
-            break;
-        case 4:
+			break;
+		case 4:
 			orderStatus = "Order dispatched";
 			break;
 		case 5:
@@ -628,30 +656,30 @@ Handlebars.registerHelper('OrderStatusText', function(order_status, options) {
 		case 8:
 			orderStatus = "Order Failed";
 			break;
-			
-        default:
+
+		default:
 			orderStatus = " ";
-            break;
-    }
-    return orderStatus;
+			break;
+	}
+	return orderStatus;
 });
 
 Handlebars.registerHelper('OrderStatusBar', function(order_status, options) {
-    if (!order_status)
+	if (!order_status)
 		return 'style="width:100%;"';
-		
-    let prograssBar;
-    switch (order_status) {
-        case 1:
+
+	let prograssBar;
+	switch (order_status) {
+		case 1:
 			prograssBar = "width:5%;";
-            break;
-        case 2:
+			break;
+		case 2:
 			prograssBar = "width:10%;background-color:green;";
-            break;
-        case 3:
+			break;
+		case 3:
 			prograssBar = "width:15%;background-color:green;";
-            break
-        case 4:
+			break
+		case 4:
 			prograssBar = "width:20%;background-color:green;";
 			break
 		case 5:
@@ -659,95 +687,116 @@ Handlebars.registerHelper('OrderStatusBar', function(order_status, options) {
 			break
 		case 6:
 			prograssBar = "width:100%;background-color:green;";
-			break;		
-        default:
+			break;
+		default:
 			prograssBar = "width:100%;background-color:red;";
-            break;
-    }
-    return prograssBar;
+			break;
+	}
+	return prograssBar;
 });
 
 Handlebars.registerHelper('Location', function(id, arrayEle, options) {
-    let name;
-    arrayEle.forEach(function(element) {
-        if (element.id == id) {
-            name = element.name;
-        }
-    });
-    return name;
+	let name;
+	arrayEle.forEach(function(element) {
+		if (element.id == id) {
+			name = element.name;
+		}
+	});
+	return name;
 });
 Handlebars.registerHelper('searchCategory', function(element, id) {
-    var name = '';
-    for (var i = 0, len = element.length; i < len; i++) {
-        if (element[i].id == id) {
-            name = element[i].name;
-            return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
-        }
-    }
-    return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
+	var name = '';
+	for (var i = 0, len = element.length; i < len; i++) {
+		if (element[i].id == id) {
+			name = element[i].name;
+			return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
+		}
+	}
+	return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
 });
 
 Handlebars.registerHelper('searchSubCategory', function(element, sub_cat, cat) {
-    var name = '';
-    var sub_name = '';
-    for (var i = 0, len = element.length; i < len; i++) {
-        if (element[i].id == cat) {
-            name = element[i].SubCategories;
-            for (var j = 0, sub_len = name.length; j < sub_len; j++) {
-                if (name[j].id == sub_cat) {
-                    sub_name = name[j].name;
-                    return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
-                }
-            }
-        }
-    }
-    return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
+	var name = '';
+	var sub_name = '';
+	for (var i = 0, len = element.length; i < len; i++) {
+		if (element[i].id == cat) {
+			name = element[i].SubCategories;
+			for (var j = 0, sub_len = name.length; j < sub_len; j++) {
+				if (name[j].id == sub_cat) {
+					sub_name = name[j].name;
+					return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
+				}
+			}
+		}
+	}
+	return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
 });
 Handlebars.registerHelper('dotdotdot', function(str) {
-    var body = str;
-    var regex = /(<([^>]+)>)/ig;
-    var result = body.replace(regex, "");
-    if (str.length > 100) {
-        result=result.substr(0, 100);
-        return result + '...';
-    }
+	var body = str;
+	var regex = /(<([^>]+)>)/ig;
+	var result = body.replace(regex, "");
+	if (str.length > 100) {
+		result = result.substr(0, 100);
+		return result + '...';
+	}
 
-    return result;
+	return result;
 });
 Handlebars.registerHelper('decimalFixed', function(distance) {
-    return parseFloat(distance).toFixed(0);
+	return parseFloat(distance).toFixed(0);
 });
 Handlebars.registerHelper('decimalFixedOne', function(distance) {
-    var rating = Math.ceil(distance);
-    return rating;
+	var rating = Math.ceil(distance);
+	return rating;
 });
 
 Handlebars.registerHelper('sizeInKB', function(value) {
-    var valueInKB = value / 1000;
-    return valueInKB.toFixed(2);
+	var valueInKB = value / 1000;
+	return valueInKB.toFixed(2);
 });
-Handlebars.registerHelper('verificationStatus',function(obj,status,content,option){
-    var text = '';
-    if(obj.APPROVED == status){
-        text = `<span class="id-verified">
+Handlebars.registerHelper('verificationStatus', function(obj, status, content, option) {
+	var text = '';
+	if (obj.APPROVED == status) {
+		text = `<span class="id-verified">
                     <i class="fas fa-check-circle"></i>
                 </span>`;
-    }else{
-        text = `<span class="id-verified">
+	} else {
+		text = `<span class="id-verified">
                     <i class="fas fa-exclamation-circle"></i>
                 </span>`;
-    }
-    if(obj.WAITING == status){
-        text = text+'Your '+content+' verification request is awaiting';
-    }
-    else if(obj.APPROVED == status){
-        text = text+'Your '+content+' verification request is approved';
-    }else if(obj.REJECTED == status ){
-        text = text+ option;
-    }else{
-        text = text+ `You haven't submitted this yet.`;
-    }
-    return text;
-                                                
+	}
+	if (obj.WAITING == status) {
+		text = text + 'Your ' + content + ' verification request is awaiting';
+	} else if (obj.APPROVED == status) {
+		text = text + 'Your ' + content + ' verification request is approved';
+	} else if (obj.REJECTED == status) {
+		text = text + option;
+	} else {
+		text = text + `You haven't submitted this yet.`;
+	}
+	return text;
+});
+Handlebars.registerHelper('returnCond', function(date) {
+	const deliveredDate = new Date(date);
+	const currentDate = new Date();
+	deliveredDate.setDate(deliveredDate.getDate() + parseInt(config.returnItemDays));
+	if (deliveredDate >= currentDate) {
+		return "";
+	} else {
+		return "display: none;";
+	}
+});
 
-})
+Handlebars.registerHelper('trackProgressBar', function(status) {
+	if (status == orderItemStatus['ORDER_INITIATED']) {
+		return "width: 1%;background-color: darkgoldenrod;"
+	} else if (status == orderItemStatus['CONFIRMED']) {
+		return "width: 25%;background-color: darkslateblue;"
+	} else if (status == orderItemStatus['SHIPPED']) {
+		return "width: 50%;background-color: darkcyan;"
+	} else if (status == orderItemStatus['DELIVERED']) {
+		return "width: 100%;background-color: darkgreen;"
+	} else {
+		return "width: 100%;background-color: darkred;"
+	}
+});

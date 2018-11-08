@@ -1,8 +1,8 @@
 'use strict';
 
+const sequelize = require('sequelize');
 const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
-const sequelize = require('sequelize');
 const Sequelize_Instance = require('../../sqldb/index');
 const RawQueries = require('../../raw-queries/sql-queries');
 const _ = require('lodash');
@@ -97,6 +97,23 @@ export function findIdRow(modelName, id, includeArr) {
 export function findRow(modelName, queryObj, includeArr) {
 	return new Promise((resolve, reject) => {
 		model[modelName].find({
+			include: includeArr,
+			where: queryObj
+		}).then(function(row) {
+			if (row) {
+				resolve(row);
+			} else {
+				resolve(null);
+			}
+		}).catch(function(error) {
+			reject(error);
+		});
+	});
+}
+
+export function findAllRow(modelName, queryObj, includeArr) {
+	return new Promise((resolve, reject) => {
+		model[modelName].findAll({
 			include: includeArr,
 			where: queryObj
 		}).then(function(row) {

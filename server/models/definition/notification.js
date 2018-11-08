@@ -9,6 +9,11 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
+        name: {
+            type: DataTypes.STRING(255),
+            field: 'name',
+            allowNull: false
+        },
         user_id: {
             type: DataTypes.BIGINT,
             field: 'user_id',
@@ -19,11 +24,6 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-        },
-        name: {
-            type: DataTypes.STRING(255),
-            field: 'name',
-            allowNull: false
         },
         code: {
             type: DataTypes.STRING(255),
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         created_by: {
-            type: DataTypes.STRING(64),
+            type: DataTypes.STRING(255),
             field: 'created_by',
             allowNull: true
         },
@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         last_updated_by: {
-            type: DataTypes.STRING(64),
+            type: DataTypes.STRING(255),
             field: 'last_updated_by',
             allowNull: true
         },
@@ -78,6 +78,7 @@ module.exports = (sequelize, DataTypes) => {
 
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
+
     const model = require('../index');
     const Notification = model.Notification;
     const User = model.User;
@@ -88,9 +89,4 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    // Notification.hasMany(VendorNotificationSetting, {
-    //     foreignKey: 'notification_id',
-    //     onDelete: 'NO ACTION',
-    //     onUpdate: 'NO ACTION'
-    // });
 };

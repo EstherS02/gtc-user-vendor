@@ -74,13 +74,16 @@ module.exports.initRelations = () => {
     const Address = model.Address;
     const Product = model.Product;
     const ProductAdsSetting = model.ProductAdsSetting;
+    const Vendor = model.Vendor;
     const Country = model.Country;
     const User = model.User;
-    const Vendor = model.Vendor;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
+    const Payment = model.Payment;
+    const Currency = model.Currency;
+    const Timezone = model.Timezone;
 
     State.hasMany(Address, {
         foreignKey: 'province_id',
@@ -188,6 +191,54 @@ module.exports.initRelations = () => {
         through: ProductAdsSetting,
         foreignKey: 'state_id',
         otherKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    State.belongsToMany(Vendor, {
+        through: ProductAdsSetting,
+        foreignKey: 'state_id',
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    State.belongsToMany(Payment, {
+        through: ProductAdsSetting,
+        foreignKey: 'state_id',
+        otherKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    State.belongsToMany(User, {
+        through: Vendor,
+        foreignKey: 'province_id',
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    State.belongsToMany(Country, {
+        through: Vendor,
+        foreignKey: 'province_id',
+        otherKey: 'base_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    State.belongsToMany(Currency, {
+        through: Vendor,
+        foreignKey: 'province_id',
+        otherKey: 'currency_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    State.belongsToMany(Timezone, {
+        through: Vendor,
+        foreignKey: 'province_id',
+        otherKey: 'timezone_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

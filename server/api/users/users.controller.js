@@ -235,7 +235,7 @@ export function resend(req, res) {
 				res.status(500).send("Internal server error");
 				return;
 			});
-		}else{
+		} else {
 			res.status(500).send("Mail is not Registered");
 		}
 	}).catch(function(error) {
@@ -496,17 +496,16 @@ export function userProfile(req, res) {
 
 function addressUpdate(user_id, address_type, obj) {
 	service.findRow('Address', {
-		user_id: user_id,
-		address_type: address_type
-	}, [])
+			user_id: user_id,
+			address_type: address_type
+		}, [])
 		.then(function(row) {
 			if (row) {
 				var updateAddressPromises = [];
 
 				updateAddressPromises.push(updateAddress(obj, row.id));
 				return Promise.all(updateAddressPromises);
-			}
-			else {
+			} else {
 				var createAddressPromises = [];
 
 				createAddressPromises.push(createAddress(obj));
@@ -549,54 +548,64 @@ function updateVendor(vendorBodyParam, vendorId) {
 		})
 }
 
-export function vendorFollow(req, res) {
-	var user_id = req.user.id;
-	var vendor_id = req.body.vendor_id;
-	var queryObj = {
-		user_id: user_id,
-		vendor_id: vendor_id
-	};
-	var modelName = "VendorFollower";
-	model[modelName].findOne({
-		where: queryObj
-	}).then(function(result) {
-		if (result) {
+export async function vendorFollow(req, res) {
+	var queryObj = {};
+	const vendorFollowerModelName = "VendorFollower";
 
-			var newStatus;
-			if (result.status == status['ACTIVE']) {
-				newStatus = 0;
-			} else {
-				newStatus = 1;
-			}
-			model[modelName].update({
-				status: newStatus,
-				last_updated_on: new Date()
+	req.checkBody('vendor_id', 'Missing Query Param').notEmpty();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+	try {
+		const exists = await service.findOneRow(vendorFollowerModelName, {
+			vendor_id: req.body.vendor_id,
+			user_id: req.user.id
+		});
+		if (exists && exists.status == status['ACTIVE']) {
+			const updateResponse = await service.updateRecordNew(vendorFollowerModelName, {
+				status: status['INACTIVE'],
+				last_updated_on: new Date(),
+				last_updated_by: req.user.first_name
 			}, {
-					where: {
-						id: result.id
-					}
-				})
-				.then(function(response) {
-					res.status(200).send(response);
-					return;
-				});
-		} else {
-			var bodyParam = {};
-			bodyParam.vendor_id = vendor_id;
-			bodyParam.user_id = req.user.id;
-			bodyParam.status = 1;
-			bodyParam.created_on = new Date();
-			service.createRow(modelName, bodyParam).then(function(response) {
-				res.status(200).send(response);
-				return;
+				user_id: req.user.id,
+				vendor_id: req.body.vendor_id
 			});
+			return res.status(200).send("OK");
+		} else if (exists && exists.status == status['INACTIVE']) {
+			const updateResponse = await service.updateRecordNew(vendorFollowerModelName, {
+				status: status['ACTIVE'],
+				last_updated_on: new Date(),
+				last_updated_by: req.user.first_name
+			}, {
+				user_id: req.user.id,
+				vendor_id: req.body.vendor_id
+			});
+			return res.status(200).send("OK");
+		} else {
+			const createResponse = await service.createRow(vendorFollowerModelName, {
+				vendor_id: req.body.vendor_id,
+				user_id: req.user.id,
+				status: status['ACTIVE'],
+				created_on: new Date(),
+				created_by: req.user.first_name
+			});
+			return res.status(200).send("OK");
 		}
-	});
+	} catch (error) {
+		console.log("vendorFollow Error:::", error);
+		return res.status(500).send(error);
+	}
 }
 
 export function forgotPassword(req, res) {
 
-	var queryParams = {}, bodyParams = {}, user_id;
+	var queryParams = {},
+		bodyParams = {},
+		user_id;
 	var userModel = 'User';
 	var randomCode = uuid.v1();
 	var queryParams = {
@@ -664,8 +673,7 @@ export function forgotPassword(req, res) {
 							return;
 						}
 					})
-			}
-			else {
+			} else {
 				res.status(404).send("Your search did not return any results. Please try again with other information.");
 				return;
 			}
@@ -712,8 +720,8 @@ export function userOnline(user) {
 		availability_status: 1
 	}
 	service.findRow('User', {
-		id: user.id
-	}, [])
+			id: user.id
+		}, [])
 		.then(function(row) {
 			if (row) {
 				var rowJSON = row.toJSON();
@@ -724,8 +732,7 @@ export function userOnline(user) {
 					}).catch(function(err) {
 						console.log("User Online updation failed");
 					})
-			}
-			else {
+			} else {
 				console.log("user not found");
 			}
 		}).catch(function(err) {
@@ -738,8 +745,8 @@ export function userOffline(user) {
 		availability_status: 0
 	}
 	service.findRow('User', {
-		id: user.id
-	}, [])
+			id: user.id
+		}, [])
 		.then(function(row) {
 			if (row) {
 				var rowJSON = row.toJSON();
@@ -749,8 +756,7 @@ export function userOffline(user) {
 					}).catch(function(err) {
 						console.log("User Offline updation failed");
 					})
-			}
-			else {
+			} else {
 				console.log("user not found");
 			}
 		}).catch(function(err) {
@@ -759,4 +765,3 @@ export function userOffline(user) {
 }
 
 exports.authenticate = authenticate;
-

@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'order_id',
             allowNull: false,
             references: {
-                model: 'orders',
+                model: 'order',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -36,45 +36,80 @@ module.exports = (sequelize, DataTypes) => {
             field: 'quantity',
             allowNull: false
         },
-        tax_id: {
+        price: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'price',
+            allowNull: false
+        },
+        shipping_cost: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'shipping_cost',
+            allowNull: false
+        },
+        gtc_fees: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'gtc_fees',
+            allowNull: false
+        },
+        plan_fees: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'plan_fees',
+            allowNull: true
+        },
+        is_coupon_applied: {
+            type: DataTypes.INTEGER,
+            field: 'is_coupon_applied',
+            allowNull: false
+        },
+        coupon_id: {
             type: DataTypes.BIGINT,
-            field: 'tax_id',
+            field: 'coupon_id',
             allowNull: true,
             references: {
-                model: 'tax',
+                model: 'coupon',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        tax_amount: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'tax_amount',
+        coupon_amount: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'coupon_amount',
             allowNull: true
         },
-        subtotal: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'subtotal',
+        is_on_sale_item: {
+            type: DataTypes.INTEGER,
+            field: 'is_on_sale_item',
             allowNull: false
         },
-        shipping_total: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'shipping_total',
-            allowNull: false
+        discount_amount: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'discount_amount',
+            allowNull: true
         },
         final_price: {
-            type: DataTypes.DECIMAL(10, 4),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'final_price',
             allowNull: false
-        },
-        reason_for_cancellation: {
-            type: DataTypes.STRING(64),
-            field: 'reason_for_cancellation',
-            allowNull: true
         },
         order_item_status: {
             type: DataTypes.INTEGER,
             field: 'order_item_status',
+            allowNull: false
+        },
+        item_confirmed_on: {
+            type: DataTypes.DATE,
+            field: 'item_confirmed_on',
+            allowNull: true
+        },
+        shipped_on: {
+            type: DataTypes.DATE,
+            field: 'shipped_on',
+            allowNull: true
+        },
+        expected_delivery_date: {
+            type: DataTypes.DATE,
+            field: 'expected_delivery_date',
             allowNull: true
         },
         cancelled_on: {
@@ -82,19 +117,29 @@ module.exports = (sequelize, DataTypes) => {
             field: 'cancelled_on',
             allowNull: true
         },
+        reason_for_cancel: {
+            type: DataTypes.STRING(255),
+            field: 'reason_for_cancel',
+            allowNull: true
+        },
+        delivered_on: {
+            type: DataTypes.DATE,
+            field: 'delivered_on',
+            allowNull: true
+        },
+        request_for_return_on: {
+            type: DataTypes.DATE,
+            field: 'request_for_return_on',
+            allowNull: true
+        },
         reason_for_return: {
-            type: DataTypes.STRING(64),
+            type: DataTypes.STRING(255),
             field: 'reason_for_return',
             allowNull: true
         },
-        return_requested_on: {
+        approved_request_for_return_on: {
             type: DataTypes.DATE,
-            field: 'return_requested_on',
-            allowNull: true
-        },
-        return_approved_on: {
-            type: DataTypes.DATE,
-            field: 'return_approved_on',
+            field: 'approved_request_for_return_on',
             allowNull: true
         },
         return_received_on: {
@@ -110,7 +155,7 @@ module.exports = (sequelize, DataTypes) => {
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
-            allowNull: true
+            allowNull: false
         },
         created_on: {
             type: DataTypes.DATE,
@@ -133,7 +178,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'order_items',
+        tableName: 'order_item',
         timestamps: false
     });
 };
@@ -143,16 +188,11 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const OrderItem = model.OrderItem;
+    const OrderItemPayout = model.OrderItemPayout;
     const Order = model.Order;
     const Product = model.Product;
     const Coupon = model.Coupon;
-    const Tax = model.Tax;
-
-    OrderItem.belongsTo(Order, {
-        foreignKey: 'order_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    }); 
+    const Payment = model.Payment;
 
     OrderItem.belongsTo(Product, {
         foreignKey: 'product_id',
@@ -160,9 +200,30 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    OrderItem.belongsTo(Tax, {
-        foreignKey: 'tax_id',
+    OrderItem.hasMany(OrderItemPayout, {
+        foreignKey: 'order_item_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
+
+    OrderItem.belongsTo(Order, {
+        foreignKey: 'order_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    OrderItem.belongsTo(Coupon, {
+        foreignKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    OrderItem.belongsToMany(Payment, {
+        through: OrderItemPayout,
+        foreignKey: 'order_item_id',
+        otherKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
 };

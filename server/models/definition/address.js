@@ -30,6 +30,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'same_shipping_address',
             allowNull: true
         },
+        first_name: {
+            type: DataTypes.STRING(255),
+            field: 'first_name',
+            allowNull: true
+        },
+        last_name: {
+            type: DataTypes.STRING(255),
+            field: 'last_name',
+            allowNull: true
+        },
         company_name: {
             type: DataTypes.STRING(128),
             field: 'company_name',
@@ -87,16 +97,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'status',
             allowNull: false
         },
-        first_name: {
-            type: DataTypes.STRING(255),
-            field: 'first_name',
-            allowNull: true
-        },
-        last_name: {
-            type: DataTypes.STRING(255),
-            field: 'last_name',
-            allowNull: true
-        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
@@ -137,6 +137,7 @@ module.exports.initRelations = () => {
     const User = model.User;
     const Country = model.Country;
     const State = model.State;
+    const Payment = model.Payment;
     const Shipping = model.Shipping;
 
     Address.hasMany(Order, {
@@ -177,6 +178,14 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Address.belongsToMany(Payment, {
+        through: Order,
+        foreignKey: 'shipping_address_id',
+        otherKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Address.belongsToMany(Shipping, {
         through: Order,
         foreignKey: 'shipping_address_id',
@@ -186,7 +195,7 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Address, {
-        as: 'shippingAddress',
+        as: 'shippingAddress1',
         through: Order,
         foreignKey: 'shipping_address_id',
         otherKey: 'billing_address_id',
@@ -202,6 +211,14 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Address.belongsToMany(Payment, {
+        through: Order,
+        foreignKey: 'billing_address_id',
+        otherKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Address.belongsToMany(Shipping, {
         through: Order,
         foreignKey: 'billing_address_id',
@@ -211,7 +228,7 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Address, {
-        as: 'billingAddress',
+        as: 'billingAddress1',
         through: Order,
         foreignKey: 'billing_address_id',
         otherKey: 'shipping_address_id',

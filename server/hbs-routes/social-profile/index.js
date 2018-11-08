@@ -2,10 +2,13 @@
 
 var express = require('express');
 var router = express.Router();
+var middleware = require('../../middleware');
+var roles = require('../../config/roles');
+var permission = require('../../config/permission');
 var auth = require('../../auth/auth.service');
 
 var controller = require('./social-profile.controller');
 
-router.get('/',auth.isAuthenticated(), controller.socialProfile);
+router.get('/', auth.hasRole(roles['VENDOR']), controller.socialProfile);
 
 module.exports = router;

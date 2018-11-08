@@ -34,7 +34,6 @@ export function index(req, res) {
 
 	var categoryModel = "Category";
 	var marketPlaceModel = "Marketplace";
-	var productModel = "MarketplaceProduct";
 	var marketPlaceTypeModel = "MarketplaceType";
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
 		LoggedInUser = req.gtcGlobalUserObj;

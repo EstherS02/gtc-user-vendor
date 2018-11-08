@@ -201,7 +201,7 @@ export async function saveCoupon(req, res) {
 	bodyParams['minimum_spend'] = req.body.minimum_spend ? parseFloat(req.body.minimum_spend) : null;
 	bodyParams['maximum_spend'] = req.body.maximum_spend ? parseFloat(req.body.maximum_spend) : null;
 	bodyParams['usage_limit'] = req.body.usage_limit ? parseInt(req.body.usage_limit) : null;
-	bodyParams['status'] = parseInt(req.body.status);
+	bodyParams['status'] = status['ACTIVE'];
 	bodyParams['limit_usage_to_x_items'] = req.body.limit_usage_to_x_items ? parseInt(req.body.limit_usage_to_x_items) : null;
 	bodyParams['usage_limit_per_user'] = req.body.usage_limit_per_user ? parseInt(req.body.usage_limit_per_user) : null;
 	bodyParams['publish_date'] = new Date();
