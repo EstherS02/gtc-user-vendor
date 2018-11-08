@@ -81,12 +81,18 @@
 	function sortSearch(e) {
 		var url = window.location.href;
 		var order;
-		if (e.value == 'product_name') {
+		var field;
+		if (e.value == 'product_name_asc') {
 			order = 'asc';
+			field = 'product_name';
+		} else if (e.value == 'product_name_desc') {
+			order = 'desc';
+			field = 'product_name';
 		} else {
 			order = 'desc';
+			field = 'created_on';
 		}
-		var uri = updateQueryStringParameter(url, 'field', e.value);
+		var uri = updateQueryStringParameter(url, 'field', field);
 		uri = updateQueryStringParameter(uri, 'order', order)
 		window.location.href = uri;
 	}
@@ -201,9 +207,9 @@
 							<select name="order" onchange="sortSearch(this)" class="form-control-customized rounded form-control-sm form-control-border" style="font-family: 'FontAwesome', Helvetica;"
 							 id="sortValue">
 								<option disabled="true" selected="true">Sort by</option>
-								<option data-order = "asc" value="product_name" {{#ifCond queryURI.field "==" 'product_name'}} selected="true" {{/ifCond}}>Alphabetical &#xf063;</option>
-								<option data-order = "desc" value="product_name" {{#ifCond queryURI.field "==" 'product_name'}} selected="true" {{/ifCond}}>Alphabetical &#xf062;</option>
-								<option value="created_on" {{#ifCond queryURI.field "==" "created_on"}} selected="true" {{/ifCond}}>Date</option>
+								<option  value="product_name_asc" {{#ifCond queryURI.field "==" 'product_name'}} selected="true" {{/ifCond}}>Alphabetical &#xf063;</option>
+								<option value="product_name_desc" {{#ifCond queryURI.field "==" 'product_name'}} selected="true" {{/ifCond}}>Alphabetical &#xf062;</option>
+								<option value="created_on" data-order = "desc" {{#ifCond queryURI.field "==" "created_on"}} selected="true" {{/ifCond}}>Date</option>
 							</select>
 						</div>
 					</div>

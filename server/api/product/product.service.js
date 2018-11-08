@@ -208,6 +208,11 @@ export function productView(productID) {
 					status: status['ACTIVE']
 				},
 				attributes: ['id', 'name', 'code', 'status']
+			},{
+				model :model['Vendor'],
+				where: {
+					status: status['ACTIVE']
+				},
 			}, {
 				model: model['Marketplace'],
 				where: {
