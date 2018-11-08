@@ -8,7 +8,7 @@ const model = require('../../../sqldb/model-connect');
 const status = require('../../../config/status');
 const marketplace = require('../../../config/marketplace');
 const service = require('../../../api/service');
-const vendorservice = require('../../../api/vendor/vendor-service');
+const vendorservice = require('../../../api/vendor/vendor.service');
 const cartService = require('../../../api/cart/cart.service');
 
 export function confirmation(req, res) {
