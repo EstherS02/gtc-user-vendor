@@ -43,11 +43,15 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 					} else if (response.message == 'UPGRADEPLAN') {
 						$('#planUpgrade').modal('show');
 					} else if (response.message == 'SUCCESS') {
-						// location.reload();
-					}
+						$('#gtc-wishlist-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#gtc-wishlist-alert .wishlist-message').text(response.message_details);
+						$("#gtc-wishlist-alert").fadeTo(2000, 500).slideUp(500, function() {
+							$("#gtc-wishlist-alert").slideUp(500);
+							location.reload();
+						});
+						}
 				},
 				error: function(error) {
-					alert(JSON.parse(error.responseText).message_details)	;
 					$('#gtc-wishlist-alert').removeClass('alert-success').addClass('alert-danger');
 					$('#gtc-wishlist-alert .wishlist-message').text(JSON.parse(error.responseText).message_details);
 					$("#gtc-wishlist-alert").fadeTo(2000, 500).slideUp(500, function() {
