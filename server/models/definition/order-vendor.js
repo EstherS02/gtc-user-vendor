@@ -87,6 +87,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'status',
             allowNull: false
         },
+        dispatched_on: {
+            type: DataTypes.DATE,
+            field: 'dispatched_on',
+            allowNull: true
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
