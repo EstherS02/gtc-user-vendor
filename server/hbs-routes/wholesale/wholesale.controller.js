@@ -8,6 +8,7 @@ const status = require('../../config/status');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
+const vendorService = require('../../api/vendor/vendor.service');
 const marketplace_type = require('../../config/marketplace_type');
 const productService = require('../../api/product/product.service');
 const async = require('async');
@@ -174,46 +175,14 @@ export function wholesale(req, res) {
 				});
 		},
 		wholesalers: function(callback) {
-			return callback(null, null);
-			// CHECK_IT_LATER
-			/*var result = {};
-			const tempLimit = 6;
-			queryObj['type'] = 'Private Wholesale Marketplace';
-			field = 'sales_count';
-			order = 'desc';
-
-			service.findRows(vendorModel, queryObj, offset, tempLimit, field, order)
-				.then(function(wholesalers) {
-					result.rows = JSON.parse(JSON.stringify(wholesalers.rows));
-					var vendorAvgRating = {};
-					vendorAvgRating['status'] = {
-						'$eq': status["ACTIVE"]
-					}
-					async.mapSeries(result.rows, function(aVendor, cb) {
-						vendorAvgRating['vendor_id'] = aVendor.id;
-						model['ProductRating'].findOne({
-							where: vendorAvgRating,
-							attributes: [
-								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
-							],
-						}).then(function(data) {
-							var ratingObj = JSON.parse(JSON.stringify(data))
-							aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
-							cb(null, data);
-						}).catch(function(error) {
-							console.log('Error:::', error);
-							cb(error, null);
-						});
-					}, function done(err, success) {
-						if (!err) {
-							// console.log('providers', result.rows);
-							return callback(null, result);
-						}
-					});
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});*/
+			vendorService.TopSellingVendors(0, 6, marketplace['WHOLESALE'])
+				.then((response) => {
+					return callback(null, response);
+				})
+				.catch((error) => {
+					console.log("wholesalers Error:::", error);
+					return callback(error);
+				});
 		},
 	}, function(err, results) {
 		if (!err) {

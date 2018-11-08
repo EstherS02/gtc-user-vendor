@@ -37,26 +37,6 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 		</div>
 	</div>
 </div>
-{{!-- <section class="shop_banner" style="margin-bottom: 0">
-	<div class="container-fluid full_view_pad clearfix">
-    <div class="row">
-      <div class="col-md-6 col-12 lstb1">
-        <img src="../img/banner.jpg" alt="banner" />
-      </div>
-      <div class="col-md-6 col-12">
-        <div class="row">
-         <div class="col-md-8 col-12 lstb2">
-          <p>Trying to sell your subscription? Our network</p>
-          <p>has over 25,900 monthly users/buyers.</p>
-        </div>
-        <div class="col-md-4 col-12">
-          <input type="submit" value="LIST MY PRODUCT" class="shop_checkout_btn" style="padding: 8px 20px;" />
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</section> --}}
 
 <div class="other-marketplace-bg"></div>
 <div class="gtc-container">
@@ -68,7 +48,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 				</div>
 				<div class="product-list-body">
 					<div class="row">
-						{{#each retailers.rows}}
+						{{#each retailers}}
 						<div class="col-md-6">
 							<div class="product-body">
 								<div class="table-responsive">
@@ -95,13 +75,13 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 																<span>Origin</span>
 															</div>
 															<div class="col-md-7 col-7 no-padding overflow-txt">
-																<span class="text-500">{{this.origin}}</span>
+																<span class="text-500">{{this.Country.name}}</span>
 															</div>
 															<div class="col-md-5 col-5 no-padding">
 																<span>Inventory</span>
 															</div>
 															<div class="col-md-7 col-7 no-padding">
-																{{!-- <b class="text-blue">{{this.product_count}} Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span> --}} -
+																<b class="text-blue">{{this.products_count}} Products</b> Listed <span class="text-red text-500 d-block">{{this.exclusive_product_sale}} on Sale<span> -
 																</div>
 																<div class="col-md-5 col-5 no-padding">
 																	<span>Seller Rating</span>
@@ -109,7 +89,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 																<div class="col-md-7 col-7 no-padding">
 																	<div class="v-rating">
 																	<a href="vendor/{{this.id}}" title="{{this.vendor_name}}">
-				                                                        {{starCount avg_rating}}
+				                                                        {{starCount this.vendor_rating}}
 				                                                        </a>
 																	</div>
 																</div>
