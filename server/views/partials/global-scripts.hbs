@@ -1,64 +1,99 @@
 <script>
-    function updateQueryString(uri, key, value) {
-        var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-        var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-        if (uri.match(re)) {
-            return uri.replace(re, '$1' + key + "=" + value + '$2');
-        }
-        else {
-            return uri + separator + key + "=" + value;
-        }
-    }
+	function updateQueryString(uri, key, value) {
+		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+		var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+		if (uri.match(re)) {
+			return uri.replace(re, '$1' + key + "=" + value + '$2');
+		} else {
+			return uri + separator + key + "=" + value;
+		}
+	}
 
 
-    function getUrlQueryString() {
-        var vars = [], hash;
-        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-        for (var i = 0; i < hashes.length; i++) {
-            hash = hashes[i].split('=');
-            vars.push(hash[0]);
-            vars[hash[0]] = hash[1];
-        }
-        return vars;
-    }
+	function getUrlQueryString() {
+		var vars = [], hash;
+		var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			vars.push(hash[0]);
+			vars[hash[0]] = hash[1];
+		}
+		return vars;
+	}
 
-    $(function () {
-        socket.on('connect', () => {
-            socket.on('call:preinit', (callObj) => {
-                if(callObj && callObj.callUniqueId){
-                    let loadUrl = `/web-rtc/${callObj.callUniqueId}`;
-                    loadUrl = updateQueryString(loadUrl, "callInitiator", true);
-                    localStorage.setItem('callerParams', JSON.stringify(callObj));
-                    window.location.href = loadUrl;
-                }
-            });
+	let showCallPopup = (callObj) => {
+		$("#call_popup_card_block").css('display', 'block');
+		$("#call_popup_card_backdrop_block").css('display', 'block');
+		if (callObj && callObj.callFrom) {
+			$("#call_popup_caller_name").text(callObj.callerName);
+			$('#call_popup_card_block').data('callObj', callObj);
+		}
+	}
 
-            socket.on('call:init', (callObj) => {
-                return socket.emit('call:join', callObj);
-            });
+	let hideCallPopup = () => {
+		$("#call_popup_card_block").css('display', 'none');
+		$("#call_popup_card_backdrop_block").css('display', 'none');
+	}
 
-            socket.on('call:incoming', (callObj) => {
-                let callAcceptStatus = confirm(`Incoming Video call from ${callObj.callFrom}`);
-                if(callAcceptStatus){
-                    callObj['callAcceptStatus'] = true;
-                    let loadUrl = `/web-rtc/${callObj.callUniqueId}`;
-                    loadUrl = updateQueryString(loadUrl, "callInitiator", false);
-                    localStorage.setItem('calleeParams', JSON.stringify(callObj));
-                    return window.location.href = loadUrl;
-                }
-                callObj['callAcceptStatus'] = false;
-                return socket.emit('call:rejected', callObj);
-            });
+	let callAcceptProceed = () => {
+		let callObj = $('#call_popup_card_block').data("callObj");
+		callObj['callAcceptStatus'] = true;
+		incomingCallAudio.pause();
+		let loadUrl = `/web-rtc/${callObj.callUniqueId}`;
+		loadUrl = updateQueryString(loadUrl, "callInitiator", false);
+		loadUrl = updateQueryString(loadUrl, "callTo", callObj.callTo);
+		localStorage.setItem('calleeParams', JSON.stringify(callObj));
+		return window.location.href = loadUrl;
+	}
 
-            socket.on('call:rejected', (callObj) => {
-                if(!callObj.callAcceptStatus){
-                    alert(`Your call was rejected by ${callObj.callFrom}`)
-                }
-            });
-            
-        });
+	let callRejectProceed = (missedCall) => {
+		let callObj = $('#call_popup_card_block').data("callObj");
+		callObj['callAcceptStatus'] = false;
+		callObj['callMissed'] = false;
+		if (missedCall) {
+			callObj['callMissed'] = true;
+		}
+		socket.emit('call:rejected', callObj);
+		incomingCallAudio.pause();
+		hideCallPopup();
+	}
 
-    })
+	$(function() {
+		socket.on('connect', () => {
+			socket.on('call:preinit', (callObj) => {
+				if (callObj && callObj.callUniqueId) {
+					let loadUrl = `/web-rtc/${callObj.callUniqueId}`;
+					loadUrl = updateQueryString(loadUrl, "callInitiator", true);
+					loadUrl = updateQueryString(loadUrl, "callFrom", callObj.callFrom);
+					localStorage.setItem('callerParams', JSON.stringify(callObj));
+					window.location.href = loadUrl;
+				}
+			});
 
+			socket.on('call:init', (callObj) => {
+				return socket.emit('call:join', callObj);
+			});
 
+			socket.on('call:incoming', (callObj) => {
+				incomingCallAudio.play();
+				showCallPopup(callObj);
+				setTimeout(function() {
+					//Missed call
+					callRejectProceed(true);
+				}, 20000);
+			});
+
+			socket.on('call:rejected', (callObj) => {
+				if (!callObj.callAcceptStatus) {
+					dialToneAudio.pause();
+					$('#call_popup_rejected #call_reject_message').text(`Your call was rejected by ${callObj.calleeName}`);
+					$('#call_popup_rejected').modal('show');
+				}
+			});
+
+		});
+
+	});
 </script>
+
+{{> call-popup}}

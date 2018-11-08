@@ -1,234 +1,195 @@
 <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 
-<style>
-    #videos {
-        transition: all 1s;
-    }
-
-    #videos.active {
-        -moz-transform: rotateY(180deg);
-        -ms-transform: rotateY(180deg);
-        -o-transform: rotateY(180deg);
-        -webkit-transform: rotateY(180deg);
-        transform: rotateY(180deg);
-    }
-
-    #localVideo {
-        border: 1px solid gray;
-        bottom: 20px;
-        left: 20px;
-        top: unset;
-        max-height: 20%;
-        max-width: 14.9%;
-        opacity: 0;
-        transition: opacity 1s;
-    }
-
-    #localVideo.active {
-        opacity: 1;
-        z-index: 2;
-    }
-
-    #remoteVideo {
-        height: 100%;
-        max-height: 100%;
-        max-width: 100%;
-        object-fit: cover;
-        -moz-transform: scale(-1, 1);
-        -ms-transform: scale(-1, 1);
-        -o-transform: scale(-1, 1);
-        -webkit-transform: scale(-1, 1);
-        transform: scale(-1, 1);
-        transition: opacity 1s;
-        width: 100%;
-    }
-</style>
-
 <script>
-    $(function () {
-        var localVideo = document.querySelector('#localVideo');
-        var remoteVideo = document.querySelector('#remoteVideo');
+	$(function() {
+		var localVideo = document.querySelector('#localVideo');
+		var remoteVideo = document.querySelector('#remoteVideo');
 
-        var localStream;
-        var remoteStream;
-        var pc;
-        var isStarted = false;
+		var localStream;
+		var remoteStream;
+		var pc;
+		var isStarted = false;
 
-        let mediaConstraints = {
-            audio: true,
-            video: true
-        }
+		let mediaConstraints = {
+			audio: true,
+			video: true
+		}
 
-        var pcConfig = {
-            'iceServers': [{
-                'urls': 'stun:stun.l.google.com:19302'
-            }]
-        };
+		var pcConfig = {
+			'iceServers': [{
+				'urls': 'stun:stun.l.google.com:19302'
+			}]
+		};
 
-        let captureLocalStreamVideo = () => {
-            return new Promise((resolve, reject) => {
-                if (navigator.mediaDevices.getUserMedia) {
-                    navigator.mediaDevices.getUserMedia(mediaConstraints)
-                        .then((stream) => {
-                            return resolve(stream);
-                        }).catch((e) => {
-                            return reject(e);
-                        });
-                } else {
-                    alert("Your browser is not Web RTC Supported");
-                }
-            });
-        };
+		let captureLocalStreamVideo = () => {
+			return new Promise((resolve, reject) => {
+				if (navigator.mediaDevices.getUserMedia) {
+					navigator.mediaDevices.getUserMedia(mediaConstraints)
+						.then((stream) => {
+							return resolve(stream);
+						}).catch((e) => {
+							return reject(e);
+						});
+				} else {
+					alert("Your browser is not Web RTC Supported");
+				}
+			});
+		};
 
-        let createPeerConnection = (callObj) => {
-            try {
-                pc = new RTCPeerConnection(pcConfig);
-                pc.onicecandidate = (event) => {
-                    console.log("ice candidate event");
-                    if (event.candidate) {
-                        console.log("sending ice candidate")
-                        let iceObj = {
-                            type: 'candidate',
-                            label: event.candidate.sdpMLineIndex,
-                            id: event.candidate.sdpMid,
-                            candidate: event.candidate.candidate,
-                            callFrom: callObj.callFrom,
-                            callTo: callObj.callTo,
-                            callUniqueId: callObj.callUniqueId
-                        }
-                        socket.emit('call:icecandidate', iceObj);
-                    } else {
-                        console.log('End of candidates.', event);
-                    }
-                }
+		let createPeerConnection = (callObj) => {
+			try {
+				pc = new RTCPeerConnection(pcConfig);
+				pc.onicecandidate = (event) => {
+					console.log("ice candidate event");
+					if (event.candidate) {
+						console.log("sending ice candidate")
+						let iceObj = {
+							type: 'candidate',
+							label: event.candidate.sdpMLineIndex,
+							id: event.candidate.sdpMid,
+							candidate: event.candidate.candidate,
+							callFrom: callObj.callFrom,
+							callTo: callObj.callTo,
+							callUniqueId: callObj.callUniqueId
+						}
+						socket.emit('call:icecandidate', iceObj);
+					} else {
+						console.log('End of candidates.', event);
+					}
+				}
 
-                pc.oniceconnectionstatechange = (event) => {
-                    console.log("Ice connection state change", event.target.iceConnectionState);
-                };
-                pc.onaddstream = (event) => {
-                    //handle Remote Stream added
-                    console.log('Remote stream added.');
-                    remoteStream = event.stream;
-                    remoteVideo.srcObject = remoteStream;
-                };
-                pc.onremovestream = (event) => {
-                    //handle Remote Stream removed
-                    console.log('Remote stream removed.');
-                };
-                console.log('Created RTCPeerConnnection');
-            } catch (e) {
-                console.log('Failed to create PeerConnection, exception: ' + e.message);
-                alert('Cannot create RTCPeerConnection object.');
-                return;
-            }
-        }
+				pc.oniceconnectionstatechange = (event) => {
+					console.log("Ice connection state change", event.target.iceConnectionState);
+				};
+				pc.onaddstream = (event) => {
+					//handle Remote Stream added
+					console.log('Remote stream added.');
+					remoteStream = event.stream;
+					remoteVideo.srcObject = remoteStream;
+				};
+				pc.onremovestream = (event) => {
+					//handle Remote Stream removed
+					console.log('Remote stream removed.');
+				};
+				console.log('Created RTCPeerConnnection');
+			} catch (e) {
+				console.log('Failed to create PeerConnection, exception: ' + e.message);
+				alert('Cannot create RTCPeerConnection object.');
+				return;
+			}
+		}
 
-        socket.on('connect', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const initQueryString = urlParams.get('callInitiator');
-            console.log("initQueryString", initQueryString)
-            if (initQueryString === 'true') {
-                let callerCallObj = localStorage.getItem('callerParams');
-                callerCallObj = JSON.parse(callerCallObj);
-                captureLocalStreamVideo()
-                    .then((stream) => {
-                        console.log('Adding local stream to caller local Video Id.');
-                        localStream = stream;
-                        localVideo.srcObject = stream;
-                        return socket.emit('call:init', callerCallObj);
-                    }).catch((e) => {
-                        console.log(e);
-                        alert('getUserMedia() error: ' + e.name);
-                    });
-            } else if (initQueryString === 'false') {
-                let calleeCallObj = localStorage.getItem('calleeParams');
-                calleeCallObj = JSON.parse(calleeCallObj);
-                captureLocalStreamVideo()
-                    .then((stream) => {
-                        console.log('Adding local stream to callee local Video Id.');
-                        localStream = stream;
-                        localVideo.srcObject = stream;
-                        return socket.emit('call:join', calleeCallObj);
-                    }).catch((e) => {
-                        console.log(e);
-                        alert('getUserMedia() error: ' + e.name);
-                    });
-            }
+		socket.on('connect', () => {
+			const urlParams = new URLSearchParams(window.location.search);
+			const initQueryString = urlParams.get('callInitiator');
+			const initCallFrom = urlParams.get('callFrom');
+			const initCallTo = urlParams.get('callTo');
 
-            socket.on('call:joined', (callObj) => {
-                if (!callObj.isInitiator) {
-                    console.log("Callee Joined the Room with caller", callObj);
-                    return socket.emit('call:accepted', callObj);
-                }
-                return console.log("Caller created and joined the room", callObj);
-            });
+			if (initQueryString === 'true' && initCallFrom) {
+				dialToneAudio.play();
+				let callerCallObj = localStorage.getItem('callerParams');
+				callerCallObj = JSON.parse(callerCallObj);
+				captureLocalStreamVideo()
+					.then((stream) => {
+						console.log('Adding local stream to caller local Video Id.');
+						localStream = stream;
+						localVideo.srcObject = stream;
+						return socket.emit('call:init', callerCallObj);
+					}).catch((e) => {
+						console.log(e);
+						//alert('getUserMedia() error: ' + e.name);
+						return socket.emit('call:init', callerCallObj);
+					});
+			} else if (initQueryString === 'false' && initCallTo) {
+				let calleeCallObj = localStorage.getItem('calleeParams');
+				calleeCallObj = JSON.parse(calleeCallObj);
+				captureLocalStreamVideo()
+					.then((stream) => {
+						console.log('Adding local stream to callee local Video Id.');
+						localStream = stream;
+						localVideo.srcObject = stream;
+						return socket.emit('call:join', calleeCallObj);
+					}).catch((e) => {
+						console.log(e);
+						alert('getUserMedia() error: ' + e.name);
+					});
+			}
 
-            socket.on('call:accepted', (callObj) => {
-                console.log("caller knows call Accepted by the callee", callObj);
-                createPeerConnection(callObj);
-                pc.addStream(localStream);
-                isStarted = true;
+			socket.on('call:joined', (callObj) => {
+				if (!callObj.isInitiator) {
+					console.log("Callee Joined the Room with caller", callObj);
+					return socket.emit('call:accepted', callObj);
+				}
+				return console.log("Caller created and joined the room", callObj);
+			});
 
-                pc.createOffer().then((sdp) => {
-                    pc.setLocalDescription(sdp);
-                    console.log("got offer & sending", sdp);
-                    let offerObj = {
-                        type: sdp.type,
-                        sdp: sdp.sdp,
-                        callFrom: callObj.callFrom,
-                        callTo: callObj.callTo,
-                        callUniqueId: callObj.callUniqueId
-                    }
-                    socket.emit('call:offer', offerObj);
-                }).catch((error) => {
-                    console.log('Failed to create offer session description: ' + error.toString());
-                });
+			socket.on('call:accepted', (callObj) => {
+				console.log("caller knows call Accepted by the callee", callObj);
+				dialToneAudio.pause();
+				createPeerConnection(callObj);
+				pc.addStream(localStream);
+				isStarted = true;
 
-            });
+				pc.createOffer().then((sdp) => {
+					pc.setLocalDescription(sdp);
+					console.log("got offer & sending", sdp);
+					let offerObj = {
+						type: sdp.type,
+						sdp: sdp.sdp,
+						callFrom: callObj.callFrom,
+						callTo: callObj.callTo,
+						callUniqueId: callObj.callUniqueId
+					}
+					socket.emit('call:offer', offerObj);
+				}).catch((error) => {
+					console.log('Failed to create offer session description: ' + error.toString());
+				});
 
-            socket.on('call:icecandidate', (iceObj) => {
-                console.log("receiving ice candidate", iceObj);
-                if (isStarted) {
-                    console.log("applying ice candidate ...");
-                    let candidate = new RTCIceCandidate({
-                        sdpMLineIndex: iceObj.label,
-                        candidate: iceObj.candidate
-                    });
-                    pc.addIceCandidate(candidate);
-                }
-            });
+			});
 
-            socket.on('call:offer', (offerObj) => {
-                console.log("received offer ...", offerObj);
-                createPeerConnection(offerObj);
-                pc.addStream(localStream);
-                isStarted = true;
+			socket.on('call:icecandidate', (iceObj) => {
+				console.log("receiving ice candidate", iceObj);
+				if (isStarted) {
+					console.log("applying ice candidate ...");
+					let candidate = new RTCIceCandidate({
+						sdpMLineIndex: iceObj.label,
+						candidate: iceObj.candidate
+					});
+					pc.addIceCandidate(candidate);
+				}
+			});
 
-                pc.setRemoteDescription(new RTCSessionDescription(offerObj));
+			socket.on('call:offer', (offerObj) => {
+				console.log("received offer ...", offerObj);
+				createPeerConnection(offerObj);
+				pc.addStream(localStream);
+				isStarted = true;
 
-                pc.createAnswer().then((sdp) => {
-                    pc.setLocalDescription(sdp);
-                    console.log("got answer Obj & sending", sdp)
-                    let answerObj = {
-                        type: sdp.type,
-                        sdp: sdp.sdp,
-                        callFrom: offerObj.callFrom,
-                        callTo: offerObj.callTo,
-                        callUniqueId: offerObj.callUniqueId
-                    }
-                    socket.emit('call:answer', answerObj);
-                }).catch((error) => {
-                    console.log('Failed to create answer session description: ' + error.toString());
-                });
-            });
+				pc.setRemoteDescription(new RTCSessionDescription(offerObj));
 
-            socket.on('call:answer', (answerObj) => {
-                console.log("Received Answer ...", answerObj);
-                pc.setRemoteDescription(new RTCSessionDescription(answerObj));
-            })
+				pc.createAnswer().then((sdp) => {
+					pc.setLocalDescription(sdp);
+					console.log("got answer Obj & sending", sdp)
+					let answerObj = {
+						type: sdp.type,
+						sdp: sdp.sdp,
+						callFrom: offerObj.callFrom,
+						callTo: offerObj.callTo,
+						callUniqueId: offerObj.callUniqueId
+					}
+					socket.emit('call:answer', answerObj);
+				}).catch((error) => {
+					console.log('Failed to create answer session description: ' + error.toString());
+				});
+			});
 
-        });
-    })
+			socket.on('call:answer', (answerObj) => {
+				console.log("Received Answer ...", answerObj);
+				pc.setRemoteDescription(new RTCSessionDescription(answerObj));
+			})
+
+		});
+	})
 </script>
 
 
@@ -236,32 +197,76 @@
 {{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray">
-    <div class="gtc-container">
-        <div class="row">
-            <div class="col-sm-2">
-                {{> vendor/vendor-side-navbar}}
-            </div>
-            <div class="col-sm-10">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        <div class="ibox-title">
-                            <h2>Web rtc peer to peer</h2>
-                        </div>
-                        <br />
-                        <div class="content-body">
-                            <div class="row">
-                                <div class="col-md-10">
-                                    <div id="videos" class="active embed-responsive embed-responsive-16by9">
-                                        <video id="localVideo" class="active" autoplay muted playsinline></video>
-                                        <video id="remoteVideo" autoplay playsinline></video>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Web rtc peer to peer</h2>
+						</div>
+						<br />
+						<div class="content-body">
+							<div class="row">
+								<div class="col-md-10">
+									<div id="videos" class="active embed-responsive embed-responsive-16by9">
+										<video id="localVideo" class="active" autoplay muted playsinline></video>
+										<video id="remoteVideo" autoplay playsinline></video>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 {{> footer/bottom-footer}}
+
+<style>
+	#videos {
+		transition: all 1s;
+	}
+
+	#videos.active {
+		-moz-transform: rotateY(180deg);
+		-ms-transform: rotateY(180deg);
+		-o-transform: rotateY(180deg);
+		-webkit-transform: rotateY(180deg);
+		transform: rotateY(180deg);
+	}
+
+	#localVideo {
+		border: 1px solid gray;
+		bottom: 20px;
+		left: 20px;
+		top: unset;
+		max-height: 20%;
+		max-width: 14.9%;
+		opacity: 0;
+		transition: opacity 1s;
+	}
+
+	#localVideo.active {
+		opacity: 1;
+		z-index: 2;
+	}
+
+	#remoteVideo {
+		height: 100%;
+		max-height: 100%;
+		max-width: 100%;
+		object-fit: cover;
+		-moz-transform: scale(-1, 1);
+		-ms-transform: scale(-1, 1);
+		-o-transform: scale(-1, 1);
+		-webkit-transform: scale(-1, 1);
+		transform: scale(-1, 1);
+		transition: opacity 1s;
+		width: 100%;
+	}
+</style>
