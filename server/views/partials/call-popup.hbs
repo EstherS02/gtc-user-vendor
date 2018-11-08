@@ -1,0 +1,296 @@
+<script>
+	$(function() {
+		$('#call_popup_rejected').on('hide.bs.modal', function(event) {
+			window.history.back();
+		})
+
+	});
+</script>
+
+<!-- Incoming call popup -->
+<div class="call_popup_card" id="call_popup_card_block" style="z-index: 1050;">
+	<div class="call_popup_header">
+		<div class="call_popup_animation">
+			<span class="icon call_popup_ring"></span>
+			<div class="call_popup_circle one"></div>
+			<div class="call_popup_circle two"></div>
+			<div class="call_popup_circle three"></div>
+		</div>
+		<p class="call_popup_phoneNumber" id="call_popup_caller_name"></p>
+		<p class="call_popup_calling">Calling ...</p>
+	</div>
+	<div class="call_popup_footer">
+		<div class="call_popup_button raccrocher" onclick="callRejectProceed()">
+			<span class="icon red"></span>
+		</div>
+		<div class="call_popup_button decrocher" onclick="callAcceptProceed()">
+			<span class="icon green"></span>
+		</div>
+	</div>
+</div>
+<div class="call_pop_up_backdrop" id="call_popup_card_backdrop_block"></div>
+
+<!-- Call Reject Popup -->
+<div class="modal" id="call_popup_rejected" tabindex="-1" role="dialog" aria-labelledby="call_popup_rejected">
+	<div class="modal-dialog modal-sm" style="margin-top: 100px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Call Rejected</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p id="call_reject_message"></p>
+				<button class="btn btn-md btn-primary m-t-sm m-r-xll" data-dismiss="modal" aria-label="Close" style="margin-left: 35%;">Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Start Call -->
+<div class="modal" id="call_popup_start_call" tabindex="-1" role="dialog" aria-labelledby="call_popup_start_call">
+	<div class="modal-dialog modal-sm" style="margin-top: 100px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Call Start</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p id="call_reject_message"> Do you want to start call ?</p>
+				<button class="btn btn-md btn-primary m-t-sm m-r-xll" data-dismiss="modal" aria-label="Close" style="margin-left: 35%;">Call
+					Now</button>
+				<button class="btn btn-md btn-primary m-t-sm m-r-xll" data-dismiss="modal" aria-label="Close" style="margin-left: 35%;">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<style>
+	.call_popup_card {
+		position: fixed;
+		overflow: hidden;
+		width: 250px;
+		height: 330px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -75%);
+		border-radius: 15px;
+		background-color: #2f323a;
+	}
+
+	.call_popup_header {
+		position: relative;
+		width: 100%;
+		height: 70%;
+		border-top-left-radius: 15px;
+		border-top-right-radius: 15px;
+		background-color: transparent;
+	}
+
+	.call_popup_animation {
+		position: absolute;
+		width: 80px;
+		height: 80px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -70%);
+		border-radius: 50%;
+		background-color: #22242a;
+	}
+
+	.call_popup_ring {
+		display: block;
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background-image: url('../img/video-call/ring.png');
+		-webkit-animation: ring 0.6s infinite;
+		-o-animation: ring 0.6s infinite;
+		animation: ring 0.6s infinite;
+	}
+
+	@keyframes ring {
+		0% {
+			transform: rotate(0deg);
+		}
+
+		20% {
+			transform: rotate(-20deg);
+		}
+
+		21% {
+			transform: rotate(0deg);
+		}
+
+		40% {
+			transform: rotate(-20deg);
+		}
+
+		41% {
+			transform: rotate(0deg);
+		}
+
+		60% {
+			transform: rotate(-20deg);
+		}
+
+		80% {
+			transform: rotate(-10deg);
+		}
+
+		100% {
+			transform: rotate(0deg);
+		}
+	}
+
+	.call_popup_circle {
+		position: absolute;
+		width: 130px;
+		height: 130px;
+		transform: translate(-25px, -25px);
+		border-radius: 50%;
+		border: 10px solid #22242a;
+		background-color: transparent;
+		-webkit-animation: call_popup_wave 1.4s infinite linear;
+		-o-animation: call_popup_wave 1.4s infinite linear;
+		animation: call_popup_wave 1.4s infinite linear;
+	}
+
+	.call_popup_circle.two {
+		animation-delay: 0.35s;
+		opacity: 0;
+	}
+
+	.call_popup_circle.three {
+		animation-delay: 0.7s;
+		opacity: 0;
+	}
+
+	@keyframes call_popup_wave {
+		0% {
+			width: 130px;
+			height: 130px;
+			transform: translate(-25px, -25px);
+			opacity: 1;
+			border-width: 8px;
+		}
+
+		100% {
+			width: 320px;
+			height: 320px;
+			transform: translate(-120px, -120px);
+			opacity: 0.2;
+			border-width: 15px;
+		}
+	}
+
+	.call_popup_phoneNumber {
+		width: 100%;
+		font-family: 'Open Sans Condensed', sans-serif;
+		font-size: 17px;
+		text-align: center;
+		transform: translateY(150px);
+		color: #fff;
+	}
+
+	.call_popup_calling {
+		width: 100%;
+		font-family: 'Hind', sans-serif;
+		font-size: 14px;
+		font-weight: 300;
+		text-align: center;
+		transform: translateY(150px);
+		color: #fff;
+		-webkit-animation: opacity 2.5s infinite linear;
+		-o-animation: opacity 2.5s infinite linear;
+		animation: opacity 2.5s infinite linear;
+	}
+
+	@keyframes opacity {
+		0% {
+			opacity: 1;
+		}
+
+		50% {
+			opacity: 0.2;
+		}
+
+		100% {
+			opacity: 1;
+		}
+	}
+
+	.call_popup_footer {
+		position: relative;
+		width: 100%;
+		height: 30%;
+		border-top: 1px solid #24262c;
+		border-bottom-left-radius: 15px;
+		border-bottom-right-radius: 15px;
+		background-color: #282b32;
+	}
+
+	.call_popup_button {
+		position: absolute;
+		display: inline-block;
+		width: 100px;
+		height: 40px;
+		top: 50%;
+		cursor: pointer;
+		border-radius: 40px;
+		transform: translateY(-50%);
+	}
+
+	.call_popup_button.raccrocher {
+		left: 7%;
+		transition: all 0.3s;
+		background-color: #E72E04;
+	}
+
+	.call_popup_button.decrocher {
+		right: 7%;
+		transition: all 0.3s;
+		background-color: #1ACE7A;
+	}
+
+	.call_popup_button .red {
+		display: block;
+		position: absolute;
+		width: 100px;
+		height: 40px;
+		background-image: url('../img/video-call/call-end.png');
+	}
+
+	.call_popup_button .green {
+		display: block;
+		position: absolute;
+		width: 100px;
+		height: 40px;
+		background-image: url('../img/video-call/call-answer.png');
+	}
+
+	.call_pop_up_backdrop {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 1040;
+		background-color: #000;
+		transition: opacity .15s linear;
+		opacity: .5;
+	}
+
+	#call_popup_card_block {
+		display: none;
+	}
+
+	#call_popup_card_backdrop_block {
+		display: none;
+	}
+</style>
