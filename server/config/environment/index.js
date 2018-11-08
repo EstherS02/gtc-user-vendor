@@ -125,7 +125,8 @@ var all = {
 		"planRenewal": "planRenewal",
 		"bulkUserPlanRenewal": "bulkUserPlanRenewal",
 		"subscriptionAutoRenewal": "subscriptionAutoRenewal",
-		"featureProductAutoRenewal": "featureProductAutoRenewal"
+		"featureProductAutoRenewal": "featureProductAutoRenewal",
+		"vendorPayoutsNew": "vendor-payouts-new"
 	},
 	fee: {
 		gtc_fees: 0.01,
@@ -140,7 +141,8 @@ var all = {
 	payment: {
 		"cancelOrderItem": 3,
 		"returnOrderItem": 3,
-		"noResposeOrderItem": 3
+		"noResposeOrderItem": 3,
+		"vendorPayout": 30
 	},
 	sesTransporter: {
 		accessKeyId: process.env.SES_ACCESS_KEY_ID,

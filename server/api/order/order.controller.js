@@ -107,6 +107,7 @@ export async function dispatchOrder(req, res) {
 				const newShipping = await service.createRow(shippingModelName, bodyParams);
 				const updateVendorOrder = await service.updateRecordNew(orderVendorModelName, {
 					shipping_id: newShipping.id,
+					dispatched_on: new Date(),
 					last_updated_by: req.user.first_name,
 					last_updated_on: new Date()
 				}, {
