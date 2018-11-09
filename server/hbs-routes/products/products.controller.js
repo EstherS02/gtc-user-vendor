@@ -6,6 +6,7 @@ const status = require('../../config/status');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
+const productService = require('../../api/product/product.service');
 const async = require('async');
 
 export function products(req, res) {
@@ -65,9 +66,9 @@ export function products(req, res) {
 		},
 		wholesalerProducts: function(callback) {
 			queryObj['marketplace_id'] = 1;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.TopSellingProducts(offset, limit, marketplace['WHOLESALE'])
 				.then(function(wholesalerProducts) {
-					return callback(null, wholesalerProducts.rows);
+					return callback(null, wholesalerProducts);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -75,9 +76,9 @@ export function products(req, res) {
 		},
 		retailProducts: function(callback) {
 			queryObj['marketplace_id'] = 2;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.TopSellingProducts(offset, limit, marketplace['PUBLIC'])
 				.then(function(retailProducts) {
-					return callback(null, retailProducts.rows);
+					return callback(null, retailProducts);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -85,9 +86,9 @@ export function products(req, res) {
 		},
 		services: function(callback) {
 			queryObj['marketplace_id'] = 3;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.TopSellingProducts(offset, limit, marketplace['SERVICE'])
 				.then(function(services) {
-					return callback(null, services.rows);
+					return callback(null, services);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -95,9 +96,9 @@ export function products(req, res) {
 		},
 		subscriptions: function(callback) {
 			queryObj['marketplace_id'] = 4;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.TopSellingProducts(offset, limit, marketplace['LIFESTYLE'])
 				.then(function(subscriptions) {
-					return callback(null, subscriptions.rows);
+					return callback(null, subscriptions);
 
 				}).catch(function(error) {
 					console.log('Error :::', error);

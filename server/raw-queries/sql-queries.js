@@ -164,6 +164,12 @@ let sqlQueries = {
 			LEFT OUTER JOIN (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') on sub_category.id = product.sub_category_id and product.status=(` + queryObj.status + `) and product.vendor_id=(` + productQueryObj.vendor_id + `) and product.marketplace_id = (`+productQueryObj.marketplace_id+`)
 			GROUP BY sub_category.id ORDER by category.id`;
 			return query;
+		}else{
+			let query = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.id) as subproductcount FROM 
+			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+			LEFT OUTER JOIN (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') on sub_category.id = product.sub_category_id and product.status=(` + queryObj.status + `) 
+			GROUP BY sub_category.id ORDER by category.id`;
+			return query;
 		}
 	},
 	vendorFilterCatogoryCount: function(params) {

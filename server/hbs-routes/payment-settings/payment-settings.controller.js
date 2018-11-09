@@ -30,7 +30,7 @@ export function paymentSettings(req, res) {
 	offset = 0;
 	field = "id";
 	order = "asc";
-	limit = 6;
+	limit = null;
 
 	var currencyModel = 'Currency';
 	var vendorModel = 'Vendor';
