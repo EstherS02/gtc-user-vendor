@@ -102,7 +102,7 @@ var all = {
 			orderDetail: 'ORDER_DETAILS',
 			orderItemCancelled: 'ORDER_CANCELLED',
 			orderStatus: 'ORDER_STATUS',
-			refundRequest: 'REFUND-REQUEST',
+			refundRequest: 'REFUND_REQUEST',
 			refundProcessing: 'REFUND-PROCESSING',
 			refundSuccessful: 'REFUND-SUCCESSFUL',
 			productReview: 'PRODUCT-REVIEW',

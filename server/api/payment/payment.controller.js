@@ -393,6 +393,7 @@ export async function cancelOrderItem(req, res) {
 }
 
 export async function returnOrderItem(req, res) {
+	const agenda = require('../../app').get('agenda');
 	req.checkBody('return_item_id', 'Missing Query Param').notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {
@@ -441,6 +442,10 @@ export async function returnOrderItem(req, res) {
 
 						const updateStatus = await service.updateRow('OrderVendor', orderVendorUpdateObj, orderVendorObj.id);
 						if (updateStatus) {
+							agenda.now(config.jobs.orderNotification, {
+								itemId: itemId,
+								code: config.notification.templates.refundRequest,
+							});
 							return res.status(200).send(resMessage("SUCCESS", "Order Return Initiated. Credited to bank account to 5 to 7 bussiness days"));
 						} else {
 							return res.status(400).send("Order vendor update failed.");

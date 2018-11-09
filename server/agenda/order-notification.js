@@ -283,6 +283,54 @@ module.exports = async function(job, done) {
 				}
 			}
 		}
+
+		if (code == config.notification.templates.refundRequest) {
+			const itemId = job.attrs.data.itemId;
+			const orderItemModelName = "OrderItem";
+			const notificationSettingModelName = "NotificationSetting";
+			const notificationModelName = "Notification";
+
+			const orderItemResponse = await model[orderItemModelName].findOne({
+				where: {
+					id: itemId,
+				},
+				attributes: ['id', 'order_id', 'product_id', 'status', 'order_item_status', 'last_updated_by', 'price'],
+				include: [{
+					model: model['Order'],
+					attributes: ['id', 'user_id'],
+					include: [{
+						model: model['User'],
+						attributes: ['id', 'first_name']
+					}]
+				}, {
+					model: model['Product'],
+					attributes: ['id', 'vendor_id']
+				}]
+			});
+			var orderItem = await JSON.parse(JSON.stringify(orderItemResponse));
+			if (orderItem) {
+				const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
+					code: code
+				});
+				if (notificationSettingResponse) {
+					var bodyParams = {};
+					bodyParams.user_id = orderItem.Order.user_id;
+					bodyParams.description = notificationSettingResponse.description;
+					bodyParams.description = bodyParams.description.replace('%FirstName%', orderItem.Order.User.first_name);
+					bodyParams.description = bodyParams.description.replace('%Refund_Amount%', orderItem.price);
+					bodyParams.description = bodyParams.description.replace('%track%', '/order-history/' + orderItem.order_id + '/track-order-item/' + orderItem.id);
+					bodyParams.description = bodyParams.description.replace('%order%', orderItem.order_id);
+					bodyParams.description = bodyParams.description.replace('%#vendor_url%', '/vendor/' + orderItem.Product.vendor_id);
+					bodyParams.name = notificationSettingResponse.name;
+					bodyParams.code = notificationSettingResponse.code;
+					bodyParams.is_read = 1;
+					bodyParams.status = 1;
+					bodyParams.created_on = new Date();
+					bodyParams.created_by = "Administrator";
+					const notificationResponse = await service.createRow(notificationModelName, bodyParams);
+				}
+			}
+		}
 		done();
 	} catch (error) {
 		console.log("notification Error:::", error);
