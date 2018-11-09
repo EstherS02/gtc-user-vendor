@@ -40,6 +40,7 @@ export async function dispatchOrder(req, res) {
 	const shippingModelName = "Shipping";
 	const orderVendorModelName = "OrderVendor";
 	const orderItemModelName = "OrderItem";
+	const agenda = require('../../app').get('agenda');
 
 	req.checkBody('select_courier', 'Missing Query Param').notEmpty();
 	req.checkBody('expected_delivery_date', 'Missing Query Param').notEmpty();
@@ -100,6 +101,10 @@ export async function dispatchOrder(req, res) {
 						id: item.id,
 						order_id: vendorOrder.Order.id
 					}));
+					agenda.now(config.jobs.orderNotification, {
+						itemId: item.id,
+						code: config.notification.templates.orderStatus,
+					});
 				}
 			}
 

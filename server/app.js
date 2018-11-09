@@ -35,6 +35,7 @@ var orderEmail = require('./agenda/order-email');
 var orderItemPayout = require('./agenda/order-item-payout');
 var amazonImportJob = require('./agenda/amazon-import');
 var vendorPayoutsNew = require('./agenda/vendor-payouts-new');
+var orderNotification = require('./agenda/order-notification');
 
 agenda.define(config.jobs.email, sendEmailNew);
 agenda.define(config.jobs.aliExpressScrape, aliExpressScrape);
@@ -51,6 +52,7 @@ agenda.define(config.jobs.featureProductExpire, featureProductExpire);
 agenda.define(config.jobs.subscriptionExpire, subscriptionExpire);
 agenda.define(config.jobs.amazonImportJob, amazonImportJob);
 agenda.define(config.jobs.vendorPayoutsNew, vendorPayoutsNew);
+agenda.define(config.jobs.orderNotification, orderNotification);
 
 agenda.on('ready', function() {
 	console.log('agenda onReady');

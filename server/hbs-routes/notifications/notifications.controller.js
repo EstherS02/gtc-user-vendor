@@ -109,7 +109,6 @@ export function notifications(req, res) {
 					"model": model['Mail'],
 					where: {
 						status: statusCode["ACTIVE"],
-						//to_id : user_id	
 					},
 					include: [{
 						model: model['User'],

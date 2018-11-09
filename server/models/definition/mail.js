@@ -92,12 +92,14 @@ module.exports.initRelations = () => {
     });
 
     Mail.belongsTo(User, {
+        as: 'fromUser',
         foreignKey: 'from_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Mail.belongsTo(User, {
+        as: 'toUser',
         foreignKey: 'to_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

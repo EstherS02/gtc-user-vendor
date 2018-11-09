@@ -60,33 +60,37 @@
 			<div class="col-sm-10">
 				<div class="ibox">
 					<div class="ibox-content">
+						<div class="ibox-title">
+			              <h6>MY NOTIFICATIONS</h6>
+			            </div>
 						<div class="content-body">
+
 							<p class="content-txt"></p>
 							<div class="col-md-12">
 								<div class="table-responsive">
-									<table class="table">
-										<thead>
-											<tr>
-												<th width="20%" scope="col">Event</th>
-												<th width="60%" scope="col">Description</th>
-												<th width="20%" scope="col">Date</th>
-											</tr>
-										</thead>
-										<tbody>
-											{{#if notifications}}
-												{{#each notifications}}
-												<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} id = "{{this.id}}" data-message="{{this.description}}" href="#gtc-modal">
-													<td scope="row ">{{this.name}}</td>
-													<td scope="row">{{{dotdotdot this.description}}}</td>
-													<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
+									{{#if notifications}}
+										<table class="table">
+											<thead>
+												<tr>
+													<th width="20%" scope="col">Event</th>
+													<th width="60%" scope="col">Description</th>
+													<th width="20%" scope="col">Date</th>
 												</tr>
-												{{/each}}
-											{{else}}
-												<tr><td colspan="3" style="text-align:center;">No notification received</td></tr>
-											{{/if}}
-											<tr id="noProducts"><td colspan="3" style="text-align:center;">No notification received</td></tr>
-										</tbody>
-									</table>
+											</thead>
+											<tbody>
+												
+													{{#each notifications}}
+													<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} id = "{{this.id}}" data-message="{{this.description}}" href="#gtc-modal">
+														<td scope="row ">{{this.name}}</td>
+														<td scope="row">{{{dotdotdot this.description}}}</td>
+														<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
+													</tr>
+													{{/each}}
+											</tbody>
+										</table>
+									{{else}}
+										<h4 class="font-weight-light py-3 text-center">No notification received!</h4>
+									{{/if}}
 								</div>
 								{{#if notifications}}
 									<div id="pagination">

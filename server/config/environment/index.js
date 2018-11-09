@@ -98,16 +98,16 @@ var all = {
 	//Notification
 	notification: {
 		templates: {
+			vendorNewOrder: 'NEW_ORDER',
+			orderDetail: 'ORDER_DETAILS',
+			orderItemCancelled: 'ORDER_CANCELLED',
+			orderStatus: 'ORDER_STATUS',
 			refundRequest: 'REFUND-REQUEST',
 			refundProcessing: 'REFUND-PROCESSING',
 			refundSuccessful: 'REFUND-SUCCESSFUL',
-			vendorNewOrder: 'NEW-ORDER',
 			productReview: 'PRODUCT-REVIEW',
 			likesComments: 'LIKE-AND-COMMENT',
-			newPostFromBuyerOnYourDB: 'BUYER-POST-ON-DESCUSSION-BOARD',
-			orderCancelled: 'ORDER-CANCELLED',
-			orderDetail: 'ORDER-DETAILS',
-			orderStatus: 'ORDER-STATUS'
+			newPostFromBuyerOnYourDB: 'BUYER-POST-ON-DESCUSSION-BOARD'
 		}
 	},
 	jobs: {
@@ -126,7 +126,8 @@ var all = {
 		"bulkUserPlanRenewal": "bulkUserPlanRenewal",
 		"subscriptionAutoRenewal": "subscriptionAutoRenewal",
 		"featureProductAutoRenewal": "featureProductAutoRenewal",
-		"vendorPayoutsNew": "vendor-payouts-new"
+		"vendorPayoutsNew": "vendor-payouts-new",
+		"orderNotification": "order-notification"
 	},
 	fee: {
 		gtc_fees: 0.01,
