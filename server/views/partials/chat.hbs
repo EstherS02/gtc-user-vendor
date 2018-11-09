@@ -85,6 +85,7 @@
 	let loggedInUserDetails = {{{ DisplayJSON LoggedInUser }}};
 	let VendorDetail = {{{ DisplayJSON VendorDetail.user_id }}};
 	let talkThreadsId = {{{ DisplayJSON talkThreads.threadId }}};
+	let vendorObject = {{{ DisplayJSON VendorDetail }}};
 
 	$(function() {
 		function getUserName(user) {
@@ -104,8 +105,20 @@
 				callerName: getUserName(loggedInUserDetails),
 				calleeName: VendorDetail
 			}
-			socket.emit('call:preinit', callObj)
+			console.log("callObj.............",callObj);
+			//socket.emit('call:preinit', callObj)
 		});
+
+		socket.on('user:online', function (users) {
+          if (vendorObject.user_id) {
+            let index = users.indexOf(vendorObject.user_id);
+            if(index > -1) {
+              $("#init-btn-video-call").show();
+            } else {
+              $("#init-btn-video-call").hide();
+            }
+          }
+        });
 
 
 		// console.log("TalkThreads", {{{ DisplayJSON talkThreads }}})
@@ -157,7 +170,9 @@
 			function FormatDate(testDate) {
 				return moment(testDate).format("LT")
 			}
-		})
+		});
+
+		socket.emit('user:get_online_users');
 		// $("#messagebody").hide();
 		// $("#sendbody").hide();
 	})
