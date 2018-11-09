@@ -106,7 +106,7 @@
 				calleeName: VendorDetail
 			}
 			console.log("callObj.............",callObj);
-			//socket.emit('call:preinit', callObj)
+			socket.emit('call:preinit', callObj)
 		});
 
 		socket.on('user:online', function (users) {
