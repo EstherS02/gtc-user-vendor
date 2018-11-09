@@ -38,6 +38,15 @@
 				$("#loadMore").show();
 			}
 		});
+		$('#keywordGeoSearchForm').submit(function(e) {
+		e.preventDefault();
+		let formInput = $("#keywordGeoSearchForm :input").filter(function(index, element) {
+		return $(element).val() != '';
+		}).serialize();
+		if ($('#keywordGeoSearchForm').valid()) {
+		window.location.href = 'geo-locate/search?'+formInput;
+		}
+		});
 	});
 
 </script>
@@ -73,7 +82,24 @@
 						</a>
 					</div>
 				</div>
-
+				<div class="row">
+					<div class="col-md-10">
+						<p></p>
+						<form id="keywordGeoSearchForm" class="acc_textbox">
+							<div class="input-group search-input-group">
+								<div id="searchBtnGrp" class="btn-group" style="display: none;">
+									<a class="btn btn-secondary btn-sm dropdown-toggle marketplace-dropdown radius-left" data-toggle="dropdown" href="#">
+										SEARCH MARKETPLACE
+									</a>
+								</div>
+								<input type="search" class="form-control form-control-sm" id="inputSearchText" value="" name="keyword" placeholder="Search the Keyword">
+								<button type="submit" class="btn btn-sm btn-gtc">
+									<i class="fa fa-search"></i>
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-md-12 col-12" style="background-color:#FFF">
 						<div class="ibox" style="margin-bottom: 0px;">
