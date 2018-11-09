@@ -201,37 +201,34 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md-7">
-									<div class="form-inline">
-										<div class="form-group mb-2">
+								<div class="col-md-12">
+									<div class="form-inline pull-left m-t-md">
+										<div class="form-group m-r">
 											<div class="select-container">
-												<select class="form-control-customized form-control-sm" onChange="changeStatus(this);">
+												<select id="inputStatus" class="form-control-customized form-control-sm custom-dropdown" onChange="changeStatus(this);">
 													{{#select queryURI.status}}
-													<option disabled selected>CHANGE STATUS</option>
-													<option value="ACTIVE">Active</option>
-													<option value="INACTIVE">InActive</option>
+														<option disabled selected>CHANGE STATUS</option>
+														<option value="ACTIVE">Active</option>
+														<option value="INACTIVE">InActive</option>
 													{{/select}}
 												</select>
 											</div>
 										</div>
-										<div class="form-group mx-sm-3 mb-2">
-											<button class="btn btn-small btn-muted" onclick="editSubscription(this);">EDIT</button>
+										<div class="form-group">
+											<button type="submit" class="btn btn-md btn-muted" onclick="editSubscription(this);">EDIT</button>
 										</div>
 									</div>
-								</div>
-								<div class="col-md-5">
-									<div class="form-inline ml-auto pull-right">
-										<div class="form-group mb-2">
+									<div class="form-inline pull-right m-t-md">
+										<div class="form-group">
 											<div class="input-group gtc-rounded">
-												<input type="search" class="form-control form-control-sm" placeholder="Search subscribed products" onChange="search(this);" {{#if queryURI.keyword}}
-												value={{queryURI.keyword}}{{/if}}>
+												<input type="text" placeholder="Search subscribed products" class="form-control form-control-sm"  onChange="search(this);" {{#if queryURI.keyword}} value={{queryURI.keyword}}{{/if}}>
 												<button type="submit" class="btn btn-sm btn-gtc">
 													<i class="fa fa-search"></i>
 												</button>
 											</div>
 										</div>
 									</div>
-								</div>
+								</div>								
 							</div>
 							<div class="row">
 								<div class="col-sm-12">	

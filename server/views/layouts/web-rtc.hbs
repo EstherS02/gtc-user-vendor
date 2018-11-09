@@ -185,10 +185,10 @@
 			socket.on('call:answer', (answerObj) => {
 				console.log("Received Answer ...", answerObj);
 				pc.setRemoteDescription(new RTCSessionDescription(answerObj));
-			})
+			});
 
 		});
-	})
+	});
 </script>
 
 
@@ -215,6 +215,10 @@
 										<video id="localVideo" class="active" autoplay muted playsinline></video>
 										<video id="remoteVideo" autoplay playsinline></video>
 									</div>
+
+									{{!-- <center>
+										<img src="../img/video-call/call-end-1.png" class="m-r-sm" popover="End Call" popover-trigger="mouseenter" height="40px" width="40px">
+									</center> --}}
 								</div>
 							</div>
 						</div>
