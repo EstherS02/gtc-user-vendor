@@ -73,54 +73,6 @@
         </div>
     </div>
 </div>
-{{!-- <section class="lifestyle_banner" style="margin-bottom: 0; background-color: #5D5646;">
-	<div class="container-fluid full_view_pad_eighty clearfix">
-    <div class="row">
-      <div class="col-md-6 col-12 lstb1">
-        <img src="../img/direc_banner.png" alt="banner" />
-      </div>
-      <div class="col-md-6 col-12">
-        <div class="row">
-          <div class="col-md-12 col-12 lstb2 text-center">
-            <form id="searchForm">
-              <p>Our Wholesale Marketplace has over</p>
-              <p>12,000 Wholesalers & 60,000 Products</p>
-              <p class="adv_search">Advance Search</p>
-              <div class="row">
-                <div class="col-md-4 col-12 common_padding1">
-                  <select class="geo_textbox" name="marketplace_type" id="marketplace_type">
-                      <option disabled selected>Type</option>
-                      {{#each type}}
-                      <option value="{{this.id}}">{{ this.name}}</option>
-                      {{/each}}
-                  </select>
-                </div>
-                <div class="col-md-4 col-12 common_padding1">
-                  <select class="geo_textbox" name="category" id="category">
-                  <option disabled selected>Category</option>
-                  {{#each categories}}
-                  <option value="{{this.id}}">{{ this.name}}</option>
-                  {{/each}}
-                  </select>
-                </div>
-                <div class="col-md-4 col-12 common_padding1">
-                  <select class="geo_textbox" name="location" id="location">
-                    <option disabled selected>Location</option>
-                    {{#each country}}
-                    <option value="{{this.id}}">{{ this.name}}</option>
-                    {{/each}}
-                  </select>
-                </div>
-              </div>
-              <button type="submit" id="searchSubmit" class="shop_checkout_btn">SEARCH WHOLESALE</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> --}}
-
 <div class="other-marketplace-bg"></div>
 <div class="gtc-container">
   <div class="other-marketplace-headers">
@@ -131,7 +83,7 @@
         </div>
         <div class="product-list-body">
           <div class="row">
-            {{#each wholesalers.rows}}
+            {{#each wholesalers}}
             <div class="col-md-6">
               <div class="product-body">
                 <div class="table-responsive">
@@ -158,13 +110,13 @@
                                 <span>Origin</span>
                               </div>
                               <div class="col-md-7 col-7 no-padding overflow-txt">
-                                <span class="text-500">{{this.origin}}</span>
+                                <span class="text-500">{{this.Country.name}}</span>
                               </div>
                               <div class="col-md-5 col-5 no-padding">
                                 <span>Inventory</span>
                               </div>
                               <div class="col-md-7 col-7 no-padding">
-                                <b class="text-blue">{{this.product_count}} Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span>
+                                <b class="text-blue">{{this.products_count}} Products</b> Listed <span class="text-red text-500 d-block">{{this.exclusive_product_sale}} on Sale<span>
                               </div>
                               <div class="col-md-5 col-5 no-padding">
                                 <span>Seller Rating</span>
@@ -172,7 +124,7 @@
                               <div class="col-md-7 col-7 no-padding">
                                 <div class="v-rating">
                                   <a href="vendor/{{this.id}}" title="{{this.vendor_name}}">
-                                    {{starCount avg_rating}}
+                                    {{starCount this.vendor_rating}}
                                   </a>
                                 </div>
                               </div>

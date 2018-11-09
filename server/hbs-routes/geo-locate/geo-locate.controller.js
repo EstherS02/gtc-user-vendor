@@ -3,7 +3,6 @@
 const _ = require('lodash');
 const async = require('async');
 const moment = require('moment');
-
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
@@ -12,14 +11,43 @@ const service = require('../../api/service');
 const RawQueries = require('../../raw-queries/sql-queries');
 const cartService = require('../../api/cart/cart.service');
 const searchResultService = require('../../api/service/search-result.service');
+const productService = require('../../api/product/product.service');
 const marketplace = require('../../config/marketplace');
 
 function processGeoLocateSearch(req, res, cbNext) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
 	var productCountCategory = {};
+	var productQueryParams={};
+	var queryPaginationObj={};
 	var queryURI = {};
+	var offset, limit, field, order, page;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	queryPaginationObj['offset'] = offset;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 30;
+	queryPaginationObj['limit'] = limit;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "created_on";
+	queryURI['field'] = field;
+	queryPaginationObj['field'] = field;
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "desc";
+	queryURI['order'] = order;
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
 
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
+	delete req.query.page;
+
+	offset = (page - 1) * limit;
+	queryPaginationObj['offset'] = offset;
+	// var offset = 0;
+	// var limit = 0;
+	// var field = "created_on";
+	// var order = "desc";
 	if (req.query.selected_category_id)
 		queryURI['selected_category_id'] = req.query.selected_category_id;
 
@@ -123,6 +151,15 @@ function processGeoLocateSearch(req, res, cbNext) {
 							resultObj[o.regionname]["subCategory"].push(subCatObj)
 						})
 						return callback(null, resultObj);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
+			wholeproducts: function(callback) {
+				productService.queryAllProducts(LoggedInUser.id, productQueryParams, offset, limit, field, order)
+					.then(function(results) {
+						return callback(null, results);
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return callback(null);
@@ -249,6 +286,7 @@ function processGeoLocateSearch(req, res, cbNext) {
 					subCategoriesCount: results.categoriesCount.subCategoryObj,
 					totalCategoryProducts: results.categoriesCount.totalCategoryProducts,
 					advancedSearchProducts: results.products.rows,
+					products: results.wholeproducts,
 					advancedSearchByVendor: advancedSearchByVendor,
 					countryProductCount: results.countryProductCount,
 					productCount: results.productCount,

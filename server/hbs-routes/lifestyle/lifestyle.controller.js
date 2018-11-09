@@ -7,6 +7,7 @@ const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const productService = require('../../api/product/product.service');
 const cartService = require('../../api/cart/cart.service');
+const vendorService = require('../../api/vendor/vendor.service');
 const async = require('async');
 
 export function lifestyle(req, res) {
@@ -91,45 +92,14 @@ export function lifestyle(req, res) {
 				});
 		},
 		subscriptionProviders: function(callback) {
-			return callback(null, null);
-			// CHECK_IT_LATER
-			/*var result = {};
-			delete queryObj['marketplace'];
-			queryObj['type'] = 'Lifestyle Marketplace';
-			field = 'sales_count';
-			order = 'desc';
-			limit = 6;
-			service.findRows(vendorModel, queryObj, offset, limit, field, order)
-				.then(function(subscriptionProviders) {
-					result.rows = JSON.parse(JSON.stringify(subscriptionProviders.rows));
-					var vendorAvgRating = {};
-					vendorAvgRating['status'] = {
-						'$eq': status["ACTIVE"]
-					}
-					async.mapSeries(result.rows, function(aVendor, cb) {
-						vendorAvgRating['vendor_id'] = aVendor.id;
-						model['ProductRating'].findOne({
-							where: vendorAvgRating,
-							attributes: [
-								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
-							],
-						}).then(function(data) {
-							var ratingObj = JSON.parse(JSON.stringify(data))
-							aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
-							cb(null, data);
-						}).catch(function(error) {
-							console.log('Error:::', error);
-							cb(error, null);
-						});
-					}, function done(err, success) {
-						if (!err) {
-							return callback(null, result);
-						}
-					});
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});*/
+			vendorService.TopSellingVendors(0, 6, marketplace['LIFESTYLE'])
+				.then((response) => {
+					return callback(null, response);
+				})
+				.catch((error) => {
+					console.log("wholesalers Error:::", error);
+					return callback(error);
+				});
 		}
 	}, function(err, results) {
 		if (!err) {

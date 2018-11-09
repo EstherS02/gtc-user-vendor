@@ -103,7 +103,7 @@ export function directory(req, res) {
 				.catch((error) => {
 					console.log("wholesalers Error:::", error);
 					return callback(error);
-				})
+				});
 		},
 		retailers: function(callback) {
 			vendorService.TopSellingVendors(0, 6, marketplace['PUBLIC'])
@@ -113,7 +113,7 @@ export function directory(req, res) {
 				.catch((error) => {
 					console.log("wholesalers Error:::", error);
 					return callback(error);
-				})
+				});
 		},
 		servicesProviders: function(callback) {
 			vendorService.TopSellingVendors(0, 6, marketplace['SERVICE'])
@@ -123,7 +123,7 @@ export function directory(req, res) {
 				.catch((error) => {
 					console.log("wholesalers Error:::", error);
 					return callback(error);
-				})
+				});
 		},
 		subscriptionProviders: function(callback) {
 			vendorService.TopSellingVendors(0, 6, marketplace['LIFESTYLE'])
@@ -133,7 +133,7 @@ export function directory(req, res) {
 				.catch((error) => {
 					console.log("wholesalers Error:::", error);
 					return callback(error);
-				})
+				});
 		},
 	}, function(err, results) {
 		if (!err) {
