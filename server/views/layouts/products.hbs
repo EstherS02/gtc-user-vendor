@@ -79,51 +79,6 @@
         </div>
     </div>
 </div>
-{{!-- <section class="shop_banner" style="margin-bottom: 0">
-	<div class="container-fluid full_view_pad_eighty clearfix">
-    <div class="row">
-      <div class="col-md-6 col-12 lstb1">
-        <img src="../img/direc_banner.png" alt="banner" />
-      </div>
-      <div class="col-md-6 col-12">
-        <div class="row">
-         <div class="col-md-12 col-12 lstb2 text-center">
-          <form id="searchForm">
-            <p>Search Our Global Products of over</p>
-            <p>21,000 Wholesalers, Retails & Service Providers</p>
-            <p class="adv_search">Advance Search</p>
-            <div class="row">
-             <div class="col-md-4 col-12 common_padding1">
-              <select class="geo_textbox" id="depart" name="marketplace">
-                <option disabled selected>Department</option>
-                {{#each depart}}
-                <option value={{this.id}}>{{ this.name}}</option>
-                {{/each}}
-              </select>
-            </div>
-            <div class="col-md-4 col-12 common_padding1">
-              <select class="geo_textbox" id="category" name="category">
-                <option disabled selected>Category</option>
-                {{#each categories}}
-                <option value="{{this.id}}">{{ this.name}}</option>
-                {{/each}}
-              </select>
-            </div>
-            <div class="col-md-4 col-12 common_padding1">
-             <select class="geo_textbox" id="location" name="location">
-              <option disabled selected>Location</option>
-              {{#each country}}
-              <option value="{{this.id}}">{{ this.name}}</option>
-              {{/each}}
-            </select>
-          </div>
-        </div>
-        <input type="submit" id="searchSubmit" value="SEARCH PRODUCTS" class="shop_checkout_btn" style="padding: 8px 20px;" />
-      </form>
-    </div>
-  </div>
-</section> --}}
-
 <div class="other-marketplace-bg"></div>
 <div class="gtc-container">
   <div class="other-marketplace-headers">
@@ -143,31 +98,31 @@
                     <tr class="d-flex">
                       <td class="col-3">
                         <div class="product-left-col">
-                        <a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">
-                          <img class="object-fit" src="{{this.product_base_image}}" onError="imgError(this)" alt="{{this.product_name}}" title="{{this.product_name}}">
+                        <a href="/wholesale/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">
+                          <img class="object-fit" src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" alt="{{this.Product.product_name}}" title="{{this.Product.product_name}}">
                           </a>
                         </div>
                       </td>
                       <td class="col-9">
                         <div class="product-middle-col">
-                          <h3><a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
+                          <h3><a href="/wholesale/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">{{this.Product.product_name}}</a></h3>
                           <div class="row no-margins">
                             <div class="col-md-12 col-12 no-padding">
-                              <h2 class="text-red price">{{currency this.product_price '$'}}</h2>
+                              <h2 class="text-red price">{{currency this.Product.price '$'}}</h2>
                             </div>
                             <div class="col-md-4 col-4 no-padding">
                               <span>Origin</span>
                             </div>
                             <div class="col-md-8 col-8 no-padding overflow-txt">
-                              <span class="text-500">{{this.country_name}}</span>
+                              <span class="text-500">{{this.Product.Country.name}}</span>
                             </div>
                             <div class="col-md-4 col-4 no-padding">
                               <span>Category</span>
                             </div>
                             <div class="col-md-8 col-8 no-padding overflow-txt">
-                              <a class="text-500" href="/wholesale/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                              <a class="text-500" href="/wholesale/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}</a>
                             </div>
-                            <div class="col-md-4 col-4 no-padding">
+                            {{!-- <div class="col-md-4 col-4 no-padding">
                               <span>Seller Rating</span>
                             </div>
                             <div class="col-md-8 col-8 no-padding">
@@ -176,7 +131,7 @@
                                   {{starCount product_rating}}
                                 </a>
                               </div>
-                            </div>
+                            </div> --}}
                           </div>
                         </div>
                       </td>
@@ -205,31 +160,31 @@
                     <tr class="d-flex">
                       <td class="col-3">
                         <div class="product-left-col">
-                        <a href="/shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">
-                          <img class="object-fit" src="{{this.product_base_image}}" onError="imgError(this)" alt="{{this.product_name}}" title="{{this.product_name}}">
+                        <a href="/shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">
+                          <img class="object-fit" src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" alt="{{this.Product.product_name}}" title="{{this.Product.product_name}}">
                           </a>
                         </div>
                       </td>
                       <td class="col-9">
                         <div class="product-middle-col">
-                          <h3><a href="/shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
+                          <h3><a href="/shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">{{this.Product.product_name}}</a></h3>
                           <div class="row no-margins">
                             <div class="col-md-12 col-12 no-padding">
-                              <h2 class="text-red price">{{currency this.product_price '$'}}</h2>
+                              <h2 class="text-red price">{{currency this.Product.price '$'}}</h2>
                             </div>
                             <div class="col-md-4 col-4 no-padding">
                               <span>Origin</span>
                             </div>
                             <div class="col-md-8 col-8 no-padding overflow-txt">
-                              <span class="text-500">{{this.country_name}}</span>
+                              <span class="text-500">{{this.Product.Country.name}}</span>
                             </div>
                             <div class="col-md-4 col-4 no-padding">
                               <span>Category</span>
                             </div>
                             <div class="col-md-8 col-8 no-padding overflow-txt">
-                              <a class="text-500" href="/shop/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                              <a class="text-500" href="/shop/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}</a>
                             </div>
-                            <div class="col-md-4 col-4 no-padding">
+                            {{!-- <div class="col-md-4 col-4 no-padding">
                               <span>Seller Rating</span>
                             </div>
                             <div class="col-md-8 col-8 no-padding">
@@ -238,7 +193,7 @@
                                   {{starCount product_rating}}
                                 </a>
                               </div>
-                            </div>
+                            </div> --}}
                           </div>
                         </div>
                       </td>
@@ -275,31 +230,31 @@
                       <tr class="d-flex">
                         <td class="col-3">
                           <div class="product-left-col">
-                          <a href="/services/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">
-                            <img class="object-fit" src="{{this.product_base_image}}" onError="imgError(this)" alt="{{this.product_name}}" title="{{this.product_name}}">
+                          <a href="/services/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">
+                            <img class="object-fit" src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" alt="{{this.Product.product_name}}" title="{{this.Product.product_name}}">
                             </a>
                           </div>
                         </td>
                         <td class="col-9">
                           <div class="product-middle-col">
-                            <h3><a href="/services/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
+                            <h3><a href="/services/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">{{this.Product.product_name}}</a></h3>
                             <div class="row no-margins">
                               <div class="col-md-12 col-12 no-padding">
-                                <h2 class="text-red price">${{this.product_price}}</h2>
+                                <h2 class="text-red price">${{this.Product.price}}</h2>
                               </div>
                               <div class="col-md-4 col-4 no-padding">
                                 <span>Origin</span>
                               </div>
                               <div class="col-md-8 col-8 no-padding overflow-txt">
-                                <span class="text-500">{{this.country_name}}</span>
+                                <span class="text-500">{{this.Product.Country.name}}</span>
                               </div>
                               <div class="col-md-4 col-4 no-padding">
                                 <span>Category</span>
                               </div>
                               <div class="col-md-8 col-8 no-padding overflow-txt">
-                                <a class="text-500" href="/services/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                <a class="text-500" href="/services/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}</a>
                               </div>
-                              <div class="col-md-4 col-4 no-padding">
+                              {{!-- <div class="col-md-4 col-4 no-padding">
                                 <span>Seller Rating</span>
                               </div>
                               <div class="col-md-8 col-8 no-padding">
@@ -308,7 +263,7 @@
                                     {{starCount product_rating}}
                                   </a>
                                 </div>
-                              </div>
+                              </div> --}}
                             </div>
                           </div>
                         </td>
@@ -337,31 +292,31 @@
                       <tr class="d-flex">
                         <td class="col-3">
                           <div class="product-left-col">
-                          <a href="/lifestyle/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">
-                            <img class="object-fit" src="{{this.product_base_image}}" onError="imgError(this)" alt="{{this.product_name}}" title="{{this.product_name}}">
+                          <a href="/lifestyle/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">
+                            <img class="object-fit" src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" alt="{{this.Product.product_name}}" title="{{this.Product.product_name}}">
                             </a>
                           </div>
                         </td>
                         <td class="col-9">
                           <div class="product-middle-col">
-                            <h3><a href="/lifestyle/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
+                            <h3><a href="/lifestyle/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">{{this.Product.product_name}}</a></h3>
                             <div class="row no-margins">
                               <div class="col-md-12 col-12 no-padding">
-                                <h2 class="text-red price">${{this.product_price}}</h2>
+                                <h2 class="text-red price">${{this.Product.price}}</h2>
                               </div>
                               <div class="col-md-4 col-4 no-padding">
                                 <span>Origin</span>
                               </div>
                               <div class="col-md-8 col-8 no-padding overflow-txt">
-                                <span class="text-500">{{this.country_name}}</span>
+                                <span class="text-500">{{this.Product.Country.name}}</span>
                               </div>
                               <div class="col-md-4 col-4 no-padding">
                                 <span>Category</span>
                               </div>
                               <div class="col-md-8 col-8 no-padding overflow-txt">
-                                <a class="text-500" href="/lifestyle/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                <a class="text-500" href="/lifestyle/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}</a>
                               </div>
-                              <div class="col-md-4 col-4 no-padding">
+                              {{!-- <div class="col-md-4 col-4 no-padding">
                                 <span>Seller Rating</span>
                               </div>
                               <div class="col-md-8 col-8 no-padding">
@@ -370,7 +325,7 @@
                                     {{starCount product_rating}}
                                   </a>
                                 </div>
-                              </div>
+                              </div> --}}
                             </div>
                           </div>
                         </td>

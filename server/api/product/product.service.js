@@ -198,7 +198,7 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 	}
 }
 
-export function productView(productID,isUserId) {
+export function productView(productID, isUserId) {
 	var vendorAttributes = [];
 	if (isUserId) {
 		vendorAttributes = ['id', 'vendor_name', 'vendor_profile_pic_url'];
@@ -292,6 +292,95 @@ export function productView(productID,isUserId) {
 			reject(error);
 		});
 	});
+}
+
+export async function TopSellingProducts(offset, limit, marketplace) {
+	var vendorModelName = "Vendor";
+	var countryModelName = "Country";
+	var productModelName = "Product";
+	var categoryModelName = "Category";
+	var orderItemModelName = "OrderItem";
+	var vendorPlanModelName = "VendorPlan";
+	var subCategoryModelName = "SubCategory";
+
+	var includeArray = [{
+		model: model[productModelName],
+		attributes: ['id', 'sku', 'product_name', 'product_slug', 'status', 'marketplace_id', 'marketplace_type_id', 'price', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date'],
+		include: [{
+			model: model[countryModelName],
+			attributes: ['id', 'name', 'code']
+		}, {
+			model: model[categoryModelName],
+			attributes: ['id', 'name', 'code']
+		}, {
+			model: model[subCategoryModelName],
+			attributes: ['id', 'name', 'code']
+		}, {
+			model: model[vendorModelName],
+			attributes: [],
+			include: [{
+				model: model[vendorPlanModelName],
+				attributes: [],
+				where: {
+					status: status['ACTIVE']
+				}
+			}]
+		}, {
+			model: model['ProductMedia'],
+			where: {
+				status: status['ACTIVE'],
+				base_image: 1
+			},
+			attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
+			required: false
+		}]
+	}];
+
+	try {
+		const productResponse = await model[orderItemModelName].findAll({
+			where: {
+				'$or': [{
+					order_item_status: orderItemStatus['DELIVERED']
+				}, {
+					order_item_status: orderItemStatus['COMPLETED']
+				}],
+				'$Product.marketplace_id$': marketplace,
+				'$Product->Vendor->VendorPlans.start_date$': {
+					'$lte': moment().format('YYYY-MM-DD')
+				},
+				'$Product->Vendor->VendorPlans.end_date$': {
+					'$gte': moment().format('YYYY-MM-DD')
+				}
+			},
+			attributes: [
+				'id', 'product_id', [sequelize.fn('SUM', sequelize.col('OrderItem.quantity')), 'sales_count']
+			],
+			include: includeArray,
+			subQuery: false,
+			offset: offset,
+			limit: limit,
+			order: sequelize.literal('sales_count DESC'),
+			group: ['OrderItem.product_id']
+		});
+		const products = JSON.parse(JSON.stringify(productResponse));
+		await Promise.all(products.map(async (element) => {
+			const currentDate = new Date();
+			const exclusiveStartDate = new Date(element.Product.exclusive_start_date);
+			const exclusiveEndDate = new Date(element.Product.exclusive_end_date);
+			if (element.Product.exclusive_sale && (exclusiveStartDate <= currentDate && exclusiveEndDate >= currentDate)) {
+				element.Product['discount'] = ((element.Product.price / 100) * element.Product.exclusive_offer).toFixed(2);
+				element.Product['product_discounted_price'] = (parseFloat(element.Product['price']) - element.Product['discount']).toFixed(2);
+			} else {
+				delete element.Product.exclusive_start_date;
+				delete element.Product.exclusive_end_date;
+				delete element.Product.exclusive_offer;
+			}
+		}));
+		return products;
+	} catch (error) {
+		console.log("TopSellingProducts Error:::", error);
+		return error;
+	}
 }
 
 export function productRatingsCount(productID) {

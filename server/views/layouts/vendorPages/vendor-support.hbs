@@ -1,5 +1,4 @@
-{{> header/top-header LoggedInUser = LoggedInUser}}
-{{> vendor/vendor-header VendorDetail = VendorDetail}}
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-header VendorDetail = VendorDetail}}
 <section class="vendor-product bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -15,39 +14,48 @@
 						<div class="ibox">
 							<div class="row">
 								<div class="col-md-5" style="background-color:#fff;padding: 30px;">
-								<div class="col-md-12 no-padding " >
-									<p id = "shipping-policy" class="terms_head">SHIPPING POLICY </p></a>
-									{{#if Support.shipping_policy}}
-									<p class="terms_para overflow-scroll">{{Support.shipping_policy}}</p>
-									{{else}}
-									<p class="terms_para overflow-scroll">Not Uploaded Yet</p>
-									{{/if}}
-									</div>
-									<hr>
-									<div class="col-md-12 no-padding" >
-										<p id = "return-policy"class="terms_head">Return Policy </p></a>
-										{{#if Support.return_policy}}
-										<p class="terms_para overflow-scroll">{{Support.return_policy}}</p>
+									<div class="col-md-12 no-padding ">
+										<p id="shipping-policy" class="terms_head">SHIPPING POLICY </p>
+										</a>
+										{{#if Support.shipping_policy}}
+											<p class="terms_para overflow-scroll">{{Support.shipping_policy}}</p>
 										{{else}}
-										<p class="terms_para overflow-scroll">Not Uploaded Yet</p>
+											<p class="terms_para">Not yet updated by vendor</p>
 										{{/if}}
 									</div>
 									<hr>
-									<div class="col-md-12 no-padding" >
-										<p id = "terms-of-use"class="terms_head">TERMS OF USE</p></a>
-										{{#if Support.terms_of_use}}
-										<p class="terms_para overflow-scroll">{{Support.terms_of_use}}</p>
+									<div class="col-md-12 no-padding">
+										<p id="return-policy" class="terms_head">Return Policy </p>
+										</a>
+										{{#if Support.return_policy}}
+											<p class="terms_para overflow-scroll">{{Support.return_policy}}</p>
 										{{else}}
-										<p class="terms_para overflow-scroll">Not Uploaded Yet</p>
-									   {{/if}}
+											<p class="terms_para">Not yet updated by vendor</p>
+										{{/if}}
+									</div>
+									<hr>
+									<div class="col-md-12 no-padding">
+										<p id="terms-of-use" class="terms_head">TERMS OF USE</p>
+										</a>
+										{{#if Support.terms_of_use}}
+											<p class="terms_para overflow-scroll">{{Support.terms_of_use}}</p>
+										{{else}}
+											<p class="terms_para">Not yet updated by vendor</p>
+										{{/if}}
 									</div>
 									<hr>
 								</div>
 								<div class="col-md-3">
 									<div class="dis_side_bar">
-										<a href="vendor/support/{{this.VendorDetail.id}}#shipping-policy"><p class="terms_topics-para">Shipping Policy </p> </a>
-										<a href="vendor/support/{{this.VendorDetail.id}}#return-policy"><p class="terms_topics-para">Return Policy </p></a>
-										<a href="vendor/support/{{this.VendorDetail.id}}#terms-of-use"><p class="terms_topics-para">Terms of Use </p></a>
+										<a href="vendor/support/{{this.VendorDetail.id}}#shipping-policy">
+											<p class="terms_topics-para">Shipping Policy </p>
+										</a>
+										<a href="vendor/support/{{this.VendorDetail.id}}#return-policy">
+											<p class="terms_topics-para">Return Policy </p>
+										</a>
+										<a href="vendor/support/{{this.VendorDetail.id}}#terms-of-use">
+											<p class="terms_topics-para">Terms of Use </p>
+										</a>
 									</div>
 								</div>
 							</div>

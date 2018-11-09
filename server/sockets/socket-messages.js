@@ -11,54 +11,42 @@ export function socketMsg(io) {
 	var talkThreadArray = [];
 	var connections = [];
 	var callRooms = {};
-	//console.log("userArray", userArray);
+	var userSockets = {};
 
 
 	io.sockets.on('connection', function (socket) {
-
-		//console.log("socket*********************", socket);
-		//console.log("userArray", userArray);
 		connections.push(socket.id);
-		//console.log("connections", connections.length);
-		console.log("clients", io.sockets.clients().server.sockets.adapter.rooms);
 
-		// id:  user_id}
 		socket.on('user:join', function (user) {
-
-			//console.log("USER JOIN*******************************", user)
 			socket.join(user);
 			socket.userId = user;
-			//console.log("****socket.userId", socket.userId);
+			
+			if (userSockets[user] == undefined)
+				userSockets[user] = [];
+
 			if (userArray.indexOf(user) == -1) {
 				userArray.push(user);
+				userSockets[user].push(socket.id);				
 			} else {
-				console.log("user already connected");
+				userSockets[user].push(socket.id);
 			}
-
-			//console.log("clients rooms connected", io.sockets.clients().server.sockets.adapter.rooms);
 			socket.broadcast.emit('user:online', userArray);
-			//	userOnline(user);
+
 		});
 
 		socket.on('user:get_online_users', function (test) {
 			io.emit('user:online', userArray);
 		})
 
-		// {id: user_id}
 		socket.on('user:leave', function (user) {
-			//console.log("logout array before", userArray);
-			//console.log("USER LOGOUT", user);
-			socket.leave(user);
-			if (userArray.indexOf(user) == -1) {
-				console.log("user already removed");
-			} else {
-				console.log('logout..');
-				var userIndex = userArray.indexOf(user.id);
-				userArray.splice(userIndex, 1);
-				io.emit('user:online', userArray);
+			if (userSockets[user].indexOf(socket.id) != -1) {
+				userSockets[user].splice(userSockets[user].indexOf(socket.id), 1);
+				if (userSockets[user].length == 0) {
+					socket.leave(user);
+					userArray.splice(userArray.indexOf(socket.userId), 1);
+					io.emit('user:online', userArray);
+				}
 			}
-			//	userOffline(user);
-			//console.log("logout userArray", userArray);
 			socket.broadcast.emit('userOnline', userArray);
 		});
 
@@ -132,6 +120,7 @@ export function socketMsg(io) {
 				io.to(user).emit('chat:count:receive', result);
 			})
 		})
+
 		//{id: thread_id, user: user_id}
 		socket.on('chat:leave', function (talk) {
 			socket.leave(talk.id);
@@ -147,19 +136,16 @@ export function socketMsg(io) {
 		});
 
 		socket.on('disconnect', function () {
-			//console.log("disconnect", socket.userId);
 			console.log("userArray in disconnect***********", userArray);
-			//console.log("clients when disconnect**", io.sockets.clients().server.sockets.adapter.rooms);
 			connections.splice(connections.indexOf(socket), 1);
-			//	console.log("%s length", connections.length);
-			/*if (socket.userId != null) {
-				if (userArray.indexOf(socket.userId) > -1) {
-					console.log("%s disconnected", socket.userId)
-					socket.join(socket.userId.toString());
-					console.log("%s connected", socket.userId)
+			if (socket.userId && userSockets[socket.userId].indexOf(socket.id) != -1) {
+				userSockets[socket.userId].splice(userSockets[socket.userId].indexOf(socket.id), 1);
+				if (userSockets[socket.userId].length == 0) {
+					userArray.splice(userArray.indexOf(socket.userId), 1);
+					io.emit('user:online', userArray);
 				}
-			}*/
-			//console.log("%s Disconnected", socket.userId);
+			}
+			socket.broadcast.emit('userOnline', userArray);
 		})
 
 		/* Start - For Web rtc Signalling*/
