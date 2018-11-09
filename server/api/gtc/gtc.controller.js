@@ -26,109 +26,90 @@ const paymentMethod = require('../../config/payment-method');
 const stripe = require('../../payment/stripe.payment');
 
 export async function indexExample(req, res) {
-	var limit = 6;
+	var limit = 10;
 	var offset = 0;
-	var result = {};
-	var field = "id";
-	var order = "ASC";
-	var includeArray = [];
-	var orderModelName = "Order";
 	var vendorModelName = "Vendor";
 	var countryModelName = "Country";
 	var productModelName = "Product";
+	var categoryModelName = "Category";
 	var orderItemModelName = "OrderItem";
 	var vendorPlanModelName = "VendorPlan";
-	var orderVendorModelName = "OrderVendor";
-	var vendorRatingModelName = "VendorRating";
+	var subCategoryModelName = "SubCategory";
 
-	includeArray = [{
-		model: model[vendorPlanModelName],
-		attributes: [],
-		where: {
-			status: status['ACTIVE'],
-			start_date: {
-				'$lte': moment().format('YYYY-MM-DD')
-			},
-			end_date: {
-				'$gte': moment().format('YYYY-MM-DD')
-			}
-		}
-	}, {
-		model: model[orderVendorModelName],
-		attributes: [],
+	var includeArray = [{
+		model: model[productModelName],
+		attributes: ['id', 'sku', 'product_name', 'product_slug', 'status', 'marketplace_id', 'marketplace_type_id', 'price', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date'],
 		include: [{
-			model: model[orderModelName],
+			model: model[countryModelName],
+			attributes: ['id', 'name', 'code']
+		}, {
+			model: model[categoryModelName],
+			attributes: ['id', 'name', 'code']
+		}, {
+			model: model[subCategoryModelName],
+			attributes: ['id', 'name', 'code']
+		}, {
+			model: model[vendorModelName],
 			attributes: [],
 			include: [{
-				model: model[orderItemModelName],
+				model: model[vendorPlanModelName],
 				attributes: [],
 				where: {
-					'$or': [{
-						order_item_status: orderItemStatus['DELIVERED']
-					}, {
-						order_item_status: orderItemStatus['COMPLETED']
-					}]
-				},
-				include: [{
-					model: model[productModelName],
-					attributes: [],
-					where: {
-						marketplace_id: marketplace['PUBLIC']
-					}
-				}]
+					status: status['ACTIVE']
+				}
 			}]
+		}, {
+			model: model['ProductMedia'],
+			where: {
+				status: status['ACTIVE'],
+				base_image: 1
+			},
+			attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
+			required: false
 		}]
-	}, {
-		model: model[countryModelName],
-		attributes: ['id', 'name']
-	}, {
-		model: model[vendorRatingModelName],
-		attributes: []
-	}, {
-		model: model[productModelName],
-		attributes: []
 	}];
 
 	try {
-		const vendorResponse = await model[vendorModelName].findAll({
+		const productResponse = await model[orderItemModelName].findAll({
 			where: {
-				status: status['ACTIVE'],
-				id: {
-					$col: 'OrderVendors->Order->OrderItems->Product.vendor_id'
+				'$or': [{
+					order_item_status: orderItemStatus['DELIVERED']
+				}, {
+					order_item_status: orderItemStatus['COMPLETED']
+				}],
+				'$Product.marketplace_id$': marketplace['PUBLIC'],
+				'$Product->Vendor->VendorPlans.start_date$': {
+					'$lte': moment().format('YYYY-MM-DD')
+				},
+				'$Product->Vendor->VendorPlans.end_date$': {
+					'$gte': moment().format('YYYY-MM-DD')
 				}
 			},
-			attributes: ['id', 'vendor_name', 'vendor_profile_pic_url', [sequelize.fn('SUM', sequelize.col('OrderVendors->Order->OrderItems.quantity')), 'sales_count'],
-				[sequelize.literal('(SUM(VendorRatings.rating) / COUNT(VendorRatings.user_id))'), 'vendor_rating'],
-				[sequelize.literal('(COUNT(Products.id))'), 'product_count']
+			attributes: [
+				'id', 'product_id', [sequelize.fn('SUM', sequelize.col('OrderItem.quantity')), 'sales_count']
 			],
 			include: includeArray,
 			subQuery: false,
 			offset: offset,
 			limit: limit,
 			order: sequelize.literal('sales_count DESC'),
-			group: ['OrderVendors->Order->OrderItems.id']
+			group: ['OrderItem.product_id']
 		});
-		const vendors = JSON.parse(JSON.stringify(vendorResponse));
-		await Promise.all(vendors.map(async (vendor) => {
-			vendor['products_count'] = await service.countRows(productModelName, {
-				vendor_id: vendor.id,
-				marketplace_id: marketplace['PUBLIC'],
-				status: status['ACTIVE']
-			});
-			vendor['exclusive_product_sale'] = await service.countRows(productModelName, {
-				vendor_id: vendor.id,
-				marketplace_id: marketplace['PUBLIC'],
-				status: status['ACTIVE'],
-				exclusive_sale: 1,
-				exclusive_start_date: {
-					'$lte': new Date()
-				},
-				exclusive_end_date: {
-					'$gte': new Date()
-				}
-			});
+		const products = JSON.parse(JSON.stringify(productResponse));
+		await Promise.all(products.map(async (element) => {
+			const currentDate = new Date();
+			const exclusiveStartDate = new Date(element.Product.exclusive_start_date);
+			const exclusiveEndDate = new Date(element.Product.exclusive_end_date);
+			if (element.Product.exclusive_sale && (exclusiveStartDate <= currentDate && exclusiveEndDate >= currentDate)) {
+				element.Product['discount'] = ((element.Product.price / 100) * element.Product.exclusive_offer).toFixed(2);
+				element.Product['product_discounted_price'] = (parseFloat(element.Product['price']) - element.Product['discount']).toFixed(2);
+			} else {
+				delete element.Product.exclusive_start_date;
+				delete element.Product.exclusive_end_date;
+				delete element.Product.exclusive_offer;
+			}
 		}));
-		return res.status(200).send(vendors);
+		return res.status(200).send(products);
 	} catch (error) {
 		console.log("indexExample Error:::", error);
 		return res.status(500).send(error);
