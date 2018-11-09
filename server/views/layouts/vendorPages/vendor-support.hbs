@@ -17,34 +17,32 @@
 								<div class="col-md-5" style="background-color:#fff;padding: 30px;">
 								<div class="col-md-12 no-padding " >
 									<p id = "shipping-policy" class="terms_head">SHIPPING POLICY </p></a>
-									{{!-- <p class="terms_para_head">Free In-Store Pick Up</p> --}}
 									{{#if Support.shipping_policy}}
 									<p class="terms_para overflow-scroll">{{Support.shipping_policy}}</p>
+									{{else}}
+									<p class="terms_para overflow-scroll">Not Uploaded Yet</p>
 									{{/if}}
 									</div>
 									<hr>
-								
-								
 									<div class="col-md-12 no-padding" >
 										<p id = "return-policy"class="terms_head">Return Policy </p></a>
-										{{!-- <p class="terms_para_head">Free In-Store Pick Up</p> --}}
 										{{#if Support.return_policy}}
 										<p class="terms_para overflow-scroll">{{Support.return_policy}}</p>
-											{{/if}}
+										{{else}}
+										<p class="terms_para overflow-scroll">Not Uploaded Yet</p>
+										{{/if}}
 									</div>
 									<hr>
-							
-								
 									<div class="col-md-12 no-padding" >
 										<p id = "terms-of-use"class="terms_head">TERMS OF USE</p></a>
-										{{!-- <p class="terms_para_head">Free In-Store Pick Up</p> --}}
 										{{#if Support.terms_of_use}}
 										<p class="terms_para overflow-scroll">{{Support.terms_of_use}}</p>
+										{{else}}
+										<p class="terms_para overflow-scroll">Not Uploaded Yet</p>
 									   {{/if}}
 									</div>
 									<hr>
 								</div>
-							
 								<div class="col-md-3">
 									<div class="dis_side_bar">
 										<a href="vendor/support/{{this.VendorDetail.id}}#shipping-policy"><p class="terms_topics-para">Shipping Policy </p> </a>

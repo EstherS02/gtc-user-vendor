@@ -81,6 +81,7 @@ export function vendorQuestion(req, res) {
 		queryObjNotification['code'] = config.notification.templates.productReview;
 		service.findOneRow(NotificationTemplateModel, queryObjNotification)
 			.then(function(response) {
+				if(response){
 				var bodyParams = {};
 				bodyParams.user_id = result.User.id;
 				bodyParams.description = '<div><strong>' + req.body.subject + '</strong></div><div>' + req.body.message + '</div>';
@@ -90,6 +91,7 @@ export function vendorQuestion(req, res) {
 				bodyParams.status = 1;
 				bodyParams.created_on = new Date();
 				service.createRow("Notification", bodyParams);
+			}
 			});
 		if (result.User.email_verified && req.user.email_verified) {
 			var queryObjEmailTemplate = {};

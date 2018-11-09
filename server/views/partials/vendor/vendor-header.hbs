@@ -377,6 +377,10 @@ $(document).on('click', '#navbardrop', function() {
 							</div>
 							<div class="vp-navmenu">
 								<ul class="navbar-nav vp-nav d-inline-flex">
+									<li class="nav-item {{#ifCond selectedPage '==' 'landing'}} active {{/ifCond}}">
+										<a  href="/vendor/{{VendorDetail.id}}" class="nav-link">HOME
+										</a>
+									</li>
 									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.WHOLESALER}}
 
 									<li class="nav-item {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}">

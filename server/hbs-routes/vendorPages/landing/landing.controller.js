@@ -74,11 +74,9 @@ export function vendor(req, res) {
 			limit = 2;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 				.then(function(results) {
-					console.log("================",results)
 					if(results.count == 0){
 						delete queryObj['position'];
 						delete queryObj['is_featured_product'];
-						console.log("--------------queryObj",queryObj)
 							productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 							.then(function(results) {
 								return callback(null, results);
