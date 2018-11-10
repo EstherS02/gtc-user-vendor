@@ -13,6 +13,7 @@ const orderStatus = require('../../../config/order_status');
 var async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
 const ReportService = require('../../../utilities/reports');
+const notifictionService = require('../../../api/notification/notification.service');
 
 export function reporting(req, res) {
     console.log('reporting req query', req.query);
@@ -115,6 +116,14 @@ export function reporting(req, res) {
                     console.log('revenueCounts err', err);
                     return callback(err);
                 });
+            },
+            unreadCounts: function(callback) {
+                notifictionService.notificationCounts(LoggedInUser.id)
+                    .then(function(counts) {
+                        return callback(null, counts);
+                    }).catch(function(error) {
+                        return callback(null);
+                    });
             }
         },
         function(err, results) {
@@ -137,6 +146,7 @@ export function reporting(req, res) {
                     topMarketPlace: results.topMarketPlace,
                     revenueChanges: results.revenueChanges,
                     revenueCounts: results.revenueCounts,
+                    unreadCounts: results.unreadCounts,
                     statusCode: statusCode
                 });
             } else {

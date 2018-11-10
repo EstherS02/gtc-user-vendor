@@ -10,6 +10,7 @@ const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
 const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function talk(req, res) {
 	var modelName = 'TalkSetting';
@@ -94,6 +95,14 @@ export function talk(req, res) {
 					return callback(null);
 				});
 
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(error, results) {
 		if (!error) {
@@ -104,6 +113,7 @@ export function talk(req, res) {
 				timeZone: results.timeZone,
 				dayCode: dayCode,
 				categories: results.categories,
+				unreadCounts: results.unreadCounts,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'gtc-talk',

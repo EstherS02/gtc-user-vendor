@@ -11,6 +11,7 @@ const marketPlace = require('../../config/marketplace');
 const orderStatus = require('../../config/order_status');
 var async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function reporting(req, res) {
     var LoggedInUser = {};
@@ -54,8 +55,15 @@ export function reporting(req, res) {
                         console.log('Error :::', error);
                         return callback(null);
                     });
+            },
+            unreadCounts: function(callback) {
+                notifictionService.notificationCounts(user_id)
+                    .then(function(counts) {
+                        return callback(null, counts);
+                    }).catch(function(error) {
+                        return callback(null);
+                    });
             }
-
         },
         function(err, results) {
             var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
@@ -67,6 +75,7 @@ export function reporting(req, res) {
                     marketPlace: marketPlace,
                     LoggedInUser: LoggedInUser,
                     categories: results.categories,
+                    unreadCounts: results.unreadCounts,
                     bottomCategory: bottomCategory,
                     selectedPage: 'reporting',
                     vendorPlan: vendorPlan,

@@ -9,6 +9,7 @@ const service = require('../../api/service');
 const vendorPlan = require('../../config/gtc-plan');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
+const notifictionService = require('../../api/notification/notification.service');
 const querystring = require('querystring');
 
 export function coupons(req, res) {
@@ -117,7 +118,14 @@ export function coupons(req, res) {
 						return callback(null);
 					});
 			},
-
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(LoggedInUser.id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
+			}
 		},
 		function(err, results) {
 			if (!err) {
@@ -136,6 +144,7 @@ export function coupons(req, res) {
 					bottomCategory: bottomCategory,
 					cart: results.cartInfo,
 					marketPlace: marketplace,
+					unreadCounts: results.unreadCounts,
 					selectedPage: 'coupons',
 					maxSize: maxSize,
 					queryURI: queryURI,
@@ -217,7 +226,14 @@ export function addCoupon(req, res) {
 					return callback(null);
 				});
 		},
-
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		}
 	}, function(err, results) {
 		if (!err) {
 			res.render('vendorNav/coupons/edit-coupon', {
@@ -227,6 +243,7 @@ export function addCoupon(req, res) {
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts,
 				statusCode: status,
 				marketPlace: marketplace,
 				vendorPlan: vendorPlan,
@@ -413,6 +430,14 @@ export function editCoupons(req, res) {
 					console.log('Error:::', error);
 					return callback(null);
 				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(error, results) {
 		if (!error) {
@@ -427,6 +452,7 @@ export function editCoupons(req, res) {
 				existingCouponCategories: results.couponCategories,
 				existingCouponExcludeCategories: results.couponExcludeCategories,
 				category: results.category,
+				unreadCounts: results.unreadCounts,
 				statusCode: status,
 				cart: results.cartInfo,
 				marketPlace: marketplace,

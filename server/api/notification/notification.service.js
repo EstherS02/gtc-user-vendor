@@ -1,15 +1,24 @@
 'use strict';
 
-var async = require("async");
 const sequelize = require('sequelize');
 const service = require('../service');
 const status = require('../../config/status');
-const marketplace = require('../../config/marketplace');
-const Sequelize_Instance = require('../../sqldb/index');
-const RawQueries = require('../../raw-queries/sql-queries');
-const roles = require('../../config/roles');
 const model = require('../../sqldb/model-connect');
 
-export function notification(Id,queryObj){
-	
+export async function notificationCounts(userId) {
+	const result = {};
+	try {
+		const notificationModelName = "Notification";
+		const queryObj = {
+			user_id: userId,
+			deleted_at: null,
+			is_read: 1,
+			status: status["ACTIVE"],
+		};
+		const notificationCount = await service.countRows(notificationModelName, queryObj, []);
+		result.notification = notificationCount;
+		return result; 
+	} catch (error) {
+		return error;
+	}
 }

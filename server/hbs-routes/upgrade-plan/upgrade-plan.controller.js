@@ -11,6 +11,7 @@ const marketplace = require('../../config/marketplace');
 const moment = require('moment');
 const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function upgradeplan(req, res) {
 	var LoggedInUser = {};
@@ -140,6 +141,14 @@ export function upgradeplan(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(err, results) {
 		if (!err) {
@@ -147,6 +156,7 @@ export function upgradeplan(req, res) {
 				title: "Global Trade Connect",
 				userplanDetails: results.userplanDetails,
 				PlanDetails: results.planDetails,
+				unreadCounts: results.unreadCounts,
 				cart: results.cartInfo,
 				marketPlace: marketplace,
 				carddetails: results.cards,

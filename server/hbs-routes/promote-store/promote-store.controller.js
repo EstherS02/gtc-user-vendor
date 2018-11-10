@@ -10,6 +10,7 @@ const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function promoteStore(req, res) {
 	var LoggedInUser = {};
@@ -57,6 +58,14 @@ export function promoteStore(req, res) {
 						return callback(null);
 					});
 
+			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(user_id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
@@ -67,6 +76,7 @@ export function promoteStore(req, res) {
 					categories: results.categories,
 					bottomCategory: bottomCategory,
 					cart: results.cartInfo,
+					unreadCounts: results.unreadCounts,
 					marketPlace: marketplace,
 					selectedPage: 'promote-store',
 					vendorPlan: vendorPlan,

@@ -19,6 +19,7 @@ const orderItemStatus = require("../../../config/order-item-new-status");
 const vendorPlan = require('../../../config/gtc-plan');
 const carriersCode = require('../../../config/carriers');
 const populate = require('../../../utilities/populate');
+const notifictionService = require('../../../api/notification/notification.service');
 
 export function salesHistory(req, res) {
 	var queryObj = {};
@@ -142,6 +143,14 @@ export function salesHistory(req, res) {
 					console.log("vendorOrderHistory Error :::", error);
 					return callback(error);
 				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(error, results) {
 		if (!error && results) {
@@ -152,6 +161,7 @@ export function salesHistory(req, res) {
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
 				orders: results.vendorOrderHistory,
+				unreadCounts: results.unreadCounts,
 				queryParams: queryParams,
 				queryParamsString: querystring.stringify(queryParams),
 				dateRangeOptions: dateRangeOptions
@@ -215,6 +225,14 @@ export function orderView(req, res) {
 					console.log("order Error:::", error);
 					return callback(error);
 				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(error, results) {
 		if (!error && results) {
@@ -226,6 +244,7 @@ export function orderView(req, res) {
 				cart: results.cartInfo,
 				order: results.orderView,
 				orderItemStatus: orderItemStatus,
+				unreadCounts: results.unreadCounts,
 				marketPlace: marketPlace,
 				carriersCode: carriersCode
 			});
@@ -384,6 +403,14 @@ export function salesHistoryOld(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
+			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(LoggedInUser.id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
@@ -422,6 +449,7 @@ export function salesHistoryOld(req, res) {
 						queryUrl: queryUrl,
 						selectedPage: 'sales-history',
 						cartheader: results.cartCounts,
+						unreadCounts: results.unreadCounts,
 						totalTransaction: (total_transaction).toFixed(2),
 						orderStatusCode: orderStatusCode,
 
@@ -602,6 +630,14 @@ export function orderViewOld(req, res) {
 					return cb(error);
 				});
 		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		}
 	}, function(err, results) {
 		if (!err) {
 			var totalItems = results.orderItems.rows;
@@ -647,6 +683,7 @@ export function orderViewOld(req, res) {
 				orderStatusCode: orderStatusCode,
 				cartheader: results.cartCounts,
 				categories: results.categories,
+				unreadCounts: results.unreadCounts,
 				bottomCategory: bottomCategory,
 				statusCode: status,
 				orderItemStatus: orderItemStatus,

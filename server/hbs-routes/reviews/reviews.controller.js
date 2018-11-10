@@ -9,6 +9,7 @@ const marketplace = require('../../config/marketplace');
 const sequelize = require('sequelize');
 const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function reviews(req, res) {
 	var LoggedInUser = {};
@@ -203,6 +204,14 @@ export function reviews(req, res) {
 					return callback(null);
 				});
 			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(user_id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
+			}
 		},
 		function(err, results) {
 			if (!err) {
@@ -214,6 +223,7 @@ export function reviews(req, res) {
 					avgRating: results.Rating.avgRating,
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
+					unreadCounts: results.unreadCounts,
 					cart: results.cartInfo,
 					marketPlace: marketplace,
 					bottomCategory: bottomCategory,

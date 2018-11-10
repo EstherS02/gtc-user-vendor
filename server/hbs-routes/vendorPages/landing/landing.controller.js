@@ -96,10 +96,9 @@ export function vendor(req, res) {
 			field = 'product_selling_count';
 			order = 'desc';
 			limit = 3;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.OnSale('product', queryObj, limit)
 				.then(function(servicesProviders) {
 					return callback(null, servicesProviders.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -109,11 +108,10 @@ export function vendor(req, res) {
 			delete queryObj['featured_position'];
 			delete queryObj['is_featured_product'];
 			queryObj['vendor_id'] = vendor_id;
-			field = 'product_rating';
-			order = 'desc';
 			limit = 3;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.TopRated('product', queryObj, limit)
 				.then(function(servicesProviders) {
+
 					return callback(null, servicesProviders.rows);
 
 				}).catch(function(error) {

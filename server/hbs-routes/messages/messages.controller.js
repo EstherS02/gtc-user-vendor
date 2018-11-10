@@ -9,6 +9,7 @@ const marketplace = require('../../config/marketplace');
 const sequelize = require('sequelize');
 const vendorPlan = require('../../config/gtc-plan');
 const async = require('async');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function messages(req, res) {
 	var categoryModel = "Category";
@@ -123,6 +124,14 @@ export function messages(req, res) {
 						return callback(null);
 					});
 			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(LoggedInUser.id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
+			}
 		},
 		function(err, results) {
 
@@ -132,6 +141,7 @@ export function messages(req, res) {
 					messenger: results.messages,
 					messages_count: results.messages_count,
 					categories: results.categories,
+					unreadCounts: results.unreadCounts,
 					bottomCategory: bottomCategory,
 					cart: results.cartInfo,
 					marketPlace: marketplace,

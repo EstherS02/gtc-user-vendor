@@ -8,7 +8,7 @@
 		$("#noProducts").hide();
 		$('.clickable-row').click(function() {
 			var id = $(this).data('id');
-			$('#'+id).hide();
+			//$('#'+id).hide();
 			var notificationCount = $("#notificationCount").val();
 			notificationCount = notificationCount-1;
 			if(notificationCount==0){
@@ -28,16 +28,13 @@
 					type: 'GET',
 					success: function(data) {
 						console.log(data);
-						// $("#"+id).hide();
-						
 					},
 					error: function(error) {
 						console.log(error);
 					}
 				})
 			}
-		});
-
+		}); 
 		$('.clickable-row').magnificPopup({
 			type: 'inline',
 			midClick: true,
@@ -49,6 +46,20 @@
 			$.magnificPopup.close();
 		});
 	});
+
+	function deleteNotification(id) {
+		$.ajax({
+			url: 'api/notification/delete/' +id,
+			type: 'GET',
+			success: function(data) {
+				$('#'+id).hide()
+				location.reload(true);
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		})
+	};
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray">
@@ -73,19 +84,20 @@
 											<thead>
 												<tr>
 													<th width="20%" scope="col">Event</th>
-													<th width="60%" scope="col">Description</th>
-													<th width="20%" scope="col">Date</th>
+													<th width="55%" scope="col">Description</th>
+													<th width="15%" scope="col">Date</th>
+													<th width="10%" scope="col">Delete</th>
 												</tr>
 											</thead>
 											<tbody>
-												
-													{{#each notifications}}
-													<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} id = "{{this.id}}" data-message="{{this.description}}" href="#gtc-modal">
-														<td scope="row ">{{this.name}}</td>
-														<td scope="row">{{{dotdotdot this.description}}}</td>
-														<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
-													</tr>
-													{{/each}}
+												{{#each notifications}}
+												<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} id ="{{this.id}}" data-message="{{this.description}}" href="#gtc-modal">
+													<td scope="row ">{{this.name}}</td>
+													<td scope="row">{{{dotdotdot this.description}}}</td>
+													<td scope="row">{{formatTime this.created_on "MMM D, YYYY"}}</td>
+													<td scope="row"><span onclick="event.stopPropagation(); deleteNotification({{this.id}})"><i class="fa fa-trash-o" style="font-size:16px; color:red;"></i></span></td>
+												</tr>
+												{{/each}}
 											</tbody>
 										</table>
 									{{else}}
