@@ -199,7 +199,7 @@ $(document).ready(function() {
 				},
 				error: function(request, status, error) {
 					$('#loadingSpinnersignUp').hide();
-					$('#signUpErrorLog').text(request.responseText);
+					$('#signUpErrorLog').html(request.responseText);
 					setTimeout(function() {
 						$('#signUpErrorLog').hide();
 
