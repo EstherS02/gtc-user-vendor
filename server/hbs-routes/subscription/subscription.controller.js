@@ -9,6 +9,7 @@ const vendorPlan = require('../../config/gtc-plan');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
 const populate = require('../../utilities/populate');
+const querystring = require('querystring');
 
 export function subscriptions(req, res) {
 
@@ -33,6 +34,7 @@ export function subscriptions(req, res) {
 	delete req.query.order;
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
 	delete req.query.page;
 
 	offset = (page - 1) * limit;
@@ -111,13 +113,13 @@ export function subscriptions(req, res) {
 				LoggedInUser: LoggedInUser,
 				bottomCategory: bottomCategory,
 				categories: results.categories,
-				subscriptions: results.subscriptions.rows,
-				collectionSize: results.subscriptions.count,
+				subscriptions: results.subscriptions,
 				selectedPage: 'subscription',
 				statusCode: statusCode,
 				vendorPlan: vendorPlan,
 				marketPlace: marketplace,
 				queryURI: queryURI,
+				queryParamsString: querystring.stringify(queryURI),
 				queryPaginationObj: queryPaginationObj,
 				pageSize: limit,
 				maxSize: 5,

@@ -18,7 +18,7 @@ var params = {{{ DisplayJSON queryParamsString }}};
 		}
 	}
 
-	function limit(type,size) {
+	function limit(size) {
 		params = replaceUrlParam(params, "limit", size);
 		params = replaceUrlParam(params, "page", 1);
 		params = replaceUrlParam(params, "offset", 0);
@@ -167,6 +167,12 @@ var params = {{{ DisplayJSON queryParamsString }}};
 								{{#if Coupons.count}}
 								<div class="row py-2">
 									<div class="col-md-12">
+										<div class="alert" id="gtc-coupon-alert">
+											<button type="button" class="close" data-dismiss="alert">
+												<span aria-hidden="true">&times;</span>
+											</button>
+												<span class="coupon-message"></span>
+										</div> 
 										<small class="font-weight-light">{{Coupons.count}} items total</small>
 										<div class="float-right">
 											<small class="font-weight-light">Entries per page : </small>
