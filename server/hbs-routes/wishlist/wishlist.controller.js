@@ -9,6 +9,7 @@ const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const vendorPlan = require('../../config/gtc-plan');
 const notifictionService = require('../../api/notification/notification.service');
+const querystring = require('querystring');
 
 export function wishlist(req, res) {
 
@@ -148,8 +149,7 @@ export function wishlist(req, res) {
 				}
 				res.render('userNav/wishlist', {
 					title: "Global Trade Connect",
-					wishlist: results.wishlist.rows,
-					count: results.wishlist.count,
+					wishlist: results.wishlist,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
 					cart: results.cartInfo,
@@ -160,6 +160,7 @@ export function wishlist(req, res) {
 					queryURI: queryURI,
 					queryPaginationObj: queryPaginationObj,
 					selectedPage: "wishlist",
+					queryParamsString: querystring.stringify(queryURI)
 				});
 			} else {
 				res.render('userNav/wishlist', err);

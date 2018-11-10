@@ -1,8 +1,9 @@
 <script type="text/javascript">
-var userInfo = {{{ DisplayJSON LoggedInUser}}}
-var wishlist = {{{ DisplayJSON wishlist}}}
+	var params = {{{ DisplayJSON queryParamsString }}};
+	var userInfo = {{{ DisplayJSON LoggedInUser}}}
+	var wishlist = {{{ DisplayJSON wishlist}}}
+	var Plan = {{{ DisplayJSON vendorPlan }}}
 
-var Plan = {{{ DisplayJSON vendorPlan }}}
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -19,6 +20,24 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 			}
 		}
 	}
+
+	function limit(size) {
+		params = replaceUrlParam(params, "limit", size);
+		params = replaceUrlParam(params, "page", 1);
+		params = replaceUrlParam(params, "offset", 0);
+		location.href = "wishlist?"+ params;
+	}
+
+	function replaceUrlParam(existingQueryParams, paramsName, paramsValue) {
+		var urlParams = new URLSearchParams(existingQueryParams);
+		if (paramsValue) {
+			urlParams.set(paramsName, paramsValue);
+		} else {
+			urlParams.delete(paramsName);
+		}
+		return urlParams;
+	}
+
 	function CartUpdate(e) {
 		var cartInfo = {};
 		var quantity = 0;
@@ -63,19 +82,21 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 			$('#enterQuantity').modal('show');
 		}
 	}
+
 	function cartAPI(cartInfo) {
-			$.ajax({
-				type: "POST",
-				url: "/api/cart/add-cart/" + cartInfo.product_id,
-				data: cartInfo,
-				success: function(response) {
-					location.reload();
-				},
-				error: function(error) {
-					$('#quantityInput').notify(JSON.parse(error.responseText).message_details, "error");
-				}
-			});
-		}
+		$.ajax({
+			type: "POST",
+			url: "/api/cart/add-cart/" + cartInfo.product_id,
+			data: cartInfo,
+			success: function(response) {
+				location.reload();
+			},
+			error: function(error) {
+				$('#quantityInput').notify(JSON.parse(error.responseText).message_details, "error");
+			}
+		});
+	}
+
 	function remove(e) {
 		var chkArray = [];
 		$(':checkbox:checked').each(function(i) {
@@ -115,6 +136,7 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 			}
 		});
 	}
+
 	$(document).ready(function() {
 		$("#gtc-wishlist-alert").hide();
 		$(".checkbox").change(function(e) {
@@ -122,7 +144,8 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 		});
 	})
 
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+</script> 
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 {{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 
 <div class="wrapper-content bg-gray">
@@ -140,49 +163,59 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 						<br/>
 						<div class="content-body">
 							<div class="row">
-								<div class="col-md-6">
-									<input type="submit" value="REMOVE" onclick="remove(this)" class="btn btn-small btn-muted" {{#ifCond wishlist.length "==" 0}}
-									 disabled="true" {{/ifCond}} />
-								</div>
-								<div class="col-md-6">
-									<input type="submit" onclick="deleteAll(this)" value="DELETE ALL" class="btn btn-small float-right bg4" {{#ifCond wishlist.length "==" 0}}
-									 disabled="true" {{/ifCond}} />
+								<div class="col-md-12">
+									<div class="form-inline pull-left m-t-md">
+										<div class="form-group m-r">
+											<button type="submit" class="btn btn-md btn-muted" onclick="remove(this)" {{#ifCond wishlist.rows.length "==" 0}}
+											disabled="true" {{/ifCond}} >REMOVE</button>
+										</div>
+									</div>
+									<div class="form-inline pull-right m-t-md">
+										<div class="form-group m-r">
+											<button type="submit" class="btn btn-small float-right bg4" onclick="deleteAll(this)" {{#ifCond wishlist.rows.length "==" 0}}
+											disabled="true" {{/ifCond}}>DELETE ALL</button>
+										</div>
+									</div>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-sm-12">
-									<div class="alert" id="gtc-wishlist-alert">
-										<button type="button" class="close" data-dismiss="alert">
-											<span aria-hidden="true">&times;</span>
-										</button>
-										<span class="wishlist-message"></span>
-									</div>
-									<div class="cart-top-header">
-										<div class="alignleft cart-top-left">
-											<span class="m-r-sm text-muted">{{this.count}} items total</span>
+							{{#if wishlist.rows}}
+								<div class="row py-2">
+									<div class="col-md-12">
+										<div class="alert" id="gtc-cart-alert">
+											<button type="button" class="close" data-dismiss="alert">
+												<span aria-hidden="true">&times;</span>
+											</button>
+											<span class="cart-message"></span>
 										</div>
-										<div class="alignright cart-top-right">
-											<span class="m-r-sm text-muted">
-												Entries per page :
-												<a href="wishlist?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}" {{#ifCond queryURI.limit '==' 10 }} class="active" {{/ifCond}} > 10</a>
-												<a href="wishlist?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}" {{#ifCond queryURI.limit '==' 25 }} class="active" {{/ifCond}}> 25</a>
-												<a href="wishlist?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}" {{#ifCond queryURI.limit '==' 100 }} class="active" {{/ifCond}}> 100</a>
-												<a href="wishlist?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}" {{#ifCond queryURI.limit '==' 500 }} class="active" {{/ifCond}}> All </a>
-											</span>
+										<small class="font-weight-light">{{wishlist.count}} items total</small>
+										<div class="float-right">
+											<small class="font-weight-light">Entries per page : </small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
+											</small>
 										</div>
-										<div style="clear: both;"></div>
 									</div>
 								</div>
-								<div class="col-md-12">
-									<div class="table-responsive">
-										<table class="table table-hover">
+								<div class="row">
+									<div class="col-md-12">
+										<table class="table order-table">
 											<thead>
 												<tr>
-													<th width="2%">
-														{{#ifCond wishlist.length "!=" 0}}
-															<input type="checkbox" id="checkbox" onclick="selectAll(this);">
-														{{/ifCond}}
-													</th>
+													<th>
+														<div class="customCheckbox">
+															<input type="checkbox" onclick="selectAll(this);" id="checkbox" class="customCheckboxInput">
+															<label class="checkbox-b" for="checkbox"></label>
+														</div>
+													</th>	
 													<th width="30%">Product Name</th>
 													<th width="20%">Store Name</th>
 													<th width="3%">Available</th>
@@ -193,92 +226,98 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 												</tr>
 											</thead>
 											<tbody>
-												{{#if wishlist}}
-													{{#each wishlist}}
-														<tr>
-															<td>
-																<input type="checkbox" class="checkbox" value="{{this.id}}">
+												{{#each wishlist.rows}}
+													<tr>
+														<td>
+															<div class="customCheckbox">
+																<input type="checkbox" id="inputTerms{{this.id}}" class="customCheckboxInput" value={{this.id}}>
+																<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
+															</div>
+														</td>
+														<td class="text_blue_color">
+															<input type="hidden" name="marketplace_id" id="marketplaceId{{this.Product.id}}" value={{this.Product.marketplace_id}}>
+															<input type="hidden" name="marketplace_type_id" id="typecode{{this.id}}" value={{this.Product.marketplace_type_id}}>
+															<a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">
+															<img src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" style="width: 30px;" />
+															{{this.Product.product_name}}</a>
+														</td>
+														<td class="text_blue_color">
+															<a href="vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.vendor_name}}</a>
+															<input type="hidden" name="vendor_id" id="vendorId{{this.Product.id}}" value={{this.Product.Vendor.id}}>
+															<input type="hidden" name="vendor_id" id="vendorName{{this.Product.id}}" value={{this.Product.Vendor.User.first_name}}>
+														</td>
+														{{#if this.Product.quantity_available}}
+															<td class="text_green_color" style="font-size: 20px;">
+																<i class="fas fa-check-circle"></i>
 															</td>
-															<td class="text_blue_color">
-																<input type="hidden" name="marketplace_id" id="marketplaceId{{this.Product.id}}" value={{this.Product.marketplace_id}}>
-																<input type="hidden" name="marketplace_type_id" id="typecode{{this.id}}" value={{this.Product.marketplace_type_id}}>
-																<a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">
-																<img src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" style="width: 30px;" />
-																{{this.Product.product_name}}</a>
+														{{else}}
+															<td class="text_orange_color" style="font-size: 20px;">
+																<i class="fas fa-exclamation-circle"></i>
 															</td>
-															<td class="text_blue_color">
-																<a href="vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.vendor_name}}</a>
-																<input type="hidden" name="vendor_id" id="vendorId{{this.Product.id}}" value={{this.Product.Vendor.id}}>
-																<input type="hidden" name="vendor_id" id="vendorName{{this.Product.id}}" value={{this.Product.Vendor.User.first_name}}>
-															</td>
-															{{#if this.Product.quantity_available}}
-																<td class="text_green_color" style="font-size: 20px;">
-																	<i class="fas fa-check-circle"></i>
-																</td>
-															{{else}}
-																<td class="text_orange_color" style="font-size: 20px;">
-																	<i class="fas fa-exclamation-circle"></i>
-																</td>
-															{{/if}} {{!-- Type --}}
-															{{#ifCond this.Product.marketplace_id "==" 1}}
-																<td>Wholesale</td>
-																{{else ifCond this.Product.marketplace_id "==" 2}}
-																<td>Retail</td>
-																{{else ifCond this.Product.marketplace_id "==" 3}}
-																<td>Service</td>
-																{{else ifCond this.Product.marketplace_id "==" 4}}
-																<td>Lifestyle</td>
-															{{/ifCond}} {{!--End Type --}}
-															<td class="text_black_color">{{currency this.Product.price '$'}}</td>
-															<input type="hidden" id="product_id{{this.Product.id}}" name="product_id" value="{{this.product_id}}">{{!--
-															<input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available"> --}}
-															<td class="text_blue_color">
-																<input type="number" style ="width:50%" name="product_quantity" id="inputQuantity{{this.Product.id}}" min="1" max="{{this.Product.quantity_available}}"
-																 placeholder="1" >{{!-- <a href="#"> --}}
-																{{!-- Update </a> --}}
-															</td>
-															<td class="text_blue_color ">
-																<i class="fas fa-credit-card" onclick="CartUpdate({{this.Product.id}})">
-																	<a href="javascript:;"> Add to cart </a>
-																</i>
-															</td>
-														</tr>
-													{{/each}}
-												{{else}}
-													<tr><td colspan="7" style="text-align:center;">No Data Found</td></tr>
-												{{/if}}
+														{{/if}} {{!-- Type --}}
+														{{#ifCond this.Product.marketplace_id "==" 1}}
+															<td>Wholesale</td>
+															{{else ifCond this.Product.marketplace_id "==" 2}}
+															<td>Retail</td>
+															{{else ifCond this.Product.marketplace_id "==" 3}}
+															<td>Service</td>
+															{{else ifCond this.Product.marketplace_id "==" 4}}
+															<td>Lifestyle</td>
+														{{/ifCond}} {{!--End Type --}}
+														<td class="text_black_color">{{currency this.Product.price '$'}}</td>
+														<input type="hidden" id="product_id{{this.Product.id}}" name="product_id" value="{{this.product_id}}">{{!--
+														<input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available"> --}}
+														<td class="text_blue_color">
+															<input type="number" style ="width:50%" name="product_quantity" id="inputQuantity{{this.Product.id}}" min="1" max="{{this.Product.quantity_available}}"
+																placeholder="1" >{{!-- <a href="#"> --}}
+															{{!-- Update </a> --}}
+														</td>
+														<td class="text_blue_color ">
+															<i class="fas fa-credit-card" onclick="CartUpdate({{this.Product.id}})">
+																<a href="javascript:;"> Add to cart </a>
+															</i>
+														</td>
+													</tr>
+												{{/each}}
 											</tbody>
 										</table>
 									</div>
-									{{#if count}}
-										<div class="row">
-											<div class="col-md-12">
-												{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-													<nav aria-label="Page navigation example">
-														<ul class="pagination justify-content-center">
-															{{#unless startFromFirstPage}}
-																<li class="page-item-prev" style="margin-left:-310px;">
-																	<a href="../wishlist?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}"><i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
-																</li>
-															{{/unless}}
-															{{#each pages}}
-																<li class="page-item {{#if isCurrent}} active {{/if}}">
-																	<a class="page-link" href="../wishlist?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-																</li>
-															{{/each}}
-															{{#unless endAtLastPage}}
-																<li class="page-item-next" style="margin-right:-310px;">
-																	<a href="../wishlist?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;<i class="fa fa-angle-double-right"></i></a>
-																</li>
-															{{/unless}}
-														</ul>
-													</nav>
-												{{/pagination}}
-											</div>
-										</div>
-									{{/if}}
 								</div>
-							</div>
+								{{!-- Pagination starts --}}
+								{{#ifCond products.count '>' queryURI.limit}}
+									<div class="row">
+										<div class="col-md-12 align-self-center">
+											{{#pagination products.count queryURI.page queryURI.limit 2}}
+												<nav aria-label="Page navigation example">
+													<ul class="pagination justify-content-center">
+														{{#unless startFromFirstPage}}
+															<li class="justify-content-center align-self-center">
+																<a href="../wishlist?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">
+																	<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+															</li>
+														{{/unless}}
+														{{#each pages}}
+															<li class="page-item {{#if isCurrent}} active {{/if}}">
+																<a class="page-link" href="../wishlist?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryURI.limit)}}">{{page}}</a>
+															</li>
+														{{/each}}
+														{{#unless endAtLastPage}}
+															<li class="justify-content-center align-self-center">
+																<a href="../wishlist?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">Next&nbsp;
+																	<i class="fa fa-angle-double-right"></i>
+																</a>
+															</li>
+														{{/unless}}
+													</ul>
+												</nav>
+											{{/pagination}}
+										</div>
+									</div>
+								{{/ifCond}}
+								{{!-- Pagination Ends --}}
+							{{else}}
+								<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+							{{/if}}
 						</div>
 					</div>
 				</div>

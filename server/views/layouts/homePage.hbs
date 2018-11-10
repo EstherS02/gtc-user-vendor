@@ -13,17 +13,11 @@
 		});
 			$("#geoLocateForm").validate({
 			rules: {
-				origin: {
-					required: true
-				},
 				keyword: {
 					required: true
 				}
 			},
 			messages: {
-				origin: {
-					required: "Please enter the location",
-				},
 				keyword: {
 					required: "Please enter the keyword",
 				}
@@ -57,7 +51,7 @@
 								<form id="geoLocateForm" class="geo-locate-form">
 									<div class="form-group m-b-sm">
 										<input type="text" id="origin" name="origin" class="form-control-customized form-control-sm rounded"
-										 placeholder="Location (eg Calgary, AB)" required>
+										 placeholder="Location (eg Calgary, AB)">
 									</div>
 									<div class="form-group m-b-sm">
 										<div class="select-container">
@@ -93,7 +87,6 @@
 						</div>
 						<div class="row">
 							<div class="col-md-10 offset-md-0">
-								<div id="signupLog"></div>
 								<div class="signup-box">
 									<div class="row">
 										<div class="col-md-6">
@@ -121,6 +114,7 @@
 										<h2 class="divider-line"><span>OR</span></h2>
 										<div class="col-md-6 signup-right">
 											<form id="signUpForm" class="form">
+												<small id="signUpErrorLog"></small>
 												<div class="row">
 													<div class="col">
 														<div class="form-group m-b-sm">

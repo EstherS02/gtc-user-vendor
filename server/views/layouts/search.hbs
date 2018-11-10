@@ -288,7 +288,7 @@
 
 			{{#ifCond marketplaceURl "!=" "lifestyle"}}
 				<h5 class="right-header-sm" style="margin-top:10px">FILTER BY LOCATION</h5>
-				<p class="right-header-xs bg{{queryURI.marketplace}}">GLOBAL ({{countryProductCount.count}})</p>
+				<p class="right-header-xs bg{{queryURI.marketplace}}">GLOBAL ({{productCount.count}})</p>
 				<ul class="right-list-view category-fixed">
 					{{!-- {{#each locations.rows}}
 				<li>
@@ -299,7 +299,7 @@
 				{{/each}} --}}
 					{{#each countryProductCount.rows}}
 						<li>
-							<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.regionname}}">{{this.regionname}} ({{this.count}})</a>
+							<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.regionname}}">   {{this.regionname}} ({{this.count}} )</a>
 							<ul class="inner-list-view collapse" id="list{{this.regionname}}">
 								{{#each this.subCategory}}
 									<li>

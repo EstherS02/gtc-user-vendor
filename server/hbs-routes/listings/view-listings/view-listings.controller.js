@@ -11,6 +11,7 @@ const productService = require('../../../api/product/product.service');
 const marketplace = require('../../../config/marketplace');
 const url = require('url');
 const notifictionService = require('../../../api/notification/notification.service');
+const querystring = require('querystring');
 
 export function viewListings(req, res) {
 
@@ -38,6 +39,7 @@ export function viewListings(req, res) {
 	delete req.query.order;
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
 	delete req.query.page;
 
 	offset = (page - 1) * limit;
@@ -136,8 +138,7 @@ export function viewListings(req, res) {
 
 			res.render('vendorNav/listings/view-listings', {
 				title: "Global Trade Connect",
-				products: results.products.rows,
-				collectionSize: results.products.count,
+				products: results.products,
 				categories: results.categories,
 				unreadCounts: results.unreadCounts,
 				cart: results.cartInfo,
@@ -153,6 +154,7 @@ export function viewListings(req, res) {
 				selectedPage: type,
 				vendorPlan: vendorPlan,
 				queryURI: queryURI,
+				queryParamsString: querystring.stringify(queryURI),
 				queryPaginationObj: queryPaginationObj
 			});
 		} else {
