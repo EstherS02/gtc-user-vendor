@@ -165,7 +165,7 @@ export function product(req, res) {
 					}
 				}, {
 					model: model['VendorPlan'],
-					attributes: [],
+					attributes: ['id','plan_id'],
 					where: {
 						status: status['ACTIVE'],
 						start_date: {
@@ -467,9 +467,8 @@ export function product(req, res) {
 					categoryWithProductCount: results.categoryWithProductCount
 				});
 			} else {
-				console.log("==================================")
-		 		res.status(404)
-   					.send('Invalid Access');
+		   		res.render('404');
+		   		return;
 			}
 		});
 }
@@ -657,7 +656,6 @@ export function GetProductReview(req, res) {
 							resultObj[o.categoryname]["categoryID"] = o.categoryid;
 							resultObj[o.categoryname]["count"] = 0;
 							resultObj[o.categoryname]["subCategory"] = [];
-
 						}
 						var subCatObj = {}
 						subCatObj["subCategoryName"] = o.subcategoryname;
@@ -773,11 +771,9 @@ export function GetProductReview(req, res) {
 				categoryWithProductCount: results.categoryWithProductCount
 
 			});
-		} else {
-		// 	res.render('product-review', {
-		// 		title: "Global Trade Connect"
-		// 	});
-		 res.send('what???', 404);
-		}
+			} else {
+	   			res.render('404');
+			   	return;
+			}
 	});
 }

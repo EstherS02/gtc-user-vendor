@@ -279,7 +279,7 @@ $(document).on('click', '#navbardrop', function() {
 	}
 });
 </script>
-{{#navbarSetting LoggedInUser.id selectedPage}}
+{{#navbarSetting VendorDetail.id selectedPage}}
 {{!-- Start Image crop modal window --}}
 <div class="modal fade" id="profile-cover-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-cover-picture-modalLabel"
     aria-hidden="true">
@@ -338,7 +338,7 @@ $(document).on('click', '#navbardrop', function() {
 	</div>
 	<div class="vp-title">
 		<div class="gtc-container">
-			<h2>{{this.VendorDetail.vendor_name}}</h2>
+			<h2><a  href="/vendor/{{VendorDetail.id}}" class="text-white">{{this.VendorDetail.vendor_name}}</a></h2>
 		</div>
 	</div>
 	<div class="vp-menu">
@@ -377,10 +377,10 @@ $(document).on('click', '#navbardrop', function() {
 							</div>
 							<div class="vp-navmenu">
 								<ul class="navbar-nav vp-nav d-inline-flex">
-									<li class="nav-item {{#ifCond selectedPage '==' 'landing'}} active {{/ifCond}}">
+									{{!-- <li class="nav-item {{#ifCond selectedPage '==' 'landing'}} active {{/ifCond}}">
 										<a  href="/vendor/{{VendorDetail.id}}" class="nav-link">HOME
 										</a>
-									</li>
+									</li> --}}
 									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.WHOLESALER}}
 
 									<li class="nav-item {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}">
