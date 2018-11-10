@@ -28,5 +28,6 @@ router.post('/feature-payment', auth.isAuthenticated(), controller.featureProduc
 router.post('/feature', auth.isAuthenticated(), controller.featureProductWithoutPayment);
 router.get('/vendor-marketplaces/:vendor_id', auth.isAuthenticated(), controller.vendorMarketplaces);
 router.get('/admin/vendors', auth.hasRole(roles['ADMIN']), controller.planActiveVendors);
+router.get('/admin/active-vendor-products', auth.hasRole(roles['ADMIN']), controller.activeVendorProducts);
 
 module.exports = router;

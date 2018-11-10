@@ -294,7 +294,6 @@ exports.reportperformanceexportcsv = function(req, res) {
 	limit = req.query.limit ? parseInt(req.query.limit) : 25;
 	field = 'id';
 	order = 'asc';
-	var productModel = "MarketplaceProduct";
 
 	if (req.user)
 		LoggedInUser = req.user;

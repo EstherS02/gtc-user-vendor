@@ -10,7 +10,6 @@ const productService = require('../../api/product/product.service');
 const async = require('async');
 
 export function products(req, res) {
-	var productModel = "MarketplaceProduct";
 	var marketplaceModel = "Marketplace";
 	var categoryModel = "Category";
 	var subcategoryModel = "SubCategory";
