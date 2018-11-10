@@ -11,6 +11,7 @@ const populate = require('../../utilities/populate');
 const vendorPlan = require('../../config/gtc-plan');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function userProfile(req, res) {
 
@@ -132,6 +133,14 @@ export function userProfile(req, res) {
 					return callback(null);
 				});
 		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		}
 	}, function(err, results) {
 		if (!err) {
 			res.render('userNav/user-profile', {
@@ -140,6 +149,7 @@ export function userProfile(req, res) {
 				user: results.user,
 				shippingAddress: results.shippingAddress,
 				billingAddress: results.billingAddress,
+				unreadCounts: results.unreadCounts,
 				country: results.country,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'user-profile',

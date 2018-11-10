@@ -14,6 +14,7 @@ const orderStatus = require('../../../config/order_status');
 const vendorPlan = require('../../../config/gtc-plan');
 const cartService = require('../../../api/cart/cart.service');
 const marketplace = require('../../../config/marketplace');
+const notifictionService = require('../../../api/notification/notification.service');
 
 export function accounting(req, res) {
 	var queryParams = {};
@@ -102,6 +103,14 @@ export function accounting(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(error, results) {
 		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
@@ -112,6 +121,7 @@ export function accounting(req, res) {
 				category: results.category,
 				selectedPage: 'accounting',
 				categories: results.categories,
+				unreadCounts: results.unreadCounts,
 				bottomCategory: bottomCategory,
 				selectedPage: 'accounting',
 				orderStatus: orderStatus,

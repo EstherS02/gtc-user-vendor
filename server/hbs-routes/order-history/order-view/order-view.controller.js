@@ -14,6 +14,7 @@ const orderService = require('../../../api/order/order.service');
 const cartService = require('../../../api/cart/cart.service');
 const cartObj = require('../../../api/cart/cart.controller');
 const populate = require('../../../utilities/populate');
+const notifictionService = require('../../../api/notification/notification.service');
 
 export function orderView(req, res) {
 	var queryObj = {};
@@ -64,6 +65,14 @@ export function orderView(req, res) {
 					console.log("order Error:::", error);
 					return callback(error);
 				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(error, results) {
 		if (!error && results) {
@@ -74,6 +83,7 @@ export function orderView(req, res) {
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
 				order: results.order,
+				unreadCounts: results.unreadCounts,
 				orderItemStatus: orderItemStatus,
 				marketPlace: marketplace
 			});

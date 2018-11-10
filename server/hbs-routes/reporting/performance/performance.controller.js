@@ -12,6 +12,7 @@ const orderStatus = require('../../../config/order_status');
 const async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
 const ReportService = require('../../../utilities/reports');
+const notifictionService = require('../../../api/notification/notification.service');
 
 export function performance(req, res) {
 	var offset, limit, field, order;
@@ -115,8 +116,15 @@ export function performance(req, res) {
 					console.log('performance err', err);
 					return callback(err);
 				});
+			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(LoggedInUser.id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
 			}
-
 		},
 		function(err, results) {
 			var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
@@ -128,6 +136,7 @@ export function performance(req, res) {
 					marketPlace: marketplace,
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
+					unreadCounts: results.unreadCounts,
 					bottomCategory: bottomCategory,
 					queryURI: queryURI,
 					selectedPage: 'performance',

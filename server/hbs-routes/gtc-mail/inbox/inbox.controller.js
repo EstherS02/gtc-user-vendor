@@ -9,6 +9,7 @@ const vendorPlan = require('../../../config/gtc-plan');
 const mailStatus = require('../../../config/mail-status');
 const cartService = require('../../../api/cart/cart.service');
 const marketplace = require('../../../config/marketplace');
+const notifictionService = require('../../../api/notification/notification.service');
 
 export function inbox(req, res) {
 	var LoggedInUser = {},
@@ -113,6 +114,14 @@ export function inbox(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
+			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(LoggedInUser.id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
@@ -135,6 +144,7 @@ export function inbox(req, res) {
 					inboxMail: results.inboxMail.rows,
 					mailStatus: mailStatus,
 					collectionSize: results.inboxMail.count,
+					unreadCounts: results.unreadCounts,
 					page: page,
 					pageSize: limit,
 					maxSize: 5,

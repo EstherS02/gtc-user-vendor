@@ -9,6 +9,7 @@ const vendorPlan = require('../../config/gtc-plan');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
 const populate = require('../../utilities/populate');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function subscriptions(req, res) {
 
@@ -96,6 +97,14 @@ export function subscriptions(req, res) {
 				}).catch(function(error) {
 					return callback(error);
 				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(error, results) {
 		if (!error) {
@@ -113,6 +122,7 @@ export function subscriptions(req, res) {
 				categories: results.categories,
 				subscriptions: results.subscriptions.rows,
 				collectionSize: results.subscriptions.count,
+				unreadCounts: results.unreadCounts,
 				selectedPage: 'subscription',
 				statusCode: statusCode,
 				vendorPlan: vendorPlan,

@@ -9,6 +9,7 @@ const cartService = require('../../api/cart/cart.service');
 const async = require('async');
 const verificationStatus = require('../../config/verification_status');
 const vendorPlan = require('../../config/gtc-plan');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function verification(req, res) {
 	var LoggedInUser = {};
@@ -73,6 +74,14 @@ export function verification(req, res) {
 						return callback(null);
 					});
 
+			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(user_id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
@@ -86,6 +95,7 @@ export function verification(req, res) {
 					bottomCategory: bottomCategory,
 					verificationStatus: verificationStatus,
 					cart: results.cartInfo,
+					unreadCounts: results.unreadCounts,
 					marketPlace: marketplace,
 					vendorPlan: vendorPlan,
 					selectedPage: 'gtc-verification',

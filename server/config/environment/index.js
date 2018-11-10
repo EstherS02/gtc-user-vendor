@@ -115,7 +115,6 @@ var all = {
 		"orderEmail": "order-email",
 		"orderItemPayout": "order-item-payout",
 		"couponExpiry": "couponExpiry",
-		"vendorPayouts": "vendorPayouts",
 		"aliExpressScrape": "aliexpress-scrape",
 		"ebayInventory": "ebay-inventory",
 		"amazonImportJob": "amazonImportJob",
@@ -126,7 +125,7 @@ var all = {
 		"bulkUserPlanRenewal": "bulkUserPlanRenewal",
 		"subscriptionAutoRenewal": "subscriptionAutoRenewal",
 		"featureProductAutoRenewal": "featureProductAutoRenewal",
-		"vendorPayoutsNew": "vendor-payouts-new",
+		"vendorPayouts": "vendor-payouts",
 		"orderNotification": "order-notification"
 	},
 	fee: {

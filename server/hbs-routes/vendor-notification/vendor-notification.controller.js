@@ -9,6 +9,7 @@ const vendorPlan = require('../../config/gtc-plan');
 const mailStatus = require('../../config/mail-status');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function notificationSettings(req, res) {
 	var LoggedInUser = {};
@@ -84,7 +85,16 @@ export function notificationSettings(req, res) {
 						return callback(null);
 					});
 
+			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(user_id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
 			}
+
 		}, function(err, results) {
 			if (!err) {
 				res.render('vendorNav/notifications-settings', {
@@ -95,11 +105,12 @@ export function notificationSettings(req, res) {
 					categories: results.categories,
 					bottomCategory: bottomCategory,
 					cart: results.cartInfo,
+					unreadCounts: results.unreadCounts,
 					marketPlace: marketplace,
 					LoggedInUser: LoggedInUser,
 					selectedPage: 'notifications_settings',
 					vendorPlan: vendorPlan,
-					statusCode:statusCode
+					statusCode: statusCode
 				});
 			} else {
 				res.render('notifications', err);
@@ -206,6 +217,14 @@ export function notifications(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
+			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(user_id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
@@ -220,6 +239,7 @@ export function notifications(req, res) {
 					cart: results.cartInfo,
 					marketPlace: marketplace,
 					inboxMail: results.inboxMail.rows,
+					unreadCounts: results.unreadCounts,
 					mailStatus: mailStatus,
 					collectionSize: results.inboxMail.count,
 					page: page,

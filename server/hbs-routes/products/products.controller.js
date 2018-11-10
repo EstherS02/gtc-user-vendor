@@ -7,6 +7,7 @@ const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const productService = require('../../api/product/product.service');
+const notifictionService = require('../../api/notification/notification.service');
 const async = require('async');
 
 export function products(req, res) {
@@ -135,6 +136,14 @@ export function products(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(err, results) {
 		if (!err) {
@@ -152,6 +161,7 @@ export function products(req, res) {
 				cart: results.cartInfo,
 				marketPlace: marketplace,
 				depart: results.depart,
+				unreadCounts: results.unreadCounts,
 				LoggedInUser: LoggedInUser
 			});
 		} else {

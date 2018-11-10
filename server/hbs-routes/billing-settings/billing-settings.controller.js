@@ -9,6 +9,7 @@ const service = require('../../api/service');
 const cartService = require('../../api/cart/cart.service');
 const vendorPlan = require('../../config/gtc-plan');
 const addressCode = require('../../config/address');
+const notifictionService = require('../../api/notification/notification.service');
 
 var openIdConnect = paypal.openIdConnect;
 
@@ -109,6 +110,14 @@ export function billingSettings(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(err, results) {
 		if (!err) {
@@ -118,6 +127,7 @@ export function billingSettings(req, res) {
 				categories: results.categories,
 				billingAddress: results.billingAddress,
 				cards: results.cards,
+				unreadCounts: results.unreadCounts,
 				bottomCategory: bottomCategory,
 				cart: results.cartInfo,
 				marketPlace: marketplace,

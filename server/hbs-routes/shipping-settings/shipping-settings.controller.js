@@ -8,6 +8,7 @@ const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function shippingSettings(req, res) {
 	var LoggedInUser = {};
@@ -90,6 +91,14 @@ export function shippingSettings(req, res) {
 						return callback(null);
 					});
 
+			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(user_id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
@@ -104,6 +113,7 @@ export function shippingSettings(req, res) {
 					cart: results.cartInfo,
 					marketPlace: marketplace,
 					vendorCountry: results.vendorCountries,
+					unreadCounts: results.unreadCounts,
 					selectedPage: "shipping-settings",
 					vendorPlan: vendorPlan,
 					statusCode: statusCode
