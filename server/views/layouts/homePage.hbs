@@ -5,58 +5,48 @@
 
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	$(document).ready(function() {
-		$('#Geolocatesearch').prop('disabled', true);
-		$("a[title='seller']").click(function() {
-			if (userInfo.email) { } else {
-				$('#myModal').modal('show');
-			}
+		$(document).ready(function() {
+			$('#Geolocatesearch').prop('disabled', true);
+			$("a[title='seller']").click(function() {
+				if (userInfo.email) { } else {
+					$('#myModal').modal('show');
+				}
+			});
+			$('#origin, #origin').keyup(function() {
+				if ($('#origin').val() != '' && $('#origin').val() != '') {
+					$('#Geolocatesearch').prop('disabled', false);
+				} else {
+					$('#Geolocatesearch').prop('disabled', true);
+				}
+			});
+			$('#keyword, #keyword').keyup(function() {
+				if ($('#keyword').val() != '' && $('#keyword').val() != '') {
+					$('#Geolocatesearch').prop('disabled', false);
+				} else {
+					$('#Geolocatesearch').prop('disabled', true);
+				}
+			});
+			$('#selected_category_id, #selected_category_id').keyup(function() {
+				if ($('#selected_category_id').val() != '' && $('#selected_category_id').val() != '') {
+					$('#Geolocatesearch').prop('disabled', false);
+				} else {
+					$('#Geolocatesearch').prop('disabled', true);
+				}
+			});
+			$("#selected_category_id").on('change', function() {
+				if ($('#selected_category_id').val() != '' && $('#selected_category_id').val() != '') {
+					$('#Geolocatesearch').prop('disabled', false);
+				} else {
+					$('#Geolocatesearch').prop('disabled', true);
+				}
+			});
 		});
-	 	$('#origin, #origin').keyup(function() {
+		function geoformlocation() {
+			if (($('#selected_category_id').val()) != '' || ($('#origin').val() != '') || ($('#keyword').val() != '')) {
+				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&origin=' + $('#origin').val() + '&keyword=' + $('#keyword').val();
+			}
 
-		if ($('#origin').val() != '' && $('#origin').val() != '') {
-			$('#Geolocatesearch').prop('disabled', false);
-		} else {
-			$('#Geolocatesearch').prop('disabled', true);
 		}
-	});
-		 	$('#keyword, #keyword').keyup(function() {
-
-		if ($('#keyword').val() != '' && $('#keyword').val() != '') {
-			$('#Geolocatesearch').prop('disabled', false);
-		} else {
-			$('#Geolocatesearch').prop('disabled', true);
-		}
-	});
-		 	$('#selected_category_id, #selected_category_id').keyup(function() {
-
-		if ($('#selected_category_id').val() != '' && $('#selected_category_id').val() != '') {
-			$('#Geolocatesearch').prop('disabled', false);
-		} else {
-			$('#Geolocatesearch').prop('disabled', true);
-		}
-	});
-		 	
-				  $("#selected_category_id").on('change',function(){
-
-		if ($('#selected_category_id').val() != '' && $('#selected_category_id').val() != '') {
-			$('#Geolocatesearch').prop('disabled', false);
-		} else {
-			$('#Geolocatesearch').prop('disabled', true);
-		}
-	});
-		
-	
-	});
-	function geoformlocation()
-	{
-		if(($('#selected_category_id').val())!='' || ($('#origin').val()!='') || ($('#keyword').val()!=''))
-		{
-        
-		window.location.href = 'geo-locate/search?selected_category_id='+$('#selected_category_id').val()+'&origin='+$('#origin').val()+'&keyword='+$('#keyword').val();
-		}
-	
-	}
 
 </script>
 
