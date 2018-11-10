@@ -9,6 +9,7 @@ const service = require('../../api/service');
 const vendorPlan = require('../../config/gtc-plan');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
+const querystring = require('querystring');
 
 export function coupons(req, res) {
 	var LoggedInUser = {}, queryPaginationObj = {}, queryURI = {}, queryObj = {}, bottomCategory = {};
@@ -126,7 +127,7 @@ export function coupons(req, res) {
 				queryPaginationObj['maxSize'] = maxSize;
 				res.render('vendorNav/coupons/view-coupons', {
 					title: "Global Trade Connect",
-					Coupons: results.Coupons.rows,
+					Coupons: results.Coupons,
 					count: results.Coupons.count,
 					statusCode: status,
 					discountType: discountType,
@@ -138,6 +139,7 @@ export function coupons(req, res) {
 					selectedPage: 'coupons',
 					maxSize: maxSize,
 					queryURI: queryURI,
+					queryParamsString: querystring.stringify(queryURI),
 					pageSize: limit,
 					collectionSize: results.count,
 					queryPaginationObj: queryPaginationObj,
