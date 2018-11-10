@@ -71,6 +71,10 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 					'$gte': moment().format('YYYY-MM-DD')
 				}
 			}
+		},
+		{
+			model:model['User'],
+			attributes:['id','first_name']
 		}],
 		attributes: vendorAttributes,
 		where: {
@@ -161,7 +165,7 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 			include: includeArray,
 			where: queryObj,
 			subQuery: false,
-			attributes: ['id', 'sku', 'product_name', 'product_slug', 'description', 'quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', [sequelize.literal('(SUM(Reviews.rating) / COUNT(Reviews.user_id))'), 'product_rating']],
+			attributes: ['id', 'sku', 'product_name', 'product_slug', 'description', 'quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', 'publish_date', [sequelize.literal('(SUM(Reviews.rating) / COUNT(Reviews.user_id))'), 'product_rating']],
 			offset: offset,
 			limit: limit,
 			order: orderCondition,

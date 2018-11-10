@@ -266,7 +266,7 @@ export async function create(req, res) {
 }
 
 export async function edit(req, res) {
-	
+
 	var productID = req.params.id;
 	var bodyParams = {};
 	var productMediaPromises = [];
@@ -1274,4 +1274,26 @@ export function planActiveVendors(req, res){
 		console.log("Error::",error);
 		return res.status(500).send(error);
 	})
+}
+
+export function activeVendorProducts(req,res){
+	var queryObj = {};
+	var offset,limit, field, order;
+
+	offset = req.query.offset ? parseInt(req.query.offset) : null;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : null;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
+
+	productService.queryAllProducts(req.user.id, queryObj, offset, limit, field, order)
+		.then(function(products) {
+			return res.status(200).send(products);
+		}).catch(function(error) {
+			console.log('Error :::', error);
+			return res.status(500).send(error);
+		});
 }

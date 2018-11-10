@@ -20,7 +20,6 @@ export function viewListings(req, res) {
 		queryURI = {},
 		queryPaginationObj = {};
 
-	var productModel = "MarketplaceProduct";
 	var categoryModel = "Category";
 	field = "id";
 	order = "asc";
