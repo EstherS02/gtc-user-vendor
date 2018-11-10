@@ -103,11 +103,11 @@ var all = {
 			orderItemCancelled: 'ORDER_CANCELLED',
 			orderStatus: 'ORDER_STATUS',
 			refundRequest: 'REFUND_REQUEST',
-			refundProcessing: 'REFUND-PROCESSING',
-			refundSuccessful: 'REFUND-SUCCESSFUL',
-			productReview: 'PRODUCT-REVIEW',
-			likesComments: 'LIKE-AND-COMMENT',
-			newPostFromBuyerOnYourDB: 'BUYER-POST-ON-DESCUSSION-BOARD'
+			refundProcessing: 'REFUND_PROCESSING',
+			refundSuccessful: 'REFUND_SUCCESSFUL',
+			productReview: 'PRODUCT_REVIEW',
+			newPostFromBuyerOnYourDB: 'BUYER_POST_ON_DESCUSSION_BOARD',
+			likesComments: 'LIKE_AND_COMMENT'
 		}
 	},
 	jobs: {

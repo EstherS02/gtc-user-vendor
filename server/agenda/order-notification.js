@@ -11,18 +11,21 @@ const oredrItemStatus = require('../config/order-item-new-status');
 
 module.exports = async function(job, done) {
 	const code = job.attrs.data.code;
+	const orderModelName = "Order";
+	const productModelName = "Product";
+	const orderVendorModelName = "OrderVendor";
+	const orderItemModelName = "OrderItem";
+	const vendorNotificationSettingsModelName = "VendorNotificationSetting";
+	const vendorNotificationModelName = "VendorNotification";
+	const notificationSettingModelName = "NotificationSetting";
+	const notificationModelName = "Notification";
+	const reviewModelName = "Review";
+	const discussionBoardPostModelName = "DiscussionBoardPost";
+	const discussionBoardPostCommentModelName = "DiscussionBoardPostComment";
+	const discussionBoardPostLikeModelName = "DiscussionBoardPostLike";
 	try {
 		if (code == config.notification.templates.vendorNewOrder) {
 			const orderId = job.attrs.data.order;
-			const orderModelName = "Order";
-			const productModelName = "Product";
-			const orderVendorModelName = "OrderVendor";
-			const orderItemModelName = "OrderItem";
-			const vendorNotificationSettingsModelName = "VendorNotificationSetting";
-			const vendorNotificationModelName = "VendorNotification";
-			const notificationSettingModelName = "NotificationSetting";
-			const notificationModelName = "Notification";
-
 			const VendorNotificationResponse = await service.findRow(vendorNotificationModelName, {
 				code: code
 			});
@@ -66,10 +69,6 @@ module.exports = async function(job, done) {
 
 		if (code == config.notification.templates.orderDetail) {
 			const orderId = job.attrs.data.order;
-			const orderModelName = "Order";
-			const notificationSettingModelName = "NotificationSetting";
-			const notificationModelName = "Notification";
-
 			const orderResponse = await model[orderModelName].findOne({
 				where: {
 					id: orderId,
@@ -104,11 +103,6 @@ module.exports = async function(job, done) {
 
 		if (code == config.notification.templates.orderItemCancelled) {
 			const itemId = job.attrs.data.itemId;
-			const orderItemModelName = "OrderItem";
-			const vendorNotificationModelName = "VendorNotification";
-			const notificationSettingModelName = "NotificationSetting";
-			const notificationModelName = "Notification";
-			const vendorNotificationSettingsModelName = "VendorNotificationSetting";
 			const orderItemResponse = await model[orderItemModelName].findOne({
 				where: {
 					id: itemId,
@@ -235,11 +229,6 @@ module.exports = async function(job, done) {
 
 		if (code == config.notification.templates.orderStatus) {
 			const itemId = job.attrs.data.itemId;
-			const orderItemModelName = "OrderItem";
-			const vendorNotificationModelName = "VendorNotification";
-			const notificationSettingModelName = "NotificationSetting";
-			const notificationModelName = "Notification";
-			const vendorNotificationSettingsModelName = "VendorNotificationSetting";
 			const orderItemResponse = await model[orderItemModelName].findOne({
 				where: {
 					id: itemId,
@@ -284,12 +273,9 @@ module.exports = async function(job, done) {
 			}
 		}
 
-		if (code == config.notification.templates.refundRequest) {
+		if (code == config.notification.templates.refundRequest || code == config.notification.templates.refundProcessing
+			|| code == config.notification.templates.refundSuccessful) {
 			const itemId = job.attrs.data.itemId;
-			const orderItemModelName = "OrderItem";
-			const notificationSettingModelName = "NotificationSetting";
-			const notificationModelName = "Notification";
-
 			const orderItemResponse = await model[orderItemModelName].findOne({
 				where: {
 					id: itemId,
@@ -321,6 +307,148 @@ module.exports = async function(job, done) {
 					bodyParams.description = bodyParams.description.replace('%track%', '/order-history/' + orderItem.order_id + '/track-order-item/' + orderItem.id);
 					bodyParams.description = bodyParams.description.replace('%order%', orderItem.order_id);
 					bodyParams.description = bodyParams.description.replace('%#vendor_url%', '/vendor/' + orderItem.Product.vendor_id);
+					bodyParams.name = notificationSettingResponse.name;
+					bodyParams.code = notificationSettingResponse.code;
+					bodyParams.is_read = 1;
+					bodyParams.status = 1;
+					bodyParams.created_on = new Date();
+					bodyParams.created_by = "Administrator";
+					const notificationResponse = await service.createRow(notificationModelName, bodyParams);
+				}
+			}
+		}
+
+		if (code == config.notification.templates.productReview) {
+			const reviewId = job.attrs.data.reviewId;
+			const reviewResponse = await model[reviewModelName].findOne({
+				where: {
+					id: reviewId,
+				},
+				attributes: ['id', 'product_id', 'user_id', 'status'],
+				include: [{
+					model: model['Product'],
+					attributes: ['id', 'vendor_id', 'product_slug', 'product_name'],
+					include: [{
+						model: model['Vendor'],
+						attributes: ['id', 'user_id'],
+						include: [{
+							model: model['User'],
+							attributes: ['first_name', 'id']
+						}]
+					}]
+				}]
+			});
+
+			const review = await JSON.parse(JSON.stringify(reviewResponse));
+			if(review) {
+				const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
+					code: code
+				});
+				if (notificationSettingResponse) {
+					var bodyParams = {};
+					bodyParams.user_id = review.Product.Vendor.user_id;
+					bodyParams.description = notificationSettingResponse.description;
+					bodyParams.description = bodyParams.description.replace('%VendorFirstname%', review.Product.Vendor.User.first_name);
+					bodyParams.description = bodyParams.description.replace('%productName%', review.Product.product_name);
+					bodyParams.description = bodyParams.description.replace('%path%', '/shop/' + review.Product.product_slug + '/' + review.product_id);
+					bodyParams.description = bodyParams.description.replace('%#path%', '/shop/' + review.Product.product_slug + '/' + review.product_id +'/reviews');
+					bodyParams.name = notificationSettingResponse.name;
+					bodyParams.code = notificationSettingResponse.code;
+					bodyParams.is_read = 1;
+					bodyParams.status = 1;
+					bodyParams.created_on = new Date();
+					bodyParams.created_by = "Administrator";
+					const notificationResponse = await service.createRow(notificationModelName, bodyParams);
+				}
+			}
+		}
+
+		if (code == config.notification.templates.newPostFromBuyerOnYourDB) {
+			const discussionBoardPostId = job.attrs.data.discussionId;
+			const discussionBoardPostResponse = await model[discussionBoardPostModelName].findOne({
+				where: {
+					id: discussionBoardPostId,
+				},
+				attributes: ['id', 'vendor_id', 'user_id', 'status'],
+				include: [{
+					model: model['Vendor'],
+					attributes: ['id', 'user_id'],
+					include: [{
+						model: model['User'],
+						attributes: ['first_name', 'id']
+					}]
+				}, {
+					model: model['User'],
+					attributes: ['first_name', 'id']
+				}]
+			});
+
+			const discussion = await JSON.parse(JSON.stringify(discussionBoardPostResponse));
+			if (discussion) {
+				const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
+					code: code
+				});
+				if (notificationSettingResponse) {
+					var bodyParams = {};
+					bodyParams.user_id = discussion.Vendor.user_id;
+					bodyParams.description = notificationSettingResponse.description;
+					bodyParams.description = bodyParams.description.replace('%VendorFirstname%', discussion.Vendor.User.first_name);
+					bodyParams.description = bodyParams.description.replace('%User%', discussion.User.first_name);
+					bodyParams.description = bodyParams.description.replace('%postId%', '/vendor/discussion-board/' + discussion.id);
+					bodyParams.name = notificationSettingResponse.name;
+					bodyParams.code = notificationSettingResponse.code;
+					bodyParams.is_read = 1;
+					bodyParams.status = 1;
+					bodyParams.created_on = new Date();
+					bodyParams.created_by = "Administrator";
+					const notificationResponse = await service.createRow(notificationModelName, bodyParams);
+				}
+			}
+		}
+
+		if (code == config.notification.templates.likesComments) {
+			var modelName, id;
+			if (job.attrs.data.discussionCommentId) {
+				modelName = discussionBoardPostCommentModelName;
+				id = job.attrs.data.discussionCommentId;
+			} else {
+				modelName = discussionBoardPostLikeModelName;
+				id = job.attrs.data.discussionLikeId;
+			}
+			const discussionBoardCommentAndLikeRes = await model[discussionBoardPostCommentModelName].findOne({
+				where: {
+					id: job.attrs.data.discussionCommentId
+				},
+				attributes: ['id', 'discussion_board_post_id', 'user_id', 'status'],
+				include: [{
+					model: model['DiscussionBoardPost'],
+					attributes: ['id', 'vendor_id', 'user_id', 'status'],
+					include: [{
+						model: model['Vendor'],
+						attributes: ['id', 'user_id'],
+						include: [{
+							model: model['User'],
+							attributes: ['first_name', 'id']
+						}]
+					}]
+				}, {
+					model: model['User'],
+					attributes: ['first_name', 'id']
+				}]
+			});
+
+			const discussionBoardCommentAndLike = await JSON.parse(JSON.stringify(discussionBoardCommentAndLikeRes));
+			if (discussionBoardCommentAndLike) {
+				const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
+					code: code
+				});
+				if (notificationSettingResponse) {
+					var bodyParams = {};
+					bodyParams.user_id = discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.user_id;
+					bodyParams.description = notificationSettingResponse.description;
+					bodyParams.description = bodyParams.description.replace('%VendorFirstname%', discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.User.first_name);
+					bodyParams.description = bodyParams.description.replace('%User%', discussionBoardCommentAndLike.User.first_name);
+					bodyParams.description = bodyParams.description.replace('%postId%', '/vendor/discussion-board/' + discussionBoardCommentAndLike.discussion_board_post_id);
 					bodyParams.name = notificationSettingResponse.name;
 					bodyParams.code = notificationSettingResponse.code;
 					bodyParams.is_read = 1;

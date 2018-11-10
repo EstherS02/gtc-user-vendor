@@ -9,6 +9,7 @@ const status = require('../../config/status');
 const service = require('../service');
 
 export function blogLike(req, res) {
+	const agenda = require('../../app').get('agenda');
 	var discussion_board_post_id = req.body.id;
 	var type = 'Unlike';
 	var newStatus;
@@ -24,20 +25,23 @@ export function blogLike(req, res) {
 	bodyParam.discussion_board_post_id = req.body.id;
 	bodyParam.status = 1;
 
-	service.findOneRow(modelName,queryObj,[]).then(function(result) {
+	service.findOneRow(modelName, queryObj, []).then(function(result) {
 		if (result) {
 			if (result.status == status['ACTIVE']) {
 				newStatus = 0;
 				type = 'Like';
 			} else {
-				notification(req,null);
 				newStatus = 1;
 				type = 'Unlike';
 			}
 			bodyParam.last_updated_on = new Date();
-			bodyParam.status= newStatus;
-			service.updateRow(modelName,bodyParam,result.id)
+			bodyParam.status = newStatus;
+			service.updateRow(modelName, bodyParam, result.id)
 				.then(function(response) {
+					agenda.now(config.jobs.orderNotification, {
+						discussionLikeId: response.id,
+						code: config.notification.templates.likesComments
+					});
 					LikeCount(req, res, function(err, obj) {
 						if (err) {
 							return res.status(500).json({
@@ -56,8 +60,11 @@ export function blogLike(req, res) {
 		} else {
 			bodyParam.created_on = new Date();
 			service.createRow(modelName, bodyParam).then(function(response) {
-				discussion_board_post_id= response.discussion_board_post_id;
-				notification(req,null);
+				discussion_board_post_id = response.discussion_board_post_id;
+				agenda.now(config.jobs.orderNotification, {
+					discussionLikeId: response.id,
+					code: config.notification.templates.likesComments
+				});
 				LikeCount(req, res, function(err, obj) {
 					if (err) {
 						return res.status(500).json({
@@ -79,62 +86,12 @@ export function blogLike(req, res) {
 
 }
 
-function notification (req,postId){
-
-	var modelName = "DiscussionBoardPost";
-	var TemplateModel = 'NotificationSetting';
-	var queryObj={};
-	var includeArr = [{
-		model:model['Vendor'],
-		include:[{
-			model:model['User'],
-			attributes:['id','first_name','last_name']
-		}]
-	}];
-	var post_id=0;
-	if(req.body.discussion_board_post_id){
-		post_id = req.body.discussion_board_post_id;postId;
-		queryObj['code'] = config.notification.templates.likesComments;
-	}else{
-		post_id = postId;
-		queryObj['code'] = config.notification.templates.newPostFromBuyerOnYourDB;
-	}
-
-	service.findIdRow(modelName,post_id,includeArr).then(function(response1){
-		if(response1){
-			service.findOneRow(TemplateModel, queryObj)
-			.then(function(response) {
-			var bodyParams = {};
-			bodyParams.user_id = response1.Vendor.User.id;
-			var description = response.description;
-			description = description.replace('%VendorFirstname%',response1.Vendor.User.first_name);
-			description = description.replace('%PostId%', '/vendor/discussion-board/' +response1.Vendor.id);
-			description = description.replace('%VendorLastName%',response1.Vendor.User.last_name); 
-			description = description.replace('%User%',req.user.first_name); 
-			bodyParams.description = description;
-			bodyParams.name = response.name;
-			bodyParams.code = response.code;
-			bodyParams.is_read = 1;
-			bodyParams.status = 1;
-			bodyParams.created_on = new Date();
-			service.createRow("Notification", bodyParams).then(function(response){
-				return;
-			});
-		});
-			return;
-		}
-		else{
-			return;
-		}
-	})
-}
 function LikeCount(req, res, callback) {
 	var modelName = req.body.modelName;
 	var queryObj = {
 		discussion_board_post_id: req.body.discussion_board_post_id,
 		status: status['ACTIVE']
 	};
-
 
 	model[modelName].findAndCountAll({
 		where: queryObj,
@@ -153,6 +110,7 @@ function LikeCount(req, res, callback) {
 }
 
 export function blogComment(req, res) {
+	const agenda = require('../../app').get('agenda');
 	var modelName = "DiscussionBoardPostComment";
 	req.body.modelName = "DiscussionBoardPostComment";
 	var bodyParam = {};
@@ -164,7 +122,10 @@ export function blogComment(req, res) {
 	bodyParam.status = 1;
 	bodyParam.created_on = new Date();
 	service.createRow(modelName, bodyParam).then(function(response) {
-		notification(req,null);
+		agenda.now(config.jobs.orderNotification, {
+			discussionCommentId: response.id,
+			code: config.notification.templates.likesComments
+		});
 		LikeCount(req, res, function(err, obj) {
 			if (err) {
 				return res.status(500).json({
@@ -182,6 +143,7 @@ export function blogComment(req, res) {
 export function blogPost(req, res) {
 	var modelName = "DiscussionBoardPost";
 	var bodyParam = {};
+	const agenda = require('../../app').get('agenda');
 	bodyParam.vendor_id = req.body.vendor_id;
 	bodyParam.user_id = req.body.user_id;
 	bodyParam.post_media_type = req.body.post_media_type;
@@ -190,10 +152,15 @@ export function blogPost(req, res) {
 	bodyParam.status = 1;
 	bodyParam.created_on = new Date();
 	service.createRow(modelName, bodyParam).then(function(response) {
-		if(req.body.vendor_id != req.user.Vendor.id){
-			notification(req,response.id);
+		if (req.body.vendor_id != req.user.Vendor.id) {
+			agenda.now(config.jobs.orderNotification, {
+				discussionId: response.id,
+				code: config.notification.templates.newPostFromBuyerOnYourDB
+			});
+			return res.status(200).send(response);
+		} else {
+			return res.status(200).send(response);
 		}
-		return res.status(200).send(response);
 	});
 }
 export function upsert(req, res) {
