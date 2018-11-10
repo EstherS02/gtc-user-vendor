@@ -386,6 +386,165 @@ export async function TopSellingProducts(offset, limit, marketplace) {
 		return error;
 	}
 }
+export async function OnSale(modelName, queryObj, limit) {
+	var results = {};
+	var orderCondition=[];
+	orderCondition.push(sequelize.fn('RAND'));
+
+	results['count'] = 0;
+	results['rows'] = [];
+	queryObj['status'] = status['ACTIVE'];
+
+	var includeArray = [{
+		model: model['Vendor'],
+		include: [{
+			model: model['VendorPlan'],
+			attributes: [],
+			where: {
+				status: status['ACTIVE'],
+				start_date: {
+					'$lte': moment().format('YYYY-MM-DD')
+				},
+				end_date: {
+					'$gte': moment().format('YYYY-MM-DD')
+				}
+			}
+		}],
+		attributes: ['id'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['ProductMedia'],
+		where: {
+			status: status['ACTIVE'],
+			base_image: 1
+		},
+		attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
+		required: false
+	}];
+
+	try {
+		const productResponse = await model['Product'].findAll({
+			include: includeArray,
+			attributes: ['id', 'product_name', 'product_slug', 'quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', 'publish_date'],
+			where: queryObj,
+			offset: 0,
+			limit: limit,
+			order: orderCondition,
+		});
+		const products = await JSON.parse(JSON.stringify(productResponse));
+		if (products.length > 0) {
+			await Promise.all(products.map(async (product) => {
+				const currentDate = new Date();
+				const exclusiveStartDate = new Date(product.exclusive_start_date);
+				const exclusiveEndDate = new Date(product.exclusive_end_date);
+				if (product.exclusive_sale && (exclusiveStartDate <= currentDate && exclusiveEndDate >= currentDate)) {
+					product['discount'] = ((product.price / 100) * product.exclusive_offer).toFixed(2);
+					product['product_discounted_price'] = (parseFloat(product['price']) - product['discount']).toFixed(2);
+					results.rows.push(product);
+
+				} else {
+					delete product.exclusive_start_date;
+					delete product.exclusive_end_date;
+					// delete product.exclusive_offer;
+
+					results.rows.push(product);
+				}
+			}));
+			results.count = productResponse.count;
+			return results;
+		} else {
+			return results;
+		}
+	} catch (error) {
+		return error;
+	}
+	
+}
+export async function TopRated(modelName, queryObj, limit) {
+	var results = {};
+	var orderCondition=[];
+	orderCondition.push(sequelize.fn('RAND'));
+
+	results['count'] = 0;
+	results['rows'] = [];
+	queryObj['status'] = status['ACTIVE'];
+
+	var includeArray = [{
+		model: model['Vendor'],
+		include: [{
+			model: model['VendorPlan'],
+			attributes: [],
+			where: {
+				status: status['ACTIVE'],
+				start_date: {
+					'$lte': moment().format('YYYY-MM-DD')
+				},
+				end_date: {
+					'$gte': moment().format('YYYY-MM-DD')
+				}
+			}
+		}],
+		attributes: ['id'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['Review'],
+		where: {
+			status: status['ACTIVE']
+		},
+		required:false
+	}, {
+		model: model['ProductMedia'],
+		where: {
+			status: status['ACTIVE'],
+			base_image: 1
+		},
+		attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
+		required: false
+	}];
+
+	try {
+		const productResponse = await model['Product'].findAll({
+			include: includeArray,
+			attributes: ['id', 'product_name', 'product_slug', 'quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', 'publish_date'], //,[sequelize.literal('(SUM(Reviews.rating) / COUNT(Reviews.user_id))'), 'product_rating']
+			where: queryObj,
+			offset: 0,
+			limit: limit,
+			order: orderCondition,
+		});
+		const products = await JSON.parse(JSON.stringify(productResponse));
+		console.log(products)
+		if (products.length > 0) {
+			await Promise.all(products.map(async (product) => {
+				const currentDate = new Date();
+				const exclusiveStartDate = new Date(product.exclusive_start_date);
+				const exclusiveEndDate = new Date(product.exclusive_end_date);
+				if (product.exclusive_sale && (exclusiveStartDate <= currentDate && exclusiveEndDate >= currentDate)) {
+					product['discount'] = ((product.price / 100) * product.exclusive_offer).toFixed(2);
+					product['product_discounted_price'] = (parseFloat(product['price']) - product['discount']).toFixed(2);
+					results.rows.push(product);
+
+				} else {
+					delete product.exclusive_start_date;
+					delete product.exclusive_end_date;
+					// delete product.exclusive_offer;
+
+					results.rows.push(product);
+				}
+			}));
+			results.count = productResponse.count;
+			return results;
+		} else {
+			return results;
+		}
+	} catch (error) {
+		return error;
+	}
+	
+}
 
 export function productRatingsCount(productID) {
 	var productRating = [{
@@ -754,19 +913,4 @@ function string_to_slug(str) {
 		.replace(/-+/g, '-'); // collapse dashes
 
 	return str;
-}
-
-
-export function RandomProducts(modelName, queryObj, limit, order) {
-	return new Promise((resolve, reject) => {
-		model[modelName].findAndCountAll({
-			where: queryObj,
-			limit: limit,
-			order: order
-		}).then(function(rows) {
-			resolve(rows);
-		}).catch(function(error) {
-			reject(error);
-		});
-	});
 }
