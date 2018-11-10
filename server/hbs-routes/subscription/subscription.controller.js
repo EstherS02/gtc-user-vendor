@@ -122,13 +122,9 @@ export function subscriptions(req, res) {
 				LoggedInUser: LoggedInUser,
 				bottomCategory: bottomCategory,
 				categories: results.categories,
-<<<<<<< HEAD
-				subscriptions: results.subscriptions.rows,
 				collectionSize: results.subscriptions.count,
 				unreadCounts: results.unreadCounts,
-=======
 				subscriptions: results.subscriptions,
->>>>>>> ad3d3dec5b3fdac4d6956fda70213c8101462508
 				selectedPage: 'subscription',
 				statusCode: statusCode,
 				vendorPlan: vendorPlan,
