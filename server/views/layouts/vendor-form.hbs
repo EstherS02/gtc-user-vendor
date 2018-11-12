@@ -1,6 +1,10 @@
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0"></script> 
 <script type="text/javascript">
+
 	$(document).ready(function() {
+		initialize();
 		$("#gtc-form-alert").hide();
+		$('.hidden').hide();
 		var test;
 		var fileDetails = {};
 		var cropperOutputImage;
@@ -77,26 +81,36 @@
 		});
 
 		$("#vendorForm").submit(function(e) {
-			e.preventDefault();
-			let input = $("#vendorForm :input").filter(function(index, element) {
-				return $(element).val() != '';
-			}).serializeArray();
-
-			var formData = new FormData();
-
-			input.forEach(function(obj) {
-				formData.append(obj.name, obj.value);
-			});
-
-			if (vendor_cover_pic_obj != {}) {
-				formData.append('vendor_cover_picture', vendor_cover_pic_obj, vendor_cover_name);
-			}
-
-			if (vendor_profile_pic_obj != {}) {
-				formData.append('vendor_profile_picture', vendor_profile_pic_obj, vendor_profile_name);
-			}
-
+			e.preventDefault();	
 			if ($('#vendorForm').valid()) {
+
+				if ($('#latitude').val() == null || $('#latitude').val() == '') {  
+					$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+					$('#gtc-form-alert .form-message').text("Please locate your shop in the map.");
+					$("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
+						$("#gtc-form-alert").slideUp(500);
+					});
+					return;
+				}
+
+				let input = $("#vendorForm :input").filter(function(index, element){
+					return $(element).val() != '';
+				}).serializeArray();
+
+				var formData = new FormData();
+
+				input.forEach(function(obj) {
+					formData.append(obj.name, obj.value);
+				});
+
+				if (vendor_cover_pic_obj != {}) {
+					formData.append('vendor_cover_picture', vendor_cover_pic_obj, vendor_cover_name);
+				}
+
+				if (vendor_profile_pic_obj != {}) {
+					formData.append('vendor_profile_picture', vendor_profile_pic_obj, vendor_profile_name);
+				}
+				
 				$.ajax({
 					type: 'POST',
 					url: '/api/vendor/starter-seller',
@@ -130,7 +144,7 @@
 					$('#state').append(selectOptionProvince);
 					for (var i = 0; i < result.rows.length; i++) {
 						var options;
-						options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+						options = "<option data-statename="+result.rows[i].name+" value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
 						$("#state").append(options)
 					}
 				},
@@ -139,6 +153,16 @@
 				}
 			});
 		});
+
+		$('#state').change(function(){
+			var countryName, stateName, city, address;
+			countryName = $('option:selected', '#country').data('countryname');
+			stateName = $('option:selected', '#state').data('statename');
+
+			address = countryName+','+ stateName;
+
+			codeAddress(address);
+		})
 
 		$("#vendorForm").validate({
 			rules: {
@@ -161,173 +185,267 @@
 			}
 		});
 	});
-</script>
- {{> header/top-header LoggedInUser = LoggedInUser}}
+
+	var geocoder, map, mapOptions, marker, latitude, longitude;
+	function initialize() {
+		geocoder = new google.maps.Geocoder();
+		var latlng = new google.maps.LatLng(-34.397, 150.644);
+		mapOptions = {
+			zoom: 8,
+			center: latlng
+		}
+		map = new google.maps.Map(document.getElementById('map'), mapOptions);
+		google.maps.event.addListener(map, 'click', function( event ){
+			if (marker && marker.setMap) {
+    			marker.setMap(null);
+  			}
+
+			marker = new google.maps.Marker({position: event.latLng, map: map});
+			
+			tempLat = event.latLng.lat();
+			tempLong = event.latLng.lng();
+
+			latitude = toTrunc(tempLat,6);
+			longitude = toTrunc(tempLong,6);
+
+			$("#latitude").val(latitude);
+			$("#longitude").val(longitude);
+		});
+	}
+
+	function codeAddress(address) {
+		geocoder.geocode({ 'address': address }, function(results, status) {
+			if (status == 'OK') {
+				$('.hidden').show();
+				map.setCenter(results[0].geometry.location);
+			} else {
+				alert('Geocode was not successful for the following reason: ' + status);
+			}
+		});
+	}
+
+	function toTrunc(value,n){  
+   		return Math.floor(value*Math.pow(10,n))/(Math.pow(10,n));
+	}
+
+</script> 
+{{> header/top-header LoggedInUser = LoggedInUser}}
+
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="margin-right:35px">
-                <div class="container">
-                    <img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
-            </div>
-        </div>
-    </div>
+ aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" style="margin-right:35px">
+				<div class="container">
+					<img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+			</div>
+		</div>
+	</div>
 </div>
-<div class="wrapper-content bg-gray">
-    <div class="gtc-container">
-        <div class="row">
-            <div class="col-sm-2">
-                {{> vendor/vendor-side-navbar}}
-            </div>
-            <div class="col-sm-10">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        <div class="ibox-title">
-                            <h2>Become a Vendor</h2>
-                        </div>
-                        <div class="alert" id="gtc-form-alert">
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="content-body">
-                            <form id="vendorForm" class="form">
-                                <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="form-group">
-                                            <label class="label-control">Vendor Name <span class="text-danger">*</span></label>
-                                            <input type="text" name="vendor_name" class="form-control-customized form-control-sm" required="true" autofocus="true">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="form-group">
-                                            <label class="label-control">Address <span class="text-danger">*</span></label>
-                                            <input type="text" name="address" class="form-control-customized form-control-sm" required/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">Base Location <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="base_location" id="country" required>
-                                                    <option disabled selected>Select Location...</option>
-                                                    {{#each country}}
-                                                    <option value="{{this.id}}">{{ this.name}}</option>
-                                                    {{/each}}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">Province <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="province_id" id="state" required>
-                                                    <option disabled selected>Select Province...</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">City <span class="text-danger">*</span></label>
-                                            <input type="text" name="city" class="form-control-customized form-control-sm" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="label-control">Currency <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="currency_id" id="inputGroupSelect01" required>
-                                                    <option disabled selected>Select Currency...</option>
-                                                    {{#each currency}}
-                                                    <option value="{{this.id}}">{{ this.name}}</option>
-                                                    {{/each}}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="label-control">Timezone</label>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="timezone_id" id="inputGroupSelect02">
-                                                    <option disabled selected>Select Timezone...</option>
-                                                    {{#each timezone}}
-                                                    <option value="{{this.id}}">{{ this.timezone}}</option>
-                                                    {{/each}}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label class="label-control">About</label>
-                                            <textarea class="form-control-customized" name="about" rows="6"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="form-group">
-                                            <label class="label-control">Vendor Icon <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <div class="custom-file custom_error_message">
-                                                    <input type="file" class="custom-file-input" id="icon" name="vendorIcon" required>
-                                                    <label class="custom-file-label customized-file-label" for="icon">Choose file</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="icon"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="form-group">
-                                            <label class="label-control">Cover Picture</label>
-                                            <div class="input-group">
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="cover_pic">
-                                                    <label class="custom-file-label customized-file-label" for="cover_pic">Choose file</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="cov_pic"></div>
-                                    </div>
-                                </div><br/>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <button type="submit" class="btn btn-primary btn-sm">SUBMIT</button>
-                                        <button type="button" class="btn btn-gray btn-sm">CANCEL</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="wrapper-content bg-gray" >
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Become a Vendor</h2>
+						</div>
+						<div class="alert" id="gtc-form-alert">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="form-message"></span>
+						</div>
+						<div class="content-body">
+							<form id="vendorForm" class="form">
+								<div class="row">
+									<div class="col-lg-8">
+										<div class="form-group">
+											<label class="label-control">Vendor Name
+												<span class="text-danger">*</span>
+											</label>
+											<input type="text" name="vendor_name" class="form-control-customized form-control-sm" required="true" autofocus="true">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-8">
+										<div class="form-group">
+											<label class="label-control">Address
+												<span class="text-danger">*</span>
+											</label>
+											<input type="text" name="address" class="form-control-customized form-control-sm" required/>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">Base Location
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="base_location" id="country"
+												 required>
+													<option disabled selected>Select Location...</option>
+													{{#each country}}
+														<option  data-countryname="{{this.name}}" value="{{this.id}}">{{this.name}}</option>
+													{{/each}}
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">Province
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="province_id" id="state"
+												 required>
+													<option disabled selected>Select Province...</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">City
+												<span class="text-danger">*</span>
+											</label>
+											<input type="text" name="city" class="form-control-customized form-control-sm" required>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-6">
+										<div class="form-group">
+											<label class="label-control">Currency
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="currency_id" id="inputGroupSelect01"
+												 required>
+													<option disabled selected>Select Currency...</option>
+													{{#each currency}}
+														<option value="{{this.id}}">{{ this.name}}</option>
+													{{/each}}
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-6">
+										<div class="form-group">
+											<label class="label-control">Timezone</label>
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="timezone_id" id="inputGroupSelect02">
+													<option disabled selected>Select Timezone...</option>
+													{{#each timezone}}
+														<option value="{{this.id}}">{{ this.timezone}}</option>
+													{{/each}}
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="form-group">
+											<label class="label-control">About</label>
+											<textarea class="form-control-customized" name="about" rows="6"></textarea>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-8">
+										<div class="form-group">
+											<label class="label-control">Vendor Icon
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group">
+												<div class="custom-file custom_error_message">
+													<input type="file" class="custom-file-input" id="icon" name="vendorIcon" required>
+													<label class="custom-file-label customized-file-label" for="icon">Choose file</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-8">
+										<div class="form-group">
+											<div class="icon"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-8">
+										<div class="form-group">
+											<label class="label-control">Cover Picture</label>
+											<div class="input-group">
+												<div class="custom-file">
+													<input type="file" class="custom-file-input" id="cover_pic">
+													<label class="custom-file-label customized-file-label" for="cover_pic">Choose file</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-8">
+										<div class="form-group">
+											<div class="cov_pic"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row hidden">
+									<div class="col-lg-12">
+										<div class="form-group">
+											<label class="label-control">Please locate your shop in the map
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group">
+												<input type="text" id="latitude" name="latitude" hidden>
+												<input type="text" id="longitude" name="longitude" hidden>  
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row hidden">
+									<div class="col-lg-8">
+										<div class="form-group">
+											<div id="map" style="width: 500px; height: 400px;"></div>
+										</div>
+									</div>
+								</div>
+								<br/>
+								<div class="row">
+									<div class="col-lg-12">
+										<button type="submit" class="btn btn-primary btn-sm">SUBMIT</button>
+										<button type="button" class="btn btn-gray btn-sm">CANCEL</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 {{> footer/bottom-footer}}
