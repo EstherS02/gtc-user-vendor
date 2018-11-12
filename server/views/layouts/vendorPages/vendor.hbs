@@ -86,7 +86,7 @@
                                 {{#if quantity_available}}
                                 <p class="profile_logged_in_body2_font_para_1">Availability {{this.quantity_available}} Remaining</p>{{/if}}
                                 {{#ifCond this.product_discounted_price '>=' 1}}
-                                    {{#ifCond this.Marketplace.id '==' ../marketPlace.WHOLESALE}}
+                                    {{#ifCond this.marketplace_id '!=' ../marketPlace.WHOLESALE}}
                                 <p class="profile_logged_in_body2_font_para">SAVE {{currency this.product_discounted_price '$'}}
                                     <span class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</span>
                                 </p>
@@ -115,7 +115,7 @@
                                     <p class="profile_logged_in_body2_font_para_1">Availability {{this.quantity_available}} Remaining</p>
                                     {{/if}}
                                     {{#ifCond this.product_discounted_price '>=' 1}}
-                                    {{#ifCond this.Marketplace.id '==' ../marketPlace.WHOLESALE}}
+                                    {{#ifCond this.marketplace_id '!=' ../marketPlace.WHOLESALE}}
                                 <p class="profile_logged_in_body2_font_para">SAVE {{currency this.product_discounted_price '$'}}
                                     <span class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</span>
                                 </p>
