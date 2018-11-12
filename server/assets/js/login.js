@@ -141,6 +141,7 @@ $(document).ready(function() {
 	$('#loadingSpinnersignUp').hide();
 
 	$('#inputEmail, #inputPassword').keyup(function() {
+		$('#signUpErrorLog').html("");
 		if ($('#inputEmail').val() != '' && $('#inputPassword').val() != '' && $('#inputTerms').is(":checked")) {
 			$('#btnSignup').prop('disabled', false);
 			
@@ -149,7 +150,12 @@ $(document).ready(function() {
 			
 		}
 	});
+	$('#inputFirstname').keyup(function() {
+		$('#signUpErrorLog').html("");
+	});
+	
 	$('#inputTerms').change(function() {
+		$('#signUpErrorLog').html("");
 		if (this.checked == true) {
 			if ($('#inputEmail').val() != '' && $('#inputPassword').val() != '' && $('#inputTerms').is(":checked")) {
 				$('#btnSignup').prop('disabled', false);
