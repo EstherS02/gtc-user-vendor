@@ -48,7 +48,9 @@
 	function edit(e) {
 		var chkArray = [];
 		$(':checkbox:checked').each(function (i) {
-			chkArray.push($(this).val());
+			if ($(this).val() != 'on') {
+				chkArray.push($(this).val());
+			}			
 		});
 		
 		var product_id = chkArray.join(',');
@@ -59,8 +61,8 @@
 		else {
 			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
 			$('#gtc-cart-alert .cart-message').text('Select one product to edit')
-			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-			$("#gtc-cart-alert").slideUp(500);
+			$("#gtc-cart-alert").fadeTo(1000, 500).slideUp(500, function () {
+			$("#gtc-cart-alert").slideUp(200);
 			});
 		}
 	}

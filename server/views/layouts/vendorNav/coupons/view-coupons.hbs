@@ -91,8 +91,8 @@ var params = {{{ DisplayJSON queryParamsString }}};
       $('#gtc-coupon-alert').prop('disabled', false);
       $('#gtc-coupon-alert').removeClass('alert-success').addClass('alert-danger');
       $('#gtc-coupon-alert .coupon-message').text(data);
-      $("#gtc-coupon-alert").fadeTo(7000, 500).slideUp(500, function () {
-        $("#gtc-coupon-alert").slideUp(500);
+      $("#gtc-coupon-alert").fadeTo(1000, 500).slideUp(500, function () {
+        $("#gtc-coupon-alert").slideUp(200);
     });
   }
   $(document).ready(function(){

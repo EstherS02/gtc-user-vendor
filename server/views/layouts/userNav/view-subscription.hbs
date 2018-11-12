@@ -44,7 +44,9 @@
 	function editSubscription(e) {
 		var chkArray = [];
 		$(':checkbox:checked').each(function (i) {
-			chkArray.push($(this).val());
+			if ($(this).val() != 'on') {
+				chkArray.push($(this).val());
+			}			
 		});
 
 		var subscription_id = chkArray.join(',');
@@ -70,8 +72,8 @@
 		else {
 			$('#gtc-subscription-alert').removeClass('alert-danger').addClass('alert-success');
 			$('#gtc-subscription-alert .subscription-message').text('Select one subscription product to edit')
-			$("#gtc-subscription-alert").fadeTo(7000, 500).slideUp(500, function () {
-			$("#gtc-subscription-alert").slideUp(500);
+			$("#gtc-subscription-alert").fadeTo(1000, 500).slideUp(500, function () {
+			$("#gtc-subscription-alert").slideUp(100);
 			});
 		}
 	}
@@ -261,16 +263,16 @@
 										<div class="float-right">
 											<small class="font-weight-light">Entries per page : </small>
 											<small class="font-weight-light">
-												<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(`{{this.type}}`,10)" href="javascript:;">10</a>
+												<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
 											</small>
 											<small class="font-weight-light">
-												<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(`{{this.type}}`,25)" href="javascript:;">25</a>
+												<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
 											</small>
 											<small class="font-weight-light">
-												<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(`{{this.type}}`,100)" href="javascript:;">100</a>
+												<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
 											</small>
 											<small class="font-weight-light">
-												<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(`{{this.type}}`,10000000000000)" href="javascript:;">All</a>
+												<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
 											</small>
 										</div>
 									</div>
