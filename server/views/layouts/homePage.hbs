@@ -42,10 +42,35 @@
 			});
 		});
 		function geoformlocation() {
-			if (($('#selected_category_id').val()) != '' || ($('#origin').val() != '') || ($('#keyword').val() != '')) {
+			if ( $('#selected_category_id').val() != null && $('#origin').val() != '' && $('#keyword').val() != '') {
 				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&origin=' + $('#origin').val() + '&keyword=' + $('#keyword').val();
 			}
-
+			else if( $('#selected_category_id').val()!=null && $('#origin').val() != '')
+			{
+				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&origin=' + $('#origin').val() 
+			}
+			else if($('#origin').val()!='' && $('#keyword').val() != '')
+			{
+				window.location.href = 'geo-locate/search?origin=' + $('#origin').val() + '&keyword=' + $('#keyword').val() 
+			}
+			else if($('#selected_category_id').val()!= null && $('#keyword').val() != '')
+			{
+				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&keyword=' + $('#keyword').val() 
+			}
+			else if($('#selected_category_id').val()!= null)
+			{   
+				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val();
+			}
+			else if($('#origin').val() != '')
+			{
+				window.location.href = 'geo-locate/search?origin=' + $('#origin').val();
+			}
+			else if($('#keyword').val() != '')
+			{
+				window.location.href = 'geo-locate/search?keyword=' + $('#keyword').val();
+			}
+			
+            
 		}
 
 </script>
@@ -70,7 +95,7 @@
 									<div class="form-group m-b-sm">
 										<div class="select-container">
 											<select class="form-control-customized form-control-sm rounded" name="selected_category_id" id="selected_category_id">
-												<option disabled selected>Category</option>
+												<option disabled selected value=''>Category</option>
 												{{#each categories}}
 													<option value="{{this.id}}">{{ this.name}}</option>
 												{{/each}}
@@ -128,7 +153,7 @@
 										<h2 class="divider-line"><span>OR</span></h2>
 										<div class="col-md-6 signup-right">
 											<form id="signUpForm" class="form">
-												<small id="signUpErrorLog"></small>
+												<small id="signUpErrorLog" style="color:red"></small>
 												<div class="row">
 													<div class="col">
 														<div class="form-group m-b-sm">

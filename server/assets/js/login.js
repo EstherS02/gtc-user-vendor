@@ -141,18 +141,19 @@ $(document).ready(function() {
 	$('#loadingSpinnersignUp').hide();
 
 	$('#inputEmail, #inputPassword').keyup(function() {
-
 		if ($('#inputEmail').val() != '' && $('#inputPassword').val() != '' && $('#inputTerms').is(":checked")) {
 			$('#btnSignup').prop('disabled', false);
+			
 		} else {
 			$('#btnSignup').prop('disabled', true);
+			
 		}
 	});
 	$('#inputTerms').change(function() {
 		if (this.checked == true) {
 			if ($('#inputEmail').val() != '' && $('#inputPassword').val() != '' && $('#inputTerms').is(":checked")) {
 				$('#btnSignup').prop('disabled', false);
-			} else {
+							} else {
 				$('#btnSignup').prop('disabled', true);
 			}
 		} else {
@@ -200,10 +201,11 @@ $(document).ready(function() {
 				error: function(request, status, error) {
 					$('#loadingSpinnersignUp').hide();
 					$('#signUpErrorLog').html(request.responseText);
-					setTimeout(function() {
-						$('#signUpErrorLog').hide();
+                   
+					// setTimeout(function() {
+					 //	$('#signUpErrorLog').hide();
 
-					}, 3000);
+					 //}, 1000);
 				}
 			});
 		}
