@@ -69,7 +69,7 @@ export function create(req, res) {
 
 	var errors = req.validationErrors();
 	if (errors) {
-		res.status(400).send('Missing Query Params');
+		res.status(400).send('Oops, something was not right');
 		return;
 	}
 
