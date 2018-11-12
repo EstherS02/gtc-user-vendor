@@ -103,10 +103,10 @@
 				callFrom: loggedInUserDetails.id,
 				callTo: VendorDetail,
 				callerName: getUserName(loggedInUserDetails),
-				calleeName: VendorDetail
-			}
-			console.log("callObj.............",callObj);
-			socket.emit('call:preinit', callObj)
+				calleeName: getUserName(vendorObject.User),
+				location: window.location.href
+			};
+			socket.emit('call:preinit', callObj);
 		});
 
 		socket.on('user:online', function (users) {
@@ -416,9 +416,8 @@
 		left: 0px;
 		bottom: 0;
 	}
-
-	.
-	/*panel-footer {
+	
+	/*.panel-footer {
     padding: 10px 15px;
     background-color: #ccace0;
     border-top: 1px solid #ddd;

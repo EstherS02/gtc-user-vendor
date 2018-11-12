@@ -6,7 +6,8 @@
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 		$(document).ready(function() {
-			$('#Geolocatesearch').prop('disabled', true);
+		   document.getElementById("geoLocateForm").reset();
+		    $('#Geolocatesearch').prop('disabled', true);
 			$("a[title='seller']").click(function() {
 				if (userInfo.email) { } else {
 					$('#myModal').modal('show');
@@ -42,10 +43,35 @@
 			});
 		});
 		function geoformlocation() {
-			if (($('#selected_category_id').val()) != '' || ($('#origin').val() != '') || ($('#keyword').val() != '')) {
+			if ( $('#selected_category_id').val() != null && $('#origin').val() != '' && $('#keyword').val() != '') {
 				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&origin=' + $('#origin').val() + '&keyword=' + $('#keyword').val();
 			}
-
+			else if( $('#selected_category_id').val()!=null && $('#origin').val() != '')
+			{
+				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&origin=' + $('#origin').val() 
+			}
+			else if($('#origin').val()!='' && $('#keyword').val() != '')
+			{
+				window.location.href = 'geo-locate/search?origin=' + $('#origin').val() + '&keyword=' + $('#keyword').val() 
+			}
+			else if($('#selected_category_id').val()!= null && $('#keyword').val() != '')
+			{
+				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&keyword=' + $('#keyword').val() 
+			}
+			else if($('#selected_category_id').val()!= null)
+			{   
+				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val();
+			}
+			else if($('#origin').val() != '')
+			{
+				window.location.href = 'geo-locate/search?origin=' + $('#origin').val();
+			}
+			else if($('#keyword').val() != '')
+			{
+				window.location.href = 'geo-locate/search?keyword=' + $('#keyword').val();
+			}
+			
+          
 		}
 
 </script>
@@ -64,13 +90,13 @@
 								<h1 class="text-marketplace-1">GIVE IT A TRY!:</h1>
 								<form id="geoLocateForm" class="geo-locate-form">
 									<div class="form-group m-b-sm">
-										<input type="text" id="origin" name="origin" class="form-control-customized form-control-sm rounded"
+										<input type="text" id="origin" name="origin3" class="form-control-customized form-control-sm rounded"
 										 placeholder="Location (eg Calgary, AB)">
 									</div>
 									<div class="form-group m-b-sm">
 										<div class="select-container">
-											<select class="form-control-customized form-control-sm rounded" name="selected_category_id" id="selected_category_id">
-												<option disabled selected>Category</option>
+											<select class="form-control-customized form-control-sm rounded" name="selected_category_id3" id="selected_category_id">
+												<option disabled selected value=''>Category</option>
 												{{#each categories}}
 													<option value="{{this.id}}">{{ this.name}}</option>
 												{{/each}}
@@ -78,7 +104,7 @@
 										</div>
 									</div>
 									<div class="form-group m-b-sm">
-										<input type="text" id="keyword" name="keyword" class="form-control-customized form-control-sm rounded"
+										<input type="text" id="keyword" name="keyword3" class="form-control-customized form-control-sm rounded"
 										 placeholder="Keyword (eg Spoiler)" >
 									</div>
 									<div class="form-group">
@@ -128,7 +154,7 @@
 										<h2 class="divider-line"><span>OR</span></h2>
 										<div class="col-md-6 signup-right">
 											<form id="signUpForm" class="form">
-												<small id="signUpErrorLog"></small>
+												<small id="signUpErrorLog" style="color:red"></small>
 												<div class="row">
 													<div class="col">
 														<div class="form-group m-b-sm">

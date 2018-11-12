@@ -15,11 +15,7 @@
 			video: true
 		}
 
-		var pcConfig = {
-			'iceServers': [{
-				'urls': 'stun:stun.l.google.com:19302'
-			}]
-		};
+		var pcConfig = {{{ DisplayJSON stunServer }}};
 
 		let captureLocalStreamVideo = () => {
 			return new Promise((resolve, reject) => {
@@ -60,17 +56,25 @@
 
 				pc.oniceconnectionstatechange = (event) => {
 					console.log("Ice connection state change", event.target.iceConnectionState);
+					if (event.target.iceConnectionState === "failed" ||
+						event.target.iceConnectionState === "disconnected" ||
+						event.target.iceConnectionState === "closed") {
+						endCall();
+					}
 				};
+
 				pc.onaddstream = (event) => {
 					//handle Remote Stream added
 					console.log('Remote stream added.');
 					remoteStream = event.stream;
 					remoteVideo.srcObject = remoteStream;
 				};
+
 				pc.onremovestream = (event) => {
 					//handle Remote Stream removed
 					console.log('Remote stream removed.');
 				};
+
 				console.log('Created RTCPeerConnnection');
 			} catch (e) {
 				console.log('Failed to create PeerConnection, exception: ' + e.message);
@@ -94,6 +98,9 @@
 						console.log('Adding local stream to caller local Video Id.');
 						localStream = stream;
 						localVideo.srcObject = stream;
+						$('#onMic').show();
+						$('#muteMic').hide();
+						localStream.getAudioTracks()[0].enabled = true;
 						return socket.emit('call:init', callerCallObj);
 					}).catch((e) => {
 						console.log(e);
@@ -107,6 +114,9 @@
 						console.log('Adding local stream to callee local Video Id.');
 						localStream = stream;
 						localVideo.srcObject = stream;
+						$('#onMic').show();
+						$('#muteMic').hide();
+						localStream.getAudioTracks()[0].enabled = true;
 						return socket.emit('call:join', calleeCallObj);
 					}).catch((e) => {
 						console.log(e);
@@ -188,6 +198,87 @@
 			});
 
 		});
+
+		$('#endCall').click(function() {
+			endCall();
+		});
+
+		let endCall = () => {
+			let callUniqueId;
+			if (localStorage.getItem('callerParams'))
+				callUniqueId = JSON.parse(localStorage.getItem('callerParams')).callUniqueId;
+
+			if (localStorage.getItem('calleeParams'))
+				callUniqueId = JSON.parse(localStorage.getItem('calleeParams')).callUniqueId;
+
+			socket.emit('call:leave', callUniqueId);
+			closePeerConnection();
+		}
+
+		let closePeerConnection = () => {
+			if (pc) {
+				pc.close();
+				pc = null;
+			}
+			stopVideo();
+		};
+
+		let stopVideo = () => {
+			if (remoteVideo) {
+				remoteVideo.pause();
+				remoteVideo.srcObject = null;
+			}
+
+			if (remoteStream && remoteStream.getTracks && remoteStream.getTracks().length > 0) {
+				let track = remoteStream.getTracks()[0];
+				track.stop();
+			}
+
+			if (remoteStream && remoteStream.getVideoTracks && remoteStream.getVideoTracks().length > 0) {
+				let track = remoteStream.getVideoTracks()[0];
+				track.stop();
+			}
+
+			if (localVideo) {
+				localVideo.pause();
+				localVideo.srcObject = null;
+			}
+
+			if (localStream && localStream.getTracks && localStream.getTracks().length > 0) {
+				let track = localStream.getTracks()[0];
+				track.stop();
+			}
+
+			if (localStream && localStream.getVideoTracks && localStream.getVideoTracks().length > 0) {
+				let track = localStream.getVideoTracks()[0];
+				track.stop();
+			}
+
+			if (localStorage.getItem('callerParams')) {
+				let locationPath = JSON.parse(localStorage.getItem('callerParams')).location;
+				localStorage.removeItem('callerParams');
+				window.location.href = locationPath;
+			}
+
+			if (localStorage.getItem('calleeParams')) {
+				let locationPath = JSON.parse(localStorage.getItem('calleeParams')).location;
+				localStorage.removeItem('calleeParams');
+				window.location.href = locationPath;	
+			}
+		};
+
+		$('#micMute').click(function() {
+			$('#onMic').show();
+			$('#muteMic').hide();
+			localStream.getAudioTracks()[0].enabled = true;
+		});
+
+		$('#micOn').click(function() {
+			$('#onMic').hide();
+			$('#muteMic').show();
+			localStream.getAudioTracks()[0].enabled = false;
+		});
+
 	});
 </script>
 
@@ -216,9 +307,22 @@
 										<video id="remoteVideo" autoplay playsinline></video>
 									</div>
 
-									{{!-- <center>
-										<img src="../img/video-call/call-end-1.png" class="m-r-sm" popover="End Call" popover-trigger="mouseenter" height="40px" width="40px">
-									</center> --}}
+									<center>
+
+									<a style="cursor:pointer">
+										<img src="../img/video-call/call-end.png" class="remote-video-icon1" popover="End Call" id="endCall" popover-trigger="mouseenter">
+									</a>
+
+			             			<a style="cursor:pointer" id="onMic">
+			             				<img src="../img/video-call/microphone.png" class="remote-video-icon2" popover="Mute" id="micOn" popover-trigger="mouseenter">
+			             			</a>
+
+									<a style="cursor:pointer" id="muteMic">
+			             				<img src="../img/video-call/mutedmic.png" class="remote-video-icon2" popover="Un mute" id="micMute" popover-trigger="mouseenter">
+			             			</a>
+
+
+									</center>
 								</div>
 							</div>
 						</div>
@@ -252,6 +356,7 @@
 		max-width: 14.9%;
 		opacity: 0;
 		transition: opacity 1s;
+		background-color: #000000;
 	}
 
 	#localVideo.active {
@@ -271,5 +376,24 @@
 		transform: scale(-1, 1);
 		transition: opacity 1s;
 		width: 100%;
+		background-color: #000000;
+	}
+
+	.remote-video-icon1 {
+		height: auto;
+		background-color: transparent;
+		position: absolute;
+		margin-left: -80px;
+		bottom: 30px;
+		width: 100px;
+	}
+
+	.remote-video-icon2 {
+	    background-color: transparent;
+	    position: absolute;
+	    margin-left: 0px;
+	    bottom: 36px;
+	    width: 30px;
+	    height: 27px;
 	}
 </style>

@@ -8,6 +8,7 @@ const async = require('async');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const vendorPlan = require('../../config/gtc-plan');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function webRTC(req, res) {
 
@@ -54,14 +55,27 @@ export function webRTC(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
+        },
+        unreadCounts: function(callback) {
+            if (LoggedInUser.id) {
+                notifictionService.notificationCounts(LoggedInUser.id)
+                    .then(function(counts) {
+                        return callback(null, counts);
+                    }).catch(function(error) {
+                        return callback(null);
+                    });
+            } else {
+                return callback(null);
+            }
         }
     }, function (err, results) {
-
         if(results){
             res.render('web-rtc', {
 				title: "Global Trade Connect",
 				cart: results.cartInfo,
 				categories: results.categories,
+                unreadCounts: results.unreadCounts,
+                stunServer: config.videoCall,
                 LoggedInUser: LoggedInUser,
                 bottomCategory: bottomCategory
 			});

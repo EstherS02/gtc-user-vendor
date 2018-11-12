@@ -1,7 +1,13 @@
 <script>
 	$(function() {
 		$('#call_popup_rejected').on('hide.bs.modal', function(event) {
-			window.history.back();
+			if (localStorage.getItem('callerParams')){
+				let locationPath = JSON.parse(localStorage.getItem('callerParams')).location;
+				localStorage.removeItem('callerParams');
+				window.location.href = locationPath;
+			} else{
+				window.history.back();
+			}
 		})
 
 	});

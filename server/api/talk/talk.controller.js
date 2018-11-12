@@ -12,7 +12,7 @@ const model = require('../../sqldb/model-connect');
 export function talkCounts(req, res) {
 	//console.log("REQUEST", req);
 	var threadsUnRead = [];
-	model['TalkThreadUsers'].findAll({
+	model['TalkThreadUser'].findAll({
 		where: {
 			user_id: req.user.id
 		},
@@ -84,10 +84,10 @@ export function talkCreate(talk) {
 export function talkCount(user) {
 	return new Promise(function(resolve, reject) {
 		var threadsUnRead = [];
-		model['TalkThreadUsers'].findAll({
+		model['TalkThreadUser'].findAll({
 			where: {
 				user_id: user
-			},
+			}, 
 		}).then(function(instances) {
 			for (var i = 0, iLen = instances.length; i < iLen; i++) {
 				threadsUnRead.push(instances[i].thread_id);

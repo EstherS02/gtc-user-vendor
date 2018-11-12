@@ -203,6 +203,9 @@ export function product(req, res) {
 						gtc_talk_enabled: status['ACTIVE']
 					},
 					required: false
+				}, {
+					model: model['User'],
+					attributes: ['id', 'first_name','last_name']
 				}];
 				service.findIdRow('Vendor', vendorID, vendorIncludeArr)
 					.then(function(response) {
@@ -364,7 +367,7 @@ export function product(req, res) {
 									model['TalkThread'].create(bodyParams).then(function(talkThread) {
 										if (talkThread) {
 											var talkThreadJSON = JSON.parse(JSON.stringify(talkThread));
-											var talkTreadModel = 'TalkThreadUsers';
+											var talkTreadModel = 'TalkThreadUser';
 											var talkThreadUserObj = [{
 												'talk_thread_status': 1,
 												'status': 1,

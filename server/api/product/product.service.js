@@ -427,7 +427,7 @@ export async function OnSale(modelName, queryObj, limit) {
 	try {
 		const productResponse = await model['Product'].findAll({
 			include: includeArray,
-			attributes: ['id', 'product_name', 'product_slug', 'quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', 'publish_date'],
+			attributes: ['id', 'product_name', 'product_slug', 'marketplace_id','quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', 'publish_date'],
 			where: queryObj,
 			offset: 0,
 			limit: limit,
@@ -463,10 +463,9 @@ export async function OnSale(modelName, queryObj, limit) {
 	
 }
 export async function TopRated(modelName, queryObj, limit) {
-	var results = {};
-	var orderCondition=[];
-	orderCondition.push(sequelize.fn('RAND'));
+			console.log("------------------------------112221",'hai')
 
+	var results = {};
 	results['count'] = 0;
 	results['rows'] = [];
 	queryObj['status'] = status['ACTIVE'];
@@ -495,7 +494,6 @@ export async function TopRated(modelName, queryObj, limit) {
 		where: {
 			status: status['ACTIVE']
 		},
-		required:false
 	}, {
 		model: model['ProductMedia'],
 		where: {
@@ -509,14 +507,16 @@ export async function TopRated(modelName, queryObj, limit) {
 	try {
 		const productResponse = await model['Product'].findAll({
 			include: includeArray,
-			attributes: ['id', 'product_name', 'product_slug', 'quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', 'publish_date'], //,[sequelize.literal('(SUM(Reviews.rating) / COUNT(Reviews.user_id))'), 'product_rating']
+			attributes: ['id', 'product_name', 'product_slug','marketplace_id', 'quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', 'publish_date','created_on'], //,
 			where: queryObj,
 			offset: 0,
 			limit: limit,
-			order: orderCondition,
+			order: [['created_on','desc'],
+					[model['Review'],'rating', 'desc']
+			]
 		});
 		const products = await JSON.parse(JSON.stringify(productResponse));
-		console.log(products)
+		console.log(products.rows)
 		if (products.length > 0) {
 			await Promise.all(products.map(async (product) => {
 				const currentDate = new Date();
@@ -536,11 +536,13 @@ export async function TopRated(modelName, queryObj, limit) {
 				}
 			}));
 			results.count = productResponse.count;
+
 			return results;
 		} else {
 			return results;
 		}
 	} catch (error) {
+		console.log("error:::::",error)
 		return error;
 	}
 	

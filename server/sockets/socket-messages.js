@@ -176,35 +176,37 @@ export function socketMsg(io) {
 		});
 
 		socket.on('call:join', (callObj) => {
-			let room = callObj.callUniqueId;
-			let clientsInRoom = io.sockets.adapter.rooms[room];
-			let numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
+			if (callObj) {
+				let room = callObj.callUniqueId;
+				let clientsInRoom = io.sockets.adapter.rooms[room];
+				let numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
 
-			if (!callRooms.hasOwnProperty(room)) {
-				callRooms[room] = {};
-				callRooms[room]['callRoomUsers'] = [];
-				callRooms[room]['callRoomUsers'].push(callObj.callFrom);
-			} else {
-				let index = callRooms[room]['callRoomUsers'].indexOf(callObj.callTo);
-				if (index == -1) {
-					callRooms[room]['callRoomUsers'].push(callObj.callTo);
+				if (!callRooms.hasOwnProperty(room)) {
+					callRooms[room] = {};
+					callRooms[room]['callRoomUsers'] = [];
+					callRooms[room]['callRoomUsers'].push(callObj.callFrom);
+				} else {
+					let index = callRooms[room]['callRoomUsers'].indexOf(callObj.callTo);
+					if (index == -1) {
+						callRooms[room]['callRoomUsers'].push(callObj.callTo);
+					}
 				}
-			}
 
-			if (numClients === 0) {
-				console.log("New Room Created for the Call");
-				socket.join(room);
-				console.log(callRooms, "000", io.sockets.adapter.rooms[room]);
-				return io.to(callObj.callFrom).emit('call:joined', callObj);
-			} else if (numClients === 1) {
-				console.log("Room Already Exists Joining the room");
-				socket.join(room);
-				console.log(callRooms, "1111", io.sockets.adapter.rooms[room])
-				return io.to(callObj.callTo).emit('call:joined', callObj);
-			} else {
-				console.log("Room is full - 2 Pleople Already exist")
-				console.log(callRooms, "2222", io.sockets.adapter.rooms[room])
-				//handle room full
+				if (numClients === 0) {
+					console.log("New Room Created for the Call");
+					socket.join(room);
+					console.log(callRooms, "000", io.sockets.adapter.rooms[room]);
+					return io.to(callObj.callFrom).emit('call:joined', callObj);
+				} else if (numClients === 1) {
+					console.log("Room Already Exists Joining the room");
+					socket.join(room);
+					console.log(callRooms, "1111", io.sockets.adapter.rooms[room])
+					return io.to(callObj.callTo).emit('call:joined', callObj);
+				} else {
+					console.log("Room is full - 2 Pleople Already exist")
+					console.log(callRooms, "2222", io.sockets.adapter.rooms[room])
+					//handle room full
+				}
 			}
 
 		});
@@ -231,6 +233,15 @@ export function socketMsg(io) {
 			console.log("callee shared answer");
 			io.to(callObj.callFrom).emit('call:answer', callObj);
 		})
+
+		socket.on('call:leave', function(callUniqueId) {
+			if (callUniqueId) {
+				socket.to(callUniqueId).emit('call:leave', callUniqueId);
+				callRooms[callUniqueId] = [];
+				delete callRooms[callUniqueId];
+				socket.leave(callUniqueId);
+			}
+		});
 
 
 		/** End - For Web rtc Signalling*/
