@@ -9,7 +9,7 @@ export async function threadConversation(userID) {
 		});
 		const talkThreadUsers = await JSON.parse(JSON.stringify(talkThreadUsersResponse));
 		await Promise.all(talkThreadUsers.map(async (talkThreadUser) => {
-			threads.push(model['TalkThreadUsers'].findOne({
+			threads.push(model['TalkThreadUser'].findOne({
 				where: {
 					thread_id: talkThreadUser.thread_id,
 					user_id: {

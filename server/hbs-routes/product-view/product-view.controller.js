@@ -367,7 +367,7 @@ export function product(req, res) {
 									model['TalkThread'].create(bodyParams).then(function(talkThread) {
 										if (talkThread) {
 											var talkThreadJSON = JSON.parse(JSON.stringify(talkThread));
-											var talkTreadModel = 'TalkThreadUsers';
+											var talkTreadModel = 'TalkThreadUser';
 											var talkThreadUserObj = [{
 												'talk_thread_status': 1,
 												'status': 1,
