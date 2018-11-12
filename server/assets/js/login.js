@@ -163,6 +163,7 @@ $(document).ready(function() {
 	});
 
 	$('#signUpForm').validate({
+
 		rules: {
 			first_name: {
 				required: true
@@ -186,11 +187,13 @@ $(document).ready(function() {
 				data: newUser,
 				success: function(data, text) {
 					$('#loadingSpinnersignUp').hide();
+					$('#signUpErrorLog').hide();
 					auth.login({
 						email: data.email,
 						password: $('#inputPassword').val()
 					}).then(function(user) {
 						$('#loadingSpinnersignUp').hide();
+						$('#signUpErrorLog').hide();
 						if (user) {
 							var timer = setTimeout(function() {
 								window.location.href = '/user-join';
