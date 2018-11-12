@@ -185,9 +185,9 @@ let sqlQueries = {
 			return query;
 	},
 	productCountBasedCountry: function(productCountQueryParams) {
-		let baseQuery = `SELECT region.id as regionid,region.name as regionname, region.status as regionstatus,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id and region.status=1 LEFT OUTER JOIN ((product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') `
+		let baseQuery = `SELECT region.id as regionid,region.name as regionname, region.status as regionstatus,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN ((product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`') `
 		let conditionQuery = ` on country.id = product.product_location`;
-		let groupQuery = "GROUP BY country.name ORDER by region.id,country.name ASC"
+		let groupQuery = "  where  region.status=1 GROUP BY country.name ORDER by region.id,country.name ASC"
 			if(productCountQueryParams.is_featured_product){
 				baseQuery = baseQuery+` JOIN featured_product on featured_product.product_id=product.id AND featured_product.status = 1 AND featured_product.start_date <= '`+new Date().toISOString().slice(0,10)+`' AND featured_product.end_date >= '`+new Date().toISOString().slice(0,10)+`')`;
 				delete productCountQueryParams.is_featured_product;
