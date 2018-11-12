@@ -7,6 +7,7 @@ const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const model = require('../../sqldb/model-connect');
 const vendorPlan = require('../../config/gtc-plan');
+const position = require('../../config/position');
 
 export function adList(req, res) {
 
@@ -119,6 +120,7 @@ export function adList(req, res) {
 				marketPlace: marketplace,
 				selectedPage: 'ad-form',
 				vendorPlan: vendorPlan,
+				position:position
 			});
 		} else {
 			res.render('vendorNav/ad-form', err);
@@ -228,6 +230,8 @@ export function adForm(req, res) {
 				status: status,
 				selectedPage: 'ad-form',
 				vendorPlan: vendorPlan,
+				position:position
+				
 			});
 		} else {
 			res.render('vendorNav/ad-form', err);

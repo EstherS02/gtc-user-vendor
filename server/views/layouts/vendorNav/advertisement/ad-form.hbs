@@ -25,6 +25,9 @@
  			outputPopupError("Please select start date");
  		}
  	});
+    $("#position").change(function(){
+        console.log($("#position").val(),$('option:selected', this).attr('width'),$('option:selected', this).attr('height'))
+    });
  	$("#startDate").change(function(){
  		var startDate = $('#startDate').val();
  		let currentUTCDate = new Date();
@@ -180,8 +183,8 @@
                                              <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="position" id="position" required="true">{{ads.posotion}}
                                                 {{#select ads.posotion}}
                                                     <option disabled selected>Select Location...</option>
-                                                    {{#each Position}}
-                                                    <option value="{{this}}">{{@key}}</option>
+                                                    {{#each position}}
+                                                    <option width = {{this.width}} height = {{this.height}}  value="{{this.id}}">{{@key}}</option>
                                                     {{/each}}
                                                 {{/select}}
                                                 </select>
@@ -189,8 +192,7 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label class="label-control">Ad Image<span class="text-danger">*</span></label>
-                                            {{!-- <input type="file" name="file" class="form-control-customized form-control-sm" required="true"> --}}
+                                            <label class="label-control">Ad Image<span class="text-danger" id="alert-text">*</span></label>
                                             <div class="input-group">
                                                 <div class="custom-file custom_error_message">
                                                     <input type="file" class="custom-file-input" id="image_url" name="image_url" >
@@ -213,7 +215,7 @@
                                             <label class="label-control">Status <span class="text-danger">*</span></label>
 											<div class="input-group">
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status"
-												 id="inputStatus">
+												 id="inputStatus" >
 													{{#select ads.status}}
                                                   	  <option value="{{statusCode.ACTIVE}}">Active</option>
                                                    	  <option value="{{statusCode.INACTIVE}}">In Active</option>
@@ -224,6 +226,7 @@
                                     </div>
                                 {{/if}}
                                 </div>
+
 								<div class="row">
                                 	 <div class="col-lg-6">
                                         <label class="label-control">Start Date {{ads.startDate}} <span class="text-danger">*</span></label>
