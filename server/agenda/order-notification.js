@@ -10,6 +10,7 @@ const model = require('../sqldb/model-connect');
 const oredrItemStatus = require('../config/order-item-new-status');
 
 module.exports = async function(job, done) {
+	console.log("order notification............*************");
 	const code = job.attrs.data.code;
 	const orderModelName = "Order";
 	const productModelName = "Product";
@@ -25,6 +26,7 @@ module.exports = async function(job, done) {
 	const discussionBoardPostLikeModelName = "DiscussionBoardPostLike";
 	try {
 		if (code == config.notification.templates.vendorNewOrder) {
+			console.log("code...............",code);
 			const orderId = job.attrs.data.order;
 			const VendorNotificationResponse = await service.findRow(vendorNotificationModelName, {
 				code: code
@@ -68,6 +70,7 @@ module.exports = async function(job, done) {
 		}
 
 		if (code == config.notification.templates.orderDetail) {
+			console.log("code...............details*********",code);
 			const orderId = job.attrs.data.order;
 			const orderResponse = await model[orderModelName].findOne({
 				where: {
@@ -132,7 +135,7 @@ module.exports = async function(job, done) {
 			const VendorNotificationResponse = await service.findRow(vendorNotificationModelName, {
 				code: code
 			});
-			if (orderItem) {
+			if (orderItem && VendorNotificationResponse) {
 				if (orderItem.order_item_status == oredrItemStatus['CANCELED']) {
 					const vendorNotificationSettingsRes = await service.findRow(vendorNotificationSettingsModelName, {
 						vendor_id: orderItem.Product.vendor_id,
