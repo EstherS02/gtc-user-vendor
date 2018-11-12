@@ -5,34 +5,48 @@
 
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	$(document).ready(function() {
-		$("a[title='seller']").click(function() {
-			if (userInfo.email) { } else {
-				$('#myModal').modal('show');
-			}
-		});
-			$("#geoLocateForm").validate({
-			rules: {
-				keyword: {
-					required: true
+		$(document).ready(function() {
+			$('#Geolocatesearch').prop('disabled', true);
+			$("a[title='seller']").click(function() {
+				if (userInfo.email) { } else {
+					$('#myModal').modal('show');
 				}
-			},
-			messages: {
-				keyword: {
-					required: "Please enter the keyword",
+			});
+			$('#origin, #origin').keyup(function() {
+				if ($('#origin').val() != '' && $('#origin').val() != '') {
+					$('#Geolocatesearch').prop('disabled', false);
+				} else {
+					$('#Geolocatesearch').prop('disabled', true);
 				}
-			}
+			});
+			$('#keyword, #keyword').keyup(function() {
+				if ($('#keyword').val() != '' && $('#keyword').val() != '') {
+					$('#Geolocatesearch').prop('disabled', false);
+				} else {
+					$('#Geolocatesearch').prop('disabled', true);
+				}
+			});
+			$('#selected_category_id, #selected_category_id').keyup(function() {
+				if ($('#selected_category_id').val() != '' && $('#selected_category_id').val() != '') {
+					$('#Geolocatesearch').prop('disabled', false);
+				} else {
+					$('#Geolocatesearch').prop('disabled', true);
+				}
+			});
+			$("#selected_category_id").on('change', function() {
+				if ($('#selected_category_id').val() != '' && $('#selected_category_id').val() != '') {
+					$('#Geolocatesearch').prop('disabled', false);
+				} else {
+					$('#Geolocatesearch').prop('disabled', true);
+				}
+			});
 		});
-		$('#geoLocateForm').submit(function(e) {
-		e.preventDefault();
-		let formInput = $("#geoLocateForm :input").filter(function(index, element) {
-		return $(element).val() != '';
-		}).serialize();
-		if ($('#geoLocateForm').valid()) {
-		window.location.href = 'geo-locate/search?'+formInput;
+		function geoformlocation() {
+			if (($('#selected_category_id').val()) != '' || ($('#origin').val() != '') || ($('#keyword').val() != '')) {
+				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&origin=' + $('#origin').val() + '&keyword=' + $('#keyword').val();
+			}
+
 		}
-		});
-	});
 
 </script>
 
@@ -65,10 +79,10 @@
 									</div>
 									<div class="form-group m-b-sm">
 										<input type="text" id="keyword" name="keyword" class="form-control-customized form-control-sm rounded"
-										 placeholder="Keyword (eg Spoiler)" required>
+										 placeholder="Keyword (eg Spoiler)" >
 									</div>
 									<div class="form-group">
-										<button type="submit" class="btn btn-small btn-block btn-primary"><strong>SEARCH</strong></button>
+										<button type="button" class="btn btn-small btn-block btn-primary" id="Geolocatesearch" onclick="geoformlocation()"><strong>SEARCH</strong></button>
 									</div>
 								</form>
 							</div>
@@ -519,7 +533,8 @@
 											<td class="col-7">
 												<div class="product-middle-col">
 													<h3 title="{{this.product_name}}">
-														<a href="/shop/{{this.product_slug}}/{{this.id}}" class="gtc-text-primary">{{this.product_name}}</a>
+														<a href="/shop/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag"
+														 {{else}} class="gtc-text-primary" {{/if}} >{{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-3 col-3 no-padding">
@@ -553,7 +568,7 @@
 												<div class="product-right-col">
 													{{#if this.product_discounted_price}}
 														<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
-														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE {{currency this.discount '$'}}</strong></small>
 													{{else}}
 														<h2 class="price-flag">{{currency this.price '$'}}</h2>
 													{{/if}}
@@ -598,7 +613,8 @@
 											<td class="col-7">
 												<div class="product-middle-col">
 													<h3 title="{{this.product_name}}">
-														<a href="/services/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a>
+														<a href="/services/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag"
+														 {{else}} class="text-blue" {{/if}}>{{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-3 col-3 no-padding">
@@ -632,7 +648,7 @@
 												<div class="product-right-col">
 													{{#if this.product_discounted_price}}
 														<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
-														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE {{currency this.discount '$'}}</strong></small>
 													{{else}}
 														<h2 class="price-flag">{{currency this.price '$'}}</h2>
 													{{/if}}
@@ -677,7 +693,8 @@
 											<td class="col-7">
 												<div class="product-middle-col">
 													<h3 title="{{this.product_name}}">
-														<a href="/lifestyle/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a>
+														<a href="/lifestyle/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag"
+														 {{else}} class="text-blue" {{/if}}>{{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-3 col-3 no-padding">
@@ -711,7 +728,7 @@
 												<div class="product-right-col">
 													{{#if this.product_discounted_price}}
 														<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
-														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE {{currency this.discount '$'}}</strong></small>
 													{{else}}
 														<h2 class="price-flag">{{currency this.price '$'}}</h2>
 													{{/if}}
