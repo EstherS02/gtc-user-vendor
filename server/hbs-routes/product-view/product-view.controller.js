@@ -203,6 +203,9 @@ export function product(req, res) {
 						gtc_talk_enabled: status['ACTIVE']
 					},
 					required: false
+				}, {
+					model: model['User'],
+					attributes: ['id', 'first_name','last_name']
 				}];
 				service.findIdRow('Vendor', vendorID, vendorIncludeArr)
 					.then(function(response) {

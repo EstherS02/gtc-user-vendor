@@ -245,6 +245,13 @@ var all = {
 		}
 	},
 
+	//video call stun server
+	videoCall : {
+		'iceServers': [{
+			'urls': 'stun:stun.l.google.com:19302'
+		}]
+	},
+
 	// Return order request days
 	returnItemDays: process.env.RETURN_ITEM_DAYS || 10
 };
