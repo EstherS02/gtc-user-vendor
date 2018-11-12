@@ -29,6 +29,7 @@ const stripe = require('../../payment/stripe.payment');
 const CURRENCY = 'usd';
 
 export async function makePayment(req, res) {
+	console.log("makePayment.........");
 	var vendorArray = [];
 	var cartItems = [];
 	var cartEmptyPromises = [];
@@ -188,9 +189,6 @@ export async function makePayment(req, res) {
 			await Promise.all(vendorArray.map(async (vendorOrder) => {
 				orderVendorPromises.push(service.createRow(orderVendorModelName, vendorOrder));
 			}));
-			agenda.now(config.jobs.orderEmail, {
-				order: newOrder.id
-			});
 
 			agenda.now(config.jobs.orderNotification, {
 				order: newOrder.id,
@@ -202,6 +200,9 @@ export async function makePayment(req, res) {
 				code: config.notification.templates.orderDetail
 			});
 
+			agenda.now(config.jobs.orderEmail, {
+				order: newOrder.id
+			});
 
 			return res.status(200).send({
 				order: newOrder.id
