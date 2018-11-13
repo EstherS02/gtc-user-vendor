@@ -71,10 +71,9 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 					'$gte': moment().format('YYYY-MM-DD')
 				}
 			}
-		},
-		{
-			model:model['User'],
-			attributes:['id','first_name']
+		}, {
+			model: model['User'],
+			attributes: ['id', 'first_name']
 		}],
 		attributes: vendorAttributes,
 		where: {
@@ -388,7 +387,7 @@ export async function TopSellingProducts(offset, limit, marketplace) {
 }
 export async function OnSale(modelName, queryObj, limit) {
 	var results = {};
-	var orderCondition=[];
+	var orderCondition = [];
 	orderCondition.push(sequelize.fn('RAND'));
 
 	results['count'] = 0;
@@ -396,11 +395,11 @@ export async function OnSale(modelName, queryObj, limit) {
 	queryObj['status'] = status['ACTIVE'];
 	queryObj['exclusive_sale'] = status['ACTIVE'];
 	queryObj['exclusive_start_date'] = {
-					'$lte': moment().format('YYYY-MM-DD')
-				};
-	queryObj['exclusive_end_date']= {
-					'$gte': moment().format('YYYY-MM-DD')
-				};
+		'$lte': moment().format('YYYY-MM-DD')
+	};
+	queryObj['exclusive_end_date'] = {
+		'$gte': moment().format('YYYY-MM-DD')
+	};
 
 	var includeArray = [{
 		model: model['Vendor'],
@@ -439,7 +438,7 @@ export async function OnSale(modelName, queryObj, limit) {
 		where: {
 			status: status['ACTIVE']
 		}
-	},{
+	}, {
 		model: model['ProductMedia'],
 		where: {
 			status: status['ACTIVE'],
@@ -452,7 +451,7 @@ export async function OnSale(modelName, queryObj, limit) {
 	try {
 		const productResponse = await model['Product'].findAll({
 			include: includeArray,
-			attributes: ['id', 'product_name', 'product_slug', 'marketplace_id','quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', 'publish_date'],
+			attributes: ['id', 'product_name', 'product_slug', 'marketplace_id', 'quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', 'publish_date'],
 			where: queryObj,
 			offset: 0,
 			limit: limit,
@@ -485,7 +484,7 @@ export async function OnSale(modelName, queryObj, limit) {
 	} catch (error) {
 		return error;
 	}
-	
+
 }
 export async function TopRated(modelName, queryObj, limit) {
 
@@ -513,7 +512,7 @@ export async function TopRated(modelName, queryObj, limit) {
 		where: {
 			status: status['ACTIVE']
 		}
-	},  {
+	}, {
 		model: model['Category'],
 		attributes: ['id', 'name', 'code', 'description'],
 		where: {
@@ -525,7 +524,7 @@ export async function TopRated(modelName, queryObj, limit) {
 		where: {
 			status: status['ACTIVE']
 		}
-	},{
+	}, {
 		model: model['Country'],
 		attributes: ['id', 'name', 'code'],
 		where: {
@@ -549,12 +548,13 @@ export async function TopRated(modelName, queryObj, limit) {
 	try {
 		const productResponse = await model['Product'].findAll({
 			include: includeArray,
-			attributes: ['id', 'product_name', 'product_slug','marketplace_id', 'quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', 'publish_date','created_on'], //,
+			attributes: ['id', 'product_name', 'product_slug', 'marketplace_id', 'quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', 'publish_date', 'created_on'], //,
 			where: queryObj,
 			offset: 0,
 			limit: limit,
-			order: [['created_on','desc'],
-					[model['Review'],'rating', 'desc']
+			order: [
+				['created_on', 'desc'],
+				[model['Review'], 'rating', 'desc']
 			]
 		});
 		const products = await JSON.parse(JSON.stringify(productResponse));
@@ -578,19 +578,19 @@ export async function TopRated(modelName, queryObj, limit) {
 				}
 			}));
 			results.count = productResponse.count;
-		console.log("log:::::::::::::::::::::::::::",results)
+			console.log("log:::::::::::::::::::::::::::", results)
 
 			return results;
 		} else {
-		console.log("error:::::")
+			console.log("error:::::")
 
 			return results;
 		}
 	} catch (error) {
-		console.log("error:::::",error)
+		console.log("error:::::", error)
 		return error;
 	}
-	
+
 }
 
 export function productRatingsCount(productID) {
@@ -927,40 +927,72 @@ export function importWooCommerceProducts(product, req) {
 	});
 }
 
-export function sellersCount(vendorQuery,vendorPlanQuery){
+export function sellersCount(planQuery) {
 	var vendorModel = 'Vendor';
 	var vendorPlanModel = 'VendorPlan';
+	var vendorQuery = {};
 	vendorQuery['status'] = status['ACTIVE'];
-	vendorPlanQuery={
-		status:status['ACTIVE'],
+	var vendorPlanQuery = {};
+	vendorPlanQuery = {
+		status: status['ACTIVE'],
 		start_date: {
-					'$lte': moment().format('YYYY-MM-DD')
-				},
+			'$lte': moment().format('YYYY-MM-DD')
+		},
 		end_date: {
-					'$gte': moment().format('YYYY-MM-DD')
-				},
-		plan_id: 6
-	};
+			'$gte': moment().format('YYYY-MM-DD')
+		},
 
-	return new Promise((resolve,reject)=>{
-		model:model[vendorModel].count({
-			where:vendorQuery,
-			include:[{
-				model:model[vendorPlanModel],
-				where:vendorPlanQuery
+	};
+	vendorPlanQuery['plan_id'] = planQuery;
+	return new Promise((resolve, reject) => {
+		model: model[vendorModel].count({
+			where: vendorQuery,
+			include: [{
+				model: model[vendorPlanModel],
+				where: vendorPlanQuery
 			}]
-		}).then((results)=>{
+		}).then((results) => {
 			resolve(results);
-		}).catch(function(error){
-			console.log("Error:::",error);
+		}).catch(function(error) {
+			console.log("Error:::", error);
 			reject(error);
 		});
 	});
 
 }
-// export function productCount(Query){
-	
-// }
+export function productCount(Query) {
+	var productModel = 'Product';
+	var includeArray = [{
+		model: model['Vendor'],
+		where: {
+			status: status['ACTIVE']
+		},
+		include: [{
+			model: model['VendorPlan'],
+			where: {
+				status: status['ACTIVE'],
+				start_date: {
+					'$lte': moment().format('YYYY-MM-DD')
+				},
+				end_date: {
+					'$gte': moment().format('YYYY-MM-DD')
+				}
+			}
+		}]
+	}];
+	Query['status'] = status['ACTIVE'];
+	return new Promise((resolve, reject) => {
+		model: model[productModel].count({
+			where: Query,
+			include: includeArray
+		}).then((results) => {
+			resolve(results);
+		}).catch(function(error) {
+			console.log("Error:::", error);
+			reject(error);
+		});
+	});
+}
 export function compareProducts(params) {
 	return new Promise((resolve, reject) => {
 		if (params) {
