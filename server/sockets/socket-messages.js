@@ -84,7 +84,7 @@ export function socketMsg(io) {
 				console.log("RESULT", result);
 				talkCount(talk.to_id).then(function (res) {
 					console.log("RESULT_____________________", res);
-					io.to(user).emit('chat:count:receive', res);
+					io.to(result.from_id).emit('chat:count:receive', res);
 				})
 				result.to_id = talk.to_id;
 				var talkThreadCheck = _.find(talkThreadArray, function (threadArrObj) {
@@ -241,6 +241,12 @@ export function socketMsg(io) {
 				delete callRooms[callUniqueId];
 				socket.leave(callUniqueId);
 			}
+
+			console.log("sockert leave function..............")
+			setTimeout(function() {
+				socket.emit("call:handled", {});
+				console.log("call:handled............................");
+			}, 500);
 		});
 
 

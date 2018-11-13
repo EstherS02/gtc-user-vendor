@@ -1,5 +1,6 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <script>
+	var counts = {{{ DisplayJSON globalProductCounts }}}
   $(document).ready(function () {
     $('#depart').on('change', function () {
       $('#searchSubmit').prop('disabled', !$(this).val());
@@ -19,7 +20,6 @@
     });
   });
 </script>
-
 <div class="marketplace-banner products">
     <div class="gtc-container">
         <div class="row">
@@ -30,7 +30,7 @@
             </div>
             <div class="col-md-7 right">
                 <h2>Search Our Global Products of over</h2>
-                <h1>21,000 Wholesalers, Retailers & Service Providers</h1>
+                <h1> {{#each globalProductCounts}}{{currency this.productCount ''}} {{/each}} Products, Services & Subscriptions!</h1>       
                 <small class="text-center text-white py-xl-3 d-block">Advanced Search</small>
                 <form id="searchForm">
                     <div class="row">

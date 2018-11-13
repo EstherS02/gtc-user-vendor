@@ -137,6 +137,15 @@ export function products(req, res) {
 					return callback(null);
 				});
 		},
+		globalProductCounts: function(callback) {
+				productService.productGlobalCounts(marketplace['WHOLESALE'])
+					.then((globalCount) => {
+						return callback(null, globalCount);
+					}).catch((error) => {
+						return callback(error);
+					});
+			
+		},
 		unreadCounts: function(callback) {
 			notifictionService.notificationCounts(LoggedInUser.id)
 				.then(function(counts) {
@@ -161,6 +170,7 @@ export function products(req, res) {
 				cart: results.cartInfo,
 				marketPlace: marketplace,
 				depart: results.depart,
+				globalProductCounts:results.globalProductCounts,
 				unreadCounts: results.unreadCounts,
 				LoggedInUser: LoggedInUser
 			});
