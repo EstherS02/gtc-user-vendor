@@ -115,7 +115,10 @@
 											<thead>
 												<tr>
 													<th>
-														<input type="checkbox" onclick="selectAll(this);">
+														<div class="customCheckbox">
+															<input type="checkbox" onclick="selectAll(this);" id="inputTerms" class="customCheckboxInput">
+															<label class="checkbox-b" for="inputTerms"></label>
+														</div>
 													</th>
 													<th>Event</th>
 													<th>Code</th>
@@ -127,11 +130,17 @@
 												<tr>
 													{{#if this.VendorNotificationSettings}}
 													<td>
-														<input type="checkbox" value="{{this.id}}">
+														<div class="customCheckbox">
+															<input type="checkbox" class="customCheckboxInput" value="{{this.id}}">
+															<label class="checkbox-b" for="inputTerms"></label>
+														</div>
 													</td>
 													{{else}}
 													<td>
-														<input type="checkbox" value="{{this.id}}" checked>
+														<div class="customCheckbox">
+															<input type="checkbox" class="customCheckboxInput" value="{{this.id}}" checked>
+															<label class="checkbox-b" for="inputTerms"></label>
+														</div>
 													</td>
 													{{/if}}
 													<td>
