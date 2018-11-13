@@ -92,7 +92,7 @@ let sqlQueries = {
 		return query;
 	},
 	productGlobalCountsQuery: function(params) {
-		let query = `SELECT COUNT(product.id) AS productCount FROM  product LEFT OUTER JOIN vendor ON product.vendor_id = vendor.id LEFT OUTER JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id WHERE product.status = 1 AND vendor.status = 1 AND vendor_plan.status = 1 AND vendor_plan.start_date <='`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`' AND product.marketplace_id != `+ params ;
+		let query = `SELECT COUNT(product.id) AS productCount FROM  product LEFT OUTER JOIN vendor ON product.vendor_id = vendor.id LEFT OUTER JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id WHERE product.status = 1 AND vendor.status = 1 AND vendor_plan.status = 1 AND vendor_plan.start_date <='`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`'` ;
 		return query;
 	},
 	activeVendorcountsQuery: function(params) {
