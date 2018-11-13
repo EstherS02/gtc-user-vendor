@@ -68,7 +68,7 @@ let sqlQueries = {
                 COUNT(*) AS subCategoryCount
         FROM
             product
-        GROUP BY product_category_id , sub_category_id) P
+        GROUP BY product_category_id , sub_category_id) 
         
     LEFT JOIN category ON category.id = product_category_id
     LEFT JOIN sub_category ON sub_category.id = sub_category_id;`;
