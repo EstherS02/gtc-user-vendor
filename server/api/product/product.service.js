@@ -943,7 +943,9 @@ export function sellersCount(planQuery) {
 		},
 
 	};
-	vendorPlanQuery['plan_id'] = planQuery;
+	if(planQuery){
+		Object.assign(vendorPlanQuery, planQuery);
+	}
 	return new Promise((resolve, reject) => {
 		model: model[vendorModel].count({
 			where: vendorQuery,

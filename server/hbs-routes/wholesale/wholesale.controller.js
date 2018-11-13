@@ -186,7 +186,8 @@ export function wholesale(req, res) {
 				});
 		},
 		wholesalerCount: function(callback){
-			var planQuery=plan['WHOLESALER'];
+			var planQuery={};
+			planQuery['plan_id']=plan['WHOLESALER'];
 			productService.sellersCount(planQuery)
 			.then((response)=>{
 				return callback(null,response)
