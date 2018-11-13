@@ -1,6 +1,6 @@
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <script>
-var vendor_id = {{{ DisplayJSON LoggedInUser.Vendor.id}}}
+	var vendor_id = {{{ DisplayJSON LoggedInUser.Vendor.id}}}
     function validate() {
 
         if ($('#terms_of_use').val().length > 0 ||
@@ -18,6 +18,37 @@ var vendor_id = {{{ DisplayJSON LoggedInUser.Vendor.id}}}
 
         validate();
         $('#terms_of_use, #return_policy, #shipping_policy').change(validate);
+
+		$('#termsAndCondForm').validate({
+			rules: {
+				terms_of_use: {
+					minlength: 200,
+					maxlength: 5000
+				},
+				return_policy: {
+					minlength: 200,
+					maxlength: 5000
+				},
+				shipping_policy: {
+					minlength: 200,
+					maxlength: 5000
+				}
+			},
+			messages: {
+				terms_of_use: {
+					minlength: "Minimum 200 characters",
+					maxlength: "Maximum 5000 characters"
+				},
+				return_policy: {
+					minlength: "Minimum 200 characters",
+					maxlength: "Maximum 5000 characters"
+				},
+				shipping_policy: {
+					minlength: "Minimum 200 characters",
+					maxlength: "Maximum 5000 characters"
+				}
+			}
+		});
 
         $("#termsAndCondForm").submit(function (e) {
             e.preventDefault();
