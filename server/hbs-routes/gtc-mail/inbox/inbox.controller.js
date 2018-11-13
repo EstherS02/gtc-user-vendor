@@ -246,6 +246,14 @@ export function message(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					})
+			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(LoggedInUser.id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
@@ -261,6 +269,7 @@ export function message(req, res) {
 					marketPlace: marketplace,
 					message: results.message,
 					messageUserId: results.messageUserId,
+					unreadCounts: results.unreadCounts,
 					selectedPage: path,
 					vendorPlan: vendorPlan,
 					dropDownUrl: dropDownUrl
@@ -314,6 +323,14 @@ export function compose(req, res) {
 						return callback(null);
 					});
 			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(LoggedInUser.id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
+			}
 		},
 		function(err, results) {
 			if (!err) {
@@ -323,6 +340,7 @@ export function compose(req, res) {
 					title: "Global Trade Connect",
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
+					unreadCounts: results.unreadCounts,
 					bottomCategory: bottomCategory,
 					cart: results.cartInfo,
 					marketPlace: marketplace,

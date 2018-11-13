@@ -54,14 +54,17 @@ export function createMail(bodyParams, users) {
 			mailObject['to'] = [];
 
 			for (var i = 0; i < users.length; i++) {
-				mailObject['to'].push(users[i].email);
-				usersArray.push(service.createRow(userMailModelName, {
-					mail_id: mail.id,
-					user_id: users[i].id,
-					mail_status: mailStatus['UNREAD'],
-					status: status['ACTIVE'],
-					created_on: new Date()
-				}));
+				if (users[i].user_contact_email && validateEmail(users[i].user_contact_email)) {
+					mailObject['to'].push(users[i].user_contact_email);
+					usersArray.push(service.createRow(userMailModelName, {
+						mail_id: mail.id,
+						user_id: users[i].id,
+						mail_status: mailStatus['UNREAD'],
+						status: status['ACTIVE'],
+						created_on: new Date(),
+						created_by: bodyParams['created_by']
+					}));
+				} 
 			}
 			mailArray.push(mailObject);
 			return Promise.all(usersArray);
@@ -196,4 +199,9 @@ export function removeManyMail(queryObj) {
 				reject(error);
 			});
 	});
+}
+
+function validateEmail(email) {
+  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
 }

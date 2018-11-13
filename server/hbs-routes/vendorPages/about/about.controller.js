@@ -9,6 +9,7 @@ const Plan = require('../../../config/gtc-plan');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
 const sequelize = require('sequelize');
+const moment = require('moment');
 const async = require('async');
 
 export function vendorAbout(req, res) {
@@ -43,6 +44,15 @@ export function vendorAbout(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
+				where: {
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					},
 				required: false
 			}, {
 				model: model['VendorVerification'],

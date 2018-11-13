@@ -69,7 +69,6 @@ var xxx={{DisplayJSON categoryWithProductCount}}
 					{{!-- </div> --}}
 				</div>
 			</div>
-
 			<div class="row no-margins ibox-content no-padding">
 				<div class="col-md-9 no-padding">
 					{{#if wantToSell.length}}
@@ -406,14 +405,19 @@ var xxx={{DisplayJSON categoryWithProductCount}}
 					</div>
 					{{/if}}
 					{{!-- </div> --}}
+					{{#if (and (eq wantToSell.length  0)
+								(eq wantToBuy.length  0)
+								(eq wantToTrade.length  0)
+								(eq requestForQuote.length  0))}}
+					<div class="ibox-content">No Product Available</div>
+					{{/if}}
 				</div>
 				<div class="col-md-3 no-padding">
 					{{> vendor/vendor-category }}
 				</div>
 			</div>
-		</div>
 
+		</div>
 	</div>
-</div>
 </section>
 {{> footer/bottom-footer}}

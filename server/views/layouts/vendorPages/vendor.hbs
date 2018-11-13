@@ -1,9 +1,9 @@
 <script>
     function showPopover(productId) {
-     $.ajax({
-         url: '/api/product/views/product-popover/'+ productId,
-         type: 'GET',
-         success: function (result) {
+       $.ajax({
+           url: '/api/product/views/product-popover/'+ productId,
+           type: 'GET',
+           success: function (result) {
             console.log('result', result);
             $('[data-toggle="popover"]').popover({
                 trigger: 'hover',
@@ -19,7 +19,7 @@
             console.log("Error", error);
         }
     }); 
- }
+   }
 
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
@@ -33,27 +33,127 @@
                 </div>
                 <div class="col-md-3 col-12 " style="background-color:#fff">
                     <h5 class="log_head_style">FEATURED</h5>
-                    {{#if featuredProducts.rows}} {{#each featuredProducts.rows}}
+                    {{#if featuredProducts.rows}} 
+                    {{#each featuredProducts.rows}}
                     <div class="row profile_logged_in_body2_bg_color">
                         <div class="col-md-6 col-6" style="padding-right: 0px; margin-top:10px;">
                             <a href="products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-                                <img width="100%" onError="imgError(this)" src="{{this.product_base_image}}">
+                                <img width="100%" onError="imgError(this)" src="{{this.ProductMedia.[0].url}}">
                             </a>
                         </div>
                         <div class="col-md-6 col-6" style="padding-left: 8px; padding-right: 0px;">
                             {{#ifCond this.Marketplace.id '==' ../marketPlace.WHOLESALE}}
                             <h5 class="log_doller_value">MOQ:{{this.moq}}</h5>
                             {{else}}
+                            {{#ifCond this.product_discounted_price '>=' 1}}
+                            <h5 class="log_doller_value">{{currency this.product_discounted_price '$'}}</h5>
+                            {{else}}
                             <h5 class="log_doller_value">{{currency this.price '$'}}</h5>
                             {{/ifCond}}
+                            {{/ifCond}}
                             {{#ifCond this.product_discounted_price '>=' 1}}
-                            <p class="profile_logged_in_body2_font_para">SAVE {{currency this.product_discounted_price '$'}}
-                                {{!-- <span class="log_left_style">12m left</span> --}}
+                            <p class="profile_logged_in_body2_font_para">SAVE {{currency this.discount '$'}}
                                 <span class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</span>
                             </p>
                             {{/ifCond}}
                             <p class="profile_logged_in_body2_font_para_1 ">
-                                <a href="/products/{{this.product_slug}}/{{this.id}}" class="vendor_landing_product_name">{{this.product_name}}</a> {{!-- -Free 15%off for the month Augest --}}</p>
+                                <a href="/products/{{this.product_slug}}/{{this.id}}" class="vendor_landing_product_name">{{this.product_name}}</a>
+                            </p>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-4 col-4 no-padding">
+                                        <p class="profile_logged_in_body2_font_2">Category :</p>
+                                    </div>
+                                    <div class="col-md-8 col-8 no-padding">
+                                        <p class="profile_logged_in_body2_font_2 overflow-txt">
+                                            <a href="/products/search?category={{this.Category.id}}&sub_category={{this.SubCategory.id}}" class="text-black">{{this.Category.name}} &gt; {{this.SubCategory.name}}</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="/products/{{this.product_slug}}/{{this.id}}" class="profile_logged_in_body2_view_buttion btn" style="color:#fff">VIEW</a>
+                        </div>
+                    </div>
+                    {{/each}} 
+                    {{else}}
+                    <p style="margin-left:10px";>No Product Available</p>
+                    {{/if}}
+                </div>
+                <div class="col-md-3 col-12" style="background-color:#fff">
+                    <h5 class="log_head_style">ON SALE</h5>
+                    <div class="row profile_logged_in_body2_bg_color">
+                        {{#if topSelling}}
+                        {{#each topSelling}}
+                        <div class="col-md-4 col-4" style="margin-top:10px; padding-right:0px;">
+                            <a href="products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" >
+                                <img width="100%" src="{{this.ProductMedia.[0].url}}" onError="imgError(this)" style="border-radius:50%" height="90px">
+                            </a>
+                        </div>
+                        <div class="col-md-8 col-8" style="margin-top:10px;" class="btn btn-pophover" data-toggle="popover" data-placement="top" id="pop_hover" onmouseover="showPopover({{this.id}})">
+                            <p class="profile_logged_in_body2_font_para_1">
+                                <a href="/products/{{this.product_slug}}/{{this.id}}" class="vendor_landing_product_name">{{this.product_name}}</a>
+                                {{#ifCond this.exclusive_offer '>=' 1}}-Free {{decimalFixed this.exclusive_offer}}% off {{/ifCond}}
+                            </p>
+
+                            <p class="profile_logged_in_body2_font_para_1">Availability {{this.quantity_available}} Remaining
+                            </p>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-4 col-4 no-padding">
+                                        <p class="profile_logged_in_body2_font_2">Category :</p>
+                                    </div>
+                                    <div class="col-md-8 col-8 no-padding">
+                                        <p class="profile_logged_in_body2_font_2 overflow-txt">
+                                            <a href="/products/search?category={{this.Category.id}}&sub_category={{this.SubCategory.id}}" class="text-blue">{{this.Category.name}} &gt; {{this.SubCategory.name}}</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="container">
+                                <div class="row">
+                                    <div class="col-md-4 col-4 no-padding">
+                                        <p class="profile_logged_in_body2_font_2">Origin  :</p>
+                                    </div>
+                                    <div class="col-md-8 col-8 no-padding">
+                                        <p class="profile_logged_in_body2_font_2 overflow-txt">
+                                           {{this.Country.name}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{#if (and (gte this.product_discounted_price 1)
+                            (ne this.marketplace_id  ../marketPlace.WHOLESALE))}}
+                            <p class="profile_logged_in_body2_font_para">{{currency this.product_discounted_price '$'}}- SAVE {{currency this.discount '$'}}
+                                <small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
+                            </p>
+                            {{else}}
+                                {{this.price}}
+                            {{/if}}
+                        </div>
+                        <div class="col-md-12 col-12">
+                            <hr>
+                        </div>
+                        {{/each}}
+                        {{else}}
+                        <p style="margin-left:10px";>No Product On Offer Sale</p>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="col-md-3 col-12" style="background-color:#fff">
+                    <h5 class="log_head_style">TOP RATED</h5>
+                    <div class="row profile_logged_in_body2_bg_color">
+                        {{#if topRating}}
+                        {{#each topRating}}
+                        <div class="col-md-4 col-4" style="margin-top:10px; padding-right:0px;">
+                            <a href="products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+                                <img width="100%" src="{{this.ProductMedia.[0].url}}" onError="imgError(this)" style="border-radius:50%" height="90px">
+                            </a>
+                        </div>
+                        <div class="col-md-8 col-8" style="margin-top:10px;">
+                            <P class="profile_logged_in_body2_font_para_1">
+                                <a href="/products/{{this.product_slug}}/{{this.id}}" class="vendor_landing_product_name">{{this.product_name}}</a>{{!-- -Free 20% off  --}}</P>
+                                <p class="profile_logged_in_body2_font_para_1">Availability {{this.quantity_available}} Remaining</p>
                                 <div class="container">
                                     <div class="row">
                                         <div class="col-md-4 col-4 no-padding">
@@ -61,75 +161,44 @@
                                         </div>
                                         <div class="col-md-8 col-8 no-padding">
                                             <p class="profile_logged_in_body2_font_2 overflow-txt">
-                                                <a href="/products/search?category={{this.Category.id}}&sub_category={{this.SubCategory.id}}" class="text-black">{{this.Category.name}} &gt; {{this.SubCategory.name}}</a>
+                                            <a href="/products/search?category={{this.Category.id}}&sub_category={{this.SubCategory.id}}" class="text-blue">{{this.Category.name}} &gt; {{this.SubCategory.name}}</a>
+                                            </p>
+                                        </div>  
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-4 col-4 no-padding">
+                                            <p class="profile_logged_in_body2_font_2">Origin  :</p>
+                                        </div>
+                                        <div class="col-md-8 col-8 no-padding">
+                                            <p class="profile_logged_in_body2_font_2 overflow-txt">
+                                               {{this.Country.name}}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
-                                <a href="/products/{{this.product_slug}}/{{this.id}}" class="profile_logged_in_body2_view_buttion btn" style="color:#fff">VIEW</a>
-                            </div>
-                        </div>
-                        {{/each}} {{/if}}
-                    </div>
-                    <div class="col-md-3 col-12" style="background-color:#fff">
-                        <h5 class="log_head_style">ON SALE</h5>
-                        <div class="row profile_logged_in_body2_bg_color">
-                        {{#each topSelling}}
-                        <div class="col-md-4 col-4" style="margin-top:10px; padding-right:0px;">
-                            <a href="products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" >
-                                <img width="100%" src="{{this.product_base_image}}" onError="imgError(this)" style="border-radius:50%" height="90px">
-                            </a>
-                        </div>
-                        <div class="col-md-8 col-8" style="margin-top:10px;" class="btn btn-pophover" data-toggle="popover" data-placement="top" id="pop_hover" onmouseover="showPopover({{this.id}})">
-                            <P class="profile_logged_in_body2_font_para_1">
-                                <a href="/products/{{this.product_slug}}/{{this.id}}" class="vendor_landing_product_name">{{this.product_name}}</a>{{#ifCond this.exclusive_offer '>=' 1}}-Free {{decimalFixed this.exclusive_offer}}% off {{/ifCond}}</P>
-                                {{#if quantity_available}}
-                                <p class="profile_logged_in_body2_font_para_1">Availability {{this.quantity_available}} Remaining</p>{{/if}}
-                                {{#ifCond this.product_discounted_price '>=' 1}}
-                                    {{#ifCond this.marketplace_id '!=' ../marketPlace.WHOLESALE}}
-                                <p class="profile_logged_in_body2_font_para">SAVE {{currency this.product_discounted_price '$'}}
-                                    <span class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</span>
-                                </p>
-                                {{/ifCond}}
-                                {{/ifCond}}
+                                {{#if (and (gte this.product_discounted_price 1)
+                                (ne this.marketplace_id  ../marketPlace.WHOLESALE))}}
+                                <p class="profile_logged_in_body2_font_para">{{currency this.product_discounted_price '$'}}- SAVE {{currency this.discount '$'}}
+                                <small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
+                            </p>
+                            {{else}}
+                            {{currency this.price '$'}}
+                                {{/if}}
                             </div>
                             <div class="col-md-12 col-12">
                                 <hr>
                             </div>
                             {{/each}}
+                            {{else}}
+                            <p style="margin-left:10px";>No Product On Top Rated List</p>
+                            {{/if}}
                         </div>
-                    </div>
-                    <div class="col-md-3 col-12" style="background-color:#fff">
-                        <h5 class="log_head_style">TOP RATED</h5>
-                        <div class="row profile_logged_in_body2_bg_color">
-                            {{#each topRating}}
-                            <div class="col-md-4 col-4" style="margin-top:10px; padding-right:0px;">
-                                <a href="products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-                                    <img width="100%" src="{{this.product_base_image}}" onError="imgError(this)" style="border-radius:50%" height="90px">
-                                </a>
-                            </div>
-                            <div class="col-md-8 col-8" style="margin-top:10px;">
-                                <P class="profile_logged_in_body2_font_para_1">
-                                    <a href="/products/{{this.product_slug}}/{{this.id}}" class="vendor_landing_product_name">{{this.product_name}}</a>{{!-- -Free 20% off  --}}</P>
-                                   {{#if quantity_available}}
-                                    <p class="profile_logged_in_body2_font_para_1">Availability {{this.quantity_available}} Remaining</p>
-                                    {{/if}}
-                                    {{#ifCond this.product_discounted_price '>=' 1}}
-                                    {{#ifCond this.marketplace_id '!=' ../marketPlace.WHOLESALE}}
-                                <p class="profile_logged_in_body2_font_para">SAVE {{currency this.product_discounted_price '$'}}
-                                    <span class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</span>
-                                </p>
-                                {{/ifCond}}
-                                {{/ifCond}}
-                            </div>
-                        <div class="col-md-12 col-12">
-                            <hr>
-                        </div>
-                        {{/each}}
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+        </section>
 
-    {{> footer/bottom-footer}}
+        {{> footer/bottom-footer}}
