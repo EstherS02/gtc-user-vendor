@@ -82,6 +82,7 @@ export function vendor(req, res) {
 								return callback(null, results);
 							});
 					}else{
+
 					return callback(null, results);
 				}
 				}).catch(function(error) {
@@ -98,6 +99,7 @@ export function vendor(req, res) {
 			limit = 3;
 			productService.OnSale('product', queryObj, limit)
 				.then(function(servicesProviders) {
+
 					return callback(null, servicesProviders.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -107,6 +109,10 @@ export function vendor(req, res) {
 		topRating: function(callback) {
 			delete queryObj['featured_position'];
 			delete queryObj['is_featured_product'];
+			delete queryObj['exclusive_sale'];
+			delete queryObj['exclusive_start_date'];
+			delete queryObj['exclusive_end_date'];
+			
 			queryObj['vendor_id'] = vendor_id;
 			limit = 3;
 			productService.TopRated('product', queryObj, limit)
@@ -125,6 +131,16 @@ export function vendor(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
+				where: {
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					},
+
 				required: false
 			}, {
 				model: model['VendorVerification'],

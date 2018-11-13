@@ -9,6 +9,7 @@ const sequelize = require('sequelize');
 const cartService = require('../../../api/cart/cart.service');
 const marketplace = require('../../../config/marketplace');
 const Plan = require('../../../config/gtc-plan');
+const moment = require('moment');
 const async = require('async');
 
 export function vendorSupport(req, res) {
@@ -80,6 +81,15 @@ export function vendorSupport(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
+				where: {
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					},
 				required: false
 			}, {
 				model: model['VendorVerification'],

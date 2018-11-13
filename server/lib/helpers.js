@@ -445,7 +445,6 @@ Handlebars.registerHelper('navbarSetting', function(user, type, options) {
 		return options.fn(this);
 	}
 });
-
 Handlebars.registerHelper('json', function(jsonStr, key) {
 	if (_.isUndefined(jsonStr) || _.isNull(jsonStr)) {
 		return '';
