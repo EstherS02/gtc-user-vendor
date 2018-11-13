@@ -394,6 +394,13 @@ export async function OnSale(modelName, queryObj, limit) {
 	results['count'] = 0;
 	results['rows'] = [];
 	queryObj['status'] = status['ACTIVE'];
+	queryObj['exclusive_sale'] = status['ACTIVE'];
+	queryObj['exclusive_start_date'] = {
+					'$lte': moment().format('YYYY-MM-DD')
+				};
+	queryObj['exclusive_end_date']= {
+					'$gte': moment().format('YYYY-MM-DD')
+				};
 
 	var includeArray = [{
 		model: model['Vendor'],
@@ -415,6 +422,24 @@ export async function OnSale(modelName, queryObj, limit) {
 			status: status['ACTIVE']
 		}
 	}, {
+		model: model['Category'],
+		attributes: ['id', 'name', 'code', 'description'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['Country'],
+		attributes: ['id', 'name', 'code'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['SubCategory'],
+		attributes: ['id', 'category_id', 'name', 'code'],
+		where: {
+			status: status['ACTIVE']
+		}
+	},{
 		model: model['ProductMedia'],
 		where: {
 			status: status['ACTIVE'],
@@ -463,7 +488,6 @@ export async function OnSale(modelName, queryObj, limit) {
 	
 }
 export async function TopRated(modelName, queryObj, limit) {
-			console.log("------------------------------112221",'hai')
 
 	var results = {};
 	results['count'] = 0;
@@ -486,6 +510,24 @@ export async function TopRated(modelName, queryObj, limit) {
 			}
 		}],
 		attributes: ['id'],
+		where: {
+			status: status['ACTIVE']
+		}
+	},  {
+		model: model['Category'],
+		attributes: ['id', 'name', 'code', 'description'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['SubCategory'],
+		attributes: ['id', 'category_id', 'name', 'code'],
+		where: {
+			status: status['ACTIVE']
+		}
+	},{
+		model: model['Country'],
+		attributes: ['id', 'name', 'code'],
 		where: {
 			status: status['ACTIVE']
 		}
@@ -536,9 +578,12 @@ export async function TopRated(modelName, queryObj, limit) {
 				}
 			}));
 			results.count = productResponse.count;
+		console.log("log:::::::::::::::::::::::::::",results)
 
 			return results;
 		} else {
+		console.log("error:::::")
+
 			return results;
 		}
 	} catch (error) {
@@ -882,6 +927,40 @@ export function importWooCommerceProducts(product, req) {
 	});
 }
 
+export function sellersCount(vendorQuery,vendorPlanQuery){
+	var vendorModel = 'Vendor';
+	var vendorPlanModel = 'VendorPlan';
+	vendorQuery['status'] = status['ACTIVE'];
+	vendorPlanQuery={
+		status:status['ACTIVE'],
+		start_date: {
+					'$lte': moment().format('YYYY-MM-DD')
+				},
+		end_date: {
+					'$gte': moment().format('YYYY-MM-DD')
+				},
+		plan_id: 6
+	};
+
+	return new Promise((resolve,reject)=>{
+		model:model[vendorModel].count({
+			where:vendorQuery,
+			include:[{
+				model:model[vendorPlanModel],
+				where:vendorPlanQuery
+			}]
+		}).then((results)=>{
+			resolve(results);
+		}).catch(function(error){
+			console.log("Error:::",error);
+			reject(error);
+		});
+	});
+
+}
+// export function productCount(Query){
+	
+// }
 export function compareProducts(params) {
 	return new Promise((resolve, reject) => {
 		if (params) {

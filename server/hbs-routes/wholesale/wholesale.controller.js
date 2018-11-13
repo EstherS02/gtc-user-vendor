@@ -184,6 +184,19 @@ export function wholesale(req, res) {
 					return callback(error);
 				});
 		},
+		wholesalerCount: function(callback){
+			var vendorQuery={};
+			var vendorPlanQuery={};
+			productService.sellersCount(vendorQuery,vendorPlanQuery)
+			.then((response)=>{
+				console.log("==============================================",response)
+				return callback(null,response)
+			}).catch((error)=>{
+				console.log("Error:::", error);
+					return callback(error);
+			})
+
+		}
 	}, function(err, results) {
 		if (!err) {
 			res.render('wholesale', {
