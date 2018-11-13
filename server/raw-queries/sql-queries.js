@@ -95,6 +95,10 @@ let sqlQueries = {
 		let query = `SELECT COUNT(product.id) AS productCount FROM  product LEFT OUTER JOIN vendor ON product.vendor_id = vendor.id LEFT OUTER JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id WHERE product.status = 1 AND vendor.status = 1 AND vendor_plan.status = 1 AND vendor_plan.start_date <='`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`' AND product.marketplace_id != `+ params ;
 		return query;
 	},
+	activeVendorcountsQuery: function(params) {
+		let query = `SELECT COUNT(vendor.id) AS vendorCount FROM vendor LEFT OUTER JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id where vendor.status = 1 AND vendor_plan.status = 1 AND vendor_plan.start_date <='`+new Date().toISOString().slice(0,10)+`' AND vendor_plan.end_date >= '`+new Date().toISOString().slice(0,10)+`'` ;
+		return query;
+	},
 	compareProductQuery: function(params) {
 		let query = `SELECT product.id, product.product_name,product.marketplace_type_id,product.marketplace_id,product.sku, product.product_slug, product.vendor_id, product.status,product.sub_category_id, product.publish_date, product.quantity_available, product.price, product.description, product.moq, vendor.user_id, vendor.vendor_name, product_media.url,users.first_name, COALESCE(COUNT(reviews.user_id), 0) AS 'user_count', COALESCE(AVG(reviews.rating), 0) AS 'product_rating' FROM product LEFT JOIN vendor ON vendor.id = product.vendor_id LEFT JOIN product_media ON product_media.product_id = product.id LEFT JOIN reviews ON reviews.product_id = product.id LEFT JOIN users on users.id=vendor.user_id  WHERE product.id IN(` + params + `) GROUP BY product.id`;
 		return query;
