@@ -9,9 +9,10 @@ const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
-const shopService=require('../../../api/vendor/vendor.service')
+const shopService = require('../../../api/vendor/vendor.service')
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
+const moment = require('moment');
 const async = require('async');
 var _ = require('lodash');
 
@@ -88,6 +89,16 @@ export function vendorLifestyle(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
+
+				where: {
+					status: status['ACTIVE'],
+					start_date: {
+						'$lte': moment().format('YYYY-MM-DD')
+					},
+					end_date: {
+						'$gte': moment().format('YYYY-MM-DD')
+					}
+				},
 				required: false
 			}, {
 				model: model['VendorVerification'],
@@ -183,11 +194,11 @@ export function vendorLifestyle(req, res) {
 						subCatObj["count"] = o.subproductcount;
 						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 						resultObj[o.categoryname]["subCategory"].push(subCatObj)
-						count= count + o.subproductcount;
+						count = count + o.subproductcount;
 					})
-					categoryWithProductCount.rows =resultObj;
+					categoryWithProductCount.rows = resultObj;
 					categoryWithProductCount.count = count;
-					console.log("============================categoryWithProductCount",categoryWithProductCount)
+					console.log("============================categoryWithProductCount", categoryWithProductCount)
 					return callback(null, categoryWithProductCount);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -198,7 +209,7 @@ export function vendorLifestyle(req, res) {
 		// console.log(results);
 		queryPaginationObj['maxSize'] = 5;
 
-		if (!err) {
+		if (!err && results.VendorDetail) {
 			res.render('vendorPages/vendor-lifestyle', {
 				title: "Global Trade Connect",
 				VendorDetail: results.VendorDetail,
@@ -214,7 +225,7 @@ export function vendorLifestyle(req, res) {
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'lifestyle',
 				Plan: Plan,
-				categoryWithProductCount:results.categoryWithProductCount
+				categoryWithProductCount: results.categoryWithProductCount
 			});
 		} else {
 			res.render('vendor-lifestyle', err);

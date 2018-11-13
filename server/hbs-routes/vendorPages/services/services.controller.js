@@ -12,6 +12,7 @@ const shopService=require('../../../api/vendor/vendor.service')
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const sequelize = require('sequelize');
+const moment = require('moment');
 const async = require('async');
 var _ = require('lodash');
 
@@ -87,6 +88,16 @@ export function vendorServices(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
+				where: {
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					},
+
 				required: false
 			}, {
 				model: model['VendorVerification'],
@@ -195,7 +206,7 @@ export function vendorServices(req, res) {
 		// console.log(JSON.stringify(results.VendorDetail));
 		queryPaginationObj['maxSize'] = 5;
 
-		if (!err) {
+		if (!err && results.VendorDetail) {
 			res.render('vendorPages/vendor-services', {
 				title: "Global Trade Connect",
 				VendorDetail: results.VendorDetail,
