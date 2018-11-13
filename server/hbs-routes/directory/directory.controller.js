@@ -125,6 +125,15 @@ export function directory(req, res) {
 					return callback(error);
 				});
 		},
+		vendorCounts: function(callback) {
+			vendorService.activeVendorcounts(marketplace['WHOLESALE'])
+				.then((vendorCount) => {
+					return callback(null,vendorCount);
+				}).catch((error) => {
+					return callback(error);
+				});
+		
+    	},
 		subscriptionProviders: function(callback) {
 			vendorService.TopSellingVendors(0, 6, marketplace['LIFESTYLE'])
 				.then((response) => {
@@ -146,6 +155,7 @@ export function directory(req, res) {
 				wholesalers: results.wholesalers,
 				retailers: results.retailers,
 				servicesProviders: results.servicesProviders,
+				vendorCounts:results.vendorCounts,
 				subscriptionProviders: results.subscriptionProviders,
 				depart: results.depart,
 				LoggedInUser: LoggedInUser,

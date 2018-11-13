@@ -187,3 +187,20 @@ export async function TopSellingVendors(offset, limit, marketplace) {
 		return error;
 	}
 }
+// Active vendor Counts
+export function activeVendorcounts(params) {
+	return new Promise((resolve, reject) => {
+		if (params) {
+			Sequelize_Instance.query(RawQueries.activeVendorcountsQuery(params), {
+				model: model['product'],
+				type: Sequelize_Instance.QueryTypes.SELECT
+			}).then((results) => {
+				resolve(results)
+			}).catch(function(error) {
+				reject(error);
+			});
+		} else {
+			resolve()
+		}
+	});
+}

@@ -21,8 +21,6 @@ router.post('/import-amazon', auth.hasRole(roles['VENDOR']), auth.hasPermission(
 router.post('/', auth.hasRole(roles['VENDOR']), multipartMiddleware, auth.hasPermission(), check.limitExceeds(), controller.create);
 router.post('/import-product', auth.isAuthenticated(), controller.importProduct);
 router.put('/edit/:id', auth.hasRole(roles['VENDOR']), multipartMiddleware, auth.hasPermission(), controller.edit);
-router.put('/feature-one/:id', controller.featureOne);
-router.put('/feature-many', controller.featureMany);
 router.put('/discount/:product_id', auth.hasRole(roles['VENDOR']), controller.discountProduct)
 router.post('/feature-payment', auth.isAuthenticated(), controller.featureProductWithPayment);
 router.post('/feature', auth.isAuthenticated(), controller.featureProductWithoutPayment);

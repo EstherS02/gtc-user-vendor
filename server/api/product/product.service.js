@@ -900,7 +900,6 @@ export function compareProducts(params) {
 }
 
 export function productGlobalCounts(params) {
-	console.log("enter the llliiiiiiiiiiiiiiiii");
 	return new Promise((resolve, reject) => {
 		if (params) {
 			Sequelize_Instance.query(RawQueries.productGlobalCountsQuery(params), {
