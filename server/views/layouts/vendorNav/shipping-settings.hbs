@@ -127,17 +127,15 @@ $(document).ready(function () {
 	$('#addbtn').prop('disabled', true);
 	$('#removebtn').prop('disabled', true);
 	$("#sellingCountry option[selected]").removeAttr("selected");    
-	var newData = {};
-    var selectArray = [];
-    $("#sellingCountry").on('change', function() {
-    if ($('#sellingCountry').val() != '') {
+	$("#sellingCountry").on('change', function() {
+    if ($('#sellingCountry').val() != ''&& ($('#sellingCountry option').last().val()!='All')) {
     $('#addbtn').prop('disabled', false);
     } else { 
     $('#addbtn').prop('disabled', true);
     }
     }); 
 	 $("#removeCountry").on('change', function() {
-    if ($('#removeCountry').val() != '') {
+    if ($('#removeCountry').val() != '' && ($('#removeCountry option').last().val()!='All')) {
     $('#removebtn').prop('disabled', false);
     } else { 
     $('#removebtn').prop('disabled', true);
