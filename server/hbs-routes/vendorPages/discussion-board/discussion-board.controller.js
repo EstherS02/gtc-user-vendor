@@ -150,6 +150,16 @@ export function vendorDiscussion(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
+				where: {
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					},
+
 				required: false
 			}, {
 				model: model['VendorVerification'],

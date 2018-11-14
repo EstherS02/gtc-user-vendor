@@ -26,10 +26,6 @@ export function create(req, res) {
 	delete req.body.to;
 	req.body.to = to;
 
-	if (currentUser.provider != provider['OWN']) {
-		return res.status(400).send("This provider not allow");
-	}
-
 	req.checkBody('subject', 'Missing Query Param').notEmpty();
 	if (!req.body.to || req.body.to.length == 0) {
 		return res.status(400).send('Missing Query Params');
@@ -65,7 +61,6 @@ export function create(req, res) {
 		var model = 'User';
 		var includeArr = [];
 		queryObj['id'] = mailUser[i];
-		queryObj['provider'] = provider['OWN'];
 
 		validUsers.push(service.findOneRow(model, queryObj, includeArr))
 	}

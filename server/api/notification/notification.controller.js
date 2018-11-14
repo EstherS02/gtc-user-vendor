@@ -53,7 +53,7 @@ export function readNotification(req, res) {
 	var id = req.params.id;
 	var modelName = "Notification";
 	var bodyParams = {
-		is_read: 0
+		is_read: 1
 	};
 	service.updateRow(modelName, bodyParams, id).then(function(response) {
 		return res.status(200).send("success");
@@ -64,7 +64,7 @@ export function NotificationCount(req, res) {
 	var modelName = "Notification";
 	var queryObj = {
 		user_id: req.user.id,
-		is_read: 1
+		is_read: 0
 	};
 	service.countRows(modelName, queryObj).then(function(NotificationCount) {
 		NotificationCount = {
@@ -82,7 +82,7 @@ export function deleteNotification(req, res){
 	var id = req.params.id;
 	var modelName = "Notification";
 	var bodyParams = {
-		is_read: 0,
+		is_read: 1,
 		deleted_at: new Date()
 	};
 	service.updateRow(modelName, bodyParams, id).then(function(response) {

@@ -71,8 +71,7 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 					'$gte': moment().format('YYYY-MM-DD')
 				}
 			}
-		},
-		{
+		}, {
 			model: model['User'],
 			attributes: ['id', 'first_name']
 		}],
@@ -407,6 +406,13 @@ export async function OnSale(modelName, queryObj, limit) {
 	results['count'] = 0;
 	results['rows'] = [];
 	queryObj['status'] = status['ACTIVE'];
+	queryObj['exclusive_sale'] = status['ACTIVE'];
+	queryObj['exclusive_start_date'] = {
+		'$lte': moment().format('YYYY-MM-DD')
+	};
+	queryObj['exclusive_end_date'] = {
+		'$gte': moment().format('YYYY-MM-DD')
+	};
 
 	var includeArray = [{
 		model: model['Vendor'],
@@ -424,6 +430,24 @@ export async function OnSale(modelName, queryObj, limit) {
 			}
 		}],
 		attributes: ['id'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['Category'],
+		attributes: ['id', 'name', 'code', 'description'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['Country'],
+		attributes: ['id', 'name', 'code'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['SubCategory'],
+		attributes: ['id', 'category_id', 'name', 'code'],
 		where: {
 			status: status['ACTIVE']
 		}
@@ -476,7 +500,6 @@ export async function OnSale(modelName, queryObj, limit) {
 
 }
 export async function TopRated(modelName, queryObj, limit) {
-	console.log("------------------------------112221", 'hai')
 
 	var results = {};
 	results['count'] = 0;
@@ -503,6 +526,24 @@ export async function TopRated(modelName, queryObj, limit) {
 			status: status['ACTIVE']
 		}
 	}, {
+		model: model['Category'],
+		attributes: ['id', 'name', 'code', 'description'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['SubCategory'],
+		attributes: ['id', 'category_id', 'name', 'code'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['Country'],
+		attributes: ['id', 'name', 'code'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
 		model: model['Review'],
 		where: {
 			status: status['ACTIVE']
@@ -524,8 +565,9 @@ export async function TopRated(modelName, queryObj, limit) {
 			where: queryObj,
 			offset: 0,
 			limit: limit,
-			order: [['created_on', 'desc'],
-			[model['Review'], 'rating', 'desc']
+			order: [
+				['created_on', 'desc'],
+				[model['Review'], 'rating', 'desc']
 			]
 		});
 		const products = await JSON.parse(JSON.stringify(productResponse));
@@ -549,9 +591,12 @@ export async function TopRated(modelName, queryObj, limit) {
 				}
 			}));
 			results.count = productResponse.count;
+			console.log("log:::::::::::::::::::::::::::", results)
 
 			return results;
 		} else {
+			console.log("error:::::")
+
 			return results;
 		}
 	} catch (error) {
@@ -895,6 +940,74 @@ export function importWooCommerceProducts(product, req) {
 	});
 }
 
+export function sellersCount(planQuery) {
+	var vendorModel = 'Vendor';
+	var vendorPlanModel = 'VendorPlan';
+	var vendorQuery = {};
+	vendorQuery['status'] = status['ACTIVE'];
+	var vendorPlanQuery = {};
+	vendorPlanQuery = {
+		status: status['ACTIVE'],
+		start_date: {
+			'$lte': moment().format('YYYY-MM-DD')
+		},
+		end_date: {
+			'$gte': moment().format('YYYY-MM-DD')
+		},
+
+	};
+	if(planQuery){
+		Object.assign(vendorPlanQuery, planQuery);
+	}
+	return new Promise((resolve, reject) => {
+		model: model[vendorModel].count({
+			where: vendorQuery,
+			include: [{
+				model: model[vendorPlanModel],
+				where: vendorPlanQuery
+			}]
+		}).then((results) => {
+			resolve(results);
+		}).catch(function(error) {
+			console.log("Error:::", error);
+			reject(error);
+		});
+	});
+
+}
+export function productCount(Query) {
+	var productModel = 'Product';
+	var includeArray = [{
+		model: model['Vendor'],
+		where: {
+			status: status['ACTIVE']
+		},
+		include: [{
+			model: model['VendorPlan'],
+			where: {
+				status: status['ACTIVE'],
+				start_date: {
+					'$lte': moment().format('YYYY-MM-DD')
+				},
+				end_date: {
+					'$gte': moment().format('YYYY-MM-DD')
+				}
+			}
+		}]
+	}];
+	Query['status'] = status['ACTIVE'];
+	return new Promise((resolve, reject) => {
+		model: model[productModel].count({
+			where: Query,
+			include: includeArray
+		}).then((results) => {
+			resolve(results);
+		}).catch(function(error) {
+			console.log("Error:::", error);
+			reject(error);
+		});
+	});
+}
 export function compareProducts(params) {
 	return new Promise((resolve, reject) => {
 		if (params) {
@@ -913,7 +1026,6 @@ export function compareProducts(params) {
 }
 
 export function productGlobalCounts(params) {
-	console.log("enter the llliiiiiiiiiiiiiiiii");
 	return new Promise((resolve, reject) => {
 		if (params) {
 			Sequelize_Instance.query(RawQueries.productGlobalCountsQuery(params), {

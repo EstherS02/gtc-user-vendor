@@ -2,6 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
+var globalUser = require('../../auth/global-user-obj');
 var auth = require('../../auth/auth.service')
 
 var aboutCtrl = require('./about/about.controller');

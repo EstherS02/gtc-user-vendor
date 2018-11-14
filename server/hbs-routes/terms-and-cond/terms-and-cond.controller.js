@@ -91,12 +91,11 @@ export function termsAndCond(req, res) {
 					bottomCategory: bottomCategory,
 					cart: results.cartInfo,
 					marketPlace: marketplace,
-					selectedPage: 'terms-and-cond',
+					selectedPage: 'terms-and-conditions',
 					vendorPlan: vendorPlan,
 					termsAndCond: results.termsAndCond,
 					unreadCounts: results.unreadCounts,
-					statusCode: statusCode,
-					selectedPage: 'terms-and-cond',
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/terms-and-cond', err);

@@ -445,7 +445,6 @@ Handlebars.registerHelper('navbarSetting', function(user, type, options) {
 		return options.fn(this);
 	}
 });
-
 Handlebars.registerHelper('json', function(jsonStr, key) {
 	if (_.isUndefined(jsonStr) || _.isNull(jsonStr)) {
 		return '';
@@ -495,6 +494,9 @@ Handlebars.registerHelper('last2', function(str, isJson, key) {
 
 Handlebars.registerHelper('currency', function(amt, symbol) {
 	return numeral(amt).format(symbol + '0,0.00');
+});
+Handlebars.registerHelper('CommaSeparate', function(amt) {
+	return numeral(amt).format('0,0');
 });
 
 Handlebars.registerHelper('if_eq', function(a, b, opts) {
