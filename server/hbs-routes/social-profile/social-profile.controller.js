@@ -9,6 +9,7 @@ const marketplace = require('../../config/marketplace');
 const sequelize = require('sequelize');
 const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function socialProfile(req, res) {
 	var LoggedInUser = {};
@@ -68,6 +69,14 @@ export function socialProfile(req, res) {
 					return callback(null);
 				});
 
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(err, results) {
 		if (!err) {
@@ -78,6 +87,7 @@ export function socialProfile(req, res) {
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts,
 				marketPlace: marketplace,
 				selectedPage: 'social-profile',
 				vendorPlan: vendorPlan,

@@ -9,6 +9,7 @@ const vendorPlan = require('../../config/gtc-plan');
 const orderStatus = require('../../config/order_status');
 const carriersCode = require('../../config/carriers');
 const trackingUrl = require('../../config/tracking-url');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function orderTrack(req, res) {
 	var LoggedInUser = {}, order_id;
@@ -107,6 +108,14 @@ export function orderTrack(req, res) {
 					return callback(null);
 				});
 			}
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(user_id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	},function(err, results) {
 		if (!err) {
@@ -117,6 +126,7 @@ export function orderTrack(req, res) {
 				LoggedInUser: LoggedInUser,
 				cartheader: results.cartCounts,
 				orderTrack: results.orderTrack,
+				unreadCounts: results.unreadCounts,
 				vendorPlan: vendorPlan,
 				orderStatus: orderStatus,
 				carriersCode: carriersCode,

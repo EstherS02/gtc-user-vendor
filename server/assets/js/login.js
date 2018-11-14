@@ -141,18 +141,25 @@ $(document).ready(function() {
 	$('#loadingSpinnersignUp').hide();
 
 	$('#inputEmail, #inputPassword').keyup(function() {
-
+		$('#signUpErrorLog').html("");
 		if ($('#inputEmail').val() != '' && $('#inputPassword').val() != '' && $('#inputTerms').is(":checked")) {
 			$('#btnSignup').prop('disabled', false);
+			
 		} else {
 			$('#btnSignup').prop('disabled', true);
+			
 		}
 	});
+	$('#inputFirstname').keyup(function() {
+		$('#signUpErrorLog').html("");
+	});
+	
 	$('#inputTerms').change(function() {
+		$('#signUpErrorLog').html("");
 		if (this.checked == true) {
 			if ($('#inputEmail').val() != '' && $('#inputPassword').val() != '' && $('#inputTerms').is(":checked")) {
 				$('#btnSignup').prop('disabled', false);
-			} else {
+							} else {
 				$('#btnSignup').prop('disabled', true);
 			}
 		} else {
@@ -162,6 +169,7 @@ $(document).ready(function() {
 	});
 
 	$('#signUpForm').validate({
+
 		rules: {
 			first_name: {
 				required: true
@@ -185,11 +193,13 @@ $(document).ready(function() {
 				data: newUser,
 				success: function(data, text) {
 					$('#loadingSpinnersignUp').hide();
+					$('#signUpErrorLog').hide();
 					auth.login({
 						email: data.email,
 						password: $('#inputPassword').val()
 					}).then(function(user) {
 						$('#loadingSpinnersignUp').hide();
+						$('#signUpErrorLog').hide();
 						if (user) {
 							var timer = setTimeout(function() {
 								window.location.href = '/user-join';
@@ -199,11 +209,12 @@ $(document).ready(function() {
 				},
 				error: function(request, status, error) {
 					$('#loadingSpinnersignUp').hide();
-					$('#signUpErrorLog').text(request.responseText);
-					setTimeout(function() {
-						$('#signUpErrorLog').hide();
+					$('#signUpErrorLog').html(request.responseText);
+                   
+					// setTimeout(function() {
+					 //	$('#signUpErrorLog').hide();
 
-					}, 3000);
+					 //}, 1000);
 				}
 			});
 		}

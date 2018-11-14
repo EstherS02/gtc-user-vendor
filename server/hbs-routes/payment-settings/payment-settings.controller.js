@@ -9,6 +9,7 @@ const vendorPlan = require('../../config/gtc-plan');
 const paypal = require('paypal-rest-sdk');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
+const notifictionService = require('../../api/notification/notification.service');
 
 let openIdConnect = paypal.openIdConnect;
 
@@ -105,6 +106,14 @@ export function paymentSettings(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
+			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(user_id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
@@ -119,6 +128,7 @@ export function paymentSettings(req, res) {
 					marketPlace: marketplace,
 					vendorPlan: vendorPlan,
 					currency: results.currency,
+					unreadCounts: results.unreadCounts,
 					vendorPaymentInfo: results.vendorPaymentInfo,
 					connectUrl: connectUrl,
 					payPalOAuthUrl: payPalOAuthUrl,

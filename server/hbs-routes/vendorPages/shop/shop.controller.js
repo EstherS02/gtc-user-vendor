@@ -12,6 +12,7 @@ const marketplace_type = require('../../../config/marketplace_type');
 const cartService = require('../../../api/cart/cart.service');
 const shopService=require('../../../api/vendor/vendor.service')
 const Plan = require('../../../config/gtc-plan');
+const moment = require('moment');
 const async = require('async');
 const _ = require('lodash');
 
@@ -87,6 +88,15 @@ export function vendorShop(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
+				where: {
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					},
 				required: false
 			}, {
 				model: model['VendorVerification'],
@@ -193,7 +203,7 @@ export function vendorShop(req, res) {
 		},
 	}, function(err, results) {
 		queryPaginationObj['maxSize'] = 5;
-		if (!err) {
+		if (!err && results.VendorDetail) {
 			res.render('vendorPages/vendor-shop', {
 				title: "Global Trade Connect",
 				queryPaginationObj: queryPaginationObj,
@@ -213,7 +223,7 @@ export function vendorShop(req, res) {
 				categoryWithProductCount:results.categoryWithProductCount
 			});
 		} else {
-			res.render('vendor-shop', err);
+			res.render('404');
 		}
 	});
 }

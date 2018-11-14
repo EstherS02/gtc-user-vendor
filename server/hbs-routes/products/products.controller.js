@@ -7,10 +7,10 @@ const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const productService = require('../../api/product/product.service');
+const notifictionService = require('../../api/notification/notification.service');
 const async = require('async');
 
 export function products(req, res) {
-	var productModel = "MarketplaceProduct";
 	var marketplaceModel = "Marketplace";
 	var categoryModel = "Category";
 	var subcategoryModel = "SubCategory";
@@ -136,6 +136,23 @@ export function products(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		globalProductCounts: function(callback) {
+				productService.productGlobalCounts(marketplace['WHOLESALE'])
+					.then((globalCount) => {
+						return callback(null, globalCount);
+					}).catch((error) => {
+						return callback(error);
+					});
+			
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(err, results) {
 		if (!err) {
@@ -153,6 +170,8 @@ export function products(req, res) {
 				cart: results.cartInfo,
 				marketPlace: marketplace,
 				depart: results.depart,
+				globalProductCounts:results.globalProductCounts,
+				unreadCounts: results.unreadCounts,
 				LoggedInUser: LoggedInUser
 			});
 		} else {

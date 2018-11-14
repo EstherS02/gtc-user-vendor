@@ -9,6 +9,7 @@ const vendorPlan = require('../../../config/gtc-plan');
 const mailStatus = require('../../../config/mail-status');
 const cartService = require('../../../api/cart/cart.service');
 const marketplace = require('../../../config/marketplace');
+const notifictionService = require('../../../api/notification/notification.service');
 
 export function mailSettings(req, res) {
 	var LoggedInUser = {}, bottomCategory = {}, queryObj = {}, queryObjCategory ={};
@@ -85,6 +86,14 @@ export function mailSettings(req, res) {
 						return callback(null);
 					});
 			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(LoggedInUser.id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
+			}
 		}, function(err, results) {
 			if (!err) {
 				var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
@@ -95,6 +104,7 @@ export function mailSettings(req, res) {
 					categories: results.categories,
 					bottomCategory: bottomCategory,
 					cart: results.cartInfo,
+					unreadCounts: results.unreadCounts,
 					marketPlace: marketplace,
 					LoggedInUser: LoggedInUser,
 					selectedPage: 'mail-settings',

@@ -98,16 +98,16 @@ var all = {
 	//Notification
 	notification: {
 		templates: {
-			refundRequest: 'REFUND-REQUEST',
-			refundProcessing: 'REFUND-PROCESSING',
-			refundSuccessful: 'REFUND-SUCCESSFUL',
-			vendorNewOrder: 'NEW-ORDER',
-			productReview: 'PRODUCT-REVIEW',
-			likesComments: 'LIKE-AND-COMMENT',
-			newPostFromBuyerOnYourDB: 'BUYER-POST-ON-DESCUSSION-BOARD',
-			orderCancelled: 'ORDER-CANCELLED',
-			orderDetail: 'ORDER-DETAILS',
-			orderStatus: 'ORDER-STATUS'
+			vendorNewOrder: 'NEW_ORDER',
+			orderDetail: 'ORDER_DETAILS',
+			orderItemCancelled: 'ORDER_CANCELLED',
+			orderStatus: 'ORDER_STATUS',
+			refundRequest: 'REFUND_REQUEST',
+			refundProcessing: 'REFUND_PROCESSING',
+			refundSuccessful: 'REFUND_SUCCESSFUL',
+			productReview: 'PRODUCT_REVIEW',
+			newPostFromBuyerOnYourDB: 'BUYER_POST_ON_DESCUSSION_BOARD',
+			likesComments: 'LIKE_AND_COMMENT'
 		}
 	},
 	jobs: {
@@ -115,7 +115,6 @@ var all = {
 		"orderEmail": "order-email",
 		"orderItemPayout": "order-item-payout",
 		"couponExpiry": "couponExpiry",
-		"vendorPayouts": "vendorPayouts",
 		"aliExpressScrape": "aliexpress-scrape",
 		"ebayInventory": "ebay-inventory",
 		"amazonImportJob": "amazonImportJob",
@@ -126,7 +125,8 @@ var all = {
 		"bulkUserPlanRenewal": "bulkUserPlanRenewal",
 		"subscriptionAutoRenewal": "subscriptionAutoRenewal",
 		"featureProductAutoRenewal": "featureProductAutoRenewal",
-		"vendorPayoutsNew": "vendor-payouts-new"
+		"vendorPayouts": "vendor-payouts",
+		"orderNotification": "order-notification"
 	},
 	fee: {
 		gtc_fees: 0.01,
@@ -243,6 +243,13 @@ var all = {
 				safe: true
 			}
 		}
+	},
+
+	//video call stun server
+	videoCall : {
+		'iceServers': [{
+			'urls': 'stun:stun.l.google.com:19302'
+		}]
 	},
 
 	// Return order request days

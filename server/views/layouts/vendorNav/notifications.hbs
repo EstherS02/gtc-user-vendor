@@ -8,7 +8,7 @@
 		$("#noProducts").hide();
 		$('.clickable-row').click(function() {
 			var id = $(this).data('id');
-			$('#'+id).hide();
+			//$('#'+id).hide();
 			var notificationCount = $("#notificationCount").val();
 			notificationCount = notificationCount-1;
 			if(notificationCount==0){
@@ -28,16 +28,13 @@
 					type: 'GET',
 					success: function(data) {
 						console.log(data);
-						// $("#"+id).hide();
-						
 					},
 					error: function(error) {
 						console.log(error);
 					}
 				})
 			}
-		});
-
+		}); 
 		$('.clickable-row').magnificPopup({
 			type: 'inline',
 			midClick: true,
@@ -47,8 +44,23 @@
 		$(document).on('click', '.popup-modal-dismiss', function(e) {
 			e.preventDefault();
 			$.magnificPopup.close();
+			location.reload(true);
 		});
 	});
+
+	function deleteNotification(id) {
+		$.ajax({
+			url: 'api/notification/delete/' +id,
+			type: 'GET',
+			success: function(data) {
+				$('#'+id).hide()
+				location.reload(true);
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		})
+	};
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray">
@@ -60,35 +72,40 @@
 			<div class="col-sm-10">
 				<div class="ibox">
 					<div class="ibox-content">
+						<div class="ibox-title">
+			              <h6>MY NOTIFICATIONS</h6>
+			            </div>
 						<div class="content-body">
+
 							<p class="content-txt"></p>
 							<div class="col-md-12">
 								<div class="table-responsive">
-									<table class="table">
-										<thead>
-											<tr>
-												<th width="20%" scope="col">Event</th>
-												<th width="60%" scope="col">Description</th>
-												<th width="20%" scope="col">Date</th>
-											</tr>
-										</thead>
-										<tbody>
-											{{#if notifications}}
+									{{#if notifications}}
+										<table class="table">
+											<thead>
+												<tr>
+													<th width="20%" scope="col">Event</th>
+													<th width="55%" scope="col">Description</th>
+													<th width="15%" scope="col">Date</th>
+													<th width="10%" scope="col">Delete</th>
+												</tr>
+											</thead>
+											<tbody>
 												{{#each notifications}}
-												<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} id = "{{this.id}}" data-message="{{this.description}}" href="#gtc-modal">
+												<tr class="{{#ifCond this.is_read '==' 0}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} id ="{{this.id}}" data-message="{{this.description}}" href="#gtc-modal">
 													<td scope="row ">{{this.name}}</td>
 													<td scope="row">{{{dotdotdot this.description}}}</td>
-													<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
+													<td scope="row">{{formatTime this.created_on "MMM D, YYYY"}}</td>
+													<td scope="row"><span onclick="event.stopPropagation(); deleteNotification({{this.id}})"><i class="fa fa-trash-o" style="font-size:16px; color:red;"></i></span></td>
 												</tr>
 												{{/each}}
-											{{else}}
-												<tr><td colspan="3" style="text-align:center;">No notification received</td></tr>
-											{{/if}}
-											<tr id="noProducts"><td colspan="3" style="text-align:center;">No notification received</td></tr>
-										</tbody>
-									</table>
+											</tbody>
+										</table>
+									{{else}}
+										<h4 class="font-weight-light py-3 text-center">No notification received!</h4>
+									{{/if}}
 								</div>
-								{{#if notifications}}
+								{{#ifCond collectionSize '>' 10}}
 									<div id="pagination">
 									{{#pagination collectionSize page pageSize maxSize}}
 									<nav aria-label="Page navigation example">
@@ -112,7 +129,7 @@
 									</div>
 								{{!-- {{else}}
 								<div > No notification received </div> --}}
-								{{/if}}
+								{{/ifCond}}
 								{{!-- <div id="noProducts"> No notification received </div> --}}
 							</div>
 						</div>

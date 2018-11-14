@@ -37,6 +37,7 @@
 
 	let callAcceptProceed = () => {
 		let callObj = $('#call_popup_card_block').data("callObj");
+		callObj['location'] = window.location.href;
 		callObj['callAcceptStatus'] = true;
 		incomingCallAudio.pause();
 		let loadUrl = `/web-rtc/${callObj.callUniqueId}`;
@@ -48,14 +49,17 @@
 
 	let callRejectProceed = (missedCall) => {
 		let callObj = $('#call_popup_card_block').data("callObj");
-		callObj['callAcceptStatus'] = false;
-		callObj['callMissed'] = false;
-		if (missedCall) {
-			callObj['callMissed'] = true;
+		if (!callObj['callReject']) {
+			callObj['callAcceptStatus'] = false;
+			callObj['callMissed'] = false;
+			callObj['callReject'] = true;
+			if (missedCall) {
+				callObj['callMissed'] = true;
+			}
+			socket.emit('call:rejected', callObj);
+			incomingCallAudio.pause();
+			hideCallPopup();
 		}
-		socket.emit('call:rejected', callObj);
-		incomingCallAudio.pause();
-		hideCallPopup();
 	}
 
 	$(function() {
@@ -89,6 +93,10 @@
 					$('#call_popup_rejected #call_reject_message').text(`Your call was rejected by ${callObj.calleeName}`);
 					$('#call_popup_rejected').modal('show');
 				}
+			});
+
+			socket.on('call::handled', (obj) => {
+				console.log("call::hanle functionality");
 			});
 
 		});

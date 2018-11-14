@@ -7,6 +7,7 @@ const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
+const plan = require('../../config/gtc-plan');
 const cartService = require('../../api/cart/cart.service');
 const vendorService = require('../../api/vendor/vendor.service');
 const marketplace_type = require('../../config/marketplace_type');
@@ -184,6 +185,32 @@ export function wholesale(req, res) {
 					return callback(error);
 				});
 		},
+		wholesalerCount: function(callback){
+			var planQuery={};
+			planQuery['plan_id']=plan['WHOLESALER'];
+			productService.sellersCount(planQuery)
+			.then((response)=>{
+				return callback(null,response)
+			}).catch((error)=>{
+				console.log("Error:::", error);
+					return callback(error);
+			})
+
+		},
+		wholesaleProductCount: function(callback){
+			var marketplaceQuery={
+				marketplace_id:marketplace['WHOLESALE']
+			}
+			productService.productCount(marketplaceQuery)
+			.then((response)=>{
+
+				return callback(null,response)
+			}).catch((error)=>{
+				console.log("Error:::", error);
+					return callback(error);
+			})
+
+		}
 	}, function(err, results) {
 		if (!err) {
 			res.render('wholesale', {
@@ -201,7 +228,9 @@ export function wholesale(req, res) {
 				country: results.country,
 				cart: results.cartInfo,
 				type: results.type,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				wholesaleProductCount: results.wholesaleProductCount,
+				wholesalerCount: results.wholesalerCount
 			});
 		} else {
 			res.render('wholesale', err);

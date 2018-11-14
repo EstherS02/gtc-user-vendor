@@ -184,6 +184,32 @@
 						<span class="header-lg-span text-white">({{order.Order.total_order_items}} Items Total)</span>
 					</div>
 					{{#if order.Order.total_order_items}}
+
+						<div class="col text-right">
+							<h6>Shipping Address</h6>
+							<p class="address-info">
+								{{order.Order.shippingAddress1.first_name}} 
+								{{#if order.Order.shippingAddress1.last_name}}
+									{{order.Order.shippingAddress1.last_name}}
+								{{/if}}
+							</p>
+							<p class="address-info">
+								{{order.Order.shippingAddress1.address_line1}},
+							</p>
+							{{#if order.Order.shippingAddress1.address_line2}}
+							<p class="address-info">
+								{{order.Order.shippingAddress1.address_line2}},
+							</p>
+							{{/if}}
+							<p class="address-info">
+								{{order.Order.shippingAddress1.city}},
+							</p>
+							<p class="address-info">
+								{{order.Order.shippingAddress1.State.name}} - 
+								{{order.Order.shippingAddress1.postal_code}}.
+							</p>
+						</div>
+
 						{{#each order.marketplace_products}}
 							{{#ifCond @root.marketPlace.WHOLESALE '==' @key}}
 								<div class="mini-header bg{{@key}}">WHOLESALE ITEMS ({{this.count}})</div>

@@ -18,6 +18,7 @@ module.exports = async function(job, done) {
 	const orderModelName = "Order";
 	const orderItemPayoutModelName = "OrderItemPayout";
 	const orderItemModelName = "OrderItem";
+	const agenda = require('../app').get('agenda');
 
 	try {
 		const response = await model[orderItemModelName].findAll({
@@ -83,6 +84,11 @@ module.exports = async function(job, done) {
 					last_updated_by: "Administrator",
 					last_updated_on: new Date()
 				}, item.id);
+
+				agenda.now(config.jobs.orderNotification, {
+					itemId: item.id,
+					code: config.notification.templates.orderItemCancelled,
+				});
 			}
 
 			const orderItemPayoutResponse = await service.createRow(orderItemPayoutModelName, {

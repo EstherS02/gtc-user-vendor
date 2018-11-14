@@ -260,7 +260,7 @@ Handlebars.registerHelper('timeLeft', function(context, options) {
 	var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
 	var secondsDiff = '';
 	if (endDate.diff(currentDate) > 0) {
-		var intervals = ['days', 'hours', 'minutes'],
+		var intervals = ['months','days', 'hours', 'minutes'],
 			out = [];
 		var arrayEle = [];
 		for (var i = 0; i < intervals.length; i++) {
@@ -272,11 +272,22 @@ Handlebars.registerHelper('timeLeft', function(context, options) {
 		if (arrayEle['minutes'] < 60) {
 			secondsDiff = arrayEle['minutes'] + 'm left!';
 		} else if (arrayEle['hours'] < 24) {
-			secondsDiff = arrayEle['hours'] + 'h ' + arrayEle['minutes'] % 60 + 'm left!';
+			secondsDiff = arrayEle['hours'] + 'h ';
+			if(arrayEle['minutes'] > 60) 
+				secondsDiff = secondsDiff + arrayEle['minutes'] % 60;
+				 secondsDiff = secondsDiff +'m left!';
 		} else if (arrayEle['days'] < 30) {
-			secondsDiff = arrayEle['days'] + 'd ' + arrayEle['hours'] % 24 + 'h left!';
-		}
+			secondsDiff = arrayEle['days'] + 'd ';
+			if(arrayEle['hours'] > 24)
+			 secondsDiff = secondsDiff+ arrayEle['hours'] % 24;
+				 secondsDiff = secondsDiff +'h left!';
+		} else if (arrayEle['months'] <= 12 ) {
+			secondsDiff = arrayEle['months'] + 'mon ';
+			if(arrayEle['days'] > 30)
+			 secondsDiff = secondsDiff+ arrayEle['days'] % 24;
+				 secondsDiff = secondsDiff +'d left!';
 	}
+}
 	return secondsDiff;
 });
 
@@ -434,7 +445,6 @@ Handlebars.registerHelper('navbarSetting', function(user, type, options) {
 		return options.fn(this);
 	}
 });
-
 Handlebars.registerHelper('json', function(jsonStr, key) {
 	if (_.isUndefined(jsonStr) || _.isNull(jsonStr)) {
 		return '';
@@ -484,6 +494,9 @@ Handlebars.registerHelper('last2', function(str, isJson, key) {
 
 Handlebars.registerHelper('currency', function(amt, symbol) {
 	return numeral(amt).format(symbol + '0,0.00');
+});
+Handlebars.registerHelper('CommaSeparate', function(amt) {
+	return numeral(amt).format('0,0');
 });
 
 Handlebars.registerHelper('if_eq', function(a, b, opts) {

@@ -41,17 +41,17 @@
 							{{/ifCond}}
 							<li class="nav-item">
 								<a href="/gtc-mail/inbox" class="nav-link">Inbox
-									<div class="messages UnreadMessages"></div>
+									<b class="notification-badge">{{unreadCounts.mailCount}}</b>
 								</a>
 							</li>
 							<li class="nav-item">
 								<a href="/messages" class="nav-link">Messages
-									<b class="notification-badge">0</b>
+									<strong><small id="msg-count"></small></strong>
 								</a>
 							</li>
 							<li class="nav-item">
 								<a href="/notifications" class="nav-link">Notifications
-									<b class="notification-badge">0</b>
+									<b class="notification-badge">{{unreadCounts.notification}}</b>
 								</a>
 							</li>
 							<li class="nav-item">
@@ -99,17 +99,17 @@
 							{{/if}}
 							<li class="nav-item">
 								<a href="/gtc-mail/inbox" class="nav-link">Inbox
-									<div class="messages UnreadMessages"></div>
+									<b class="notification-badge">{{unreadCounts.mailCount}}</b>
 								</a>
 							</li>
 							<li class="nav-item">
 								<a href="/messages" class="nav-link">Messages
-									<b class="notification-badge">0</b>
+									<strong><small id="msg-count"></small></strong>
 								</a>
 							</li>
 							<li class="nav-item">
 								<a href="/notifications" class="nav-link">Notifications
-									<b class="notification-badge">0</b>
+									<b class="notification-badge">{{unreadCounts.notification}}</b>
 								</a>
 							</li>
 						</ul>
@@ -122,9 +122,20 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
+         $.ajax({
+            type: 'GET',
+            url: '/api/talk/talk-count',
+            success: function (data) {
+                document.getElementById('msg-count').innerHTML = `<b class="notification-badge"> `+data.length +`</b>`; 
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        })
+
 		socket.on('connect', () => {
 			socket.on('chat:count:receive', function(result) {
-				document.getElementById('msg-count').innerHTML = `<small class="vendor-bar-chat-count"> ` + result + `</small>`;
+				document.getElementById('msg-count').innerHTML = `<b class="notification-badge"> ` + result + `</b>`;
 			})
 		});
 	});

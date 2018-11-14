@@ -63,6 +63,7 @@
         if (removeSelected == 'All') {
             $("#removeCountry option").each(function () {
                 if ($(this).val() != "All")
+				  
                     selectArray.push($(this).val());
             });
             newData.country_id = JSON.stringify(selectArray);
@@ -92,6 +93,7 @@
     }
 
 }
+
 function updateFunction() {
 
     var old_base_location = {{ LoggedInUser.Vendor.base_location }};
@@ -119,8 +121,43 @@ function updateFunction() {
 
 }
 $(document).ready(function () {
+	$('#sellingCountry').val("");
+	$('#removeCountry').val("");
     $("#gtc-shipping").hide();
-});
+	$('#addbtn').prop('disabled', true);
+	$('#removebtn').prop('disabled', true);
+	$("#sellingCountry option[selected]").removeAttr("selected");    
+	if(($('#sellingCountry option').last().val()!='All'))
+	{
+		$('#sellingCountry').prop('disabled', false);
+	}
+	else
+	{
+		$('#sellingCountry').prop('disabled', true);
+	}
+	if(($('#removeCountry option').last().val()!='All'))
+	{
+         $('#removeCountry').prop('disabled', false);
+	}
+	else
+	{
+        $('#removeCountry').prop('disabled', true);
+	}
+	$("#sellingCountry").on('change', function() {
+    if ($('#sellingCountry').val() != '') {
+    $('#addbtn').prop('disabled', false);
+    } else { 
+    $('#addbtn').prop('disabled', true);
+    }
+    }); 
+	 $("#removeCountry").on('change', function() {
+    if ($('#removeCountry').val() != '') {
+    $('#removebtn').prop('disabled', false);
+    } else { 
+    $('#removebtn').prop('disabled', true);
+    }
+    }); 
+    });
 
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
@@ -193,13 +230,13 @@ $(document).ready(function () {
 											</select>
 										</div>
 										<div class="col-lg-2"><br/><br/>
-											<button class="ladda-button btn btn-small btn-muted" type="submit" style="width:75%" onclick="myAdd(this)">ADD</button><br/><br/>
-											<button class="ladda-button btn btn-small btn-muted" type="submit" style="width:75%" onclick="myRemove(this)">REMOVE</button>
+											<button class="ladda-button btn btn-small btn-muted" type="submit" style="width:75%" id="addbtn" onclick="myAdd(this)">ADD</button><br/><br/>
+											<button class="ladda-button btn btn-small btn-muted" type="submit" style="width:75%" id="removebtn" onclick="myRemove(this)">REMOVE</button>
 										</div>
 										<div class ="col-lg-3">
 											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" size="15" name="addedCountry" id="removeCountry">
 												{{#if vendorCountry.count}}
-												{{!-- <option value="All">All </option> --}}
+												 <option value="All">All </option> 
 												{{#if vendorCountry.vendorCountriesID}} {{{vendorSelectedcountry Countries.rows vendorCountry.vendorCountriesID}}} {{else}}
 												{{#each Countries}}
 												<option value={{this.id}}>{{this.name}}</option>

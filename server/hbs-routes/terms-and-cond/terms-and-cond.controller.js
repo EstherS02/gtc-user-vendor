@@ -8,6 +8,7 @@ const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function termsAndCond(req, res) {
 	var LoggedInUser = {},
@@ -71,6 +72,14 @@ export function termsAndCond(req, res) {
 						consolelog('Error:::', error);
 						return callback(error, null);
 					});
+			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(user_id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
@@ -82,11 +91,11 @@ export function termsAndCond(req, res) {
 					bottomCategory: bottomCategory,
 					cart: results.cartInfo,
 					marketPlace: marketplace,
-					selectedPage: 'terms-and-cond',
+					selectedPage: 'terms-and-conditions',
 					vendorPlan: vendorPlan,
 					termsAndCond: results.termsAndCond,
-					statusCode: statusCode,
-					selectedPage: 'terms-and-cond',
+					unreadCounts: results.unreadCounts,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/terms-and-cond', err);

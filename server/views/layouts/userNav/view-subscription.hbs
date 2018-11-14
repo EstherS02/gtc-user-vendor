@@ -1,4 +1,22 @@
 <script>
+	var params = {{{ DisplayJSON queryParamsString }}};
+	function limit(size) {
+		params = replaceUrlParam(params, "limit", size);
+		params = replaceUrlParam(params, "page", 1);
+		params = replaceUrlParam(params, "offset", 0);
+		location.href = "subscription?"+ params;
+	}
+
+	function replaceUrlParam(existingQueryParams, paramsName, paramsValue) {
+		var urlParams = new URLSearchParams(existingQueryParams);
+		if (paramsValue) {
+			urlParams.set(paramsName, paramsValue);
+		} else {
+			urlParams.delete(paramsName);
+		}
+		return urlParams;
+	}
+
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -26,7 +44,9 @@
 	function editSubscription(e) {
 		var chkArray = [];
 		$(':checkbox:checked').each(function (i) {
-			chkArray.push($(this).val());
+			if ($(this).val() != 'on') {
+				chkArray.push($(this).val());
+			}			
 		});
 
 		var subscription_id = chkArray.join(',');
@@ -52,8 +72,8 @@
 		else {
 			$('#gtc-subscription-alert').removeClass('alert-danger').addClass('alert-success');
 			$('#gtc-subscription-alert .subscription-message').text('Select one subscription product to edit')
-			$("#gtc-subscription-alert").fadeTo(7000, 500).slideUp(500, function () {
-			$("#gtc-subscription-alert").slideUp(500);
+			$("#gtc-subscription-alert").fadeTo(1000, 500).slideUp(500, function () {
+			$("#gtc-subscription-alert").slideUp(100);
 			});
 		}
 	}
@@ -230,30 +250,43 @@
 									</div>
 								</div>								
 							</div>
-							<div class="row">
-								<div class="col-sm-12">	
-									<div class="alert" id="gtc-subscription-alert">
-										<button type="button" class="close" data-dismiss="alert">
-											<span aria-hidden="true">&times;</span>
-										</button>
-										<span class="subscription-message"></span>
-									</div>	
-									<div class="cart-top-header">
-										<div class="alignleft cart-top-left">
-											<span class="m-r-sm text-muted">{{this.collectionSize}} items total</span>
+							{{#if subscriptions.count}}
+								<div class="row py-2">
+									<div class="col-md-12">
+										<div class="alert" id="gtc-subscription-alert">
+											<button type="button" class="close" data-dismiss="alert">
+												<span aria-hidden="true">&times;</span>
+											</button>
+											<span class="subscription-message"></span>
 										</div>
-										<div class="alignright cart-top-right">
-											
+										<small class="font-weight-light">{{subscriptions.count}} items total</small>
+										<div class="float-right">
+											<small class="font-weight-light">Entries per page : </small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
+											</small>
 										</div>
 									</div>
 								</div>
-								<div class="col-md-12">
-									<div class="table-responsive">
-										<table class="table table-hover">
+								<div class="row">
+									<div class="col-md-12">
+										<table class="table order-table">
 											<thead>
 												<tr>
-													<th scope="col">
-														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
+													<th>
+														<div class="customCheckbox">
+															<input type="checkbox" onclick="selectAll(this);" id="checkbox" class="customCheckboxInput">
+															<label class="checkbox-b" for="checkbox"></label>
+														</div>
 													</th>
 													<th style="width: 20%;" >Products</th>
 													<th>Price</th>
@@ -263,68 +296,74 @@
 													<th>Next Renewal</th>
 													<th>End On</th>
 													<th colspan="2">Status</th>
-												</tr>
+												</tr>	
 											</thead>
 											<tbody>
-											{{#if subscriptions}}
-											{{#each subscriptions}}
-												<tr>
-													<td><input type="checkbox" class="checkbox" name="selected" value='{{this.id}}'></td>
-													<td>
-														<a href="{{MarketPlaceURL this.Product.marketplace_id}}/{{this.Product.product_slug}}/{{this.Product.id}}">
-															<img src="{{this.Product.product_base_image}}" onError="imgError(this)" style="width: 30px;" />
-														{{this.Product.product_name}}</a>
-													</td>
-													<td>{{this.Product.price}}</td>
-													<td>{{this.quantity}}</td>
-													<td>{{formatTime this.purchased_on "MMM DD, YYYY"}}</td>
-													<td>{{#if this.last_order_placed_on}}{{formatTime this.last_order_placed_on "MMM DD, YYYY"}}{{/if}}</td>
-													<td>{{#if this.next_order_place_on}}{{formatTime this.next_order_place_on "MMM DD, YYYY"}}{{/if}}</td>
-													<td>{{#if this.end_date}}{{formatTime this.end_date "MMM DD, YYYY"}}{{/if}}</td>
-													<td {{#ifCond this.status '==' ../statusCode.ACTIVE}} class="text_green_color"
-														{{else ifCond this.status '==' ../statusCode.INACTIVE}} class="text_red_color" {{/ifCond}}>
-														{{#ifCond this.status '==' ../statusCode.ACTIVE}}Active
-														{{else ifCond this.status '==' ../statusCode.INACTIVE}}  In Active {{/ifCond}}
-													</td>
-													{{#ifCond this.status '==' ../statusCode.ACTIVE}}
-													<td>
-														<a href="javascript:;" id='{{this.id}}' class='unSubscribe'>
-															<i class="fas fa-unlink" aria-hidden="true"></i> Unsubscribe</a>
-													</td>
-													{{else ifCond this.status '==' ../statusCode.INACTIVE}}
-													<td>
-														<a href="javascript:;" id='{{this.id}}' class='subscribe'>
-															<i class="fas fa-link" aria-hidden="true"></i> Subscribe
-														</a>
-													</td>
-													{{/ifCond}}
-												</tr>
-											{{/each}}
-											{{else}}
-												<tr><td colspan="8" style="text-align:center;">No Product Subscribed</td></tr>
-											{{/if}}				
+												{{#each subscriptions.rows}}
+													<tr>
+														<td>
+															<div class="customCheckbox">
+																<input type="checkbox" id="inputTerms{{this.id}}" class="customCheckboxInput" name="selected" value={{this.id}}>
+																<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
+															</div>
+														</td>
+														<td>
+															<a href="{{MarketPlaceURL this.Product.marketplace_id}}/{{this.Product.product_slug}}/{{this.Product.id}}">
+																<img src="{{this.Product.product_base_image}}" onError="imgError(this)" style="width: 30px;" />
+															{{this.Product.product_name}}</a>
+														</td>
+														<td>{{this.Product.price}}</td>
+														<td>{{this.quantity}}</td>
+														<td>{{formatTime this.purchased_on "MMM DD, YYYY"}}</td>
+														<td>{{#if this.last_order_placed_on}}{{formatTime this.last_order_placed_on "MMM DD, YYYY"}}{{/if}}</td>
+														<td>{{#if this.next_order_place_on}}{{formatTime this.next_order_place_on "MMM DD, YYYY"}}{{/if}}</td>
+														<td>{{#if this.end_date}}{{formatTime this.end_date "MMM DD, YYYY"}}{{/if}}</td>
+														<td {{#ifCond this.status '==' ../statusCode.ACTIVE}} class="text_green_color"
+															{{else ifCond this.status '==' ../statusCode.INACTIVE}} class="text_red_color" {{/ifCond}}>
+															{{#ifCond this.status '==' ../statusCode.ACTIVE}}Active
+															{{else ifCond this.status '==' ../statusCode.INACTIVE}}  In Active {{/ifCond}}
+														</td>
+														{{#ifCond this.status '==' ../statusCode.ACTIVE}}
+														<td>
+															<a href="javascript:;" id='{{this.id}}' class='unSubscribe'>
+																<i class="fas fa-unlink" aria-hidden="true"></i> Unsubscribe</a>
+														</td>
+														{{else ifCond this.status '==' ../statusCode.INACTIVE}}
+														<td>
+															<a href="javascript:;" id='{{this.id}}' class='subscribe'>
+																<i class="fas fa-link" aria-hidden="true"></i> Subscribe
+															</a>
+														</td>
+														{{/ifCond}}
+													</tr>
+												{{/each}}
 											</tbody>
 										</table>
 									</div>
-									{{#if collectionSize}}
+								</div>
+								{{!-- Pagination starts --}}
+									{{#ifCond subscriptions.count '>' queryURI.limit}}
 										<div class="row">
-											<div class="col-md-12">
-												{{#pagination collectionSize page pageSize maxSize}}
+											<div class="col-md-12 align-self-center">
+												{{#pagination subscriptions.count queryURI.page queryURI.limit 2}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
-																<li class="page-item-prev" style="margin-left:-310px;">
-																	<a href="subscription?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}"><i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+																<li class="justify-content-center align-self-center">
+																	<a href="../subscriptions?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">
+																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 																</li>
 															{{/unless}}
 															{{#each pages}}
 																<li class="page-item {{#if isCurrent}} active {{/if}}">
-																	<a class="page-link" href="subscription?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																	<a class="page-link" href="../subscriptions?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryURI.limit)}}">{{page}}</a>
 																</li>
 															{{/each}}
 															{{#unless endAtLastPage}}
-																<li class="page-item-next" style="margin-right:-310px;">
-																	<a href="subscription?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;<i class="fa fa-angle-double-right"></i></a>
+																<li class="justify-content-center align-self-center">
+																	<a href="../subscriptions?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">Next&nbsp;
+																		<i class="fa fa-angle-double-right"></i>
+																	</a>
 																</li>
 															{{/unless}}
 														</ul>
@@ -332,9 +371,11 @@
 												{{/pagination}}
 											</div>
 										</div>
-									{{/if}}
-								</div>
-							</div>
+									{{/ifCond}}
+								{{!-- Pagination Ends --}}
+							{{else}}
+								<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+							{{/if}}
 						</div>
 					</div>
 				</div>

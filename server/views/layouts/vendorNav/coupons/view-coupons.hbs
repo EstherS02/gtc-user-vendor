@@ -1,4 +1,5 @@
 <script type="text/javascript">
+var params = {{{ DisplayJSON queryParamsString }}};
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -15,6 +16,23 @@
 				}
 			}
 		}
+	}
+
+	function limit(size) {
+		params = replaceUrlParam(params, "limit", size);
+		params = replaceUrlParam(params, "page", 1);
+		params = replaceUrlParam(params, "offset", 0);
+		location.href = "/coupons?"+ params;
+	}
+
+	function replaceUrlParam(existingQueryParams, paramsName, paramsValue) {
+		var urlParams = new URLSearchParams(existingQueryParams);
+		if (paramsValue) {
+			urlParams.set(paramsName, paramsValue);
+		} else {
+			urlParams.delete(paramsName);
+		}
+		return urlParams;
 	}
 
 	function changeStatus(e) {
@@ -73,8 +91,8 @@
       $('#gtc-coupon-alert').prop('disabled', false);
       $('#gtc-coupon-alert').removeClass('alert-success').addClass('alert-danger');
       $('#gtc-coupon-alert .coupon-message').text(data);
-      $("#gtc-coupon-alert").fadeTo(7000, 500).slideUp(500, function () {
-        $("#gtc-coupon-alert").slideUp(500);
+      $("#gtc-coupon-alert").fadeTo(1000, 500).slideUp(500, function () {
+        $("#gtc-coupon-alert").slideUp(200);
     });
   }
   $(document).ready(function(){
@@ -110,7 +128,7 @@
 								<h2>Coupons
 									<span class="pull-right" style="font-size:12px"><a href="/coupons">Clear All</a></span>
 								</h2>
-							</div><br/>
+							</div>
 							<div class="content-body">
 								<div class="row">
 									<div class="col-md-12">
@@ -146,122 +164,132 @@
 										</form>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-sm-12">
+								{{#if Coupons.count}}
+								<div class="row py-2">
+									<div class="col-md-12">
 										<div class="alert" id="gtc-coupon-alert">
 											<button type="button" class="close" data-dismiss="alert">
 												<span aria-hidden="true">&times;</span>
 											</button>
 												<span class="coupon-message"></span>
 										</div> 
-										<div class="cart-top-header">
-												<div class="alignleft cart-top-left">
-													<span class="m-r-sm text-muted">{{this.count}} items total</span>
-												</div>
-												<div class="alignright cart-top-right">
-													<span class="m-r-sm text-muted">
-													Entries per page : 
-														<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}" {{#ifCond queryURI.limit '==' 10 }} class="active" {{/ifCond}}> 10</a>
-														<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}" {{#ifCond queryURI.limit '==' 25 }} class="active" {{/ifCond}}> 25</a>
-														<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}" {{#ifCond queryURI.limit '==' 100 }} class="active" {{/ifCond}}> 100</a>
-														<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=1000) 'null'}}" {{#ifCond queryURI.limit '==' 1000 }} class="active" {{/ifCond}}> All </a>
-													</span>
-												</div>
-												<div style="clear: both;"></div>
-											</div>
-										</div>
-										<div class="col-md-12">
-												<div class="table-responsive">
-													<table class="table table-hover">
-														<thead>
-															<tr>
-																<th>
-																	<input type="checkbox" id="checkbox" onclick="selectAll(this);">
-																</th>
-																<th>Coupon Name</th>
-																<th>Coupon Code</th>
-																<th>Publish Date</th>
-																<th>Expiry Date</th>
-																<th>Type</th>
-																<th>Sales</th>
-																<th>Discount</th>
-																<th>Status</th>
-															</tr>
-														</thead>
-														<tbody>
-														{{#if Coupons}}
-															{{#each Coupons}}
-															<tr>
-																<td>
-																	<input type="checkbox" class="checkbox" value="{{this.id}}">
-																</td>
-																<td class="text_blue_color"><a href="/coupons/edit-coupons?id={{this.id}}">{{this.coupon_name}}</a></td>
-																<td>{{this.code}}</td>
-																<td>{{formatTime this.publish_date "MMM D, YYYY"}}</td>
-																<td>{{formatTime this.expiry_date "MMM D, YYYY"}}</td>
-																{{!-- DiscountType --}}
-																{{#ifCond this.discount_type "==" ../discountType.Percentage}}
-																<td>Percentage</td>
-																{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
-																<td>Fixed Price</td>
-																{{/ifCond}} {{!--End DiscountType --}}
-																<td class="text_blue_color">
-																	{{#if this.sales_count}} {{this.sales_count}}{{else}}0 {{/if}}
-																</td>
-																<td>
-																	{{#ifCond this.discount_type "==" ../discountType.Percentage}}
-																		{{decimalFixed this.discount_value}}&nbsp;% {{else ifCond this.discount_type "==" ../discountType.FixedPrice}} {{currency this.discount_value '$'}}&nbsp;
-																		<small>CAD</small>
-																	{{/ifCond}}
-																</td>
-																<td class={{#ifCond this.status '==' ../statusCode.ACTIVE}} "text_green_color"
-																			{{else ifCond this.status '==' ../statusCode.SUSPENDED}} "text_orange_color"
-																			{{else ifCond this.status '==' ../statusCode.SOLDOUT}} "text_red_color"
-																			{{/ifCond}}>
-																	{{#ifCond this.status '==' ../statusCode.ACTIVE}}Active
-																	{{else ifCond this.status '==' ../statusCode.SUSPENDED}}Suspended
-																	{{else ifCond this.status '==' ../statusCode.SOLDOUT}}Sold Out
-																	{{/ifCond}} 
-																</td>
-															</tr>
-															{{/each}}
-															{{else}}
-															<tr>
-																<td colspan="9" style="text-align:center;">No Coupons Available</td>
-															</tr>
-															{{/if}}
-														</tbody>
-													</table>
-												</div>
-												{{#if count}}
-													<div class="row">
-														<div class="col-md-12">
-															{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-																<nav aria-label="Page navigation example">
-																	<ul class="pagination justify-content-center">
-																		{{#unless startFromFirstPage}}
-																			<li class="page-item-prev" style="margin-left:-310px;">
-																				<a href="../coupons?{{QueryParams ../../queryURI (FrameObject page=(DiffFloat ../../queryPaginationObj.page 1) limit=../../queryPaginationObj.limit) 'null'}}"><i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
-																			</li>
-																		{{/unless}}
-																		{{#each pages}}
-																			<li class="page-item {{#if isCurrent}} active {{/if}}">
-																				<a class="page-link" href="../coupons?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-																			</li>
-																		{{/each}}
-																		{{#unless endAtLastPage}}
-																			<li class="page-item-next" style="margin-right:-310px;">
-																				<a href="../coupons?{{QueryParams ../../queryURI (FrameObject page=(DiffFloat ../../queryPaginationObj.page 1) limit=../../queryPaginationObj.limit) 'null'}}">Next&nbsp;<i class="fa fa-angle-double-right"></i></a>
-																			</li>
-																		{{/unless}}
-																	</ul>
-																</nav>
-															{{/pagination}}
-														</div>
-													</div>
-												{{/if}}
+										<small class="font-weight-light">{{Coupons.count}} items total</small>
+										<div class="float-right">
+											<small class="font-weight-light">Entries per page : </small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
+											</small>
 										</div>
 									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<table class="table order-table">
+											<thead>
+												<tr>
+													<th>
+														<div class="customCheckbox">
+															<input type="checkbox" onclick="selectAll(this);" id="inputCheckbox" class="customCheckboxInput">
+															<label class="checkbox-b" for="inputCheckbox"></label>
+														</div>
+													</th>	
+													<th>Coupon Name</th>
+													<th>Coupon Code</th>
+													<th>Publish Date</th>
+													<th>Expiry Date</th>
+													<th>Type</th>
+													<th>Sales</th>
+													<th>Discount</th>
+													<th>Status</th>
+												</tr>
+											</thead>
+											<tbody>
+												{{#each Coupons.rows}}
+													<tr>
+														<td>
+															<div class="customCheckbox">
+																<input type="checkbox" id="inputTerms{{this.id}}" class="customCheckboxInput" value="{{this.id}}">
+																<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
+															</div>
+														</td>
+														<td class="text_blue_color"><a href="/coupons/edit-coupons?id={{this.id}}">{{this.coupon_name}}</a></td>
+														<td>{{this.code}}</td>
+														<td>{{formatTime this.publish_date "MMM D, YYYY"}}</td>
+														<td>{{formatTime this.expiry_date "MMM D, YYYY"}}</td>
+														{{!-- DiscountType --}}
+														{{#ifCond this.discount_type "==" ../discountType.Percentage}}
+														<td>Percentage</td>
+														{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
+														<td>Fixed Price</td>
+														{{/ifCond}} {{!--End DiscountType --}}
+														<td class="text_blue_color">
+															{{#if this.sales_count}} {{this.sales_count}}{{else}}0 {{/if}}
+														</td>
+														<td>
+															{{#ifCond this.discount_type "==" ../discountType.Percentage}}
+																{{decimalFixed this.discount_value}}&nbsp;% {{else ifCond this.discount_type "==" ../discountType.FixedPrice}} {{currency this.discount_value '$'}}&nbsp;
+																<small>CAD</small>
+															{{/ifCond}}
+														</td>
+														<td class={{#ifCond this.status '==' ../statusCode.ACTIVE}} "text_green_color"
+																	{{else ifCond this.status '==' ../statusCode.SUSPENDED}} "text_orange_color"
+																	{{else ifCond this.status '==' ../statusCode.SOLDOUT}} "text_red_color"
+																	{{/ifCond}}>
+															{{#ifCond this.status '==' ../statusCode.ACTIVE}}Active
+															{{else ifCond this.status '==' ../statusCode.SUSPENDED}}Suspended
+															{{else ifCond this.status '==' ../statusCode.SOLDOUT}}Sold Out
+															{{/ifCond}} 
+														</td>
+													</tr>
+												{{/each}}
+											</tbody>
+										</table>
+									</div>
+								</div>
+								{{!-- Pagination starts --}}
+									{{#ifCond Coupons.count '>' queryURI.limit}}
+										<div class="row">
+											<div class="col-md-12 align-self-center">
+												{{#pagination Coupons.count queryURI.page queryURI.limit 2}}
+													<nav aria-label="Page navigation example">
+														<ul class="pagination justify-content-center">
+															{{#unless startFromFirstPage}}
+																<li class="justify-content-center align-self-center">
+																	<a href="../coupons?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">
+																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+																</li>
+															{{/unless}}
+															{{#each pages}}
+																<li class="page-item {{#if isCurrent}} active {{/if}}">
+																	<a class="page-link" href="../coupons?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryURI.limit)}}">{{page}}</a>
+																</li>
+															{{/each}}
+															{{#unless endAtLastPage}}
+																<li class="justify-content-center align-self-center">
+																	<a href="../coupons?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">Next&nbsp;
+																		<i class="fa fa-angle-double-right"></i>
+																	</a>
+																</li>
+															{{/unless}}
+														</ul>
+													</nav>
+												{{/pagination}}
+											</div>
+										</div>
+									{{/ifCond}}
+								{{!-- Pagination Ends --}}
+								{{else}}
+									<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+								{{/if}}
 							</div>
 						</div>
 					</div>

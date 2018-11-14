@@ -16,6 +16,7 @@
 									{{> mail/header }}
 								</div>
 							</div>
+							{{#if collectionSize}}
 							<div class="row">
 								<div class="col-sm-12">
 									<div class="alert" id="gtc-mail-alert">
@@ -47,7 +48,10 @@
 										<thead>
 											<tr>
 												<th scope="col">
-													<input type="checkbox" onclick="selectAll(this);">
+													<div class="customCheckbox">
+														<input type="checkbox" onclick="selectAll(this);" id="inputTerms" class="customCheckboxInput">
+														<label class="checkbox-b" for="inputTerms"></label>
+													</div>
 												</th>
 												<th scope="col">From</th>
 												<th scope="col">Subject</th>
@@ -58,8 +62,11 @@
 										<tbody>
 											{{#each deletedMail}}
 											<tr>
-												<td scope="row">
-													<input type="checkbox" name="selected" value="{{this.id}}">
+												<td>
+													<div class="customCheckbox">
+														<input type="checkbox" name="selected" class="customCheckboxInput" value="{{this.id}}">
+														<label class="checkbox-b" for="inputTerms"></label>
+													</div>
 												</td>
 												<td class='clickable-row' scope="row" data-href='gtc-mail/deleted/{{this.Mail.id}}'>{{this.Mail.fromUser.first_name}}</td>
 												<td class='clickable-row' scope="row" data-href='gtc-mail/deleted/{{this.Mail.id}}'>{{this.Mail.subject}}</td>
@@ -70,6 +77,7 @@
 										</tbody>
 									</table>
 								</div>
+								{{#ifCond collectionSize '>' queryPaginationObj.limit}}
 								{{#pagination collectionSize page pageSize maxSize}}
 										<nav aria-label="Page navigation example">
 											<ul class="pagination justify-content-center">
@@ -89,7 +97,11 @@
 											</ul>
 										</nav>
 								{{/pagination}}
+								{{/ifCond}}
 							</div>
+							{{else}}
+							<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+							{{/if}}
 						</div>
 					</div>
 				</div>

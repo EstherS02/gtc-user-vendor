@@ -9,6 +9,7 @@ const vendorPlan = require('../../config/gtc-plan');
 const mailStatus = require('../../config/mail-status');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
+const notifictionService = require('../../api/notification/notification.service');
 
 function plainTextResponse(response) {
 	return response.get({
@@ -51,7 +52,8 @@ export function notifications(req, res) {
 	};
 	var NotifyqueryObj = {
 		user_id: user_id,
-		is_read: 1,
+		deleted_at: null,
+		//is_read: 1,
 		status: statusCode["ACTIVE"],
 	};
 
@@ -92,24 +94,20 @@ export function notifications(req, res) {
 					});
 			},
 			notifications: function(callback) {
-
 				includeArray = [];
-				service.findRows(NotifyModel, NotifyqueryObj, offset, limit, field, order, includeArray)
-					.then(function(mail) {
-						return callback(null, mail);
-
+				service.findAllRows(NotifyModel, includeArray, NotifyqueryObj, offset, limit, field, order)
+					.then(function(notification) {
+						return callback(null, notification);
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
 			},
 			inboxMail: function(callback) {
-
 				includeArray = [{
 					"model": model['Mail'],
 					where: {
 						status: statusCode["ACTIVE"],
-						//to_id : user_id	
 					},
 					include: [{
 						model: model['User'],
@@ -126,6 +124,14 @@ export function notifications(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
+			},
+			unreadCounts: function(callback) {
+				notifictionService.notificationCounts(user_id)
+					.then(function(counts) {
+						return callback(null, counts);
+					}).catch(function(error) {
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
@@ -140,6 +146,7 @@ export function notifications(req, res) {
 					cart: results.cartInfo,
 					marketPlace: marketplace,
 					inboxMail: results.inboxMail.rows,
+					unreadCounts: results.unreadCounts,
 					mailStatus: mailStatus,
 					collectionSize: results.inboxMail.count + results.notifications.count,
 					notifications: results.notifications.rows,

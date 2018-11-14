@@ -83,32 +83,6 @@ export function productRatingsCount(req, res) {
 		});
 }
 
-export function featureMany(req, res) {
-	const ids = req.body.ids;
-	console.log("requestedIds", ids.length);
-	var arr = [];
-	for (var i = 0; i <= ids.length - 1; i++) {
-		var obj = {};
-		obj['product_id'] = ids[i];
-		obj['status'] = 1;
-		obj['start_date'] = new Date();
-		obj['created_on'] = new Date();
-		arr.push(obj);
-	}
-	model["FeaturedProduct"].bulkCreate(arr, {
-			ignoreDuplicates: true
-		})
-		.then(function(row) {
-			res.status(201).send("Created");
-			return;
-		}).catch(function(error) {
-			if (error) {
-				res.status(500).send(error);
-				return;
-			}
-		});
-}
-
 export async function create(req, res) {
 	
 	var bodyParams = {};
@@ -266,7 +240,7 @@ export async function create(req, res) {
 }
 
 export async function edit(req, res) {
-	
+
 	var productID = req.params.id;
 	var bodyParams = {};
 	var productMediaPromises = [];
@@ -973,37 +947,6 @@ function getWooCommerceProducts(perPageLimit, WooCommerce) {
 	});
 }
 
-export function featureOne(req, res) {
-	model["Product"].findById(req.params.id)
-		.then(function(row) {
-			if (row) {
-				var obj = {};
-				obj['product_id'] = row.id;
-				obj['status'] = 1;
-				obj['start_date'] = new Date();
-				obj['created_on'] = new Date();
-				model["FeaturedProduct"].upsert(obj)
-					.then(function(row) {
-						res.status(201).send("Created");
-						return;
-					})
-					.catch(function(error) {
-						if (error) {
-							res.status(500).send(error);
-							return;
-						}
-					});
-			} else {
-				res.status(404).send("Not found");
-				return;
-			}
-		}).catch(function(error) {
-			console.log('Error:::', error);
-			res.status(500).send("Internal server error");
-			return;
-		});
-}
-
 export function importProduct(req, res) {
 	var bodyParamsArray = [];
 	for (var i = 0; i < req.body.length; i++) {
@@ -1157,6 +1100,8 @@ export function featureProductWithPayment(req, res) {
 }
 
 export function featureProductWithoutPayment(req, res){
+
+	console.log("========================================", req.body);
 	if (req.body.product_id) {
 		var featureQueryObj = {
 			product_id: req.body.product_id
@@ -1188,6 +1133,7 @@ export function featureProductWithoutPayment(req, res){
 						});
 					}
 			}).catch(function(error) {
+				console.log("Error::",error);
 				return res.status(500).send({
 					"message": "ERROR",
 					"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
@@ -1274,4 +1220,26 @@ export function planActiveVendors(req, res){
 		console.log("Error::",error);
 		return res.status(500).send(error);
 	})
+}
+
+export function activeVendorProducts(req,res){
+	var queryObj = {};
+	var offset,limit, field, order;
+
+	offset = req.query.offset ? parseInt(req.query.offset) : null;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : null;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
+
+	productService.queryAllProducts(req.user.id, queryObj, offset, limit, field, order)
+		.then(function(products) {
+			return res.status(200).send(products);
+		}).catch(function(error) {
+			console.log('Error :::', error);
+			return res.status(500).send(error);
+		});
 }

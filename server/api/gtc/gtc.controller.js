@@ -25,6 +25,8 @@ const model = require('../../sqldb/model-connect');
 const paymentMethod = require('../../config/payment-method');
 const stripe = require('../../payment/stripe.payment');
 
+const endpoints = require('../../config/endpoints');
+
 export async function indexExample(req, res) {
 	var limit = 10;
 	var offset = 0;
@@ -339,16 +341,21 @@ export function createBulk(req, res) {
 }
 
 export function create(req, res) {
-
-
+	const agenda = require('../../app').get('agenda');
 	var bodyParams = req.body;
-
 	bodyParams["created_on"] = new Date();
-
 	service.createRow(req.endpoint, bodyParams)
 		.then(function(result) {
 			if (result) {
-				return res.status(201).send(result);
+				if (req.endpoint == endpoints['reviews']) {
+					agenda.now(config.jobs.orderNotification, {
+						reviewId: result.id,
+						code: config.notification.templates.productReview
+					});
+					return res.status(201).send(result);
+				} else {
+					return res.status(201).send(result);
+				}
 			} else {
 				return res.status(404).send("Not found");
 			}

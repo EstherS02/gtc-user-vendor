@@ -5,40 +5,74 @@
 
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	$(document).ready(function() {
-		$("a[title='seller']").click(function() {
-			if (userInfo.email) { } else {
-				$('#myModal').modal('show');
-			}
-		});
-			$("#geoLocateForm").validate({
-			rules: {
-				origin: {
-					required: true
-				},
-				keyword: {
-					required: true
+		$(document).ready(function() {
+		   document.getElementById("geoLocateForm").reset();
+		    $('#Geolocatesearch').prop('disabled', true);
+			$("a[title='seller']").click(function() {
+				if (userInfo.email) { } else {
+					$('#myModal').modal('show');
 				}
-			},
-			messages: {
-				origin: {
-					required: "Please enter the location",
-				},
-				keyword: {
-					required: "Please enter the keyword",
+			});
+			$('#origin, #origin').keyup(function() {
+				if ($('#origin').val() != '' && $('#origin').val() != '') {
+					$('#Geolocatesearch').prop('disabled', false);
+				} else {
+					$('#Geolocatesearch').prop('disabled', true);
 				}
-			}
+			});
+			$('#keyword, #keyword').keyup(function() {
+				if ($('#keyword').val() != '' && $('#keyword').val() != '') {
+					$('#Geolocatesearch').prop('disabled', false);
+				} else {
+					$('#Geolocatesearch').prop('disabled', true);
+				}
+			});
+			$('#selected_category_id, #selected_category_id').keyup(function() {
+				if ($('#selected_category_id').val() != '' && $('#selected_category_id').val() != '') {
+					$('#Geolocatesearch').prop('disabled', false);
+				} else {
+					$('#Geolocatesearch').prop('disabled', true);
+				}
+			});
+			$("#selected_category_id").on('change', function() {
+				if ($('#selected_category_id').val() != '' && $('#selected_category_id').val() != '') {
+					$('#Geolocatesearch').prop('disabled', false);
+				} else {
+					$('#Geolocatesearch').prop('disabled', true);
+				}
+			});
 		});
-		$('#geoLocateForm').submit(function(e) {
-		e.preventDefault();
-		let formInput = $("#geoLocateForm :input").filter(function(index, element) {
-		return $(element).val() != '';
-		}).serialize();
-		if ($('#geoLocateForm').valid()) {
-		window.location.href = 'geo-locate/search?'+formInput;
+		function geoformlocation() {
+			if ( $('#selected_category_id').val() != null && $('#origin').val() != '' && $('#keyword').val() != '') {
+				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&origin=' + $('#origin').val() + '&keyword=' + $('#keyword').val();
+			}
+			else if( $('#selected_category_id').val()!=null && $('#origin').val() != '')
+			{
+				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&origin=' + $('#origin').val() 
+			}
+			else if($('#origin').val()!='' && $('#keyword').val() != '')
+			{
+				window.location.href = 'geo-locate/search?origin=' + $('#origin').val() + '&keyword=' + $('#keyword').val() 
+			}
+			else if($('#selected_category_id').val()!= null && $('#keyword').val() != '')
+			{
+				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&keyword=' + $('#keyword').val() 
+			}
+			else if($('#selected_category_id').val()!= null)
+			{   
+				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val();
+			}
+			else if($('#origin').val() != '')
+			{
+				window.location.href = 'geo-locate/search?origin=' + $('#origin').val();
+			}
+			else if($('#keyword').val() != '')
+			{
+				window.location.href = 'geo-locate/search?keyword=' + $('#keyword').val();
+			}
+			
+          
 		}
-		});
-	});
 
 </script>
 
@@ -56,13 +90,13 @@
 								<h1 class="text-marketplace-1">GIVE IT A TRY!:</h1>
 								<form id="geoLocateForm" class="geo-locate-form">
 									<div class="form-group m-b-sm">
-										<input type="text" id="origin" name="origin" class="form-control-customized form-control-sm rounded"
-										 placeholder="Location (eg Calgary, AB)" required>
+										<input type="text" id="origin" name="origin3" class="form-control-customized form-control-sm rounded"
+										 placeholder="Location (eg Calgary, AB)">
 									</div>
 									<div class="form-group m-b-sm">
 										<div class="select-container">
-											<select class="form-control-customized form-control-sm rounded" name="selected_category_id" id="selected_category_id">
-												<option disabled selected>Category</option>
+											<select class="form-control-customized form-control-sm rounded" name="selected_category_id3" id="selected_category_id">
+												<option disabled selected value=''>Category</option>
 												{{#each categories}}
 													<option value="{{this.id}}">{{ this.name}}</option>
 												{{/each}}
@@ -70,11 +104,11 @@
 										</div>
 									</div>
 									<div class="form-group m-b-sm">
-										<input type="text" id="keyword" name="keyword" class="form-control-customized form-control-sm rounded"
-										 placeholder="Keyword (eg Spoiler)" required>
+										<input type="text" id="keyword" name="keyword3" class="form-control-customized form-control-sm rounded"
+										 placeholder="Keyword (eg Spoiler)" >
 									</div>
 									<div class="form-group">
-										<button type="submit" class="btn btn-small btn-block btn-primary"><strong>SEARCH</strong></button>
+										<button type="button" class="btn btn-small btn-block btn-primary" id="Geolocatesearch" onclick="geoformlocation()"><strong>SEARCH</strong></button>
 									</div>
 								</form>
 							</div>
@@ -93,7 +127,6 @@
 						</div>
 						<div class="row">
 							<div class="col-md-10 offset-md-0">
-								<div id="signupLog"></div>
 								<div class="signup-box">
 									<div class="row">
 										<div class="col-md-6">
@@ -142,11 +175,12 @@
 																<small class="m-l-sm font-sm1">Accept terms and conditions</small>
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group m-b-sm">
 															<button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger">
 																<strong>CREATE ACCOUNT<i id="loadingSpinnersignUp" class="fa fa fa-spinner fa-spin m-l-xs"></i></strong>
 															</button>
 														</div>
+														<small id="signUpErrorLog" style="color:red"></small>
 													</div>
 												</div>
 											</form>
@@ -525,7 +559,8 @@
 											<td class="col-7">
 												<div class="product-middle-col">
 													<h3 title="{{this.product_name}}">
-														<a href="/shop/{{this.product_slug}}/{{this.id}}" class="gtc-text-primary">{{this.product_name}}</a>
+														<a href="/shop/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag"
+														 {{else}} class="gtc-text-primary" {{/if}} >{{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-3 col-3 no-padding">
@@ -559,7 +594,7 @@
 												<div class="product-right-col">
 													{{#if this.product_discounted_price}}
 														<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
-														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE {{currency this.discount '$'}}</strong></small>
 													{{else}}
 														<h2 class="price-flag">{{currency this.price '$'}}</h2>
 													{{/if}}
@@ -604,7 +639,8 @@
 											<td class="col-7">
 												<div class="product-middle-col">
 													<h3 title="{{this.product_name}}">
-														<a href="/services/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a>
+														<a href="/services/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag"
+														 {{else}} class="text-blue" {{/if}}>{{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-3 col-3 no-padding">
@@ -638,7 +674,7 @@
 												<div class="product-right-col">
 													{{#if this.product_discounted_price}}
 														<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
-														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE {{currency this.discount '$'}}</strong></small>
 													{{else}}
 														<h2 class="price-flag">{{currency this.price '$'}}</h2>
 													{{/if}}
@@ -683,7 +719,8 @@
 											<td class="col-7">
 												<div class="product-middle-col">
 													<h3 title="{{this.product_name}}">
-														<a href="/lifestyle/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a>
+														<a href="/lifestyle/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag"
+														 {{else}} class="text-blue" {{/if}}>{{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-3 col-3 no-padding">
@@ -717,7 +754,7 @@
 												<div class="product-right-col">
 													{{#if this.product_discounted_price}}
 														<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
-														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE {{currency this.discount '$'}}</strong></small>
 													{{else}}
 														<h2 class="price-flag">{{currency this.price '$'}}</h2>
 													{{/if}}

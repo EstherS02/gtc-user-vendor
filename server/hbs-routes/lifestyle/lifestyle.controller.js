@@ -100,6 +100,18 @@ export function lifestyle(req, res) {
 					console.log("wholesalers Error:::", error);
 					return callback(error);
 				});
+		},
+		buyerCount: function(callback) {
+			console.log("Max buyer count");
+			productService.userBuyerCount(marketplace['LIFESTYLE'])
+			.then((response) => {
+				console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",JSON.parse(JSON.stringify(response)))
+				return callback(null, response);
+			})
+			.catch((error) => {
+				console.log(" Error:::", error);
+				return callback(error);
+			});
 		}
 	}, function(err, results) {
 		if (!err) {
@@ -112,7 +124,8 @@ export function lifestyle(req, res) {
 				lifestyleMarketplace: results.lifestyleMarketplace,
 				subscriptionProviders: results.subscriptionProviders,
 				cart: results.cartInfo,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				buyerCount:results.buyerCount
 			});
 		} else {
 			res.render('lifestyle', err);

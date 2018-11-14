@@ -74,16 +74,15 @@ export function vendor(req, res) {
 			limit = 2;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 				.then(function(results) {
-					console.log("================",results)
 					if(results.count == 0){
 						delete queryObj['position'];
 						delete queryObj['is_featured_product'];
-						console.log("--------------queryObj",queryObj)
 							productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 							.then(function(results) {
 								return callback(null, results);
 							});
 					}else{
+
 					return callback(null, results);
 				}
 				}).catch(function(error) {
@@ -98,10 +97,10 @@ export function vendor(req, res) {
 			field = 'product_selling_count';
 			order = 'desc';
 			limit = 3;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.OnSale('product', queryObj, limit)
 				.then(function(servicesProviders) {
-					return callback(null, servicesProviders.rows);
 
+					return callback(null, servicesProviders.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -110,12 +109,15 @@ export function vendor(req, res) {
 		topRating: function(callback) {
 			delete queryObj['featured_position'];
 			delete queryObj['is_featured_product'];
+			delete queryObj['exclusive_sale'];
+			delete queryObj['exclusive_start_date'];
+			delete queryObj['exclusive_end_date'];
+			
 			queryObj['vendor_id'] = vendor_id;
-			field = 'product_rating';
-			order = 'desc';
 			limit = 3;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.TopRated('product', queryObj, limit)
 				.then(function(servicesProviders) {
+
 					return callback(null, servicesProviders.rows);
 
 				}).catch(function(error) {
@@ -129,6 +131,16 @@ export function vendor(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
+				where: {
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					},
+
 				required: false
 			}, {
 				model: model['VendorVerification'],

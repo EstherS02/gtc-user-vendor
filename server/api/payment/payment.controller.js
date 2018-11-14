@@ -29,6 +29,7 @@ const stripe = require('../../payment/stripe.payment');
 const CURRENCY = 'usd';
 
 export async function makePayment(req, res) {
+	console.log("makePayment.........");
 	var vendorArray = [];
 	var cartItems = [];
 	var cartEmptyPromises = [];
@@ -188,9 +189,21 @@ export async function makePayment(req, res) {
 			await Promise.all(vendorArray.map(async (vendorOrder) => {
 				orderVendorPromises.push(service.createRow(orderVendorModelName, vendorOrder));
 			}));
+
+			agenda.now(config.jobs.orderNotification, {
+				order: newOrder.id,
+				code: config.notification.templates.vendorNewOrder
+			});
+
+			agenda.now(config.jobs.orderNotification, {
+				order: newOrder.id,
+				code: config.notification.templates.orderDetail
+			});
+
 			agenda.now(config.jobs.orderEmail, {
 				order: newOrder.id
 			});
+
 			return res.status(200).send({
 				order: newOrder.id
 			});
@@ -297,6 +310,7 @@ function resMessage(message, messageDetails) {
 }
 
 export async function cancelOrderItem(req, res) {
+	const agenda = require('../../app').get('agenda');
 	req.checkBody('item_id', 'Missing Query Param').notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {
@@ -353,6 +367,10 @@ export async function cancelOrderItem(req, res) {
 
 						const updateStatus = await service.updateRow('OrderVendor', orderVendorUpdateObj, orderVendorObj.id);
 						if (updateStatus) {
+							agenda.now(config.jobs.orderNotification, {
+								itemId: itemId,
+								code: config.notification.templates.orderItemCancelled,
+							});
 							return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
 						} else {
 							return res.status(400).send("Order vendor update failed.");
@@ -376,6 +394,7 @@ export async function cancelOrderItem(req, res) {
 }
 
 export async function returnOrderItem(req, res) {
+	const agenda = require('../../app').get('agenda');
 	req.checkBody('return_item_id', 'Missing Query Param').notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {
@@ -424,6 +443,10 @@ export async function returnOrderItem(req, res) {
 
 						const updateStatus = await service.updateRow('OrderVendor', orderVendorUpdateObj, orderVendorObj.id);
 						if (updateStatus) {
+							agenda.now(config.jobs.orderNotification, {
+								itemId: itemId,
+								code: config.notification.templates.refundRequest,
+							});
 							return res.status(200).send(resMessage("SUCCESS", "Order Return Initiated. Credited to bank account to 5 to 7 bussiness days"));
 						} else {
 							return res.status(400).send("Order vendor update failed.");
@@ -459,6 +482,7 @@ function checkingDays(date) {
 }
 
 export async function confirmOrderItem(req, res) {
+	const agenda = require('../../app').get('agenda');
 	req.checkBody('item_id', 'Missing Query Param').notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {
@@ -485,6 +509,10 @@ export async function confirmOrderItem(req, res) {
 				};
 				const updatestatusRow = await service.updateRow('OrderItem', updateOrderItem, itemId);
 				if (updatestatusRow) {
+					agenda.now(config.jobs.orderNotification, {
+						itemId: itemId,
+						code: config.notification.templates.orderStatus,
+					});
 					return res.status(200).send(resMessage("SUCCESS", "Order item confirmed successfully"));
 				} else {
 					return res.status(400).send("Orderitem update failed.");

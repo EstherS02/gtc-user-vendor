@@ -12,6 +12,8 @@ const cartService = require('../../../api/cart/cart.service');
 const shopService=require('../../../api/vendor/vendor.service')
 const Plan = require('../../../config/gtc-plan');
 const marketplace_type = require('../../../config/marketplace_type');
+const moment = require('moment');
+
 const async = require('async');
 const _ = require('lodash');
 
@@ -112,42 +114,47 @@ export function vendorWholesale(req, res) {
 					return callback(null);
 				});
 		},
-		vendorDetail: function(callback) {
+		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
-				model: model['Country']
-
-			}, {
-				model: model['VendorPlan'],
-				required: false
-			}, {
-				model: model['VendorVerification'],
-				where: {
-					// vendor_verified_status: status['ACTIVE']
-					vendor_verified_status: verificationStatus['APPROVED']
-				},
-				required: false
-			}, {
-				model: model['VendorFollower'],
-				where: {
-					user_id: req.user.id,
-					status: 1
-				},
-				required: false
-			}, {
-				model: model['VendorRating'],
-				attributes: [
-					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
-					[sequelize.fn('count', sequelize.col('VendorRatings.rating')), 'count']
-				],
-				group: ['VendorRating.vendor_id'],
-				required: false,
-			}];
+					model: model['VendorPlan'],
+					attributes: ['id','plan_id'],
+					where: {
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					}
+				}, {
+					model: model['VendorVerification'],
+					where: {
+						vendor_verified_status: verificationStatus['APPROVED']
+					},
+					required: false
+				}, {
+					model: model['VendorFollower'],
+					where: {
+						user_id: LoggedInUser.id,
+						status: 1
+					},
+					required: false
+				}, {
+					model: model['VendorRating'],
+					attributes: [
+						[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
+						[sequelize.fn('count', sequelize.col('VendorRatings.rating')), 'count']
+					],
+					group: ['VendorRating.vendor_id'],
+					required: false,
+				}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
 					return callback(null, response);
 
 				}).catch(function(error) {
-					console.log('Error :::', error);
+					console.log('Error :::::::::::::::::::::::::::::::::::::::::::::::::::::::',vendor_id, error);
 					return callback(null);
 				});
 		},
@@ -257,10 +264,11 @@ export function vendorWholesale(req, res) {
 				});
 		},
 	}, function(err, results) {
-		if (!err) {
+		console.log(results.VendorDetail)
+		if (!err && results.VendorDetail) {
 			res.render('vendorPages/vendor-wholesale', {
 				title: "Global Trade Connect",
-				VendorDetail: results.vendorDetail,
+				VendorDetail: results.VendorDetail,
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
 				marketPlaceTypes: results.marketPlaceTypes,
@@ -279,7 +287,8 @@ export function vendorWholesale(req, res) {
 				categoryWithProductCount:results.categoryWithProductCount
 			});
 		} else {
-			res.render('vendor-wholesale', err);
+			console.log("Error::::::::::::::",err)
+			res.render('404');
 		}
 	});
 }

@@ -212,6 +212,7 @@ export function customerInformation(req, res) {
 }
 
 export function shippingMethod(req, res) {
+	console.log("------------------",req)
 	processCheckout(req, res, function(obj, err) {
 		if (err) {
 			return res.status(500).render(err);

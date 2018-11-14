@@ -1,9 +1,8 @@
 <script type="text/javascript">
-  var userInfo = {{{ DisplayJSON LoggedInUser}}}
-  var messenger = {{{ DisplayJSON messenger }}}
-  var message_count = {{{ DisplayJSON messages_count }}}
- // console.log("messenger", messenger);
-//  console.log("message_count", message_count)
+  var userInfo = {{{ DisplayJSON LoggedInUser}}};
+  var messenger = {{{ DisplayJSON messenger }}};
+  var message_count = {{{ DisplayJSON messages_count }}};
+
   var threadId;
   var to_id = null;
   var onlineUsers = null;
@@ -13,8 +12,8 @@
     var socketChat = {
       "id": e,
       "user": userInfo.id
-    }
-   // console.log("socketChat", socketChat);
+    };
+
     socket.emit('chat:join', socketChat);
     var formData = {};
     formData.thread_id = e;
@@ -25,8 +24,8 @@
       data: formData,
       success: function (res) {
         to_id = res.thread_user;
+        console.log("to_id..................",to_id);
         if (res.talkThread) {
-          // console.log(res);
           chatPage(res.talkThread);
         } else {
           $('#comment_text' + e).notify("Please enter the valid data", "error");
@@ -39,14 +38,11 @@
     });
   }
 
-
   function chatPage(result) {
     var domElement = '';
     var time = '';
     socket.emit('chat:count', userInfo.id);
-
     var domElementUserName = '';
-    //console.log("onlineUsers", onlineUsers);  
 
     domElementUserName = domElementUserName + ` <div class="row">
                                 <div class="col-2 avatar"> 
@@ -60,14 +56,15 @@
     document.getElementById('chatUserName').innerHTML = domElementUserName;
     if(onlineUsers.indexOf(to_id.id) > -1) {
       document.getElementById('on-off').innerHTML = '<p style="color: green">online</p>';
+      $("#init-btn-video-call").show();
     } else {
       document.getElementById('on-off').innerHTML = '<p>offline</p>';
+      $("#init-btn-video-call").hide();
     }
     result.forEach(function (element) {
       console.log("element",element);
       if (element.from_id == userInfo.id) {
         time = 'pull-right';
-        //vendorInformation = element;
         domElement = domElement + `<li class="left clearfix">
       			<div class="chat-body clearfix">
       				<div class="header">
@@ -149,16 +146,16 @@
 
 
     socket.on('user:online', function (users) {
-    //  console.log("usersonline", users)
       onlineUsers = users;
       if(to_id && to_id.id != null) {
         if (users.indexOf(to_id.id) > -1) {
           document.getElementById('on-off').innerHTML = '<p style="color: green">online</p>';
+          $("#init-btn-video-call").show();
         } else {
           document.getElementById('on-off').innerHTML = '<p>offline</p>';
+          $("#init-btn-video-call").hide();
         }
       }
-   //   console.log("onlineUsers", onlineUsers);
       
       messenger.forEach(function (element) {
         if (users.indexOf(element.User.id) != -1) {
@@ -251,6 +248,28 @@
         send()
       }
     });
+
+    function getUserName(user) {
+      if (user.first_name && user.last_name) {
+        return `${user.first_name} ${user.last_name}`;
+      } else if (user.first_name) {
+        return `${user.first_name}`;
+      }
+    }
+
+    $('#init-btn-video-call').click(function() {
+      let callBtn = document.querySelector('#init-btn-video-call');
+      callBtn.disabled = true;
+      let callObj = {
+        callFrom: userInfo.id,
+        callTo: to_id.id,
+        callerName: getUserName(userInfo),
+        calleeName: getUserName(to_id),
+        location: window.location.href
+      };
+      socket.emit('call:preinit', callObj);
+    });
+
     $('#message').hide();
     $('#replayBox').hide();
     socket.emit('user:get_online_users');
@@ -331,12 +350,14 @@
                             </ul>
                           </div>
                           <div class="chat-box bg-white" id="replayBox">
-                            <form class="input-group" ng-submit="sendMessage(foodie, message)">
+                            <form class="input-group">
                               <textarea id="btn-input" class="form-control border no-shadow no-rounded" ng-model="message" placeholder="Type your message here"
                                 style="height: 37px"></textarea>
                               <span class="input-group-btn">
-                                <button id="btn-chat" class="btn btn-success no-rounded" type="button" style="margin-left: 10px !important;
-																margin-right: 10px !important;">Send</button>
+                                <button class="btn btn-info btn-color" id="init-btn-video-call" style="background-color: #4178bb">
+                                    <i class="fas fa-video" style="padding-right:2px;"></i>Call</button>
+                                <button id="btn-chat" class="btn btn-danger no-rounded" type="button" style="margin-left: 0px !important;
+																margin-right: 15px !important;">Send</button>
                               </span>
                             </form>
                             <!-- /input-group -->
@@ -349,7 +370,6 @@
                     <div class="wrapper-sm" ng-show="totalMessengers==0">
                       <div class="row m-t-md">
                         <div class="col-md-12 text-center inline">
-                          <img src="assets/images/no-message.png" class="img-responsive">
                           <span class="h6 text-muted block m-t-md m-b-md" style="line-height: inherit;">
                             There is no conversations.
                           </span>

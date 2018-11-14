@@ -7,6 +7,7 @@ var productService = require('../../api/product/product.service');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
+const moment = require('moment');
 const verificationStatus = require('../../config/verification_status');
 const service = require('../../api/service');
 const categoryService = require('../../api/category/category.service');
@@ -157,13 +158,23 @@ export function product(req, res) {
 			},
 			VendorDetail: function(callback) {
 				var vendorIncludeArr = [{
-					model: model['Country']
-				}, {
-					model: model['VendorPlan'],
+					model: model['Country'],
+					attributes: ['id', 'name', 'code'],
 					where: {
 						status: status['ACTIVE']
-					},
-					required: false
+					}
+				}, {
+					model: model['VendorPlan'],
+					attributes: ['id','plan_id'],
+					where: {
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					}
 				}, {
 					model: model['VendorVerification'],
 					where: {
@@ -192,9 +203,13 @@ export function product(req, res) {
 						gtc_talk_enabled: status['ACTIVE']
 					},
 					required: false
+				}, {
+					model: model['User'],
+					attributes: ['id', 'first_name','last_name']
 				}];
 				service.findIdRow('Vendor', vendorID, vendorIncludeArr)
 					.then(function(response) {
+						console.log("----------------------response",response)
 						return callback(null, response);
 					}).catch(function(error) {
 						console.log('Error :::', error);
@@ -230,7 +245,9 @@ export function product(req, res) {
 				if (vendorID) {
 					productQueryObj['vendor_id'] = vendorID;
 				}
+				if(marketplaceID){
 				productQueryObj['marketplace_id'] = marketplaceID;
+				}	
 
 				var resultObj = {};
 				var categoryWithProductCount = {};
@@ -350,7 +367,7 @@ export function product(req, res) {
 									model['TalkThread'].create(bodyParams).then(function(talkThread) {
 										if (talkThread) {
 											var talkThreadJSON = JSON.parse(JSON.stringify(talkThread));
-											var talkTreadModel = 'TalkThreadUsers';
+											var talkTreadModel = 'TalkThreadUser';
 											var talkThreadUserObj = [{
 												'talk_thread_status': 1,
 												'status': 1,
@@ -427,8 +444,7 @@ export function product(req, res) {
 			} else {
 				selectedPage = null;
 			}
-
-			if (!error) {
+			if (!error && results.productDetail.id) {
 				res.render('product-view', {
 					title: "Global Trade Connect",
 					categories: results.categories,
@@ -454,9 +470,8 @@ export function product(req, res) {
 					categoryWithProductCount: results.categoryWithProductCount
 				});
 			} else {
-				res.render('product-view', {
-					title: "Global Trade Connect"
-				});
+		   		res.render('404');
+		   		return;
 			}
 		});
 }
@@ -644,7 +659,6 @@ export function GetProductReview(req, res) {
 							resultObj[o.categoryname]["categoryID"] = o.categoryid;
 							resultObj[o.categoryname]["count"] = 0;
 							resultObj[o.categoryname]["subCategory"] = [];
-
 						}
 						var subCatObj = {}
 						subCatObj["subCategoryName"] = o.subcategoryname;
@@ -760,10 +774,9 @@ export function GetProductReview(req, res) {
 				categoryWithProductCount: results.categoryWithProductCount
 
 			});
-		} else {
-			res.render('product-review', {
-				title: "Global Trade Connect"
-			});
-		}
+			} else {
+	   			res.render('404');
+			   	return;
+			}
 	});
 }
