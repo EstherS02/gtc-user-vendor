@@ -79,7 +79,8 @@ module.exports = async function(job, done) {
 
 			if (item.order_item_status == orderItemStatus['ORDER_INITIATED']) {
 				const updateOrderItemRow = await service.updateRow(orderItemModelName, {
-					order_item_status: rderItemStatus['AUTO_CANCELED'],
+					order_item_status: orderItemStatus['AUTO_CANCELED'],
+					reason_for_cancel:  "Vendor confirmation excedded.",
 					cancelled_on: new Date(),
 					last_updated_by: "Administrator",
 					last_updated_on: new Date()
