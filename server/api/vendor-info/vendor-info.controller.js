@@ -166,12 +166,13 @@ export function blogPost(req, res) {
 export function upsert(req, res) {
 	var bodyParams = req.body;
 	bodyParams["last_updated_on"] = new Date();
+	bodyParams["last_updated_by"] = req.user.Vendor.vendor_name;
 	var queryObj = {
 		vendor_id: req.body.vendor_id
 	}
 	service.upsertRow("TermsAndCond", bodyParams, queryObj)
 		.then(function(result) {
-			return res.status(201).send("Updated Successfully");
+			return res.status(200).send("Updated Successfully");
 		}).catch(function(error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");

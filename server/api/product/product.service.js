@@ -192,10 +192,8 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 				where: queryObj
 			});
 			results.count = (productCount ? productCount : 0);
-			return results;
-		} else {
-			return results;
 		}
+		return results;
 	} catch (error) {
 		return error;
 	}
@@ -394,7 +392,6 @@ export async function TopSellingProducts(offset, limit, marketplace) {
 		}));
 		return products;
 	} catch (error) {
-		console.log("TopSellingProducts Error:::", error);
 		return error;
 	}
 }
@@ -571,7 +568,6 @@ export async function TopRated(modelName, queryObj, limit) {
 			]
 		});
 		const products = await JSON.parse(JSON.stringify(productResponse));
-		console.log(products.rows)
 		if (products.length > 0) {
 			await Promise.all(products.map(async (product) => {
 				const currentDate = new Date();
@@ -591,16 +587,13 @@ export async function TopRated(modelName, queryObj, limit) {
 				}
 			}));
 			results.count = productResponse.count;
-			console.log("log:::::::::::::::::::::::::::", results)
 
 			return results;
 		} else {
-			console.log("error:::::")
-
 			return results;
 		}
 	} catch (error) {
-		console.log("error:::::", error)
+		console.log("error:::", error)
 		return error;
 	}
 
@@ -754,7 +747,7 @@ export async function vendorProducts(queryObj, offset, limit, field, order) {
 		}
 		return result;
 	} catch (error) {
-		console.log("vendorProducts Error:::", error);
+		console.log("Error:::", error);
 		return error;
 	}
 }

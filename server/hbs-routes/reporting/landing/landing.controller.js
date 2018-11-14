@@ -86,10 +86,9 @@ export function reporting(req, res) {
             },
             topProducts: function(callback) {
                 ReportService.topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
-                    console.log('topProducts', results);
                     return callback(null, results);
                 }).catch((err) => {
-                    console.log('topProducts err', err);
+                    console.log('err', err);
                     return callback(err);
                 });
             },
@@ -97,7 +96,7 @@ export function reporting(req, res) {
                 ReportService.topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
                     return callback(null, results);
                 }).catch((err) => {
-                    console.log('topMarketPlace err', err);
+                    console.log('err', err);
                     return callback(err);
                 });
             },

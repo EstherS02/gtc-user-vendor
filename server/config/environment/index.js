@@ -126,7 +126,7 @@ var all = {
 		"subscriptionAutoRenewal": "subscriptionAutoRenewal",
 		"featureProductAutoRenewal": "featureProductAutoRenewal",
 		"vendorPayouts": "vendor-payouts",
-		"orderNotification": "order-notification"
+		"orderNotification": "order-notification-new"
 	},
 	fee: {
 		gtc_fees: 0.01,

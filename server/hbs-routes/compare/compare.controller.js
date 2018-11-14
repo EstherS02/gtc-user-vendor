@@ -86,7 +86,6 @@ export function compare(req, res) {
 			if (product_category_id.length > 0) {
 				productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit)
 				.then(function(publicMarketplace) {
-					console.log(publicMarketplace);
 					return callback(null, publicMarketplace);
 				}).catch(function(error) {
 					console.log('Error :::', error);

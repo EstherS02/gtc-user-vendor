@@ -1,5 +1,6 @@
 <script>
 	function selectAll(ele) {
+		$('#updateBtn').prop('disabled', false);
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
 			for (var i = 0; i < checkboxes.length; i++) {
@@ -28,7 +29,9 @@
 			oldArray.push($(this).val());
 		});
 	});
-
+	function updateCancel(){
+		location.reload();
+	}
 	function updateNotification(e) {
 		$('#updateBtn').prop('disabled', true);
 		var chkArray = [];
@@ -165,6 +168,10 @@
 								<div class="col-md-12">
 									<button class="ladda-button btn update-btn btn-small btn-muted"  id="updateBtn" onclick="updateNotification(this)" data-style="expand-left">
 										<span class="ladda-label">UPDATE</span>
+										<span class="ladda-spinner"></span>
+									</button>
+									<button class="ladda-button btn update-btn btn-small btn-muted" onclick="updateCancel()" data-style="expand-left">
+										<span class="ladda-label">CANCEL</span>
 										<span class="ladda-spinner"></span>
 									</button>
 								</div>

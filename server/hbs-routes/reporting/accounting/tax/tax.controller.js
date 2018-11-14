@@ -72,7 +72,6 @@ export function tax(req, res) {
 			var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
 
 			if (!err) {
-				console.log("start_date", queryURI['start_date']);
 				res.render('vendorNav/reporting/tax', {
 					title: "Global Trade Connect",
 					categories: results.categories,
