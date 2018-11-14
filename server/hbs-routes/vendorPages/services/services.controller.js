@@ -203,7 +203,6 @@ export function vendorServices(req, res) {
 				});
 		},
 	}, function(err, results) {
-		// console.log(JSON.stringify(results.VendorDetail));
 		queryPaginationObj['maxSize'] = 5;
 
 		if (!err && results.VendorDetail) {

@@ -36,12 +36,10 @@
 			var formData = new FormData();
 
 			if ($("#personalIdProof")[0].files[0]){
-				console.log(`$("#personalIdProof")[0].files[0]`,$("#personalIdProof")[0].files[0]);
 				formData.append("personal_id_verification_file_link", $("#personalIdProof")[0].files[0]);
 			}
 			
 			if ($("#personalAddressProof")[0].files[0]){
-				console.log(`$("#personalAddressProof")[0].files[0]`,$("#personalAddressProof")[0].files[0]);
 				formData.append('personal_address_verification_file_link', $("#personalAddressProof")[0].files[0]);
 			}
 				
@@ -65,11 +63,9 @@
 					processData: false,
 					contentType: false,
 					success: function(data) {
-						console.log("data", data)
 						ouputPopup(data);
 					},
 					error: function(err) {
-						console.log("error", err)
 						ouputPopupError(err);
 					}
 				});

@@ -18,7 +18,6 @@ export function webRTC(req, res) {
     if (req.user)
         LoggedInUser = req.user;
 
-        console.log("req.user.id", req.user.id)
 
     async.series({
         cartInfo: function (callback) {

@@ -183,7 +183,7 @@ export async function TopSellingVendors(offset, limit, marketplace) {
 		}));
 		return vendors;
 	} catch (error) {
-		console.log("TopSellingVendors Error:::", error);
+		console.log("Error:::", error);
 		return error;
 	}
 }

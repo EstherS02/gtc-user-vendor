@@ -100,7 +100,6 @@ export function notificationSettings(req, res) {
 				res.render('vendorNav/notifications-settings', {
 					title: "Global Trade Connect",
 					title: "Global Trade Connect",
-					// count: results.notifications.count,
 					notification: results.notifications.rows,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
