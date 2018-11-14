@@ -6,6 +6,22 @@
         var domElement2 = '<div class="col-md-4 text_red_color social_check">' +
             '<i class="fas fa-exclamation-circle"></i>' + '</div>'
 		 var domElement3 = ''
+		 
+		 var formSubmitBtn = $("#socialProfileForm button[type='submit']");
+		 var formInputFile = $('#socialProfileForm input[type="text"]');
+
+		formInputFile.change(function() {
+			formSubmitBtn.removeAttr("disabled")
+			formSubmitBtn.css("cursor", "pointer")
+		});
+
+		formInputFile.bind('keyup', function() {
+			if ($('#facebook_url').val() != "" && $('#google_plus_url').val() != "" && $('#twitter_url').val() != "" && $('#linkedin_url').val() != "" && $('#youtube_url').val() != "" && $('#instagram_url').val() != "" && $('#flickr_url').val() != "" )  {
+				formSubmitBtn.removeAttr('disabled');
+			} else {
+				formSubmitBtn.attr('disabled', true);
+			}
+		});
 
         $('#facebook_url').change(function (e) {
             var value = $('#facebook_url').val();
@@ -413,11 +429,11 @@
                                 <hr/>
 								<div class="row">
 									<div class="col-md-12">
-										<button class="btn update-btn btn-small btn-muted" type="submit" data-style="expand-left">
+										<button class="btn update-btn btn-small btn-muted" disabled type="submit" data-style="expand-left">
 											<span class="ladda-label">UPDATE</span>
 											<span class="ladda-spinner"></span>
 										</button>
-										<button class="btn btn-small btn-muted" type="reset" data-style="expand-left" onclick="location.href='/social-profile'">
+										<button class="btn btn-small btn-muted" type="reset" data-style="expand-left" onclick="window.history.go(-1); return false;">
 											<span class="ladda-label">CANCEL</span>
 											<span class="ladda-spinner"></span>
 										</button>
