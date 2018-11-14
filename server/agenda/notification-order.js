@@ -28,6 +28,8 @@ module.exports = async function(job, done) {
 	const discussionBoardPostLikeModelName = "DiscussionBoardPostLike";
 	const emailTemplateModelName = "EmailTemplate";
 	try {
+
+		// vendor new order notification
 		if (code == config.notification.templates.vendorNewOrder) {
 			console.log("code...............",code);
 			const orderId = job.attrs.data.order;
@@ -72,6 +74,7 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		// user new order notification
 		if (code == config.notification.templates.orderDetail) {
 			console.log("code...............details*********",code);
 			const orderId = job.attrs.data.order;
@@ -107,6 +110,7 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		// order cancelled notification and email
 		if (code == config.notification.templates.orderItemCancelled) {
 			const itemId = job.attrs.data.itemId;
 			const orderItemResponse = await model[orderItemModelName].findOne({
@@ -324,6 +328,7 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		// order status change notification and email
 		if (code == config.notification.templates.orderStatus) {
 			const itemId = job.attrs.data.itemId;
 			const orderItemResponse = await model[orderItemModelName].findOne({
@@ -407,6 +412,7 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		//order item return notification and email
 		if (code == config.notification.templates.refundRequest || code == config.notification.templates.refundProcessing
 			|| code == config.notification.templates.refundSuccessful) {
 			let emailName;
@@ -508,6 +514,7 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		// product review notification
 		if (code == config.notification.templates.productReview) {
 			const reviewId = job.attrs.data.reviewId;
 			const reviewResponse = await model[reviewModelName].findOne({
@@ -553,6 +560,7 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		// new post notification for buyer dashboard 
 		if (code == config.notification.templates.newPostFromBuyerOnYourDB) {
 			const discussionBoardPostId = job.attrs.data.discussionId;
 			const discussionBoardPostResponse = await model[discussionBoardPostModelName].findOne({
@@ -596,6 +604,7 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		// likes and comment notification
 		if (code == config.notification.templates.likesComments) {
 			var modelName, id;
 			if (job.attrs.data.discussionCommentId) {
