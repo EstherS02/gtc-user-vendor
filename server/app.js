@@ -34,7 +34,7 @@ var orderEmail = require('./agenda/order-email');
 var orderItemPayout = require('./agenda/order-item-payout');
 var amazonImportJob = require('./agenda/amazon-import');
 var vendorPayouts = require('./agenda/vendor-payouts');
-var orderNotification = require('./agenda/order-notification-new');
+var orderNotification = require('./agenda/notification-order');
 
 agenda.define(config.jobs.email, sendEmailNew);
 agenda.define(config.jobs.aliExpressScrape, aliExpressScrape);
