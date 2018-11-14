@@ -192,10 +192,8 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 				where: queryObj
 			});
 			results.count = (productCount ? productCount : 0);
-			return results;
-		} else {
-			return results;
 		}
+		return results;
 	} catch (error) {
 		return error;
 	}
