@@ -40,8 +40,11 @@ export function vendorAbout(req, res) {
 		},
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
-				model: model['Country']
-
+				model: model['Country'],
+				attributes:['id','name']
+			}, {
+				model: model['State'],
+				attributes:['id','name']
 			}, {
 				model: model['VendorPlan'],
 				where: {
@@ -79,6 +82,11 @@ export function vendorAbout(req, res) {
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
+					if(response){
+						var address = response.address+','+response.city+','+response.State.name+','+response.Country.name;
+						address = address.replace(/ /g,'+');
+						response['mapAddress'] = address;
+					}
 					return callback(null, response);
 				}).catch(function(error) {
 					console.log('Error :::', error);
