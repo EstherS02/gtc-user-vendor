@@ -40,7 +40,24 @@ export function shippingSettings(req, res) {
 				}
 			},
 			Countries: function(callback) {
-				service.findRows(modelName, {}, 0, null, 'id', 'asc', [])
+				// service.findRows(modelName, {}, 0, null, 'id', 'asc', [])
+				var includeArr = [
+					{
+						model: model['Region'],
+						where: {
+							status: statusCode['ACTIVE']
+						},
+						attributes: ['id','name'],
+						
+					}
+				
+				]
+				var queryObj = {
+					status: statusCode['ACTIVE']
+			     }
+			    var field = "id";
+				var order = "ASC";
+				service.getAllFindRow(modelName, includeArr, queryObj, field, order)
 					.then(function(results) {
 						return callback(null, results);
 					}).catch(function(error) {

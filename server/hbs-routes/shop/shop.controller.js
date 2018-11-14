@@ -101,7 +101,7 @@ export function shop(req, res) {
 		},
 	}, function(err, results) {
 		if (!err) {
-			res.render('shop', { 
+			res.render('shop', {
 				title: "Global Trade Connect",
 				categories: results.categories,
 				bottomCategory: bottomCategory,

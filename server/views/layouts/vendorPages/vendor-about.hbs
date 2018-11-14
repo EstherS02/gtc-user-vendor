@@ -37,7 +37,13 @@
                 <p class="about_para">{{VendorDetail.about}}</p>
               </div>
               <div class="col-md-5">
-                <img width="100%" src="../img/location.png" />
+              {{!--   {{#if (and (VendorDetail.latitude)
+                          (VendorDetail.longitude))}} --}}
+                <iframe width="100%" height="250" frameborder="0" style="border:0"   src="https://maps.google.com/maps?q=27.83998500,78.12328100&hl=es;z=14&amp;key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&zoom=18&amp;output=embed&libraries=places"></iframe>
+                {{!-- {{else}}
+                <iframe width="100%" height="250" frameborder="0" style="border:0"   src="https://maps.google.com/maps?q=canada&hl=es;z=14&amp;key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&zoom=18&amp;output=embed"></iframe>
+                {{/if}} --}}
+
               </div>
             </div>
           </div>
@@ -48,48 +54,4 @@
 </div>
 </div>
 </section>
-{{!--  <section>
-   {{> vendor/vendor-header VendorDetail = VendorDetail}}
-   <div class="logged_in_cont">
-       <div class="container">
-          <div class="row">
-             <div class="col-md-2 col-12">
-                {{> vendor/vendor-left VendorDetail = VendorDetail}}	
-            </div>
-            <div class="col-md-10 col-12 about_bg">
-                <h3>ABOUT</h3>
-                <div class="row">
-                   <div class="col-md-7 col-12 about_logo">
-                      <div class="row pr_ab" style="padding-top: 30px;">
-                         <div class="col-md-9 col-12">
-                            <p class="about_head">
-                               <i class="fas fa-user-circle icon_style_abt"></i> {{follower.count}} FOLLOWERS
-                           </p>
-                           {{#if follower.count}}
-                           <p class="about_para">Followers you may know
-                              
-                              {{#each follower.rows}}
-                              {{#if this.User.user_pic_url}}
-                              <img class="about_para_logo" src="{{this.User.user_pic_url}}">
-                              {{/if}}
-                              {{/each}}
-                              
-                              <a href="">See all</a>
-                          </p>
-                          {{/if}}
-                          <p class="about_head">
-                              <i class="fas fa-info-circle icon_style_abt"></i> SNAPSHOT
-                          </p>
-                          <p class="about_para">{{VendorDetail.about}}</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-md-5 col-12 about_logo common_padding1">
-                <img width="100%" src="../img/location.png" />
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-</section> --}}
 {{> footer/bottom-footer}}

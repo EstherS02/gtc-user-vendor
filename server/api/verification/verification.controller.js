@@ -76,7 +76,6 @@ export async function storeData(req, res) {
 		}
 		const createRow = await service.createRow(modelName, bodyParam);
 		if (createRow) {
-			// console.log("News", createRow)
 			if (!createRow) {
 				res.status(500).send("Internal server error");
 			} else {
@@ -86,7 +85,7 @@ export async function storeData(req, res) {
 			return;
 		}
 	} catch (error) {
-		console.log('create Product Error:::', error);
+		console.log('Error:::', error);
 		return res.status(500).send(error);
 	}
 

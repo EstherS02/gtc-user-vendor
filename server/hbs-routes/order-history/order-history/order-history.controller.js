@@ -133,7 +133,7 @@ export function orderHistory(req, res) {
 				.then((response) => {
 					return callback(null, response);
 				}).catch((error) => {
-					console.log("indexExample Error :::", error);
+					console.log("Error :::", error);
 					return callback(error);
 				});
 		},
