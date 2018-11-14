@@ -228,6 +228,17 @@ export async function vendorOrderDetails(queryObj) {
 							}
 						}]
 					}]
+				},{
+					model: model['Address'],
+					as: 'shippingAddress1',
+					attributes: ['id', 'first_name', 'last_name', 'company_name', 'address_line1', 'address_line2', 'city', 'postal_code'],
+					include: [{
+						model: model['State'],
+						attributes: ['id', 'name']
+					}, {
+						model: model['Country'],
+						attributes: ['id', 'name']
+					}]
 				}]
 			}]
 		});
