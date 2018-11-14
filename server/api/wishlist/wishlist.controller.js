@@ -14,7 +14,6 @@ export function remove(req, res) {
 
 	service.destroyManyRow(modelName, ids)
 		.then(function(results) {
-			console.log("WishList", results);
 			if (results) {
 				res.status(200).send(results);
 				return;
@@ -49,13 +48,11 @@ export function cart(req, res) {
 			if (results) {
 				var id = results.id;
 				service.updateRow(modelName,data,id).then(function(response){
-					// console.log("Update",response)
 					res.status(200).send(results);
 				});
 				return;
 			} else {
 				service.createRow(modelName,data).then(function(response){
-					// console.log("NEW:", response)
 					res.status(200).send(results);
 				});
 				return;

@@ -115,7 +115,7 @@ export async function createStarterSeller(req, res) {
 			return res.status(409).send("You already a vendor.");
 		}
 	} catch (error) {
-		console.log("createStarterSeller Error:::", error);
+		console.log("Error:::", error);
 		return res.status(500).send(error);
 	}
 }
@@ -284,7 +284,6 @@ export function create(req, res) {
 
 export function me(req, res) {
 	if (req.user) {
-		console.log('req.user *****', req.user)
 		delete req.user.email_verified_token;
 		delete req.user.email_verified_token_generated;
 		delete req.user.forgot_password_token;

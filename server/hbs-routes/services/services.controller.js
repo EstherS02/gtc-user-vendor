@@ -98,6 +98,16 @@ export function services(req, res) {
 					console.log("wholesalers Error:::", error);
 					return callback(error);
 				});
+		},
+		buyerCount: function(callback) {
+			productService.userBuyerCount(marketplace['SERVICE'])
+			.then((response) => {
+				return callback(null, response);
+			})
+			.catch((error) => {
+				console.log(" Error:::", error);
+				return callback(error);
+			});
 		}
 	}, function(err, results) {
 		if (!err) {
@@ -110,7 +120,8 @@ export function services(req, res) {
 				serviceMarketplace: results.serviceMarketplace,
 				servicesProviders: results.servicesProviders,
 				cart: results.cartInfo,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				buyerCount:results.buyerCount
 			});
 		} else {
 			res.render('services', err);

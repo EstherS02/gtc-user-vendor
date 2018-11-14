@@ -198,7 +198,6 @@ export function vendorLifestyle(req, res) {
 					})
 					categoryWithProductCount.rows = resultObj;
 					categoryWithProductCount.count = count;
-					console.log("============================categoryWithProductCount", categoryWithProductCount)
 					return callback(null, categoryWithProductCount);
 				}).catch(function(error) {
 					console.log('Error :::', error);
