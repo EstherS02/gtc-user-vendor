@@ -175,27 +175,28 @@ module.exports = async function(job, done) {
 							bodyParams.created_by = "Administrator";
 							const notificationResponse = await service.createRow(notificationModelName, bodyParams);
 						}
-					}
 
-					const orderItemEmailTemplate = await service.findOneRow(emailTemplateModelName, {
-						name: "ITEM-CANCEL-BY-VENDOR-MAIL"
-					});
+						const orderItemEmailTemplate = await service.findOneRow(emailTemplateModelName, {
+							name: "ITEM-CANCEL-BY-VENDOR-MAIL"
+						});
 
-					if(orderItemEmailTemplate) {
-						let orderStatusSubject = orderItemEmailTemplate.subject;
-						let orderStatusBody = orderItemEmailTemplate.body;
-						orderItem.Order.ordered_date = moment(orderItem.Order.ordered_date).format('MMM D, Y');
-						orderStatusBody = orderStatusBody.replace('%status%', 'canceled');
-						let template = Handlebars.compile(orderStatusBody);
-						let result = template(orderItem);
-						if (orderItem.Product.Vendor.User.user_contact_email) {
-							await sendEmail({
-								to: orderItem.Product.Vendor.User.user_contact_email,
-								subject: orderStatusSubject,
-								html: result
-							});
+						if(orderItemEmailTemplate) {
+							let orderStatusSubject = orderItemEmailTemplate.subject;
+							let orderStatusBody = orderItemEmailTemplate.body;
+							orderItem.Order.ordered_date = moment(orderItem.Order.ordered_date).format('MMM D, Y');
+							orderStatusBody = orderStatusBody.replace('%status%', 'canceled');
+							let template = Handlebars.compile(orderStatusBody);
+							let result = template(orderItem);
+							if (orderItem.Product.Vendor.User.user_contact_email) {
+								await sendEmail({
+									to: orderItem.Product.Vendor.User.user_contact_email,
+									subject: orderStatusSubject,
+									html: result
+								});
+							}
 						}
 					}
+
 
 				} else if (orderItem.order_item_status == oredrItemStatus['VENDOR_CANCELED']) {
 					const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
@@ -302,28 +303,27 @@ module.exports = async function(job, done) {
 							bodyParams.created_by = "Administrator";
 							const notificationResponse = await service.createRow(notificationModelName, bodyParams);
 						}
-					}
 
-					const orderItemEmailTemplateAdmin = await service.findOneRow(emailTemplateModelName, {
-						name: "ITEM-CANCEL-BY-VENDOR-MAIL"
-					});
+						const orderItemEmailTemplateAdmin = await service.findOneRow(emailTemplateModelName, {
+							name: "ITEM-CANCEL-BY-VENDOR-MAIL"
+						});
 
-					if(orderItemEmailTemplateAdmin) {
-						let orderStatusSubject = orderItemEmailTemplateAdmin.subject;
-						let orderStatusBody = orderItemEmailTemplateAdmin.body;
-						orderItem.Order.ordered_date = moment(orderItem.Order.ordered_date).format('MMM D, Y');
-						orderStatusBody = orderStatusBody.replace('%status%', 'canceled by admin');
-						let template = Handlebars.compile(orderStatusBody);
-						let result = template(orderItem);
-						if (orderItem.Product.Vendor.User.user_contact_email) {
-							await sendEmail({
-								to: orderItem.Product.Vendor.User.user_contact_email,
-								subject: orderStatusSubject,
-								html: result
-							});
+						if(orderItemEmailTemplateAdmin) {
+							let orderStatusSubject = orderItemEmailTemplateAdmin.subject;
+							let orderStatusBody = orderItemEmailTemplateAdmin.body;
+							orderItem.Order.ordered_date = moment(orderItem.Order.ordered_date).format('MMM D, Y');
+							orderStatusBody = orderStatusBody.replace('%status%', 'canceled by admin');
+							let template = Handlebars.compile(orderStatusBody);
+							let result = template(orderItem);
+							if (orderItem.Product.Vendor.User.user_contact_email) {
+								await sendEmail({
+									to: orderItem.Product.Vendor.User.user_contact_email,
+									subject: orderStatusSubject,
+									html: result
+								});
+							}
 						}
 					}
-
 				}
 			}
 		}
