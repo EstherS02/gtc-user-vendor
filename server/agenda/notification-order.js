@@ -385,7 +385,7 @@ module.exports = async function(job, done) {
 						let result = template(orderItem);
 						if (email) {
 							await sendEmail({
-								to: user,
+								to: email,
 								subject: orderStatusSubject,
 								html: result
 							});
