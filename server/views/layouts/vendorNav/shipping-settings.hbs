@@ -127,15 +127,31 @@ $(document).ready(function () {
 	$('#addbtn').prop('disabled', true);
 	$('#removebtn').prop('disabled', true);
 	$("#sellingCountry option[selected]").removeAttr("selected");    
+	if(($('#sellingCountry option').last().val()!='All'))
+	{
+		$('#sellingCountry').prop('disabled', false);
+	}
+	else
+	{
+		$('#sellingCountry').prop('disabled', true);
+	}
+	if(($('#removeCountry option').last().val()!='All'))
+	{
+         $('#removeCountry').prop('disabled', false);
+	}
+	else
+	{
+        $('#removeCountry').prop('disabled', true);
+	}
 	$("#sellingCountry").on('change', function() {
-    if ($('#sellingCountry').val() != ''&& ($('#sellingCountry option').last().val()!='All')) {
+    if ($('#sellingCountry').val() != '') {
     $('#addbtn').prop('disabled', false);
     } else { 
     $('#addbtn').prop('disabled', true);
     }
     }); 
 	 $("#removeCountry").on('change', function() {
-    if ($('#removeCountry').val() != '' && ($('#removeCountry option').last().val()!='All')) {
+    if ($('#removeCountry').val() != '') {
     $('#removebtn').prop('disabled', false);
     } else { 
     $('#removebtn').prop('disabled', true);
