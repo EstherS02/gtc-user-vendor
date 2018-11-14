@@ -1,83 +1,73 @@
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <script>
-	var vendor_id = {{{ DisplayJSON LoggedInUser.Vendor.id}}}
-    function validate() {
-
-        if ($('#terms_of_use').val().length > 0 ||
-            $('#return_policy').val().length > 0 ||
-            $('#shipping_policy').val().length > 0) {
-            $("#submitBtn").removeAttr('disabled');
-        }
-        else {
-            $("#submitBtn").attr('disabled', 'disabled');
-        }
-    }
+	var vendor_id = {{{ DisplayJSON LoggedInUser.Vendor.id}}};
 
     $(document).ready(function () {
         $("#gtc-cart-alert").hide();
 
-        validate();
-        $('#terms_of_use, #return_policy, #shipping_policy').change(validate);
-
 		$('#termsAndCondForm').validate({
 			rules: {
 				terms_of_use: {
-					minlength: 200,
-					maxlength: 5000
+					minlength: 250
 				},
 				return_policy: {
-					minlength: 200,
-					maxlength: 5000
+					minlength: 250
 				},
 				shipping_policy: {
-					minlength: 200,
-					maxlength: 5000
+					minlength: 250
 				}
 			},
 			messages: {
 				terms_of_use: {
-					minlength: "Minimum 200 characters",
-					maxlength: "Maximum 5000 characters"
+					minlength: "Minimum 250 characters"
 				},
 				return_policy: {
-					minlength: "Minimum 200 characters",
-					maxlength: "Maximum 5000 characters"
+					minlength: "Minimum 250 characters"
 				},
 				shipping_policy: {
-					minlength: "Minimum 200 characters",
-					maxlength: "Maximum 5000 characters"
+					minlength: "Minimum 250 characters"
 				}
 			}
 		});
+		
+		$("#terms_of_use,#return_policy,#shipping_policy").change(function(e){
+			if ($('#termsAndCondForm').valid()) {
+				 $("#submitBtn").removeAttr('disabled');
+			}else{
+				$("#submitBtn").attr('disabled', 'disabled');
+			}
+		})
 
         $("#termsAndCondForm").submit(function (e) {
             e.preventDefault();
+			if ($('#termsAndCondForm').valid()) {
 
-            let input = $("#termsAndCondForm :input").serialize();
+				let input = $("#termsAndCondForm :input").serialize();
 
-            var termsAndCondInput = input + '&vendor_id=' + vendor_id + '&status=' + 1;
-            $.ajax({
-                type: 'PUT',
-                url: '/api/vendor-props/upsert',
-                data: termsAndCondInput,
-                success: function (data) {
-                    $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-                    $('#gtc-cart-alert .cart-message').text("Updated Successfully")
-                    $("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function () {
-                        $("#gtc-cart-alert").slideUp(100);
-                    });
-					setTimeout(function() {
-						location.reload();
-					}, 1000);
-                },
-                error: function (error) {
-                    $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-                    $('#gtc-cart-alert .cart-message').text("Server error please try later")
-                    $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-                        $("#gtc-cart-alert").slideUp(100);
-                    });
-                }
-            });
+				var termsAndCondInput = input + '&vendor_id=' + vendor_id + '&status=' + 1;
+				$.ajax({
+					type: 'PUT',
+					url: '/api/vendor-info/terms-and-conditions',
+					data: termsAndCondInput,
+					success: function (data) {
+						$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#gtc-cart-alert .cart-message').text("Updated Successfully")
+						$("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function () {
+							$("#gtc-cart-alert").slideUp(100);
+						});
+						setTimeout(function() {
+							location.reload();
+						}, 1000);
+					},
+					error: function (error) {
+						$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#gtc-cart-alert .cart-message').text("Server error please try later")
+						$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+							$("#gtc-cart-alert").slideUp(100);
+						});
+					}
+				});
+			}
         });
     });
 </script>
@@ -132,7 +122,7 @@
                                             <span class="ladda-label">UPDATE</span>
                                             <span class="ladda-spinner"></span>
                                         </button>
-                                        <button type="reset" class="ladda-button btn btn-small btn-muted">CANCEL</button>
+                                        <button type="reset" class="btn btn-small btn-muted">CANCEL</button>
                                     </div>
                                 </div>
                             </form>

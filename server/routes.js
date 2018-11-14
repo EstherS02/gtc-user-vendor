@@ -34,7 +34,7 @@ export default function(app) {
     app.use('/api/coupon', require('./api/coupon'));
     app.use('/api/notification', require("./api/notification"));
     app.use('/api/verification', require('./api/verification'));
-    app.use('/api/vendor-props', require('./api/vendor-props'));
+    app.use('/api/vendor-info', require('./api/vendor-info'));
     app.use('/api/order-checkout', require('./api/order-checkout'));
     app.use('/api/payment', require('./api/payment'));
     app.use('/api/shipping-setting', require('./api/shipping-setting'));
