@@ -63,6 +63,7 @@
         if (removeSelected == 'All') {
             $("#removeCountry option").each(function () {
                 if ($(this).val() != "All")
+				  
                     selectArray.push($(this).val());
             });
             newData.country_id = JSON.stringify(selectArray);
@@ -126,9 +127,23 @@ $(document).ready(function () {
 	$('#addbtn').prop('disabled', true);
 	$('#removebtn').prop('disabled', true);
 	$("#sellingCountry option[selected]").removeAttr("selected");    
-	var newData = {};
-    var selectArray = [];
-    $("#sellingCountry").on('change', function() {
+	if(($('#sellingCountry option').last().val()!='All'))
+	{
+		$('#sellingCountry').prop('disabled', false);
+	}
+	else
+	{
+		$('#sellingCountry').prop('disabled', true);
+	}
+	if(($('#removeCountry option').last().val()!='All'))
+	{
+         $('#removeCountry').prop('disabled', false);
+	}
+	else
+	{
+        $('#removeCountry').prop('disabled', true);
+	}
+	$("#sellingCountry").on('change', function() {
     if ($('#sellingCountry').val() != '') {
     $('#addbtn').prop('disabled', false);
     } else { 
@@ -221,7 +236,7 @@ $(document).ready(function () {
 										<div class ="col-lg-3">
 											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" size="15" name="addedCountry" id="removeCountry">
 												{{#if vendorCountry.count}}
-												{{!-- <option value="All">All </option> --}}
+												 <option value="All">All </option> 
 												{{#if vendorCountry.vendorCountriesID}} {{{vendorSelectedcountry Countries.rows vendorCountry.vendorCountriesID}}} {{else}}
 												{{#each Countries}}
 												<option value={{this.id}}>{{this.name}}</option>

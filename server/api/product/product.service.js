@@ -201,6 +201,19 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 	}
 }
 
+export async function userBuyerCount(params) {
+	return new Promise((resolve, reject) => {
+		Sequelize_Instance.query(RawQueries.userBuyerCount(params), {
+			model: model['OrderItem'],
+			type: Sequelize_Instance.QueryTypes.SELECT
+		}).then((results) => {
+			return resolve(JSON.parse(JSON.stringify(results)));
+		}).catch(function(error) {
+			return reject(error);
+		});
+	})
+}
+
 export function productView(productID, isUserId) {
 	var vendorAttributes = [];
 	if (isUserId) {
