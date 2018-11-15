@@ -251,14 +251,14 @@ let sqlQueries = {
                 COUNT(order_item.product_id) AS count
             FROM
                 order_item
-            RIGHT JOIN \`gtc-v2\`.\`order\` ON order_item.order_id = \`gtc-v2\`.\`order\`.id
+            RIGHT JOIN \`order\` ON order_item.order_id = \`order\`.id
             LEFT JOIN product ON order_item.product_id = product.id
             WHERE
                 product.marketplace_id = `+params+`
             GROUP BY
-                MONTH(\`gtc-v2\`.\`order\`.ordered_date)
+                MONTH(\`order\`.ordered_date)
             ORDER BY
-                MONTH(\`gtc-v2\`.\`order\`.ordered_date)`;
+                MONTH(\`order\`.ordered_date)`;
         return query;
     }
 };
