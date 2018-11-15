@@ -217,7 +217,7 @@
 										</div>
 									</div>
 									<div class="col-md-1">
-										<div class="text-nowrap" onclick="usershowDetails()">
+										<div class="text-nowrap" onclick="showDetails()">
 											<a href="javascript:;">Show Details</a>
 										</div>
 									</div>
@@ -255,9 +255,13 @@
 										<div class="input-group mb-3">
 											<div class="input-group-prepend">
 											</div>
-											<span style="font-size:12px">
-												<input type="checkbox" name="autorenewalmail">
-											</span>
+											{{!-- <span style="font-size:12px">
+												<input type="checkbox"  id="inputTerms"  name="autorenewalmail" class="customCheckboxInput">
+											</span> --}}
+											<div class="customCheckbox">
+													<input type="checkbox" id="inputTerms"  name="autorenewalmail" class="customCheckboxInput">
+													<label class="checkbox-b" for="inputTerms"></label>
+												</div>
 										</div>
 									</div>
 								</div>
