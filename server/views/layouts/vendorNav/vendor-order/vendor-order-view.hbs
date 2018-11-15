@@ -126,6 +126,13 @@
 
 	});
 
+	function selectBox(ele) {
+		if ($('#cancelCheckbox').prop('checked') == true)
+			$('#submitBtn').attr("disabled", false);
+		else
+			$('#submitBtn').attr("disabled", true);
+	}
+
 	function cancelOrderItem(item_id) {
 		$('#item_id').val(item_id);
 		$('#itemCancelModal').modal('show');
@@ -792,7 +799,7 @@
 						<input type="hidden" id="item_id" name="item_id" value="">
 						<div class="col-lg-12">
 							<div class="form-group">
-								<input class="required" type="checkbox" onclick="document.getElementById('submitBtn').disabled=false;" name="checkbox" />
+								<input class="required" type="checkbox" onclick="selectBox(this);" name="checkbox" id="cancelCheckbox"/>
 								<label class="label-control">Are you sure you want to cancel this item from your order?</label>
 							</div>
 						</div>

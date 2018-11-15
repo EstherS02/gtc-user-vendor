@@ -117,6 +117,20 @@
 		$('#itemReturnModal').modal('show');
 	}
 
+	function selectBox(ele) {
+		if ($('#cancelCheckbox').prop('checked') == true)
+			$('#submitBtn').attr("disabled", false);
+		else
+			$('#submitBtn').attr("disabled", true);
+	}
+
+	function selectBoxReturn(ele) {
+		if ($('#returnCheckbox').prop('checked') == true)
+			$('#submitBtnReturn').attr("disabled", false);
+		else
+			$('#submitBtnReturn').attr("disabled", true);
+	}
+
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <div class="wrapper-content">
@@ -666,7 +680,7 @@
 						<input type="hidden" id="item_id" name="item_id" value="">
 						<div class="col-lg-12">
 							<div class="form-group">
-								<input class="required" type="checkbox" onclick="document.getElementById('submitBtn').disabled=false;" name="checkbox" />
+								<input class="required" type="checkbox" onclick="selectBox(this);" name="checkbox" id="cancelCheckbox"/>
 								<label class="label-control">Are you sure you want to cancel this item from your order?</label>
 							</div>
 						</div>
@@ -709,7 +723,7 @@
 						<input type="hidden" id="return_item_id" name="return_item_id" value="">
 						<div class="col-lg-12">
 							<div class="form-group">
-								<input class="required" type="checkbox" onclick="document.getElementById('submitBtnReturn').disabled=false;" name="checkbox" />
+								<input class="required" type="checkbox" onclick="selectBoxReturn(this);" name="checkbox" id="returnCheckbox"/>
 								<label class="label-control">Are you sure you want to return this item?</label>
 							</div>
 						</div>
