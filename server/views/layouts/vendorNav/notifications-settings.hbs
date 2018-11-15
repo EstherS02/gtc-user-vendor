@@ -1,6 +1,8 @@
 <script>
 	function selectAll(ele) {
 		$('#updateBtn').prop('disabled', false);
+		$('#cancelBtn').prop('disabled',false);
+
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
 			for (var i = 0; i < checkboxes.length; i++) {
@@ -10,7 +12,6 @@
 			}
 		} else {
 			for (var i = 0; i < checkboxes.length; i++) {
-				console.log(i)
 				if (checkboxes[i].type == 'checkbox') {
 					checkboxes[i].checked = false;
 				}
@@ -86,9 +87,15 @@
 	};
 
 	$(document).ready(function() {
-
+		$('#cancelBtn').prop('disabled',true);
 		$('#CheckBoxList').on('change', 'input[type=checkbox]', function() {
+			if($('input[type=checkbox]').attr('checked')){
+			}else{
+				$('#inputCheckbox').prop("checked",false);	
+			}
 			$('#updateBtn').prop('disabled', false);
+			$('#cancelBtn').prop('disabled',false);
+
 		});
 	});
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
@@ -170,7 +177,7 @@
 										<span class="ladda-label">UPDATE</span>
 										<span class="ladda-spinner"></span>
 									</button>
-									<button class="ladda-button btn update-btn btn-small btn-muted" onclick="updateCancel()" data-style="expand-left">
+									<button class="ladda-button btn btn-small btn-muted" onclick="updateCancel()" id="cancelBtn" data-style="expand-left">
 										<span class="ladda-label">CANCEL</span>
 										<span class="ladda-spinner"></span>
 									</button>

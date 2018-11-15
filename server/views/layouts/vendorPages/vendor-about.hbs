@@ -1,6 +1,20 @@
- {{> header/top-header LoggedInUser = LoggedInUser}}
- {{> vendor/vendor-header VendorDetail = VendorDetail}}
- <section class="vendor-product bg-gray">
+<script type="text/javascript">
+// src="https://maps.google.com/maps?q=18.9300,72.8200&hl=es;&z=10&amp;libraries=places&amp;key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&amp;output=embed"
+  $(document).ready(function() {
+
+var map = new google.maps.Map({
+          zoom: 8,
+          center: {lat: -34.397, lng: 150.644}
+        });
+        var geocoder = new google.maps.Geocoder();
+
+         var address =  geocodeAddress(geocoder, map);
+         console.log(address);
+        })
+</script>
+{{> header/top-header LoggedInUser = LoggedInUser}}
+{{> vendor/vendor-header VendorDetail = VendorDetail}}
+<section class="vendor-product bg-gray">
   <div class="gtc-container">
     <div class="row">
       <div class="col-md-2 col-sm-12">
@@ -36,14 +50,12 @@
                 </p>
                 <p class="about_para">{{VendorDetail.about}}</p>
               </div>
-              <div class="col-md-5">
-              {{!--   {{#if (and (VendorDetail.latitude)
-                          (VendorDetail.longitude))}} --}}
-                <iframe width="100%" height="250" frameborder="0" style="border:0"   src="https://maps.google.com/maps?q=27.83998500,78.12328100&hl=es;z=14&amp;key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&zoom=18&amp;output=embed&libraries=places"></iframe>
-                {{!-- {{else}}
-                <iframe width="100%" height="250" frameborder="0" style="border:0"   src="https://maps.google.com/maps?q=canada&hl=es;z=14&amp;key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&zoom=18&amp;output=embed"></iframe>
-                {{/if}} --}}
-
+              <input type="hidden" name="latitude"  id="latitude" value={{VendorDetail.latitude}}>
+              <input type="hidden" name="longitude" id="longitude" value={{VendorDetail.longitude}}>
+              <input type="hidden" name="address" id="address" value={{VendorDetail.mapAddress}}>
+              <div class="col-md-5" >
+                 <iframe width="100%" height="300" frameborder="0" style="border:0" src="https://maps.google.com/maps?q={{VendorDetail.mapAddress}}&hl=es;&z=10&amp;libraries=places&amp;key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&amp;output=embed" ></iframe>
+                 {{!-- {{VendorDetail.mapAddress}} --}}
               </div>
             </div>
           </div>
@@ -51,7 +63,5 @@
       </div>
     </div>
   </div>
-</div>
-</div>
 </section>
 {{> footer/bottom-footer}}
