@@ -597,6 +597,15 @@
 										</p>
 									{{/ifCond}}
 								{{/each}}
+								{{#if cart.coupon_applied}}
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs">TOTAL
+										<span>{{currency cart.grand_total '$'}}</span>
+									</p>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">DISCOUNT
+										<span>- {{currency cart.discount_amount '$'}}</span>
+									</p>
+								{{/if}}
 								<div class="grand-total">
 									<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL
 										<span>{{currency cart.grand_total_with_discounted_amount '$'}}</span>
