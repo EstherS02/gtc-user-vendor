@@ -187,9 +187,7 @@ export async function saveCoupon(req, res) {
 	excludeCouponCategories = req.body.exclude_categories;
 	delete req.body.exclude_categories;
 
-	if (req.body.id) {
-		queryObj['id'] = req.body.id;
-	}
+	queryObj['id'] = req.body.id ? req.body.id : undefined;
 
 	bodyParams['coupon_name'] = req.body.coupon_name;
 	bodyParams['code'] = req.body.code;

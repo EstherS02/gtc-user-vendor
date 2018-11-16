@@ -68,6 +68,7 @@
 					success: function(data, statusText, xhr) {
 						$("#submitForm").prop("disabled", true);
 						auth.alertService(xhr.status, data);
+						location.href = '/coupons'
 					},
 					error: function(request, status, error) {
 						auth.alertService(request.status, request.responseText);
