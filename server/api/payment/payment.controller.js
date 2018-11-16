@@ -43,7 +43,7 @@ export async function makePayment(req, res) {
 	const orderVendorModelName = "OrderVendor";
 	const orderItemModelName = "OrderItem";
 	const paymentSettingModelName = "PaymentSetting";
-	const agenda = require('../../app').get('agenda');
+	var agenda = require('../../app').get('agenda');
 
 	req.checkBody('payment_setting_id', 'Missing Query Param').notEmpty();
 	req.checkBody('selected_billing_address_id', 'Missing Query Param').notEmpty();
@@ -310,7 +310,7 @@ function resMessage(message, messageDetails) {
 }
 
 export async function cancelOrderItem(req, res) {
-	const agenda = require('../../app').get('agenda');
+	var agenda = require('../../app').get('agenda');
 	req.checkBody('item_id', 'Missing Query Param').notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {
@@ -394,7 +394,7 @@ export async function cancelOrderItem(req, res) {
 }
 
 export async function returnOrderItem(req, res) {
-	const agenda = require('../../app').get('agenda');
+	var agenda = require('../../app').get('agenda');
 	req.checkBody('return_item_id', 'Missing Query Param').notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {
@@ -482,7 +482,7 @@ function checkingDays(date) {
 }
 
 export async function confirmOrderItem(req, res) {
-	const agenda = require('../../app').get('agenda');
+	var agenda = require('../../app').get('agenda');
 	req.checkBody('item_id', 'Missing Query Param').notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {

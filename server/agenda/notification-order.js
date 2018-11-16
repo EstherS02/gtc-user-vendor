@@ -12,7 +12,6 @@ const Handlebars = require('handlebars');
 const sendEmail = require('./send-email');
 
 module.exports = async function(job, done) {
-	console.log("order notification............*************");
 	const code = job.attrs.data.code;
 	const orderModelName = "Order";
 	const productModelName = "Product";
@@ -27,11 +26,12 @@ module.exports = async function(job, done) {
 	const discussionBoardPostCommentModelName = "DiscussionBoardPostComment";
 	const discussionBoardPostLikeModelName = "DiscussionBoardPostLike";
 	const emailTemplateModelName = "EmailTemplate";
+
+	console.log("..................order notification............");
 	try {
 
 		// vendor new order notification
 		if (code == config.notification.templates.vendorNewOrder) {
-			console.log("code...............",code);
 			const orderId = job.attrs.data.order;
 			const VendorNotificationResponse = await service.findRow(vendorNotificationModelName, {
 				code: code
@@ -76,7 +76,6 @@ module.exports = async function(job, done) {
 
 		// user new order notification
 		if (code == config.notification.templates.orderDetail) {
-			console.log("code...............details*********",code);
 			const orderId = job.attrs.data.order;
 			const orderResponse = await model[orderModelName].findOne({
 				where: {
@@ -660,7 +659,6 @@ module.exports = async function(job, done) {
 		}
 		done();
 	} catch (error) {
-		console.log("notification Error:::", error);
 		done(error);
 	}
 };

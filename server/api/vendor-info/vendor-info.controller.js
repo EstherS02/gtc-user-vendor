@@ -9,7 +9,7 @@ const status = require('../../config/status');
 const service = require('../service');
 
 export function blogLike(req, res) {
-	const agenda = require('../../app').get('agenda');
+	var agenda = require('../../app').get('agenda');
 	var discussion_board_post_id = req.body.id;
 	var type = 'Unlike';
 	var newStatus;
@@ -110,7 +110,7 @@ function LikeCount(req, res, callback) {
 }
 
 export function blogComment(req, res) {
-	const agenda = require('../../app').get('agenda');
+	var agenda = require('../../app').get('agenda');
 	var modelName = "DiscussionBoardPostComment";
 	req.body.modelName = "DiscussionBoardPostComment";
 	var bodyParam = {};
@@ -143,7 +143,7 @@ export function blogComment(req, res) {
 export function blogPost(req, res) {
 	var modelName = "DiscussionBoardPost";
 	var bodyParam = {};
-	const agenda = require('../../app').get('agenda');
+	var agenda = require('../../app').get('agenda');
 	bodyParam.vendor_id = req.body.vendor_id;
 	bodyParam.user_id = req.body.user_id;
 	bodyParam.post_media_type = req.body.post_media_type;
