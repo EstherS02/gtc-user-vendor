@@ -196,8 +196,8 @@
 											<tr>
 												<th>
 													<div class="customCheckbox">
-														<input type="checkbox" onclick="selectAll(this);" id="inputTerms" class="customCheckboxInput">
-														<label class="checkbox-b" for="inputTerms"></label>
+														<input type="checkbox" onclick="selectAll(this);" id="inputCheckbox" class="customCheckboxInput">
+														<label class="checkbox-b" for="inputCheckbox"></label>
 													</div>
 												</th>
 												<th>Order#</th>
@@ -212,8 +212,8 @@
 												<tr>
 													<td>
 														<div class="customCheckbox">
-															<input type="checkbox" id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
+															<input type="checkbox" id="inputTerms{{this.id}}" class="customCheckboxInput">
+															<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
 														</div>
 													</td>
 													<td><a href="../order-history/{{this.id}}">{{this.id}}</a></td>
