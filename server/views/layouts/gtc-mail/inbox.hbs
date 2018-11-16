@@ -143,8 +143,8 @@
 											<tr class="{{#ifCond this.mail_status '==' ../mailStatus.READ}} inbox-tr{{else}}inbox-tr-unread{{/ifCond}}">
 													<td>
 														<div class="customCheckbox">
-															<input type="checkbox" name="selected" class="customCheckboxInput" value="{{this.id}}">
-															<label class="checkbox-b" for="inputTerms"></label>
+															<input type="checkbox" name="selected" class="customCheckboxInput" id="inputTerms{{this.id}}" value="{{this.id}}">
+															<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
 														</div>
 													</td>
 													<td class='clickable-row' scope="row" id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{this.Mail.fromUser.first_name}}</td>

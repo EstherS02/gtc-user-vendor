@@ -131,15 +131,15 @@
 													{{#if this.VendorNotificationSettings}}
 													<td>
 														<div class="customCheckbox">
-															<input type="checkbox" class="customCheckboxInput" value="{{this.id}}">
-															<label class="checkbox-b" for="inputTerms"></label>
+															<input type="checkbox" class="customCheckboxInput" id="inputTerms{{this.id}}" value="{{this.id}}">
+															<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
 														</div>
 													</td>
 													{{else}}
 													<td>
 														<div class="customCheckbox">
-															<input type="checkbox" class="customCheckboxInput" value="{{this.id}}" checked>
-															<label class="checkbox-b" for="inputTerms"></label>
+															<input type="checkbox" class="customCheckboxInput" id="inputTerms{{this.id}}" value="{{this.id}}" checked>
+															<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
 														</div>
 													</td>
 													{{/if}}
