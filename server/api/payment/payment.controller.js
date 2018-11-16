@@ -43,6 +43,7 @@ export async function makePayment(req, res) {
 	const orderVendorModelName = "OrderVendor";
 	const orderItemModelName = "OrderItem";
 	const paymentSettingModelName = "PaymentSetting";
+	const subscriptionModelName = "Subscription";
 	var agenda = require('../../app').get('agenda');
 
 	req.checkBody('payment_setting_id', 'Missing Query Param').notEmpty();
@@ -139,6 +140,24 @@ export async function makePayment(req, res) {
 				newProductItem['created_by'] = req.user.first_name;
 				newProductItem['created_on'] = new Date();
 
+				if (cartItem.Product.marketplace_id == marketPlaceCode['LIFESTYLE']) {
+					var subscriptionItem = {};
+					subscriptionItem['user_id'] = req.user.id;
+					subscriptionItem['product_id'] = cartItem.product_id;
+					subscriptionItem['quantity'] = cartItem.quantity;
+					subscriptionItem['purchased_on'] = new Date();
+					subscriptionItem['last_order_placed_on'] = new Date();
+					subscriptionItem['status'] = status['ACTIVE'];
+					subscriptionItem['created_by'] = req.user.first_name;
+					subscriptionItem['created_on'] = new Date();
+					if (cartItem.Product.subscription_duration_unit == durationCode['DAYS'])
+						subscriptionItem['next_order_place_on'] = new Date().setDate(new Date().getDate() + cartItem.Product.subscription_duration);
+					else
+						subscriptionItem['next_order_place_on'] = new Date().setDate(new Date().getDate() + (cartItem.Product.subscription_duration * 30));
+
+					await service.createRow(subscriptionModelName, subscriptionItem);
+				}
+
 				orderItemsPromises.push(service.createRow(orderItemModelName, newProductItem));
 
 				const index = await vendorArray.findIndex((obj) => obj.vendor_id == cartItem.Product.vendor_id);
@@ -215,47 +234,6 @@ export async function makePayment(req, res) {
 		return res.status(500).send(error);
 	}
 }
-
-/*function updateSubscription(order, item) {
-
-	var subscriptionBodyParam = {
-		user_id: order.user_id,
-		product_id: item.product_id,
-		quantity: item.quantity,
-		purchased_on: order.ordered_date,
-		last_order_placed_on: order.ordered_date,
-		status: status.ACTIVE,
-		created_on: new Date()
-	}
-
-	return service.findIdRow('Product', item.product_id)
-		.then(product => {
-			if (product.marketplace_id == marketPlaceCode.LIFESTYLE) {
-				var subscriptionDuration, subscriptionRenewOn;
-
-				if (product.subscription_duration_unit == durationCode['MONTHS']) {
-					subscriptionDuration = product.subscription_duration * 30;
-				} else if (product.subscription_duration_unit == durationCode['DAYS']) {
-					subscriptionDuration = product.subscription_duration;
-				}
-
-				subscriptionRenewOn = moment().add(+subscriptionDuration, 'd');
-				subscriptionBodyParam.next_order_place_on = subscriptionRenewOn;
-
-				service.createRow('Subscription', subscriptionBodyParam)
-					.then(subscribedProduct => {
-						return Promise.resolve(subscribedProduct);
-					}).catch(err => {
-						console.log("Error:::", err);
-						return Promise.reject(err);
-					})
-			} else {
-				return;
-			}
-		}).catch(err => {
-			return Promise.reject(err);
-		})
-}*/
 
 export function createCard(req, res) {
 	let user = req.user;
