@@ -96,7 +96,7 @@
 			});
 
 			socket.on('call:handled', (obj) => {
-				var callObj = {};
+				let callObj = $('#call_popup_card_block').data("callObj");
 				callObj['callReject'] = true;
 				$('#call_popup_card_block').data('callObj', callObj);
 				incomingCallAudio.pause();
