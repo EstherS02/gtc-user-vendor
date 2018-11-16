@@ -300,8 +300,16 @@ export async function edit(req, res) {
 		delete req.body.product_attributes;
 	}
 
+	// If created by admin vendor_id present in body
+	var vendorId;
+	if(!req.body.vendor_id){      
+		vendorId = req.user.Vendor.id
+	}else{
+		vendorId = req.body.vendor_id
+	}
+
 	bodyParams = req.body;
-	bodyParams['vendor_id'] = req.user.Vendor.id;
+	bodyParams['vendor_id'] = vendorId;
 	bodyParams['product_slug'] = string_to_slug(req.body.product_name);
 	bodyParams['last_updated_by'] = req.user.first_name;
 	bodyParams['last_updated_on'] = new Date();
@@ -311,7 +319,7 @@ export async function edit(req, res) {
 		if (existingProduct) {
 			const existsVendorSKU = await service.findOneRow(productModelName, {
 				sku: req.body.sku,
-				vendor_id: req.user.Vendor.id,
+				vendor_id: vendorId,
 				id: {
 					'$ne': existingProduct.id
 				}

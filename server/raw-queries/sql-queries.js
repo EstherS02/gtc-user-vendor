@@ -41,7 +41,7 @@ let sqlQueries = {
     LEFT JOIN sub_category ON product.sub_category_id = sub_category.id
     LEFT JOIN marketplace ON product.marketplace_id = marketplace.id
     LEFT JOIN marketplace_type ON product.marketplace_type_id = marketplace_type.id
-    LEFT JOIN product_ratings ON product.id = product_ratings.product_id
+    LEFT JOIN product_ratings ON product.id = product_ratings.product_id where product.status=1
     HAVING
         distance < 300
     ORDER BY

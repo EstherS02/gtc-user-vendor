@@ -158,7 +158,8 @@ export function orderHistory(req, res) {
 				unreadCounts: results.unreadCounts,
 				queryParams: queryParams,
 				queryParamsString: querystring.stringify(queryParams),
-				dateRangeOptions: dateRangeOptions
+				dateRangeOptions: dateRangeOptions,
+				vendorPlan:vendorPlan
 			});
 		} else {
 			return res.render('userNav/order-history', error);
