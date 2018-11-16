@@ -13,6 +13,7 @@ const marketplace = require('../../config/marketplace');
 const Sequelize_Instance = require('../../sqldb/index');
 const RawQueries = require('../../raw-queries/sql-queries');
 const roles = require('../../config/roles');
+const order_status = require('../../config/order-item-new-status');
 const model = require('../../sqldb/model-connect');
 
 export async function queryAllProducts(isUserId, queryObj, offset, limit, field, order) {
@@ -125,6 +126,13 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 		},
 		attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
 		required: false
+	},{
+		model:model['OrderItem'],
+		where:{
+			//status:order_status['DELIVERED']
+		},
+		attributes:['id', [sequelize.fn('SUM', sequelize.col('OrderItems.quantity')), 'sales_count']],
+		required:false
 	}];
 
 	if (queryObj.is_featured_product == 1) {

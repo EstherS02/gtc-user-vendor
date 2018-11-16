@@ -1231,7 +1231,8 @@ export function planActiveVendors(req, res){
 }
 
 export function activeVendorProducts(req,res){
-	var queryObj = {};
+	var queryObj = {}, searchObj= {};
+	var searchArray = [];
 	var offset,limit, field, order;
 
 	offset = req.query.offset ? parseInt(req.query.offset) : null;
@@ -1243,11 +1244,29 @@ export function activeVendorProducts(req,res){
 	order = req.query.order ? req.query.order : "asc";
 	delete req.query.order;
 
+	if (req.query.fields && req.query.text){
+		var searchText = req.query.text;
+		var searchFields = req.query.fields;
+		searchFields = searchFields.split(",");
+		for (var i = 0; i < searchFields.length; i++) {
+			var obj = {}
+			obj[searchFields[i]] = {
+				like: '%' + searchText + '%'
+			}
+			searchArray.push(obj);
+		}
+		searchObj['$or'] = searchArray;
+		delete req.query.text;
+		delete req.query.fields;
+	}
+
+	queryObj = Object.assign(searchObj, req.query);
+
 	productService.queryAllProducts(req.user.id, queryObj, offset, limit, field, order)
-		.then(function(products) {
-			return res.status(200).send(products);
-		}).catch(function(error) {
-			console.log('Error :::', error);
-			return res.status(500).send(error);
-		});
+	.then(function(products) {
+		return res.status(200).send(products);
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		return res.status(500).send(error);
+	});
 }
