@@ -204,14 +204,18 @@
 		});
 
 		let endCall = () => {
-			let callUniqueId;
-			if (localStorage.getItem('callerParams'))
-				callUniqueId = JSON.parse(localStorage.getItem('callerParams')).callUniqueId;
+			let callObj = {};
+			if (localStorage.getItem('callerParams')){
+				callObj.callUniqueId = JSON.parse(localStorage.getItem('callerParams')).callUniqueId;
+				callObj.userId = JSON.parse(localStorage.getItem('callerParams')).callTo;
+			}
 
-			if (localStorage.getItem('calleeParams'))
-				callUniqueId = JSON.parse(localStorage.getItem('calleeParams')).callUniqueId;
-
-			socket.emit('call:leave', callUniqueId);
+			if (localStorage.getItem('calleeParams')){
+				callObj.callUniqueId = JSON.parse(localStorage.getItem('calleeParams')).callUniqueId;
+				callObj.userId = JSON.parse(localStorage.getItem('calleeParams')).callFrom;
+			}
+			
+			socket.emit('call:leave', callObj);
 			closePeerConnection();
 		}
 

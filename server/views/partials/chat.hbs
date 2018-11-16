@@ -112,7 +112,7 @@
 		socket.on('user:online', function (users) {
           if (vendorObject.user_id) {
             let index = users.indexOf(vendorObject.user_id);
-            if(index > -1) {
+            if((index > -1) && loggedInUserDetails.id) {
               $("#init-btn-video-call").show();
             } else {
               $("#init-btn-video-call").hide();

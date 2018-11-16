@@ -234,19 +234,13 @@ export function socketMsg(io) {
 			io.to(callObj.callFrom).emit('call:answer', callObj);
 		})
 
-		socket.on('call:leave', function(callUniqueId) {
-			if (callUniqueId) {
-				socket.to(callUniqueId).emit('call:leave', callUniqueId);
-				callRooms[callUniqueId] = [];
-				delete callRooms[callUniqueId];
-				socket.leave(callUniqueId);
+		socket.on('call:leave', function(callObj) {
+			if (callObj) {
+				callRooms[callObj.callUniqueId] = [];
+				delete callRooms[callObj.callUniqueId];
+				socket.leave(callObj.callUniqueId);
+				io.to(callObj.userId).emit("call:handled", {});
 			}
-
-			console.log("sockert leave function..............")
-			setTimeout(function() {
-				socket.emit("call:handled", {});
-				console.log("call:handled............................");
-			}, 500);
 		});
 
 

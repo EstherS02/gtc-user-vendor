@@ -95,8 +95,12 @@
 				}
 			});
 
-			socket.on('call::handled', (obj) => {
-				console.log("call::hanle functionality");
+			socket.on('call:handled', (obj) => {
+				let callObj = $('#call_popup_card_block').data("callObj");
+				callObj['callReject'] = true;
+				$('#call_popup_card_block').data('callObj', callObj);
+				incomingCallAudio.pause();
+				hideCallPopup();
 			});
 
 		});

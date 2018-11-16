@@ -8,6 +8,8 @@ const config = require('../config/environment');
 const status = require('../config/status');
 const model = require('../sqldb/model-connect');
 const oredrItemStatus = require('../config/order-item-new-status');
+const Handlebars = require('handlebars');
+const sendEmail = require('./send-email');
 
 module.exports = async function(job, done) {
 	console.log("order notification............*************");
@@ -24,7 +26,10 @@ module.exports = async function(job, done) {
 	const discussionBoardPostModelName = "DiscussionBoardPost";
 	const discussionBoardPostCommentModelName = "DiscussionBoardPostComment";
 	const discussionBoardPostLikeModelName = "DiscussionBoardPostLike";
+	const emailTemplateModelName = "EmailTemplate";
 	try {
+
+		// vendor new order notification
 		if (code == config.notification.templates.vendorNewOrder) {
 			console.log("code...............",code);
 			const orderId = job.attrs.data.order;
@@ -69,6 +74,7 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		// user new order notification
 		if (code == config.notification.templates.orderDetail) {
 			console.log("code...............details*********",code);
 			const orderId = job.attrs.data.order;
@@ -104,30 +110,38 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		// order cancelled notification and email
 		if (code == config.notification.templates.orderItemCancelled) {
 			const itemId = job.attrs.data.itemId;
 			const orderItemResponse = await model[orderItemModelName].findOne({
 				where: {
 					id: itemId,
 				},
-				attributes: ['id', 'order_id', 'product_id', 'status', 'order_item_status', 'last_updated_by'],
+				attributes: ['id', 'order_id', 'product_id', 'reason_for_return','quantity', 'reason_for_cancel', 'price', 'status', 'order_item_status', 'last_updated_by'],
 				include: [{
 					model: model['Order'],
-					attributes: ['id', 'user_id'],
+					attributes: ['id', 'ordered_date', 'user_id', 'total_price'],
 					include: [{
 						model: model['User'],
-						attributes: ['id', 'first_name']
+						attributes: ['id', 'first_name', 'user_contact_email']
 					}]
 				}, {
 					model: model['Product'],
-					attributes: ['id', 'vendor_id'],
+					attributes: ['id', 'vendor_id', 'product_name'],
 					include: [{
 						model: model['Vendor'],
 						attributes: ['id', 'user_id'],
 						include: [{
 							model: model['User'],
-							attributes: ['id', 'first_name']
+							attributes: ['id', 'first_name', 'user_contact_email']
 						}]
+					}, {
+						model: model['ProductMedia'],
+						where: {
+							status: status['ACTIVE'],
+							base_image: 1
+						},
+						attributes: ['id', 'product_id', 'type', 'url', 'base_image']
 					}]
 				}]
 			});
@@ -161,11 +175,54 @@ module.exports = async function(job, done) {
 							bodyParams.created_by = "Administrator";
 							const notificationResponse = await service.createRow(notificationModelName, bodyParams);
 						}
+
+						const orderItemEmailTemplate = await service.findOneRow(emailTemplateModelName, {
+							name: "ITEM-CANCEL-BY-VENDOR-MAIL"
+						});
+
+						if(orderItemEmailTemplate) {
+							let orderStatusSubject = orderItemEmailTemplate.subject;
+							let orderStatusBody = orderItemEmailTemplate.body;
+							orderItem.Order.ordered_date = moment(orderItem.Order.ordered_date).format('MMM D, Y');
+							orderStatusBody = orderStatusBody.replace('%status%', 'canceled');
+							let template = Handlebars.compile(orderStatusBody);
+							let result = template(orderItem);
+							if (orderItem.Product.Vendor.User.user_contact_email) {
+								await sendEmail({
+									to: orderItem.Product.Vendor.User.user_contact_email,
+									subject: orderStatusSubject,
+									html: result
+								});
+							}
+						}
 					}
+
+
 				} else if (orderItem.order_item_status == oredrItemStatus['VENDOR_CANCELED']) {
 					const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
 						code: code
 					});
+
+					const orderItemEmailTemplate = await service.findOneRow(emailTemplateModelName, {
+						name: "ITEM-CANCEL-USER-MAIL"
+					});
+
+					if(orderItemEmailTemplate) {
+						let orderStatusSubject = orderItemEmailTemplate.subject;
+						let orderStatusBody = orderItemEmailTemplate.body;
+						orderItem.Order.ordered_date = moment(orderItem.Order.ordered_date).format('MMM D, Y');
+						orderStatusBody = orderStatusBody.replace('%status%', 'canceled by vendor');
+						let template = Handlebars.compile(orderStatusBody);
+						let result = template(orderItem);
+						if (orderItem.Order.User.user_contact_email) {
+							await sendEmail({
+								to: orderItem.Order.User.user_contact_email,
+								subject: orderStatusSubject,
+								html: result
+							});
+						}
+					}
+
 					if (notificationSettingResponse) {
 						var bodyParams = {};
 						bodyParams.user_id = orderItem.Order.user_id;
@@ -187,6 +244,27 @@ module.exports = async function(job, done) {
 					const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
 						code: code
 					});
+
+					const orderItemEmailTemplate = await service.findOneRow(emailTemplateModelName, {
+						name: "ITEM-CANCEL-USER-MAIL"
+					});
+
+					if(orderItemEmailTemplate) {
+						let orderStatusSubject = orderItemEmailTemplate.subject;
+						let orderStatusBody = orderItemEmailTemplate.body;
+						orderItem.Order.ordered_date = moment(orderItem.Order.ordered_date).format('MMM D, Y');
+						orderStatusBody = orderStatusBody.replace('%status%', 'canceled by admin');
+						let template = Handlebars.compile(orderStatusBody);
+						let result = template(orderItem);
+						if (orderItem.Order.User.user_contact_email) {
+							await sendEmail({
+								to: orderItem.Order.User.user_contact_email,
+								subject: orderStatusSubject,
+								html: result
+							});
+						}
+					}
+
 					if (notificationSettingResponse) {
 						var bodyParams = {};
 						bodyParams.user_id = orderItem.Order.user_id;
@@ -225,29 +303,87 @@ module.exports = async function(job, done) {
 							bodyParams.created_by = "Administrator";
 							const notificationResponse = await service.createRow(notificationModelName, bodyParams);
 						}
+
+						const orderItemEmailTemplateAdmin = await service.findOneRow(emailTemplateModelName, {
+							name: "ITEM-CANCEL-BY-VENDOR-MAIL"
+						});
+
+						if(orderItemEmailTemplateAdmin) {
+							let orderStatusSubject = orderItemEmailTemplateAdmin.subject;
+							let orderStatusBody = orderItemEmailTemplateAdmin.body;
+							orderItem.Order.ordered_date = moment(orderItem.Order.ordered_date).format('MMM D, Y');
+							orderStatusBody = orderStatusBody.replace('%status%', 'canceled by admin');
+							let template = Handlebars.compile(orderStatusBody);
+							let result = template(orderItem);
+							if (orderItem.Product.Vendor.User.user_contact_email) {
+								await sendEmail({
+									to: orderItem.Product.Vendor.User.user_contact_email,
+									subject: orderStatusSubject,
+									html: result
+								});
+							}
+						}
 					}
 				}
 			}
 		}
 
+		// order status change notification and email
 		if (code == config.notification.templates.orderStatus) {
 			const itemId = job.attrs.data.itemId;
 			const orderItemResponse = await model[orderItemModelName].findOne({
 				where: {
 					id: itemId,
 				},
-				attributes: ['id', 'order_id', 'product_id', 'status', 'order_item_status', 'last_updated_by'],
+				attributes: ['id', 'order_id', 'product_id', 'quantity', 'price', 'status', 'order_item_status', 'last_updated_by'],
 				include: [{
 					model: model['Order'],
-					attributes: ['id', 'user_id'],
+					attributes: ['id', 'ordered_date', 'user_id', 'total_price'],
 					include: [{
 						model: model['User'],
-						attributes: ['id', 'first_name']
+						attributes: ['id', 'first_name', 'user_contact_email']
+					}]
+				}, {
+					model: model['Product'],
+					attributes: ['id', 'product_name'],
+					include: [{
+						model: model['ProductMedia'],
+						where: {
+							status: status['ACTIVE'],
+							base_image: 1
+						},
+						attributes: ['id', 'product_id', 'type', 'url', 'base_image']
 					}]
 				}]
 			});
 			var orderItem = await JSON.parse(JSON.stringify(orderItemResponse));
 			if (orderItem) {
+				const orderItemStatusEmailTemplate = await service.findOneRow(emailTemplateModelName, {
+					name: "ORDER-ITEM-STATUS"
+				});
+				if (orderItemStatusEmailTemplate) {
+					let orderStatusSubject = orderItemStatusEmailTemplate.subject;
+					let orderStatusBody = orderItemStatusEmailTemplate.body;
+					orderItem.Order.ordered_date = moment(orderItem.Order.ordered_date).format('MMM D, Y');
+					if (orderItem.order_item_status == oredrItemStatus['CONFIRMED'])
+						orderStatusBody = orderStatusBody.replace('%status%', 'confirm by vendor');
+					else if (orderItem.order_item_status == oredrItemStatus['SHIPPED'])
+						orderStatusBody = orderStatusBody.replace('%status%', 'dispatched by vendor');
+					else if (orderItem.order_item_status == oredrItemStatus['DELIVERED'])
+						orderStatusBody = orderStatusBody.replace('%status%', 'delivered');
+					else if (orderItem.order_item_status == oredrItemStatus['COMPLETED'])
+						orderStatusBody = orderStatusBody.replace('%status%', 'completed');
+					let template = Handlebars.compile(orderStatusBody);
+					let result = template(orderItem);
+					if (orderItem.Order.User.user_contact_email) {
+						await sendEmail({
+							to: orderItem.Order.User.user_contact_email,
+							subject: orderStatusSubject,
+							html: result
+						});
+					}
+				} 
+
 				const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
 					code: code
 				});
@@ -276,28 +412,85 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		//order item return notification and email
 		if (code == config.notification.templates.refundRequest || code == config.notification.templates.refundProcessing
 			|| code == config.notification.templates.refundSuccessful) {
+			let emailName;
 			const itemId = job.attrs.data.itemId;
+			if (code == config.notification.templates.refundRequest)
+				emailName = 'USER-RETURN-REQUEST';
+			else if (code == config.notification.templates.refundProcessing)
+				emailName = 'VENDOR-TO-REFUND'
+			else if (code == code == config.notification.templates.refundSuccessful)
+				emailName = 'GTC-REFUND-SUCCESS';
 			const orderItemResponse = await model[orderItemModelName].findOne({
 				where: {
 					id: itemId,
 				},
-				attributes: ['id', 'order_id', 'product_id', 'status', 'order_item_status', 'last_updated_by', 'price'],
+				attributes: ['id', 'order_id', 'product_id', 'reason_for_return','quantity', 'price', 'status', 'order_item_status', 'last_updated_by'],
 				include: [{
 					model: model['Order'],
-					attributes: ['id', 'user_id'],
+					attributes: ['id', 'ordered_date', 'user_id', 'total_price'],
 					include: [{
 						model: model['User'],
-						attributes: ['id', 'first_name']
+						attributes: ['id', 'first_name', 'user_contact_email']
 					}]
 				}, {
 					model: model['Product'],
-					attributes: ['id', 'vendor_id']
+					attributes: ['id', 'vendor_id', 'product_name'],
+					include: [{
+						model: model['Vendor'],
+						attributes: ['id', 'user_id'],
+						include: [{
+							model: model['User'],
+							attributes: ['id', 'first_name', 'user_contact_email']
+						}]
+					}, {
+						model: model['ProductMedia'],
+						where: {
+							status: status['ACTIVE'],
+							base_image: 1
+						},
+						attributes: ['id', 'product_id', 'type', 'url', 'base_image']
+					}]
 				}]
 			});
 			var orderItem = await JSON.parse(JSON.stringify(orderItemResponse));
 			if (orderItem) {
+				if (emailName) {
+					const orderItemStatusEmailTemplate = await service.findOneRow(emailTemplateModelName, {
+						name: emailName
+					});
+					if (orderItemStatusEmailTemplate) {
+						let email;
+						let orderStatusSubject = orderItemStatusEmailTemplate.subject;
+						let orderStatusBody = orderItemStatusEmailTemplate.body;
+						orderItem.Order.ordered_date = moment(orderItem.Order.ordered_date).format('MMM D, Y');
+						if ((code == config.notification.templates.refundRequest) && 
+							orderItem.Product.Vendor.User.user_contact_email) {
+							orderStatusBody = orderStatusBody.replace('%status%', 'request for return');
+							email = orderItem.Product.Vendor.User.user_contact_email;
+						} else if ((code == config.notification.templates.refundProcessing) &&
+							orderItem.Order.User.user_contact_email) {
+							orderStatusBody = orderStatusBody.replace('%status%', 'refund processing');
+							email = orderItem.Order.User.user_contact_email;
+						} else if ((code == config.notification.templates.refundSuccessful) &&
+							orderItem.Order.User.user_contact_email) {
+							orderStatusBody = orderStatusBody.replace('%status%', 'refund successfully');
+							email = orderItem.Order.User.user_contact_email;
+						}
+						let template = Handlebars.compile(orderStatusBody);
+						let result = template(orderItem);
+						if (email) {
+							await sendEmail({
+								to: email,
+								subject: orderStatusSubject,
+								html: result
+							});
+						}
+					}
+				}
+
 				const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
 					code: code
 				});
@@ -321,6 +514,7 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		// product review notification
 		if (code == config.notification.templates.productReview) {
 			const reviewId = job.attrs.data.reviewId;
 			const reviewResponse = await model[reviewModelName].findOne({
@@ -366,6 +560,7 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		// new post notification for buyer dashboard 
 		if (code == config.notification.templates.newPostFromBuyerOnYourDB) {
 			const discussionBoardPostId = job.attrs.data.discussionId;
 			const discussionBoardPostResponse = await model[discussionBoardPostModelName].findOne({
@@ -409,6 +604,7 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		// likes and comment notification
 		if (code == config.notification.templates.likesComments) {
 			var modelName, id;
 			if (job.attrs.data.discussionCommentId) {

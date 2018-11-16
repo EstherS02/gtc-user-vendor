@@ -126,6 +126,13 @@
 
 	});
 
+	function selectBox(ele) {
+		if ($('#cancelCheckbox').prop('checked') == true)
+			$('#submitBtn').attr("disabled", false);
+		else
+			$('#submitBtn').attr("disabled", true);
+	}
+
 	function cancelOrderItem(item_id) {
 		$('#item_id').val(item_id);
 		$('#itemCancelModal').modal('show');
@@ -184,8 +191,7 @@
 						<span class="header-lg-span text-white">({{order.Order.total_order_items}} Items Total)</span>
 					</div>
 					{{#if order.Order.total_order_items}}
-
-						<div class="col text-right">
+						{{!-- <div class="col text-right">
 							<h6>Shipping Address</h6>
 							<p class="address-info">
 								{{order.Order.shippingAddress1.first_name}} 
@@ -208,8 +214,26 @@
 								{{order.Order.shippingAddress1.State.name}} - 
 								{{order.Order.shippingAddress1.postal_code}}.
 							</p>
+						</div> --}}
+						<div class="card text-white bg-info mb-1 mt-1" style="max-width: 15rem;">
+							<div class="card-body">
+								<h6 class="card-title">Shipping Address</h6>
+								<p class="address-info">
+									{{order.Order.shippingAddress1.first_name}} 
+									{{#if order.Order.shippingAddress1.last_name}}
+									{{order.Order.shippingAddress1.last_name}}
+									{{/if}}
+								</p>
+								<p class="address-info">
+									{{order.Order.shippingAddress1.address_line1}}, {{#if order.Order.shippingAddress1.address_line2}} {{order.Order.shippingAddress1.address_line2}},{{/if}}
+								</p>
+								<p class="address-info">
+									{{order.Order.shippingAddress1.city}},
+									{{order.Order.shippingAddress1.State.name}} - 
+									{{order.Order.shippingAddress1.postal_code}}.
+								</p>
+							</div>
 						</div>
-
 						{{#each order.marketplace_products}}
 							{{#ifCond @root.marketPlace.WHOLESALE '==' @key}}
 								<div class="mini-header bg{{@key}}">WHOLESALE ITEMS ({{this.count}})</div>
@@ -775,7 +799,7 @@
 						<input type="hidden" id="item_id" name="item_id" value="">
 						<div class="col-lg-12">
 							<div class="form-group">
-								<input class="required" type="checkbox" onclick="document.getElementById('submitBtn').disabled=false;" name="checkbox" />
+								<input class="required" type="checkbox" onclick="selectBox(this);" name="checkbox" id="cancelCheckbox"/>
 								<label class="label-control">Are you sure you want to cancel this item from your order?</label>
 							</div>
 						</div>
