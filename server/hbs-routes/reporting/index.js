@@ -13,7 +13,7 @@ var saleshistoryCtrl = require('./sales-history/sales-history.controller');
 
 router.get('/reports', auth.hasRole(roles['VENDOR']), landingCtrl.reporting);
 router.get('/performance', auth.hasRole(roles['VENDOR']), performanceCtrl.performance);
-router.get('/sales-history', auth.hasRole(roles['VENDOR']), saleshistoryCtrl.salesHistoryOld);
+router.get('/sales-history', auth.hasRole(roles['VENDOR']), saleshistoryCtrl.salesHistory);
 router.get('/sales-history/:id', auth.hasRole(roles['VENDOR']), saleshistoryCtrl.orderView);
 router.get('/accounting', auth.hasRole(roles['VENDOR']), accountingCtrl.accounting);
 router.get('/tax', auth.hasRole(roles['VENDOR']), taxCtrl.tax);
