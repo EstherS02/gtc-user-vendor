@@ -164,7 +164,8 @@ export function salesHistory(req, res) {
 				unreadCounts: results.unreadCounts,
 				queryParams: queryParams,
 				queryParamsString: querystring.stringify(queryParams),
-				dateRangeOptions: dateRangeOptions
+				dateRangeOptions: dateRangeOptions,
+				vendorPlan :vendorPlan
 			});
 		} else {
 			return res.render('vendorNav/my-orders', error);
@@ -433,7 +434,6 @@ export function salesHistoryOld(req, res) {
 			queryPaginationObj['maxSize'] = 3;
 
 			if (!err) {
-
 				if (dropDownUrl == 'reporting') {
 
 					res.render('vendorNav/reporting/sales-history', {
