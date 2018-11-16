@@ -6,8 +6,11 @@
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 		$(document).ready(function() {
-		   document.getElementById("geoLocateForm").reset();
-		    $('#Geolocatesearch').prop('disabled', true);
+		  // document.getElementById("geoLocateForm").reset();
+		    $('#selected_category_id').val("");
+			$('#origin').val("");
+			$('#keyword').val("")
+			$('#Geolocatesearch').prop('disabled', true);
 			$("a[title='seller']").click(function() {
 				if (userInfo.email) { } else {
 					$('#myModal').modal('show');
@@ -70,9 +73,7 @@
 			{
 				window.location.href = 'geo-locate/search?keyword=' + $('#keyword').val();
 			}
-			
-          
-		}
+	}
 
 </script>
 
