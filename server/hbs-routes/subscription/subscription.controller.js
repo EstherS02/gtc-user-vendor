@@ -43,6 +43,8 @@ export function subscriptions(req, res) {
 	if (req.user)
 		LoggedInUser = req.user;
 
+	subscriptionQueryObj['user_id'] = LoggedInUser.id
+
 	subscriptionIncludeArr = populate.populateData('Product');
 
 	if (req.query.status) {
