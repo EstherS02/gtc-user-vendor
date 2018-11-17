@@ -39,12 +39,12 @@ export async function addToCart(req, res) {
 				id: productID,
 				status: status['ACTIVE']
 			},
-			include:[{
-				model:model['Vendor'],
-				attributes:['id','vendor_name'],
-				include:[{
-					model:model['User'],
-					attributes:['id','first_name','last_name']
+			include: [{
+				model: model['Vendor'],
+				attributes: ['id', 'vendor_name'],
+				include: [{
+					model: model['User'],
+					attributes: ['id', 'first_name', 'last_name']
 				}]
 			}]
 		});
@@ -72,13 +72,13 @@ export async function addToCart(req, res) {
 					}
 				} else {
 					return res.status(200).json({
-							message: "UPGRADEPLAN",
-							message_details: "OOPS ! Please Upgrade your Plan"
-						});
+						message: "UPGRADEPLAN",
+						message_details: "OOPS ! Please Upgrade your Plan"
+					});
 				}
 			}
-			if(product.marketplace_id ==4){
-				const subscription = await checkAlreadySubscribetion(product.id,LoggedInUser);
+			if (product.marketplace_id == 4) {
+				const subscription = await checkAlreadySubscribetion(product.id, LoggedInUser);
 				if (subscription) {
 					return res.status(200).json({
 						message: "Subscribed",
@@ -336,6 +336,7 @@ export async function applyCoupon(req, res) {
 	var appliedCategoryProducts = [];
 	const cartModelName = "Cart";
 	const orderModelName = "Order";
+	const orderItemModelName = "OrderItem";
 	const couponModelName = "Coupon";
 	const productModelName = "Product";
 	const categoryModelName = "Category";
@@ -386,7 +387,6 @@ export async function applyCoupon(req, res) {
 
 		if (cartCount > 0) {
 			const coupon = await service.findOneRow(couponModelName, queryObj, couponIncludeArray);
-
 			if (coupon) {
 				const cartIncludeArray = await [{
 					model: model['Product'],
@@ -406,7 +406,7 @@ export async function applyCoupon(req, res) {
 
 					if (currentDate <= expiryDate) {
 						if (coupon.usage_limit) {
-							const existingCount = await service.countRows(orderModelName, {
+							const existingCount = await service.countRows(orderItemModelName, {
 								coupon_id: coupon.id
 							});
 							if (existingCount > coupon.usage_limit) {
@@ -414,10 +414,15 @@ export async function applyCoupon(req, res) {
 							}
 						}
 						if (coupon.usage_limit_per_user) {
-							const existingCount = await service.countRows(orderModelName, {
-								coupon_id: coupon.id,
-								user_id: req.user.id
-							});
+
+							const existingCount = await service.countRows(orderItemModelName, {
+								coupon_id: coupon.id
+							}, [{
+								model: model['Order'],
+								where: {
+									user_id: req.user.id
+								}
+							}]);
 							if (existingCount > coupon.usage_limit_per_user) {
 								return res.status(400).send("You are already used this promo code.");
 							}
@@ -626,6 +631,7 @@ export function checkAlreadySubscribed(req, res) {
 			return res.status(400).send("Internal Server Error");
 		})
 }
+
 function checkAlreadySubscribetion(productID, user) {
 	var product_id, user_id, subscriptionQueryObj = {};
 
@@ -641,9 +647,9 @@ function checkAlreadySubscribetion(productID, user) {
 	return service.findOneRow('Subscription', subscriptionQueryObj)
 		.then(function(SubscriptionExist) {
 			if (SubscriptionExist) {
-				return true;//res.status(200).send(SubscriptionExist);
+				return true; //res.status(200).send(SubscriptionExist);
 			} else {
-				return false;//res.status(200).send(null);
+				return false; //res.status(200).send(null);
 			}
 		}).catch(function() {
 			return res.status(400).send("Internal Server Error");

@@ -153,6 +153,15 @@ function isAuthenticatedUser() {
 			queryObj['id'] = req.user.userId;
 
 			model['User'].findOne({
+				include: [{
+					model: model['UserPlan'],
+					where: {
+						status: {
+							$eq: status['ACTIVE']
+						}
+					},
+					required: false,
+				}],
 				where: queryObj,
 				include: [{
 						model: model['UserPlan'],
