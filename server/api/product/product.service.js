@@ -129,7 +129,11 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 	},{
 		model:model['OrderItem'],
 		where:{
-			//status:order_status['DELIVERED']
+			'$or': [{
+				order_item_status: orderItemStatus['DELIVERED']
+			}, {
+				order_item_status: orderItemStatus['COMPLETED']
+			}]
 		},
 		attributes:['id', [sequelize.fn('SUM', sequelize.col('OrderItems.quantity')), 'sales_count']],
 		required:false
