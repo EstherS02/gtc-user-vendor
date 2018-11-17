@@ -764,13 +764,10 @@ export async function vendorProducts(queryObj, offset, limit, field, order) {
 	}
 }
 
-export function importAliExpressProducts(product, user) {
+export function importAliExpressProducts(product, user, category, subCategory) {
 	var productQueryObj = {};
 	var newProductObj = {};
-	var otherCategoryId = 39;
-	var otherSubCategoryId = 730;
 	productQueryObj['sku'] = product.productId;
-	productQueryObj['status'] = status['ACTIVE'];
 
 	if (user.role === roles['VENDOR']) {
 		productQueryObj['vendor_id'] = user.Vendor.id
@@ -787,15 +784,14 @@ export function importAliExpressProducts(product, user) {
 					newProductObj['status'] = status['ACTIVE'];
 					newProductObj['marketplace_id'] = marketplace['PUBLIC'];
 					newProductObj['publish_date'] = new Date();
-					newProductObj['product_category_id'] = otherCategoryId;
+					newProductObj['product_category_id'] = category;
 					newProductObj['quantity_available'] = 0;
-					newProductObj['sub_category_id'] = otherSubCategoryId;
+					newProductObj['sub_category_id'] = subCategory;
 					newProductObj['price'] = product.variations[0].pricing;
 					newProductObj['product_location'] = user.Vendor.Country.id;
 					newProductObj['city'] = user.Vendor.city;
 					newProductObj['city_id'] = user.Vendor.city_id;
 					newProductObj['created_on'] = new Date();
-
 					return service.createRow('Product', newProductObj);
 				} else {
 					return Promise.reject(true);
@@ -864,37 +860,16 @@ export function importWooCommerceProducts(product, req) {
 	var productQueryObj = {};
 	var newProductObj = {};
 	var category_id;
-	var otherSubCategoryId = 730;
 	productQueryObj['sku'] = product.sku;
-	productQueryObj['status'] = status['ACTIVE'];
 
 	if (req.user.role === roles['VENDOR']) {
 		productQueryObj['vendor_id'] = req.user.Vendor.id
 	}
-
+	
 	return new Promise((resolve, reject) => {
 		return service.findOneRow('Product', productQueryObj, [])
 			.then((existingProduct) => {
 				if (!existingProduct) {
-					return service.findOneRow('Category', {
-						name: product.categories[0].name,
-						status: status['ACTIVE']
-					}, []);
-				} else {
-					return Promise.reject(true);
-				}
-			}).then((existingCategory) => {
-				if (!existingCategory) {
-					return service.findOneRow('Category', {
-						name: "OTHERS",
-						status: status['ACTIVE']
-					}, []);
-				} else {
-					category_id = existingCategory.id;
-				}
-			}).then((othersCategory) => {
-				if (othersCategory) {
-					category_id = othersCategory.id;
 					newProductObj['sku'] = product.sku;
 					newProductObj['product_name'] = product.name;
 					newProductObj['product_slug'] = product.slug;
@@ -902,16 +877,16 @@ export function importWooCommerceProducts(product, req) {
 					newProductObj['status'] = status['ACTIVE'];
 					newProductObj['marketplace_id'] = marketplace['PUBLIC'];
 					newProductObj['publish_date'] = new Date();
-					newProductObj['product_category_id'] = category_id;
+					newProductObj['product_category_id'] = req.body.category;
 					newProductObj['quantity_available'] = 0;
-					newProductObj['sub_category_id'] = otherSubCategoryId;
+					newProductObj['sub_category_id'] = req.body.sub_category;
 					newProductObj['price'] = product.price;
 					newProductObj['description'] = product.description;
 					newProductObj['product_location'] = req.user.Vendor.Country.id;
 					newProductObj['created_on'] = new Date();
 					return service.createRow('Product', newProductObj);
 				} else {
-
+					return Promise.reject(true);
 				}
 			}).then((newProduct) => {
 				var productMedias = [];
