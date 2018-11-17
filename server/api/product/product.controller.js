@@ -1109,7 +1109,6 @@ export function featureProductWithPayment(req, res) {
 
 export function featureProductWithoutPayment(req, res){
 
-	console.log("========================================", req.body);
 	if (req.body.product_id) {
 		var featureQueryObj = {
 			product_id: req.body.product_id
