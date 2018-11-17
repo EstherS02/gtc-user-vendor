@@ -154,11 +154,24 @@ function isAuthenticatedUser() {
 
 			model['User'].findOne({
 				where: queryObj,
+				include: [{
+						model: model['UserPlan'],
+						where: {
+							status: {
+								$eq: status['ACTIVE']
+							}
+						},
+						attributes:['id','plan_id','start_date','end_date','status'],
+						required: false,
+					}],
 				attributes: {
 					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
 				}
 			}).then(function(userObj) {
 				if (userObj) {
+					if (userObj.UserPlans.length <= 0) {
+							req.user['UserPlans'] = false;
+						}
 					const user = userObj.toJSON();
 					req.user = user;
 					return next();
@@ -239,7 +252,6 @@ function hasRole(roleRequired) {
 		.use(isAuthenticatedUser())
 		.use(function(req, res, next) {
 			var queryObj = {};
-
 			queryObj['user_id'] = req.user.id;
 			queryObj['status'] = status['ACTIVE'];
 

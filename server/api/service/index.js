@@ -5,6 +5,7 @@ const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
 const Sequelize_Instance = require('../../sqldb/index');
 const RawQueries = require('../../raw-queries/sql-queries');
+const config = require('../../config/environment');
 const _ = require('lodash');
 const mv = require('mv');
 const fs = require('fs');
@@ -612,6 +613,7 @@ export function move(copyFrom, moveTo) {
 	});
 }
 export function imgDelete(imgPath) {
+	imgPath = config.images_base_path + imgPath;
 	return new Promise((resolve, reject) => {
 		  try{
 		  	fs.unlinkSync(imgPath);

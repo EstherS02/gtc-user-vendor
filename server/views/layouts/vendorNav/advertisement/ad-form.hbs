@@ -27,7 +27,9 @@
  	});
     $("#position").change(function(){
         console.log($("#position").val(),$('option:selected', this).attr('width'),$('option:selected', this).attr('height'))
-        var message = "Please select image with size: width - "+$('option:selected', this).attr('width')+;
+        var message = "Please select image with size: width-"+$('option:selected', this).attr('width')+' height-'+$('option:selected', this).attr('height');
+        document.getElementById("alert-text").innerHTML = message;
+        console.log(message)
     });
  	$("#startDate").change(function(){
  		var startDate = $('#startDate').val();
@@ -40,22 +42,6 @@
  				outputPopupError("Start Date should not less than Current Date");
  			}
  	});
-
- 	function outputPopupError(data){
- 		$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-		$('#gtc-form-alert .form-message').text(data);
-		$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
-			$("#gtc-form-alert").slideUp(500);
-		});
- 	}
- 	function outputPopup(data){
- 		$('#gtc-form-alert').removeClass('alert-danger').addClass('alert-success');
-		$('#gtc-form-alert .form-message').text(data);
-		$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
-			$("#gtc-form-alert").slideUp(500);
-		});
- 	}
-
 
  	$("#country").change(function() {
  		var country_id = $('#country').val();
@@ -101,48 +87,38 @@
             inputForm.state_id = $('#state').val();
             inputForm.city = $('#city').val();
 
-
+            form.append('data',JSON.stringify(inputForm))
             if ($('#adForm').valid()) {
                 
             $.ajax({
                 type: 'POST',
-                url: '/api/vendors/upload',
+                url: '/api/advertisement',
                 data: form,
                 cache: false,
                 dataType: 'json',
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    inputForm.image_url = data.imageURL;
+                        $('#gtc-form-alert').removeClass('alert-danger').addClass('alert-success');
+                        $('#gtc-form-alert .form-message').text("Advertisement Created successfully")
+                        $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
+                         $("#gtc-form-alert").slideUp(500);
+                        });
+                        setTimeout(function() {
+                         location.reload(true);
+                        }, 1500);
                        
                 },
                 error: function(error) {
                     console.log("Error", error);
+                    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+                    $('#gtc-form-alert .form-message').text("error");
+                    $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
+                        $("#gtc-form-alert").slideUp(500);
+                    });
                 }
                 });
 
-              $.ajax({
-                    url: '/api/advertisement',
-                    type: 'POST',
-                    data: inputForm,
-                    success: function(result) {
-                        $('#gtc-form-alert').removeClass('alert-danger').addClass('alert-success');
-						$('#gtc-form-alert .form-message').text("Advertisement Created successfully")
-						$("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
-							$("#gtc-form-alert").slideUp(500);
-						});
-						setTimeout(function() {
-							location.reload(true);
-						}, 1500);
-                    },
-                    error: function(error) {
-                        $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-                        $('#gtc-form-alert .form-message').text("error");
-                        $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
-                            $("#gtc-form-alert").slideUp(500);
-                        });
-                    }
-                }); 
             }
  	 });
  });
@@ -193,7 +169,7 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label class="label-control">Ad Image<span class="text-danger" id="alert-text">*</span></label>
+                                            <label class="label-control">Ad Image<span class="text-danger">* </span><span class="text-danger" id="alert-text"><span></label>
                                             <div class="input-group">
                                                 <div class="custom-file custom_error_message">
                                                     <input type="file" class="custom-file-input" id="image_url" name="image_url" >
