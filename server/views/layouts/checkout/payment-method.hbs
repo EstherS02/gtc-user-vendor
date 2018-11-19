@@ -322,6 +322,7 @@
 							makePayment(paymentSettingId);
 						},
 						error: function(error) {
+							auth.alertService(error.status, error.responseJSON.message);
 							$('#complete-order-submit').prop('disabled', false);
 							$('#complete-order-submit').css({
 								'cursor': "pointer"
