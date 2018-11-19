@@ -1217,10 +1217,14 @@ export function planActiveVendors(req, res){
 		}
 	]
 	
-	offset = 0;
-	limit = null;
-	field = 'id';
-	order = 'asc';
+	offset = req.query.offset ? parseInt(req.query.offset) : null;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : null;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
 
 	service.findRows('Vendor', vendorQueryObj, offset, limit, field, order, vendorIncludeArr)
 	.then(function(vendor){
