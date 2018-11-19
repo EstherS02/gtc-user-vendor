@@ -8,6 +8,8 @@ module.exports = async function(job, done) {
 	var importAliExpress = [];
 	const products = job.attrs.data.products;
 	const currentUser = job.attrs.data.user;
+	const category = job.attrs.data.category? job.attrs.data.category : 39;
+	const subCategory = job.attrs.data.subCategory? job.attrs.data.subCategory : 730;
 	const browser = await puppeteer.launch({
 		headless: true,
 		args: ['--no-sandbox']
@@ -89,7 +91,7 @@ module.exports = async function(job, done) {
 		wrapped.find('style').remove(); // remove <style> tag
 		wrapped.find('div:has(div:has(div:has(div:has(div:has(a)))))').remove(); // remove related products widgets like 32831471018
 		data.description = wrapped.html().replace(/(https?:\/\/+[a-z0-9A-Z-.]+aliexpress\.com(\/[A-Za-z0-9\-\._~:\/\?#\[\]@!$&'\(\)\*\+,;\=]*)?)/g, '#'); // replace all existing aliexpress urls in description to #
-		productService.importAliExpressProducts(data, currentUser);
+		productService.importAliExpressProducts(data, currentUser, category, subCategory);
 	}
 	await browser.close();
 	done();

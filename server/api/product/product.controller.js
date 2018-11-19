@@ -542,6 +542,8 @@ export function importAliExpress(req, res) {
 	var agenda = require('../../app').get('agenda');
 
 	req.checkBody('vendor_id', 'Missing Query Param').notEmpty();
+	req.checkBody('category', 'Missing Query Param').notEmpty();
+	req.checkBody('sub_category', 'Missing Query Param').notEmpty();
 
 	var errors = req.validationErrors();
 	if (errors) {
@@ -620,7 +622,9 @@ export function importAliExpress(req, res) {
 								if (products.length <= remainingProductLength) {
 									agenda.now(config.jobs.aliExpressScrape, {
 										products: products,
-										user: req.user
+										user: req.user,
+										category: req.body.category,
+										subCategory: req.body.sub_category
 									});
 									await browser.close();
 									return res.status(200).send("We started importing products from AliExpress. Please check it few minutes later.");
@@ -823,6 +827,10 @@ export function importAmazon(req, res) {
 		return res.status(400).send("Missing Merchant Id");
 	if (req.body && !req.body.amazon_marketplace)
 		return res.status(400).send("Missing MarketPlace Region");
+	if (req.body && !req.body.amazon_category)
+		return res.status(400).send("Missing Category");
+	if (req.body && !req.body.amazon_sub_category)
+		return res.status(400).send("Missing Sub Category");
 
 	agenda.now(config.jobs.amazonImportJob, {
 		user: req.user,
@@ -837,6 +845,8 @@ export function importWoocommerce(req, res) {
 	req.checkBody('store_url', 'Missing Query Param').notEmpty();
 	req.checkBody('consumer_key', 'Missing Query Param').notEmpty();
 	req.checkBody('consumer_secret', 'Missing Query Param').notEmpty();
+	req.checkBody('category', 'Missing Query Param').notEmpty();
+	req.checkBody('sub_category', 'Missing Query Param').notEmpty();
 
 	var errors = req.validationErrors();
 	if (errors) {

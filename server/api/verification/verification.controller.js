@@ -14,31 +14,31 @@ const service = require('../service');
 const roles = require('../../config/roles');
 const verificationStatus = require('../../config/verification_status');
 
-export function move(copyFrom, moveTo) {
-	return new Promise((resolve, reject) => {
-		mv(copyFrom, moveTo, {
-			clobber: true,
-			mkdirp: true
-		}, function(error) {
-			if (!error) {
-				return resolve(true);
-			} else {
-				return reject(error);
-			}
-		});
-	});
-}
-export function imgDelete(imgPath) {
-	return new Promise((resolve, reject) => {
-		  try{
-		  	fs.unlinkSync(imgPath);
-		  	resolve(true);
-			}
-			catch(err){
-				return reject(error);
-			}
-		});
-}
+// export function move(copyFrom, moveTo) {
+// 	return new Promise((resolve, reject) => {
+// 		mv(copyFrom, moveTo, {
+// 			clobber: true,
+// 			mkdirp: true
+// 		}, function(error) {
+// 			if (!error) {
+// 				return resolve(true);
+// 			} else {
+// 				return reject(error);
+// 			}
+// 		});
+// 	});
+// }
+// export function imgDelete(imgPath) {
+// 	return new Promise((resolve, reject) => {
+// 		  try{
+// 		  	fs.unlinkSync(imgPath);
+// 		  	resolve(true);
+// 			}
+// 			catch(err){
+// 				return reject(error);
+// 			}
+// 		});
+// }
 
 export async function storeData(req, res) {
 	try {
