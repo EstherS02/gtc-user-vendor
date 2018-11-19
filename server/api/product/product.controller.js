@@ -1020,12 +1020,6 @@ export function featureProductWithPayment(req, res) {
 			.then(function(row) {
 				if (!row) {
 
-					if (req.query.feature_status) {
-						var featureStatus = req.query.feature_status;
-						delete req.query.feature_status;
-						req.query.feature_status = status[featureStatus]
-					}
-
 					var featuredProductBodyParam = req.query;
 
 					featuredProductBodyParam['status'] = status['ACTIVE'];
@@ -1118,7 +1112,6 @@ export function featureProductWithoutPayment(req, res){
 				if (!row) {
 					var featuredProductBodyParam = req.body;
 					featuredProductBodyParam['status'] =status.ACTIVE;
-					featuredProductBodyParam['feature_status'] = status[req.body.feature_status]
 					service.createRow('FeaturedProduct', featuredProductBodyParam)
 						.then(function(featuredRow) {
 							return res.status(200).send({
