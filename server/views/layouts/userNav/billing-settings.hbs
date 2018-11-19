@@ -176,7 +176,8 @@
 						window.location.reload();
 					},
 					error: function(error) {
-
+						errorElement.text(error.responseJSON.message);
+						errorElement.css("display", "block");
 					}
 				});
 			});
