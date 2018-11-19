@@ -1030,12 +1030,6 @@ export function featureProductWithPayment(req, res) {
 			.then(function(row) {
 				if (!row) {
 
-					if (req.query.feature_status) {
-						var featureStatus = req.query.feature_status;
-						delete req.query.feature_status;
-						req.query.feature_status = status[featureStatus]
-					}
-
 					var featuredProductBodyParam = req.query;
 
 					featuredProductBodyParam['status'] = status['ACTIVE'];
@@ -1128,7 +1122,6 @@ export function featureProductWithoutPayment(req, res){
 				if (!row) {
 					var featuredProductBodyParam = req.body;
 					featuredProductBodyParam['status'] =status.ACTIVE;
-					featuredProductBodyParam['feature_status'] = status[req.body.feature_status]
 					service.createRow('FeaturedProduct', featuredProductBodyParam)
 						.then(function(featuredRow) {
 							return res.status(200).send({
@@ -1224,10 +1217,14 @@ export function planActiveVendors(req, res){
 		}
 	]
 	
-	offset = 0;
-	limit = null;
-	field = 'id';
-	order = 'asc';
+	offset = req.query.offset ? parseInt(req.query.offset) : null;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : null;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
 
 	service.findRows('Vendor', vendorQueryObj, offset, limit, field, order, vendorIncludeArr)
 	.then(function(vendor){

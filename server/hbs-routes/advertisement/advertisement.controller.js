@@ -8,6 +8,7 @@ const marketplace = require('../../config/marketplace');
 const model = require('../../sqldb/model-connect');
 const vendorPlan = require('../../config/gtc-plan');
 const position = require('../../config/position');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function adList(req, res) {
 
@@ -216,6 +217,14 @@ export function adForm(req, res) {
 					return callback(null);
 				});
 		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		}
 	}, function(err, results) {
 		if (!err) {
 			res.render('vendorNav/advertisement/ad-form', {
@@ -224,6 +233,7 @@ export function adForm(req, res) {
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts,
 				marketPlace: marketplace,
 				country: results.country,
 				ads: results.ads,

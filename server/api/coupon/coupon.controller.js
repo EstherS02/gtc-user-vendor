@@ -166,11 +166,11 @@ export async function saveCoupon(req, res) {
 	const couponCategoryModelName = "CouponCategory";
 	const couponExcludedCategoryModelName = "CouponExcludedCategory";
 
-	req.checkBody('coupon_name', 'Missing Query Param').notEmpty();
-	req.checkBody('code', 'Missing Query Param').notEmpty();
-	req.checkBody('discount_type', 'Missing Query Param').notEmpty();
-	req.checkBody('discount_value', 'Missing Query Param').notEmpty();
-	req.checkBody('expiry_date', 'Missing Query Param').notEmpty();
+	req.checkBody('coupon_name', 'Counpon name is required').notEmpty();
+	req.checkBody('code', 'Counpon code is required').notEmpty();
+	req.checkBody('discount_type', 'Discount type is required').notEmpty();
+	req.checkBody('discount_value', 'Discount value is required').notEmpty();
+	req.checkBody('expiry_date', 'Expiry dateil is required').notEmpty();
 
 	var errors = req.validationErrors();
 	if (errors) {

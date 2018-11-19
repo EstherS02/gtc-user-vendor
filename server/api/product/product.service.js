@@ -29,6 +29,8 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 
 	results['count'] = 0;
 	results['rows'] = [];
+
+	if(!queryObj.status)
 	queryObj['status'] = status['ACTIVE'];
 
 	if (isUserId) {
