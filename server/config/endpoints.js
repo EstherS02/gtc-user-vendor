@@ -1,7 +1,5 @@
 module.exports = {
 	"address": "Address",
-	"ad-featuredproduct":"AdFeaturedproduct",
-	"admin-user": "AdminUser",
 	"admin": "Admin",
 	"announcements": "Announcement",
 	"appclients": "Appclient",
@@ -59,7 +57,6 @@ module.exports = {
 	"users": "User",
 	"user-plan": "UserPlan",
 	"user-mails": "UserMail",
-	"user-orders": "UserOrder",
 	"user-tokens": "UserToken",
 	"vendor": "Vendor",
 	"vendor-followers": "VendorFollower",
@@ -68,7 +65,6 @@ module.exports = {
 	"vendor-plans": "VendorPlan",
 	"vendor-sales": "VendorSales",
 	"vendor-shipping-locations": "VendorShippingLocation",
-	"vendor-user-product": "VendorUserProduct",
 	"vendor-verifications": "VendorVerification",
 	"wish-list": "WishList",
 	"order-items-overview": "OrderItemsOverview"
