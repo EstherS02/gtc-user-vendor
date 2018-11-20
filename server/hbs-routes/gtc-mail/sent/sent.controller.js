@@ -13,13 +13,15 @@ const mailStatus = require('../../../config/mail-status');
 const cartService = require('../../../api/cart/cart.service');
 const marketplace = require('../../../config/marketplace');
 const notifictionService = require('../../../api/notification/notification.service');
+const mailService = require('../../../api/mail/mail.service');
 
 export function sent(req, res) {
 	var LoggedInUser = {},
 		queryPaginationObj = {},
 		bottomCategory = {},
 		queryObj = {},
-		queryURI = {};
+		queryURI = {},
+		mailArray = [];
 
 	var offset, limit, field, order, page, maxSize, includeArray = [];
 
@@ -91,28 +93,33 @@ export function sent(req, res) {
 					});
 			},
 			sentMail: function(callback) {
-
 				includeArray = [{
 					"model": model['Mail'],
 					where: {
-						status: statusCode["ACTIVE"],
-						//from_id : user_id	
-					},
-					include: [{
-						model: model['User'],
-						as: 'toUser',
-						attributes: ['id', 'first_name']
-					}],
+						status: statusCode["ACTIVE"]
+					}
 				}];
 
 				service.findRows('UserMail', queryObj, offset, limit, field, order, includeArray)
 					.then(function(mail) {
+						mailArray = JSON.parse(JSON.stringify(mail.rows));
 						return callback(null, mail);
-
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
+			},
+			mailArray: function(callback) {
+				if (mailArray.length > 0) {
+					mailService.sentMailDetails(mailArray)
+					.then(function(mailRes) {
+						return callback(null, mailRes);
+					}).catch(function(error) {
+						return callback(null, []);
+					})
+				} else {
+					return callback(null, []);
+				}
 			},
 			unreadCounts: function(callback) {
 				notifictionService.notificationCounts(LoggedInUser.id)
@@ -141,7 +148,7 @@ export function sent(req, res) {
 					bottomCategory: bottomCategory,
 					cart: results.cartInfo,
 					marketPlace: marketplace,
-					sentMail: results.sentMail.rows,
+					sentMail: results.mailArray,
 					collectionSize: results.sentMail.count,
 					unreadCounts: results.unreadCounts,
 					page: page,

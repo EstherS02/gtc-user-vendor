@@ -231,7 +231,29 @@ export function message(req, res) {
 						return callback(null);
 					})
 			},
-
+			toUser: function(callback) {
+				var queryObj = {
+					mail_id: mail_id,
+					status: status['ACTIVE'],
+					mail_status: {
+						'$ne': mailStatus['SENT']
+					}
+				};
+				var includeArr = [{
+					model: model['User'],
+					attributes:['id', 'first_name']
+				}];
+				service.findAllRow(messageUserModel, queryObj, includeArr)
+					.then(function(mailArray) {
+						let userObj = JSON.parse(JSON.stringify(mailArray))[0].User;
+						console.log("userObj......",userObj); 
+						return callback(null, userObj);
+					})
+					.catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					})
+			},
 			messageUserId: function(callback) {
 
 				queryObj = {
@@ -268,6 +290,7 @@ export function message(req, res) {
 					cart: results.cartInfo,
 					marketPlace: marketplace,
 					message: results.message,
+					toUser: results.toUser,
 					messageUserId: results.messageUserId,
 					unreadCounts: results.unreadCounts,
 					selectedPage: path,

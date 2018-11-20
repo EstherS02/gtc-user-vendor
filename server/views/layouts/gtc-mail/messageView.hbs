@@ -81,7 +81,7 @@
 							<div class="row">
 								{{#ifCond selectedPage '==' 'sent' }}
 									<div class="col-md-7">
-										To:  
+										To:  {{toUser.first_name}}
 										<br/> From:  me
 										<i class="fas fa-caret-down popupRefernece"></i>
 									</div>
@@ -112,7 +112,11 @@
 							<div class="row">
 								<div class="col-md-7">
 									Click here to
+									{{#ifCond selectedPage '==' 'sent' }}
+									<a href="gtc-mail/compose?id={{toUser.id}}&text={{toUser.first_name}}&subject={{message.subject}}">Reply</a>
+									{{else}}
 									<a href="gtc-mail/compose?id={{message.fromUser.id}}&text={{message.fromUser.first_name}}&subject={{message.subject}}">Reply</a>
+									{{/ifCond}}
 								</div>
 							</div>
 						</div>
@@ -134,7 +138,7 @@
 							<tr>
 								{{#ifCond selectedPage '==' 'sent' }}
 									<td style="padding-right:8px;">to:</td>
-									<td></td>
+									<td>{{toUser.first_name}}</td>
 								{{else}}
 									<td style="padding-right:8px;">from:</td>
 									<td>{{message.fromUser.first_name}}</td>

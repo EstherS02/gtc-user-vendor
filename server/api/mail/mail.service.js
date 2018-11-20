@@ -1,5 +1,6 @@
 'use strict';
 
+const async = require('async');
 const roles = require('../../config/roles');
 const status = require('../../config/status');
 const service = require('../service');
@@ -204,4 +205,31 @@ export function removeManyMail(queryObj) {
 function validateEmail(email) {
   var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
+}
+
+export async function sentMailDetails(mailArray) {
+	const result = [];
+	try {
+		const userMailModelName = "UserMail";
+		for (let i=0; i < mailArray.length; i++) {
+			const mailResp = await model[userMailModelName].findAll({
+				where: {
+					mail_id: mailArray[i].mail_id,
+					status: status['ACTIVE'],
+					mail_status: {
+						'$ne': mailStatus['SENT']
+					}
+				},
+				include: [{
+					model: model['User'],
+					attributes:['id', 'first_name']
+				}]
+			});
+			mailArray[i].Mail.toUser = await JSON.parse(JSON.stringify(mailResp))[0].User;
+		}
+		return mailArray;
+	} catch(error) {
+		return error;
+	}
+
 }
