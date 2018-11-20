@@ -180,6 +180,10 @@ let sqlQueries = {
             return query;
         }
     },
+    vendorWithProductCount:function(){
+        let query = `SELECT vendor.id,vendor.user_id,vendor.vendor_name,vendor.status,COUNT(product.product_name) as product_count FROM vendor LEFT OUTER JOIN product on product.vendor_id = vendor.id AND product.status = 1 GROUP BY vendor.id ORDER BY vendor.id DESC`;
+        return query;
+    },
     vendorFilterCatogoryCount: function(params) {
         let baseQuery = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.vendor_id) as subproductcount FROM 
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id

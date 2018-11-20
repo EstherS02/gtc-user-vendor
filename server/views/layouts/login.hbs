@@ -31,6 +31,9 @@
 			}).then(function(user) {
 				$('#loadingSpinner').hide();
 				socket.emit('user:join', user.id);
+                if(user.refererUrl){
+                window.location = user.refererUrl ;
+                }
 				window.location = "/";
 			}).catch(function(error) {
 				$('#loadingSpinner').hide();

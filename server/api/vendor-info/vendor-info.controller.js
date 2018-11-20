@@ -6,6 +6,9 @@ const expressValidator = require('express-validator');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
+const sequelize = require('sequelize');
+const Sequelize_Instance = require('../../sqldb/index');
+const RawQueries = require('../../raw-queries/sql-queries');
 const service = require('../service');
 
 export function blogLike(req, res) {
@@ -178,4 +181,18 @@ export function upsert(req, res) {
 			res.status(500).send("Internal server error");
 			return
 		});
+}
+
+export async function vendorwithProductCount(req, res) {
+	return new Promise((resolve, reject) => {
+		Sequelize_Instance.query(RawQueries.vendorWithProductCount(), {
+			model: model['Vendor'],
+			type: Sequelize_Instance.QueryTypes.SELECT
+		}).then((results) => {
+			return res.status(200).send(results);
+		}).catch(function(error) {
+			console.log("error:::", error)
+			return res.status(500).send(error);
+		});
+	});
 }

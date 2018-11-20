@@ -150,7 +150,6 @@ export function homePage(req, res) {
 			limit = 6;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 				.then(function(results) {
-					console.log("wantToSell---------",results)
 					return callback(null, results);
 				}).catch(function(error) {
 					console.log('Error :::', error);
