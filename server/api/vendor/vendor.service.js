@@ -87,6 +87,22 @@ export async function vendorProductCountForFilter(params) {
 		}
 	});
 }
+export async function vendorwithProductCount(params) {
+	return new Promise((resolve, reject) => {
+		if (params) {
+			Sequelize_Instance.query(RawQueries.vendorFilterCatogoryCount(params), {
+				model: model['Product'],
+				type: Sequelize_Instance.QueryTypes.SELECT
+			}).then((results) => {
+				resolve(results)
+			}).catch(function(error) {
+				reject(error);
+			});
+		} else {
+			resolve()
+		}
+	});
+}
 
 export async function TopSellingVendors(offset, limit, marketplace) {
 	var orderModelName = "Order";

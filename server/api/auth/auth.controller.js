@@ -64,8 +64,17 @@ export function login(req, res) {
 			}
 		}).then(function(user) {
 			if (user) {
+				rspTokens.refererUrl = '';
 				res.cookie("gtc_refresh_token", encryptedRefToken);
 				res.cookie("gtc_access_token", rspTokens.access_token);
+				
+				if( req.headers.referrer || req.headers.referer){
+					if(req.headers.referrer){
+						rspTokens.refererUrl = req.headers.referrer;
+					}else{
+						rspTokens.refererUrl = req.headers.referer;
+					}
+				}
 				res.status(200).send(rspTokens);
 				return;
 			} else {

@@ -13,6 +13,7 @@ const moment = require('moment');
 const async = require('async');
 
 export function vendorAbout(req, res) {
+	console.log("==================",req.headers.referer)
 	var vendor_id;
 	if (req.params.id) {
 		vendor_id = req.params.id
