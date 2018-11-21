@@ -2,8 +2,6 @@ import _ from 'lodash';
 const uuidv1 = require('uuid/v1');
 var talkCreate = require('../api/talk/talk.controller').talkCreate;
 var talkCount = require('../api/talk/talk.controller').talkCount;
-var userOnline = require('../api/users/users.controller').userOnline;
-var userOffline = require('../api/users/users.controller').userOffline;
 
 export function socketMsg(io) {
 	console.log("Socket.IO is working");
