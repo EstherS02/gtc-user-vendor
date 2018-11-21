@@ -15,6 +15,9 @@ var gtc = require('../../api/gtc/gtc.controller')
 export async function createAd(req, res) {
 	var queryObj = {};
 	var bodyParam = JSON.parse(req.body.data);
+	if(bodyParam.id){
+		queryObj['id'] = bodyParam.id;
+	}
 	bodyParam['payment_id'] = 419;
 	var modelName = "ProductAdsSetting";
 	var uploadPath = '';
