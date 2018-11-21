@@ -29,13 +29,12 @@
         console.log($("#position").val(),$('option:selected', this).attr('width'),$('option:selected', this).attr('height'))
         var message = "Please select image with size: width-"+$('option:selected', this).attr('width')+' height-'+$('option:selected', this).attr('height');
         document.getElementById("alert-text").innerHTML = message;
-        console.log(message)
     });
  	$("#startDate").change(function(){
  		var startDate = $('#startDate').val();
  		let currentUTCDate = new Date();
  			var from = new Date(startDate);
- 			if(from < currentUTCDate){
+ 			if(from <= currentUTCDate){
  				$('#startDate').val("");
  				$("#startDate").datepicker("destroy" );
  				 $("#startDate").datepicker();
@@ -122,6 +121,20 @@
             }
  	 });
  });
+    function outputPopupError(data) {
+        $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+        $('#gtc-form-alert .form-message').text(data);
+        $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
+            $("#gtc-form-alert").slideUp(500);
+        });
+    }
+        function outputPopup(data) {
+        $('#gtc-form-alert').removeClass('alert-danger').addClass('alert-success');
+        $('#gtc-form-alert .form-message').text(data);
+        $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
+            $("#gtc-form-alert").slideUp(500);
+        });
+    }
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
@@ -206,7 +219,7 @@
 
 								<div class="row">
                                 	 <div class="col-lg-6">
-                                        <label class="label-control">Start Date {{ads.startDate}} <span class="text-danger">*</span></label>
+                                        <label class="label-control">Start Date <span class="text-danger">*</span></label>
                                         <div class="input-group ">
 										  <input type="text" class="form-control-customized" name="startDate" id="startDate" style="width:90%" value="{{ads.startDate}}" aria-describedby="basic-addon2">
 										  <div class="input-group-append">

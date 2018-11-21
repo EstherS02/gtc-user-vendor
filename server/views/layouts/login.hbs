@@ -3,8 +3,15 @@
 		$(".its_free_btn").css("cursor", "pointer");
 		$('#loadingSpinner').hide();
 		var url = window.location.href;
-		var base_url = window.location.origin + window.location.pathname;
+		var base_url = window.location.origin + window.location.pathname + window.location.search;    
 		var var_id = url.replace(base_url, "")
+        var return_url = url.split("?")[1];
+        console.log("return_url",url)
+        var redirectUrl = '';
+        if(return_url){
+            redirectUrl = return_url.split("return_url=")[1];
+            }
+            console.log("redirectUrl",redirectUrl)
 		if (var_id) {
 			$('html, body').animate({
 				scrollTop: $(var_id).offset().top
@@ -31,10 +38,12 @@
 			}).then(function(user) {
 				$('#loadingSpinner').hide();
 				socket.emit('user:join', user.id);
-                if(user.refererUrl){
-                window.location = user.refererUrl ;
+                if(redirectUrl){
+                window.location = redirectUrl;
+                }else{
+                window.location = "/";    
                 }
-				window.location = "/";
+				
 			}).catch(function(error) {
 				$('#loadingSpinner').hide();
 				$('#loginErrorMessage').text(error.responseText);

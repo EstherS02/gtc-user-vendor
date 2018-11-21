@@ -209,7 +209,6 @@ export function product(req, res) {
 				}];
 				service.findIdRow('Vendor', vendorID, vendorIncludeArr)
 					.then(function(response) {
-						console.log("----------------------response",response)
 						return callback(null, response);
 					}).catch(function(error) {
 						console.log('Error :::', error);
@@ -444,6 +443,8 @@ export function product(req, res) {
 			} else {
 				selectedPage = null;
 			}
+			var return_url = selectedPage+`/`+results.productDetail.product_slug+'/'+results.productDetail.id;
+
 			if (!error && results.productDetail.id) {
 				res.render('product-view', {
 					title: "Global Trade Connect",
@@ -467,7 +468,8 @@ export function product(req, res) {
 					Plan: Plan,
 					marketplace: marketplace,
 					VendorAvgRating: results.VendorAvgRating,
-					categoryWithProductCount: results.categoryWithProductCount
+					categoryWithProductCount: results.categoryWithProductCount,
+					return_url:return_url
 				});
 			} else {
 		   		res.render('404');
@@ -561,8 +563,6 @@ export function GetProductReview(req, res) {
 					where: {
 						status: status['ACTIVE']
 					},
-					// limit: 1,
-					// offset: 0,
 					attributes: ['id', 'product_id', 'type', 'url', 'base_image', 'status']
 				}, {
 					model: model['Review'],
@@ -751,6 +751,8 @@ export function GetProductReview(req, res) {
 		} else {
 			selectedPage = null;
 		}
+		var return_url = selectedPage+`/`+results.productDetail.product_slug+'/'+results.productDetail.id;
+
 		if (!error && results) {
 			res.render('product-review', {
 				title: "Global Trade Connect",
@@ -771,7 +773,8 @@ export function GetProductReview(req, res) {
 				status: status,
 				Plan: Plan,
 				VendorAvgRating: results.VendorAvgRating,
-				categoryWithProductCount: results.categoryWithProductCount
+				categoryWithProductCount: results.categoryWithProductCount,
+				return_url:return_url
 
 			});
 			} else {

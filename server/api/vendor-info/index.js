@@ -10,6 +10,6 @@ router.put('/terms-and-conditions', auth.isAuthenticated(), controller.upsert)
 router.post('/blog-like', auth.isAuthenticated(), controller.blogLike);
 router.post('/blog-comment', auth.isAuthenticated(), controller.blogComment);
 router.post('/blog-post', auth.isAuthenticated(), controller.blogPost);
-router.get('/vendor-details',auth.hasRole(roles['ADMIN']),controller.vendorwithProductCount);
+router.get('/vendor-details',controller.vendorwithProductCount);
 
 module.exports = router;

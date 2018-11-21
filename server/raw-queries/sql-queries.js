@@ -180,8 +180,20 @@ let sqlQueries = {
             return query;
         }
     },
-    vendorWithProductCount:function(){
-        let query = `SELECT vendor.id,vendor.user_id,vendor.vendor_name,vendor.status,COUNT(product.product_name) as product_count FROM vendor LEFT OUTER JOIN product on product.vendor_id = vendor.id AND product.status = 1 GROUP BY vendor.id ORDER BY vendor.id DESC`;
+    vendorWithProductCount:function(params){
+        let baseQuery = `SELECT vendor.id, vendor.user_id, vendor.vendor_name, vendor.status, vendor_plan.plan_id, users.last_name, users.first_name, vendor.created_on, COUNT(product.product_name) as product_count FROM vendor LEFT OUTER JOIN product on product.vendor_id = vendor.id  LEFT OUTER JOIN vendor_plan on vendor.id = vendor_plan.vendor_id LEFT JOIN users on users.id = vendor.user_id `;
+        if(params.status){
+            baseQuery = baseQuery+ `AND vendor.status = 1 AND vendor_pal.status = 1 AND vendor_plan.start_date <= '` + new Date().toISOString().slice(0, 10) + `' AND vendor_plan.end_date >= '` + new Date().toISOString().slice(0, 10) + `') `
+        }
+        if(params.text){
+            baseQuery = baseQuery + ` AND vendor.vendor_name LIKE "%` + params.text + `%" `;
+        }
+        if(params.type){
+            baseQuery = baseQuery + ` AND vendor_plan.plan_id = `+params.type;
+        }
+        let groupQuery = `AND product.status = 1 GROUP BY vendor.id ORDER BY vendor.id LIMIT `+params.offset+`,`+ params.limit; //LIMIT 0,10
+
+        let query = baseQuery+" "+ groupQuery;
         return query;
     },
     vendorFilterCatogoryCount: function(params) {

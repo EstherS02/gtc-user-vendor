@@ -23,7 +23,6 @@
 
 	$(document).ready(function() {
 		size_li = $("ul").children('li').length;
-		console.log(size_li)
 		x = 300;
 		$('#category li:lt(' + x + ')').show();
 		$("#showLess").hide();
@@ -37,7 +36,6 @@
 			}
 		});
 		$('#showLess').click(function() {
-			console.log(x)
 			x = (x - (size_li - 300) < 0) ? 300 : x - (size_li - 300);
 			$('#category li').not(':lt(' + x + ')').hide();
 			if (x <= size_li - 300) {
