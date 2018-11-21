@@ -833,6 +833,9 @@ export function makePlanPayment(req, res) {
 					});
 				});
 			} else {
+				if (req.user.user_contact_email) {
+					sendUpgrademail(req.body.plan_id, req.user);
+				}
 				userPlanBodyParam = {
 					user_id: req.body.user_id,
 					plan_id: req.body.plan_id,

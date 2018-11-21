@@ -251,7 +251,7 @@ Handlebars.registerHelper('each_limit', function(ary, max, options) {
 
 Handlebars.registerHelper('FormatDate', function(context, options) {
 	if (context) {
-		let newdate = moment(new Date(context)).fromNow()
+		let newdate = moment(moment(moment.utc(context).toDate()).local().format('YYYY-MM-DD HH:mm:ss')).fromNow();
 		return newdate;
 	}
 });

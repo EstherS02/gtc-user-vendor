@@ -7,7 +7,7 @@ export function login(req, res) {
 	var bottomCategory = {};
 	var categoryModel = "Category";
 
-	if (req.user) {
+	if (req.currentUser) {
 		res.redirect('/')
 	} else {
 		var includeArr = [];
