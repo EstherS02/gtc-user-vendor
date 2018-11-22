@@ -59,7 +59,7 @@ export async function createAd(req, res) {
 
 	bodyParam = req.body;
 	bodyParam['payment_id'] = 419;
-	bodyParam['status'] = 1;
+	bodyParam['status'] = statusCode.ACTIVE;
 	bodyParam['created_by'] = audit ? audit : 'Administrator';
 	bodyParam['created_on'] = new Date();
 
@@ -132,7 +132,6 @@ export async function editAd(req, res) {
 
 	bodyParam = req.body;
 	bodyParam['payment_id'] = 419;
-	bodyParam['status'] = 1;
 	bodyParam['last_updated_by'] = audit ? audit : 'Administrator';
 	bodyParam['last_updated_on'] = new Date();
 

@@ -10,6 +10,7 @@ const vendorPlan = require('../../config/gtc-plan');
 const position = require('../../config/position');
 const notifictionService = require('../../api/notification/notification.service');
 
+
 export function adList(req, res) {
 
 	var LoggedInUser = {},
@@ -226,6 +227,16 @@ export function adForm(req, res) {
 				});
 		}
 	}, function(err, results) {
+
+		let adImage = [];
+
+		if (results.ads) {
+			adImage.push({
+				adImageUrl: results.ads.image_url,
+				id: results.ads.id
+			})
+		}
+
 		if (!err) {
 			res.render('vendorNav/advertisement/ad-form', {
 				title: "Global Trade Connect",
@@ -237,11 +248,11 @@ export function adForm(req, res) {
 				marketPlace: marketplace,
 				country: results.country,
 				ads: results.ads,
-				status: status,
+				statusCode: status,
 				selectedPage: 'ad-form',
 				vendorPlan: vendorPlan,
-				position:position
-				
+				position:position,
+				adImage: adImage
 			});
 		} else {
 			res.render('vendorNav/ad-form', err);
