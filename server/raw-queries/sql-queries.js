@@ -196,6 +196,14 @@ let sqlQueries = {
         let query = baseQuery+" "+ groupQuery;
         return query;
     },
+    userWithorderCount:function(params){
+        let baseQuery = `SELECT users.id, users.first_name, users.last_name, users.status, users.created_on,users.last_updated_on, COUNT(\`order\`.id) as order_count FROM users LEFT OUTER JOIN \`order\` on \`order\`.user_id = users.id`;
+        
+        let groupQuery = `AND \`order\`.status = 1 GROUP BY order.user_id ORDER BY users.id`;// LIMIT `+params.offset+`,`+ params.limit; //LIMIT 0,10
+
+        let query = baseQuery+" "+ groupQuery;
+        return query;
+    },
     vendorFilterCatogoryCount: function(params) {
         let baseQuery = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.vendor_id) as subproductcount FROM 
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
