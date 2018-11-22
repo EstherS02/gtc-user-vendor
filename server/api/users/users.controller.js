@@ -174,26 +174,26 @@ export function create(req, res) {
 }
 
 export function resend(req, res) {
-	var queryObj = {};
-	var randomCode = uuid.v1();
 	var bodyParams = {};
-	bodyParams['email_verified_token'] = randomCode;
+	bodyParams['email_verified_token'] = uuid.v1();;
 	bodyParams['email_verified_token_generated'] = new Date();
 
-	if (req.body.email) {
-		queryObj['email'] = req.body.email;
-	}
-
 	model['User'].findOne({
-		where: queryObj
+		where: {
+			id: req.user.id
+		}
 	}).then(function(user) {
 		if (user) {
 			model['User'].update(bodyParams, {
-				where: queryObj
+				where: {
+					id: req.user.id			
+				}
 			}).then(function(userObj) {
 				if (userObj) {
 					model['User'].findOne({
-						where: queryObj
+						where: {
+							id: req.user.id
+						}
 					}).then(function(data) {
 						if (data) {
 							const user = data.toJSON();

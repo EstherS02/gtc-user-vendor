@@ -8,7 +8,7 @@ var controller = require('./users.controller');
 router.get('/me', auth.isAuthenticated(), controller.me);
 router.get('/', controller.index);
 router.post('/', controller.create);
-router.post('/resend', controller.resend);
+router.post('/resend', auth.isAuthenticatedUser(), controller.resend);
 router.put('/user-authenticate', controller.userAuthenticate);
 router.put('/change-password', auth.isAuthenticated(), controller.changePassword);
 router.put('/user-profile', auth.isAuthenticated(), controller.userProfile);
