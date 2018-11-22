@@ -12,6 +12,7 @@ export function index(req, res) {
     console.log('req.user', req.user);
     var result = {};
     var queryObj = {};
+    var userQueryObj = {};
     var includeArr = [];
     var offset, limit, field, order;
 
@@ -25,16 +26,17 @@ export function index(req, res) {
     delete req.query.order;
 
     queryObj.status = status['ACTIVE'];
-
+    userQueryObj = {
+            status: status['ACTIVE'],
+            role: roles["ADMIN"]
+        };
+        
     includeArr = [{
         model: model["User"],
         attributes: {
             exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on', 'deleted_at']
         },
-        where: {
-            status: status['ACTIVE'],
-            role: roles["ADMIN"]
-        }
+        where: userQueryObj
     }];
 
     model['Admin'].findAll({
