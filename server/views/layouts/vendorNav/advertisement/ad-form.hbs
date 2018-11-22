@@ -1,5 +1,6 @@
 <script>
  $(document).ready(function() {
+	var adId = $('#id').val();
  	$("#startDate").datepicker({
  		format: 'yyyy-mm-dd',
  		autohide: true,
@@ -25,11 +26,13 @@
  			outputPopupError("Please select start date");
  		}
  	});
+
     $("#position").change(function(){
         console.log($("#position").val(),$('option:selected', this).attr('width'),$('option:selected', this).attr('height'))
         var message = "Please select image with size: width-"+$('option:selected', this).attr('width')+' height-'+$('option:selected', this).attr('height');
         document.getElementById("alert-text").innerHTML = message;
     });
+
  	$("#startDate").change(function(){
  		var startDate = $('#startDate').val();
  		let currentUTCDate = new Date();
@@ -63,78 +66,65 @@
  			}
  		});
  	});
- 	 $("#adForm").submit(function(e) {
+ 	
+	$("#adForm").submit(function(e) {
  	 	e.preventDefault();
-        e.preventDefault();
-        var form = new FormData();
-            form.append("file",image_url.files[0]);
-            // let inputForm = $("#adForm :input");
-            let inputForm = {};
-            inputForm.name = $('#name').val();
-            inputForm.position = $('#position').val();
-            inputForm.startDate = $('#startDate').val();
-            inputForm.target_url = $('#target_url').val(); 
+		if ($('#adForm').valid()){
+			var formData = new FormData();
+			formData.append("file",image_url.files[0]);
 
-            if($("#inputStatus").val()){
-                inputForm.id = $("#id").val();
-                inputForm.status = $("#inputStatus").val();
-            }else{
-                inputForm.status = 1;
-            }
-            inputForm.endDate = $('#endDate').val();
-            inputForm.country_id = $('#country').val();
-            inputForm.state_id = $('#state').val();
-            inputForm.city = $('#city').val();
+			let adFormInput = $("#adForm :input").filter(function(index, element) {
+				return $(element).val() != '';
+			}).serializeArray();
 
-            form.append('data',JSON.stringify(inputForm))
-            if ($('#adForm').valid()) {
-                
-            $.ajax({
-                type: 'POST',
-                url: '/api/advertisement',
-                data: form,
-                cache: false,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                        $('#gtc-form-alert').removeClass('alert-danger').addClass('alert-success');
-                        $('#gtc-form-alert .form-message').text("Advertisement Created successfully")
-                        $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
-                         $("#gtc-form-alert").slideUp(500);
-                        });
-                        setTimeout(function() {
-                         location.reload(true);
-                        }, 1500);
-                       
-                },
-                error: function(error) {
-                    console.log("Error", error);
-                    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-                    $('#gtc-form-alert .form-message').text("error");
-                    $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
-                        $("#gtc-form-alert").slideUp(500);
-                    });
-                }
-                });
+			adFormInput.forEach(function(obj) {
+				formData.append(obj.name, obj.value);
+			});
 
-            }
- 	 });
- });
-    function outputPopupError(data) {
-        $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-        $('#gtc-form-alert .form-message').text(data);
-        $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
-            $("#gtc-form-alert").slideUp(500);
-        });
-    }
-        function outputPopup(data) {
-        $('#gtc-form-alert').removeClass('alert-danger').addClass('alert-success');
-        $('#gtc-form-alert .form-message').text(data);
-        $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
-            $("#gtc-form-alert").slideUp(500);
-        });
-    }
+			var url = '';
+			var type = 'POST';
+			if(!adId){
+				url = '/api/advertisement';
+			}else{
+				url = '/api/advertisement'+adId;
+				type = 'PUT'; 
+			}
+				
+			$.ajax({
+					type: type,
+					url: url,
+					data: formData,
+					cache: false,
+					dataType: 'json',
+					processData: false,
+					contentType: false,
+					success: function(data) {
+						outputPopup(data.messageDetails);
+						setTimeout(function() {
+							location.reload(true);
+						}, 1500);			
+					},
+					error: function(error) {
+						outputPopupError("Error.");
+					}
+				});	
+		}
+	});
+});
+function outputPopupError(data) {
+	$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+	$('#gtc-form-alert .form-message').text(data);
+	$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
+		$("#gtc-form-alert").slideUp(500);
+	});
+}
+function outputPopup(data) {
+	$('#gtc-form-alert').removeClass('alert-danger').addClass('alert-success');
+	$('#gtc-form-alert .form-message').text(data);
+	$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
+		$("#gtc-form-alert").slideUp(500);
+	});
+}
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
@@ -221,7 +211,7 @@
                                 	 <div class="col-lg-6">
                                         <label class="label-control">Start Date <span class="text-danger">*</span></label>
                                         <div class="input-group ">
-										  <input type="text" class="form-control-customized" name="startDate" id="startDate" style="width:90%" value="{{ads.startDate}}" aria-describedby="basic-addon2">
+										  <input type="text" class="form-control-customized" name="start_date" id="startDate" style="width:90%" value="{{ads.startDate}}" aria-describedby="basic-addon2">
 										  <div class="input-group-append">
 										    <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span>
 										  </div>
@@ -230,7 +220,7 @@
                                     <div class="col-lg-6">
                                         <label class="label-control">End Date {{ads.endDate}} <span class="text-danger">*</span></label>
                                         <div class="input-group ">
-										  <input type="text" class="form-control-customized" style="width:90%" value="{{ads.endDate}}" id="endDate" name="endDate" aria-describedby="basic-addon2">
+										  <input type="text" class="form-control-customized" style="width:90%" value="{{ads.endDate}}" id="endDate" name="end_date" aria-describedby="basic-addon2">
 										  <div class="input-group-append">
 										    <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span>
 										  </div>
@@ -241,7 +231,7 @@
                                 	 <div class="col-lg-4">
                                         <div class="form-group input-append date form_datetime">
                                             <label class="label-control">Country <span class="text-danger">*</span></label>
-												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="country" id="country" required>
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="country_id" id="country" required>
                                                     {{#select ads.country_id}} 
                                                         <option disabled selected>Select Location...</option>
 															{{#each country}}
@@ -254,7 +244,7 @@
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="label-control">Province<span class="text-danger">*</span></label>
-                                            <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state" id="state" required>
+                                            <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state" required>
                             					{{#if ads.state_id}}
 													<option value="{{ads.state_id}}">{{ads.State.name}}</option>
 												{{else}}
