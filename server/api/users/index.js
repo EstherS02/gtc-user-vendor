@@ -6,7 +6,7 @@ var auth = require('../../auth/auth.service');
 var controller = require('./users.controller');
 
 router.get('/me', auth.isAuthenticated(), controller.me);
-router.get('/', auth.isAuthenticated(), controller.index);
+router.get('/', controller.index);
 router.post('/', controller.create);
 router.post('/resend', controller.resend);
 router.put('/user-authenticate', controller.userAuthenticate);

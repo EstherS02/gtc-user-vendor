@@ -12,6 +12,8 @@ const service = require('../service');
 const moment = require('moment');
 
 export function index(req, res) {
+			console.log("------------------------------")
+
 	var offset, limit, field, order;
 	var queryObj = {};
 
@@ -31,6 +33,14 @@ export function index(req, res) {
 		where: queryObj,
 		offset: offset,
 		limit: limit,
+		include:[{
+			model:model['Order'],
+			where:{
+				status:status['ACTIVE']
+			},
+			attributes:['id'],
+			requires:false
+		}],
 		attributes: {
 			exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
 		},
@@ -39,7 +49,10 @@ export function index(req, res) {
 		],
 		raw: true
 	}).then(function(rows) {
+			console.log("------------------------------",rows.rows)
+
 		if (rows.length > 0) {
+
 			res.status(200).send(rows);
 			return;
 		} else {
