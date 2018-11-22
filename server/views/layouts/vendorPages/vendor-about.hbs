@@ -1,7 +1,6 @@
- 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0"></script> 
- <script type="text/javascript">
- 
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0"></script>
+<script type="text/javascript">
+
   // $(document).ready(function() {
   //    codeAddress()
   // });
@@ -26,59 +25,62 @@
   //         }
   //         document.getElementById("googleMap").innerHTML = `<iframe width="100%" height="300" frameborder="0" style="border:0" src=https://maps.google.com/maps?q=`+address+`&hl=es;&z=10&amp;libraries=places&amp;key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&amp;output=embed"></iframe>`;
   //       }
-</script>
-{{> header/top-header LoggedInUser = LoggedInUser}}
-{{> vendor/vendor-header VendorDetail = VendorDetail}}
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-header VendorDetail = VendorDetail}}
 <section class="vendor-product bg-gray">
-  <div class="gtc-container">
-    <div class="row">
-      <div class="col-md-2 col-sm-12">
-        {{> vendor/vendor-left VendorDetail = VendorDetail}}
-      </div>
-      <div class="col-md-10 col-sm-12"  >
-       <div class="header-lg ">
-       <h2 class="header-lg-text">ABOUT </h2>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="ibox">
-            <div class="ibox-content">
-              <div class="row">
-                <div class="col-md-7">
-                  <p class="about_head">
-                   <i class="fas fa-user-circle icon_style_abt"></i> {{follower.count}} FOLLOWERS
-                 </p>
-                  
-                 {{#if follower.count}}
-                 <p class="about_para">Followers you may know
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-md-2 col-sm-12">
+				{{> vendor/vendor-left VendorDetail = VendorDetail}}
+			</div>
+			<div class="col-md-10 col-sm-12">
+				<div class="header-lg ">
+					<h2 class="header-lg-text">ABOUT </h2>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="ibox">
+							<div class="ibox-content">
+								<div class="row">
+									<div class="col-md-7">
+										<p class="about_head">
+											<i class="fas fa-user-circle icon_style_abt"></i>
+											<label class="mg-l-15">{{follower.count}} FOLLOWERS</label>
+										</p>
 
-                  {{#each follower.rows}}
-                  {{#if this.User.user_pic_url}}
-                  <img class="about_para_logo" src="{{this.User.user_pic_url}}">
-                  {{/if}}
-                  {{/each}}
+										{{#if follower.count}}
+											<p class="about_para">
+												<label class="mg-l-15">Followers you may know</label>
 
-                  <a href="">See all</a>
-                </p>
-                {{/if}}
-                <p class="about_head">
-                  <i class="fas fa-info-circle icon_style_abt"></i> SNAPSHOT
-                </p>
-                <p class="about_para">{{VendorDetail.about}}</p>
-              </div>
-              
-              <div class="col-md-5" >
-              {{!-- {{VendorDetail.mapAddress}} --}}
-              {{!-- <div id= "googleMap"></div> --}}
-                 <iframe width="100%" height="300" frameborder="0" style="border:0" src="https://maps.google.com/maps?q={{VendorDetail.mapAddress}}&hl=es;&z=10&amp;libraries=places&amp;key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&amp;output=embed" ></iframe>
+												{{#each follower.rows}}
+													{{#if this.User.user_pic_url}}
+														<img class="about_para_logo" src="{{this.User.user_pic_url}}">
+													{{/if}}
+												{{/each}}
 
-                 {{!-- {{VendorDetail.mapAddress}} --}}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+												<a href="">See all</a>
+											</p>
+										{{/if}}
+										<p class="about_head">
+											<i class="fas fa-info-circle icon_style_abt"></i>
+											<label class="mg-l-15">SNAPSHOT</label>
+										</p>
+										<p class="about_para">
+											<label class="mg-l-15">{{VendorDetail.about}}</label>
+										</p>
+									</div>
+
+									<div class="col-md-5">
+										{{!-- {{VendorDetail.mapAddress}} --}}
+										{{!-- <div id= "googleMap"></div> --}}
+										<iframe width="100%" height="300" frameborder="0" style="border:0" src="https://maps.google.com/maps?q={{VendorDetail.mapAddress}}&hl=es;&z=10&amp;libraries=places&amp;key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&amp;output=embed"></iframe>
+
+										{{!-- {{VendorDetail.mapAddress}} --}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 </section>
 {{> footer/bottom-footer}}
