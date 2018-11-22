@@ -23,7 +23,11 @@
 		});
         $("#footerModelbtnLogin").click(function(){
             let url = window.location.pathname + window.location.search;
+            if(url != '/'){
             window.location.href = '/login?return_url='+url;
+        }else{
+            window.location.href = '/login';
+        }
         });
 	});
 </script>
