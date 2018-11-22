@@ -12,6 +12,7 @@ router.get('/linkedin', controller.linkedin);
 router.get('/facebook', controller.facebook);
 router.get('/twitter', controller.twitter);
 router.post('/login', controller.login);
+// router.post('/login/:returnUrl', controller.login);
 router.post('/refresh-token', controller.refreshToken);
 router.post('/logout', auth.isAuthenticated(), controller.logout);
 
