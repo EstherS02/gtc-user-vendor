@@ -103,8 +103,6 @@
 														<option disabled selected>CHANGE STATUS</option>
 														<option value="ACTIVE">Active</option>
 														<option value="INACTIVE">InActive</option>
-														<option value="SUSPENDED">Suspended</option>
-														<option value="SOLDOUT">Sold Out</option>
 													{{/select}}
 												</select>
 											</div>
@@ -186,10 +184,17 @@
 														<td>{{prettifyDate this.start_date }}</td>
 														<td>{{prettifyDate this.end_date }}</td>
 														<td>{{this.target_url}}</td>
-														<td></td>
-														<td></td>
-														<td></td>
-														<td></td>
+														<td class={{#ifCond this.status '==' ../statusCode.ACTIVE}} "text_green_color"
+															{{else ifCond this.status '==' ../statusCode.INACTIVE}} "text_red_color"{{/ifCond}}>
+															{{#ifCond this.status '==' ../statusCode.ACTIVE}}Active
+																{{else ifCond this.status '==' ../statusCode.INACTIVE}}InActive
+															{{/ifCond}}
+														</td>
+														<td>{{#if this.impression}}{{this.impression}}{{else}}0{{/if}}</td>
+														<td>{{#if this.clicks}}{{this.clicks}}{{else}}0{{/if}}</td>
+														<td>
+															{{ctrCalculation this.impression this.clicks}}
+														</td>
 													</tr>
 												{{/each}}
 											</tbody>
