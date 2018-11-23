@@ -177,27 +177,38 @@ let sqlQueries = {
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
 			LEFT OUTER JOIN (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+ new Date().toISOString().slice(0, 10) + `' AND vendor_plan.end_date >= '` + new Date().toISOString().slice(0, 10) + `') on sub_category.id = product.sub_category_id and product.status=(` + queryObj.status + `) 
 			GROUP BY sub_category.id ORDER by category.id,sub_category.id ASC`;
-			return query;
-		}
-	},
-	vendorWithProductCount: function(params) {
-		let baseQuery = `SELECT vendor.id, vendor.user_id, vendor.vendor_name, vendor.status, vendor_plan.plan_id, users.last_name, users.first_name, vendor.created_on, COUNT(product.product_name) as product_count FROM vendor LEFT OUTER JOIN product on product.vendor_id = vendor.id  LEFT OUTER JOIN vendor_plan on vendor.id = vendor_plan.vendor_id LEFT JOIN users on users.id = vendor.user_id `;
-		if (params.status) {
-			baseQuery = baseQuery + `AND vendor.status = 1 AND vendor_pal.status = 1 AND vendor_plan.start_date <= '` + new Date().toISOString().slice(0, 10) + `' AND vendor_plan.end_date >= '` + new Date().toISOString().slice(0, 10) + `') `
-		}
-		if (params.text) {
-			baseQuery = baseQuery + ` AND vendor.vendor_name LIKE "%` + params.text + `%" `;
-		}
-		if (params.type) {
-			baseQuery = baseQuery + ` AND vendor_plan.plan_id = ` + params.type;
-		}
-		let groupQuery = `AND product.status = 1 GROUP BY vendor.id ORDER BY vendor.id LIMIT ` + params.offset + `,` + params.limit; //LIMIT 0,10
+            return query;
+        }
+    },
+    vendorWithProductCount:function(params){
+        let baseQuery = `SELECT vendor.id, vendor.user_id, vendor.vendor_name, vendor.status, vendor_plan.plan_id, users.last_name, users.first_name, vendor.created_on, COUNT(product.product_name) as product_count FROM vendor LEFT OUTER JOIN product on product.vendor_id = vendor.id  LEFT OUTER JOIN vendor_plan on vendor.id = vendor_plan.vendor_id JOIN users on users.id = vendor.user_id `;
+        if(params.status){
+            baseQuery = baseQuery+ `AND vendor.status = 1 AND vendor_pal.status = 1 AND vendor_plan.start_date <= '` + new Date().toISOString().slice(0, 10) + `' AND vendor_plan.end_date >= '` + new Date().toISOString().slice(0, 10) + `') `
+        }
+        if(params.text){
+            baseQuery = baseQuery+` AND (users.first_name LIKE "%`+params.text+`%" OR users.last_name LIKE "%`+params.text+`%" OR vendor.vendor_name LIKE "%` + params.text + `%")`;
+        }
+        if(params.type){
+            baseQuery = baseQuery + ` AND vendor_plan.plan_id = `+params.type;
+        }
+        let groupQuery = `AND product.status = 1 GROUP BY vendor.id ORDER BY vendor.id LIMIT `+params.offset+`,`+ params.limit; //LIMIT 0,10
 
-		let query = baseQuery + " " + groupQuery;
-		return query;
-	},
-	vendorFilterCatogoryCount: function(params) {
-		let baseQuery = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.vendor_id) as subproductcount FROM 
+        let query = baseQuery+" "+ groupQuery;
+        return query;
+    },
+    userWithorderCount:function(params){
+        let baseQuery = `SELECT users.id, users.first_name, users.last_name, users.status, users.created_on,users.last_updated_on, COUNT(\`order\`.id) as order_count FROM users LEFT OUTER JOIN \`order\` on \`order\`.user_id = users.id`;
+        if(params.text){
+            baseQuery = baseQuery+` AND (users.first_name LIKE "%`+params.text+`%" OR users.last_name LIKE "%`+params.text+`%")`;
+        }
+
+        let groupQuery = `AND \`order\`.status = 1 GROUP BY order.user_id ORDER BY users.id`;// LIMIT `+params.offset+`,`+ params.limit; //LIMIT 0,10
+
+        let query = baseQuery+" "+ groupQuery;
+        return query;
+    },
+    vendorFilterCatogoryCount: function(params) {
+        let baseQuery = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.vendor_id) as subproductcount FROM 
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
 			LEFT OUTER JOIN (product JOIN vendor ON product.vendor_id = vendor.id AND vendor.status = 1 JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id AND vendor_plan.status = 1 AND vendor_plan.start_date <= '`+ new Date().toISOString().slice(0, 10) + `' AND vendor_plan.end_date >= '` + new Date().toISOString().slice(0, 10) + `')  on sub_category.id = product.sub_category_id`;
 		let groupQuery = `GROUP BY sub_category.id ORDER by category.id`;

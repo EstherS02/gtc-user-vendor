@@ -186,9 +186,10 @@
 									</div>
 									<div class="row">
 										<div class="col-4">
-											<div class="form-group">
+											{{!-- <div class="form-group">
+												<div class="input-group">
 												<div class="select-container">
-													<select name="discount_type" id="inputDiscountType" class="form-control-customized form-control-sm" required="true">
+													<select name="discount_type" id="inputDiscountType" class="custom-select form-control-customized form-control-sm custom_left_arrow_style" required="true">
 														{{#select coupon.discount_type}}
 															<option value='' selected disabled="true">Discount Type</option>
 															<option value="1">Percentage</option>
@@ -196,7 +197,19 @@
 														{{/select}}
 													</select>
 												</div>
+												</div>
+											</div> --}}
+										<div class="form-group">
+											<div class="input-group">
+												<select name="discount_type" id="inputDiscountType" class="custom-select form-control-customized form-control-sm custom_left_arrow_style" required="true">
+														{{#select coupon.discount_type}}
+															<option value='' selected disabled="true">Discount Type</option>
+															<option value="1">Percentage</option>
+															<option value="2">Fixed Price</option>
+														{{/select}}
+													</select>											
 											</div>
+										</div>
 										</div>
 									</div>
 									<div class="row">
@@ -221,7 +234,7 @@
 									{{#if coupon.id }}
 										<div class="row">
 											<div class="col-4">
-												<div class="form-group">
+												 {{!-- <div class="form-group">
 													<div class="select-container">
 														<select name="status" id="inputStatus" class="form-control-customized form-control-sm" required="true">
 															<option disabled="true" selected="true">Select status</option>
@@ -232,8 +245,20 @@
 															{{/select}}
 														</select>
 													</div>
-												</div>
+												</div>  --}}
+													<div class="form-group">
+											<div class="input-group">
+												<select name="status" id="inputStatus" class="custom-select form-control-customized form-control-sm custom_left_arrow_style" required="true">
+															<option disabled="true" selected="true">Select status</option>
+															{{#select coupon.status}}
+																<option value="{{statusCode.ACTIVE}}">Active</option>
+																<option value="{{statusCode.SUSPENDED}}">Suspended</option>
+																<option value="{{statusCode.SOLDOUT}}">Sold Out</option>
+															{{/select}}
+														</select>										
 											</div>
+										</div>
+                 						</div>
 										</div>
 									{{/if}}
 									<div class="row">
@@ -291,7 +316,7 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-5">
+										<div class="col-4">
 											<div class="form-group">
 												<div class="select-container">
 													<select name="categories" id="inputCategories" multiple="multiple" class="form-control-customized form-control-sm multiSelect">
@@ -309,7 +334,7 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-5">
+										<div class="col-4">
 											<div class="form-group">
 												<div class="select-container">
 													<select name="exclude_categories" id="inputExcludeCategories" multiple="multiple" class="form-control-customized form-control-sm multiSelect">
@@ -327,7 +352,7 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-5">
+										<div class="col-4">
 											<div class="form-group">
 												<div class="select-container">
 													<select name="products" id="inputProducts" multiple="multiple" class="form-control-customized form-control-sm multiSelect">
@@ -345,7 +370,7 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-5">
+										<div class="col-4">
 											<div class="form-group">
 												<div class="select-container">
 													<select name="exclude_products" id="inputExcludeProducts" multiple="multiple" class="form-control-customized form-control-sm multiSelect">

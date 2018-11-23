@@ -18,7 +18,6 @@
 </script>
 <script type="text/javascript">
 	$(document).ready(function() {
-
 		function fix_height() {
 			var bodyHeight = $("body").height() - 378;
 			var wrapperHeigh = $('#page-wrapper').height();
@@ -34,8 +33,6 @@
 </script>
 <section>
 	<div class="gtc-container">
-
-
 		<div class="search-list-header">
 			<div class="top-search-sm-header">
 				<div class="alignleft">
@@ -51,7 +48,7 @@
 						<li>Search</li>
 					</ul>
 				</div>
-				{{!-- <div class="alignright">
+				<div class="alignright">
 					<div class="icon-post-ad">
 						{{#if LoggedInUser.Vendor}}
 						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
@@ -63,7 +60,7 @@
 						</a>
 						{{/if}}
 					</div>
-				</div> --}}
+				</div>
 				<div style="clear: both;"></div>
 			</div>
 			<div class="row m-t-sm">
@@ -100,7 +97,8 @@
 								<select name="order" onchange="sortSearch(this)" class="form-control-customized rounded form-control-sm form-control-border"
 								 id="sortValue">
 									<option disabled="true" selected>Sort by</option>
-									<option value="vendor_name">Alphabetical</option>
+									{{!-- <option  value="vendor_name_asc" {{#ifCond queryURI.field "==" 'vendor_name'}} selected="true" {{/ifCond}}>Alphabetical &#xf063;</option>
+									<option value="vendor_name_desc" {{#ifCond queryURI.field "==" 'vendor_name'}} selected="true" {{/ifCond}}>Alphabetical &#xf062;</option> --}}
 								</select>
 							</div>
 						</div>
@@ -115,12 +113,12 @@
 				<ul class="right-list-view category-fixed">
 					{{#each VendorCountByCountry}}
 						<li>
-							<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.regionname}}">{{this.regionname}} ({{this.count}})</a>
-							<ul class="inner-list-view collapse" id="list{{this.regionname}}">
-								{{#each this.subCategory}}
+							<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.name}}">{{this.name}} {{!-- ({{this.count}}) --}}</a>
+							<ul class="inner-list-view collapse" id="list{{this.name}}">
+								{{#each this.Countries}}
 									<li>
-										<a {{#ifCond ../../queryURI.location "==" this.countryid}} class="active" {{/ifCond}} href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=1 location=this.countryid) 'null'}}">
-											<span>{{this.countryname}} ({{this.count}})</span>
+										<a {{#ifCond ../../queryURI.location "==" this.id}} class="active" {{/ifCond}} href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=1 location=this.id) 'null'}}">
+											<span>{{this.name}} {{!-- ({{this.vendor_count}}) --}}</span>
 										</a>
 									</li>
 								{{/each}}
@@ -170,7 +168,7 @@
 												<tr class="d-flex">
 													<td class="col-3">
 														<div class="product-left-col">
-															<img class="object-fit" src="{{this.url}}" onError="imgError(this)" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+															<img class="object-fit" src="{{this.vendor_profile_pic_url}}" onError="imgError(this)" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
 														</div>
 													</td>
 													<td class="col-9">
@@ -183,21 +181,20 @@
 																	<span>Origin</span>
 																</div>
 																<div class="col-md-8 col-8 no-padding overflow-txt">
-																	<span class="text-500">{{this.origin}}</span>
+																	<span class="text-500">{{this.Country.name}}</span>
 																</div>
 																<div class="col-md-4 col-4 no-padding">
 																	<span>Inventory</span>
 																</div>
 																<div class="col-md-8 col-8 no-padding">
-																	<b class="text-blue">{{this.product_count}} Products</b> {{!-- <span class="text-red text-500 d-block">6 on Sale
-																			<span> --}}
+																	<b class="text-blue">{{this.products_count}} Products</b>Listed <span class="text-red text-500 d-block">{{this.exclusive_product_sale}} on Sale<span>
 																</div>
 																<div class="col-md-4 col-4 no-padding">
 																	<span>Seller Rating</span>
 																</div>
 																<div class="col-md-8 col-8 no-padding">
 																	<div class="v-rating">
-																		{{starCount rating}}
+																		{{starCount this.vendor_rating}}
 																	</div>
 																</div>
 															</div>
@@ -224,7 +221,7 @@
 										<tr class="d-flex">
 											<td class="col-3">
 												<div class="product-left-col">
-													<img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+													<img class="object-fit" src="{{this.vendor_profile_pic_url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
 												</div>
 											</td>
 											<td class="col-7">
@@ -237,14 +234,13 @@
 															<span>Origin</span>
 														</div>
 														<div class="col-md-8 col-8 no-padding overflow-txt">
-															<span class="text-500">{{this.origin}}</span>
+															<span class="text-500">{{this.Country.name}}</span>
 														</div>
 														<div class="col-md-4 col-4 no-padding">
 															<span>Inventory</span>
 														</div>
 														<div class="col-md-8 col-8 no-padding">
-															<b class="text-blue">{{this.product_count}} Products</b> {{!-- <span class="text-red text-500 d-block">6 on Sale
-																	<span> --}}
+															<b class="text-blue">{{this.products_count}} Products</b> <span class="text-red text-500 d-block">{{this.exclusive_product_sale}} on Sale<span>
 														</div>
 
 													</div>
@@ -257,7 +253,7 @@
 													</div>
 													<div class="row">
 														<div class="v-rating">
-															{{starCount rating}}
+															{{starCount this.vendor_rating}}
 														</div>
 													</div>
 												</div>

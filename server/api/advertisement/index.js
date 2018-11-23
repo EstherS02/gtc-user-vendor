@@ -8,6 +8,6 @@ var multipartMiddleware = multipart();
 var controller = require('./advertisement.controller');
 
 router.post('/', auth.isAuthenticated(), multipartMiddleware, controller.createAd);
-router.put('/:id', auth.isAuthenticated(), multipartMiddleware, controller.createAd);
+router.put('/:id', auth.isAuthenticated(), multipartMiddleware, controller.editAd);
 
 module.exports = router;

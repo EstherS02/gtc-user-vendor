@@ -3370,20 +3370,26 @@ padding-left: 15px;
 .about_head
 {
 	color: #7F7F7F;
-    font-size: 11px;
+    font-size: 13px;
     margin-bottom: 0px;
     font-weight: bold;
     margin-top: 10px;
 }
 .about_para
 {
-	font-size:12px;
+	font-size:13px;
 	margin-left: 28px;
 
 }
 .about_para_logo
 {
 	width:25px;
+}
+.mg-l-15
+{
+  margin-left:15px;
+  padding-bottom: 11px;
+  
 }
 /* <!------------------------------product_terms-----------------------------------> */
 .terms_bg
@@ -3398,7 +3404,7 @@ padding-left: 15px;
 .terms_head
 {
 	color: #7F7F7F;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: bold;
 }
 .terms_para_head
@@ -3408,7 +3414,7 @@ padding-left: 15px;
 }
 .terms_para
 {
-	font-size:10px;
+	font-size:13px;
 	margin-bottom: 5px;
 	
 }
@@ -3430,7 +3436,7 @@ padding-left: 15px;
 .terms_topics-para
 {
 	color:#7F7F7F;
-	font-size:10px;
+	font-size:13px;
 	margin-bottom:4px;
 }
 /*---------------------Discussion--------------------------------------------*/
@@ -5517,10 +5523,10 @@ font-size: 13px;
 .jssocials-share-googleplus .jssocials-share-link:hover .jssocials-share-label, .jssocials-share-googleplus .jssocials-share-link:focus .jssocials-share-label, .jssocials-share-googleplus .jssocials-share-link:active .jssocials-share-label {
 color: #c23321; }
 .jssocials-share-facebook .jssocials-share-link {
-    background: #3b5998;
-    border: 1px solid #344e86; }
-    .jssocials-share-facebook .jssocials-share-link:hover {
-      background: #2d4373; }
+ background: #3b5998;
+ border: 1px solid #344e86; }
+ .jssocials-share-facebook .jssocials-share-link:hover {
+ background: #2d4373; }
 .jssocials-share-facebook .jssocials-share-link {
 color: #3b5998; }
 .jssocials-share-facebook .jssocials-share-link .jssocials-share-label {
@@ -5530,46 +5536,41 @@ color: #2d4373; }
 .jssocials-share-facebook .jssocials-share-link:hover .jssocials-share-label, .jssocials-share-facebook .jssocials-share-link:focus .jssocials-share-label, .jssocials-share-facebook .jssocials-share-link:active .jssocials-share-label {
  color: #2d4373; }
  #shareRemainingIcons.jssocials-share-email  #shareRemainingIcons.jssocials-share-link {
-    background: #3490F3;
-    border: 1px solid #1c83f2; }
-    #shareRemainingIcons.jssocials-share-email  #shareRemainingIcons.jssocials-share-link:hover {
-      background: #0e76e6; }
-  
-  .jssocials-share-stumbleupon .jssocials-share-link {
-    background: #eb4823;
-    border: 1px solid #e03a14; }
-    .jssocials-share-stumbleupon .jssocials-share-link:hover {
-      background: #c93412; }
-  
-  .jssocials-share-whatsapp .jssocials-share-link {
-    background: #29a628;
-    border: 1px solid #249123; }
-    .jssocials-share-whatsapp .jssocials-share-link:hover {
-      background: #1f7d1e; }
-  
-  .jssocials-share-telegram .jssocials-share-link {
-    background: #2ca5e0;
-    border: 1px solid #1f98d3; }
-    .jssocials-share-telegram .jssocials-share-link:hover {
-      background: #1c88bd; }
-      .jssocials-share-email .jssocials-share-link {
-        background: #3490F3;
-        border: 1px solid #1c83f2; }
-        .jssocials-share-email .jssocials-share-link:hover {
-          background: #0e76e6; }
-      
-      .jssocials-share-stumbleupon .jssocials-share-link {
-        background: #eb4823;
-        border: 1px solid #e03a14; }
-        .jssocials-share-stumbleupon .jssocials-share-link:hover {
-          background: #c93412; }
-      
-      .jssocials-share-whatsapp .jssocials-share-link {
-        background: #29a628;
-        border: 1px solid #249123; }
-        .jssocials-share-whatsapp .jssocials-share-link:hover {
-          background: #1f7d1e; }
-          
+ background: #3490F3;
+ border: 1px solid #1c83f2; }
+ #shareRemainingIcons.jssocials-share-email  #shareRemainingIcons.jssocials-share-link:hover {
+ background: #0e76e6; }
+ .jssocials-share-stumbleupon .jssocials-share-link {
+  background: #eb4823;
+  border: 1px solid #e03a14; }
+ .jssocials-share-stumbleupon .jssocials-share-link:hover {
+  background: #c93412; }
+ .jssocials-share-whatsapp .jssocials-share-link {
+ background: #29a628;
+ border: 1px solid #249123; }
+ .jssocials-share-whatsapp .jssocials-share-link:hover {
+ background: #1f7d1e; }
+ .jssocials-share-telegram .jssocials-share-link {
+ background: #2ca5e0;
+ border: 1px solid #1f98d3; }
+ .jssocials-share-telegram .jssocials-share-link:hover {
+ background: #1c88bd; }
+ .jssocials-share-email .jssocials-share-link {
+ background: #3490F3;
+ border: 1px solid #1c83f2; }
+ .jssocials-share-email .jssocials-share-link:hover {
+  background: #0e76e6; }
+ .jssocials-share-stumbleupon .jssocials-share-link {
+ background: #eb4823;
+ border: 1px solid #e03a14; }
+ .jssocials-share-stumbleupon .jssocials-share-link:hover {
+ background: #c93412; }
+ .jssocials-share-whatsapp .jssocials-share-link {
+  background: #29a628;
+  border: 1px solid #249123; }
+ .jssocials-share-whatsapp .jssocials-share-link:hover {
+ background: #1f7d1e; }
+       
 /* jssocial css ends */
 
 /* marketplace search starts */
@@ -5587,3 +5588,18 @@ color: #2d4373; }
 	color: #0f478c
 }
 /*  marketplace search ends */
+/* common styles margins,padding,left,right starts */
+.rt-7
+{
+	right:7px;
+}
+.rt-20
+{
+  right:20px;	
+}
+.mgT-5
+{
+   margin-left:5px;	
+}
+/* common styles margins,padding,left,right starts */
+

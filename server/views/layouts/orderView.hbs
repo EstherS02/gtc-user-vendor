@@ -2,7 +2,6 @@
 	$(document).ready(function() {
 		$('#cancel-alert').hide();
 		$('#return-alert').hide();
-
 		$('#cancelReason').validate({
 			rules: {
 				reason_for_cancel: {
@@ -36,11 +35,9 @@
 		$('#cancelReason').submit(function(e) {
 			e.preventDefault();
 			if ($('#cancelReason').valid()) {
-
 				let cancelObj = $("#cancelReason :input").filter(function(index, element) {
 					return $(element).val() != '';
 				}).serialize();
-
 				$.ajax({
 					url: '/api/payment/cancel-order-item/',
 					type: 'POST',
@@ -54,7 +51,6 @@
 						setTimeout(function() {
 							location.reload(true);
 						}, 3000);
-
 					},
 					error: function(error) {
 						$('#cancel-alert').removeClass('alert-success').addClass('alert-danger');
@@ -71,11 +67,9 @@
 		$('#returnReason').submit(function(e) {
 			e.preventDefault();
 			if ($('#returnReason').valid()) {
-
 				let returnObj = $("#returnReason :input").filter(function(index, element) {
 					return $(element).val() != '';
 				}).serialize();
-
 				$.ajax({
 					url: '/api/payment/return-order-item',
 					type: 'POST',
@@ -637,7 +631,7 @@
 										</p>
 									</div>
 									<div class="cart-hr-line"></div>
-									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SUBSCRIPTION TOTAL
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs ml-1 m-b">SUBSCRIPTION TOTAL
 										<span>{{currency this.total '$'}}</span>
 									</p>
 								{{/ifCond}}
@@ -680,15 +674,17 @@
 						<input type="hidden" id="item_id" name="item_id" value="">
 						<div class="col-lg-12">
 							<div class="form-group">
-								<input class="required" type="checkbox" onclick="selectBox(this);" name="checkbox" id="cancelCheckbox"/>
-								<label class="label-control">Are you sure you want to cancel this item from your order?</label>
+								<div class="customCheckbox">
+									 <input type="checkbox" id="cancelCheckbox" class="customCheckboxInput" onclick="selectBox(this);">
+                                    <label class="checkbox-b" for="cancelCheckbox"></label>
+                                    <small class="m-l-sm font-sm1">Are you sure you want to cancel this item from your order?</small>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
-
 					<button class="ladda-button btn btn-small btn-primary" id="submitBtn" disabled="disabled" type="submit" data-style="expand-left">
 						<span class="ladda-label">Submit</span>
 						<span class="ladda-spinner"></span>
@@ -723,15 +719,17 @@
 						<input type="hidden" id="return_item_id" name="return_item_id" value="">
 						<div class="col-lg-12">
 							<div class="form-group">
-								<input class="required" type="checkbox" onclick="selectBoxReturn(this);" name="checkbox" id="returnCheckbox"/>
-								<label class="label-control">Are you sure you want to return this item?</label>
+								<div class="customCheckbox">
+									 <input type="checkbox" id="returnCheckbox" class="customCheckboxInput" onclick="selectBoxReturn(this);">
+                                    <label class="checkbox-b" for="returnCheckbox"></label>
+                                    <small class="m-l-sm font-sm1">Are you sure you want to return this item?</small>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
-
 					<button class="ladda-button btn btn-small btn-danger" id="submitBtnReturn" disabled="disabled" type="submit" data-style="expand-left">
 						<span class="ladda-label">Submit</span>
 						<span class="ladda-spinner"></span>

@@ -92,7 +92,7 @@ export function services(req, res) {
 		servicesProviders: function(callback) {
 			vendorService.TopSellingVendors(0, 6, marketplace['SERVICE'])
 				.then((response) => {
-					return callback(null, response);
+					return callback(null, response.rows);
 				})
 				.catch((error) => {
 					console.log("wholesalers Error:::", error);

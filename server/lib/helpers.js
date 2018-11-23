@@ -813,3 +813,13 @@ Handlebars.registerHelper('trackProgressBar', function(status) {
 		return "width: 100%;background-color: darkred;"
 	}
 });
+
+Handlebars.registerHelper('ctrCalculation', function(impressions, clicks) {
+	var ctr = 0;
+	if(impressions != null && clicks != null){
+		if (impressions != 0) {
+			ctr = (clicks / impressions) * 100;
+		}
+	}
+	return ctr;
+});
