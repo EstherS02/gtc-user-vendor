@@ -7,6 +7,7 @@ const model = require('../../sqldb/model-connect');
 const providers = require('../../config/providers');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
+const Sequelize = require('sequelize');
 
 export function index(req, res) {
     console.log('req.user', req.user);
@@ -30,6 +31,14 @@ export function index(req, res) {
             status: status['ACTIVE'],
             role: roles["ADMIN"]
         };
+
+    if(req.query.text){
+        userQueryObj['$or']=[
+                Sequelize.where(Sequelize.fn('concat_ws', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    $like: '%' + req.query.text + '%'
+                })
+            ]
+    }
         
     includeArr = [{
         model: model["User"],
