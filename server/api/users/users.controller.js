@@ -10,47 +10,80 @@ const status = require('../../config/status');
 const roles = require('../../config/roles');
 const service = require('../service');
 const moment = require('moment');
+const Sequelize_Instance = require('../../sqldb/index');
+const RawQueries = require('../../raw-queries/sql-queries');
 
 export function index(req, res) {
-	var offset, limit, field, order;
-	var queryObj = {};
+	return new Promise((resolve, reject) => {
+		let field = 'created_on';
+		let order = 'desc';
+		var params = req.query;
+		let limit = req.query.limit? req.query.limit : 50;
+		let offset = req.query.offset? req.query.offset * limit : 0;
+		params.limit = limit;
+		params.offset = offset;
+		Sequelize_Instance.query(RawQueries.userWithorderCount(params), {
+			model: model['User'],
+			type: Sequelize_Instance.QueryTypes.SELECT
+		}).then((results) => {
+			return res.status(200).send(results);
+		}).catch(function(error) {
+			console.log("error:::", error)
+			return res.status(500).send(error);
+		});
+	});
+	// 		console.log("------------------------------")
 
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 10;
-	delete req.query.limit;
-	field = req.query.field ? req.query.field : "id";
-	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
-	delete req.query.order;
+	// var offset, limit, field, order;
+	// var queryObj = {};
 
-	queryObj = req.query;
-	queryObj.role = roles['USER'];
+	// offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	// delete req.query.offset;
+	// limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	// delete req.query.limit;
+	// field = req.query.field ? req.query.field : "id";
+	// delete req.query.field;
+	// order = req.query.order ? req.query.order : "asc";
+	// delete req.query.order;
 
-	model['User'].findAndCountAll({
-		where: queryObj,
-		offset: offset,
-		limit: limit,
-		attributes: {
-			exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-		},
-		order: [
-			[field, order]
-		],
-		raw: true
-	}).then(function(rows) {
-		if (rows.length > 0) {
-			res.status(200).send(rows);
-			return;
-		} else {
-			res.status(200).send(rows);
-			return;
-		}
-	}).catch(function(error) {
-		console.log('Error :::', error);
-		res.status(500).send("Internal server error");
-		return
-	})
+	// queryObj = req.query;
+	// queryObj.role = roles['USER'];
+	// // userWithorderCount
+	// model['User'].findAndCountAll({
+	// 	where: queryObj,
+	// 	offset: offset,
+	// 	limit: limit,
+	// 	include:[{
+	// 		model:model['Order'],
+	// 		where:{
+	// 			status:status['ACTIVE']
+	// 		},
+	// 		attributes:['id'],
+	// 		requires:false
+	// 	}],
+	// 	attributes: {
+	// 		exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+	// 	},
+	// 	order: [
+	// 		[field, order]
+	// 	],
+	// 	raw: true
+	// }).then(function(rows) {
+	// 		console.log("------------------------------",rows.rows)
+
+	// 	if (rows.length > 0) {
+
+	// 		res.status(200).send(rows);
+	// 		return;
+	// 	} else {
+	// 		res.status(200).send(rows);
+	// 		return;
+	// 	}
+	// }).catch(function(error) {
+	// 	console.log('Error :::', error);
+	// 	res.status(500).send("Internal server error");
+	// 	return
+	// })
 }
 
 export function create(req, res) {

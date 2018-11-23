@@ -14,6 +14,8 @@ const roles = require('../../config/roles');
 const plans = require('../../config/gtc-plan');
 const durationUnit = require('../../config/duration-unit');
 const service = require('../service');
+const Sequelize_Instance = require('../../sqldb/index');
+const RawQueries = require('../../raw-queries/sql-queries');
 
 export async function createStarterSeller(req, res) {
 	var queryObj = {};
@@ -135,6 +137,28 @@ export function move(copyFrom, moveTo) {
 	});
 }
 
+export function index(req, res) {
+	return new Promise((resolve, reject) => {
+		let queryObj = {};
+		let productQueryObj ={};
+		let field = 'created_on';
+		let order = 'desc';
+		var params = req.query;
+		let limit = req.query.limit? req.query.limit : 50;
+		let offset = req.query.offset? req.query.offset * limit : 0;
+		params.limit = limit;
+		params.offset = offset;
+		Sequelize_Instance.query(RawQueries.vendorWithProductCount(params), {
+			model: model['Vendor'],
+			type: Sequelize_Instance.QueryTypes.SELECT
+		}).then((results) => {
+			return res.status(200).send(results);
+		}).catch(function(error) {
+			console.log("error:::", error)
+			return res.status(500).send(error);
+		});
+	});
+}
 export function create(req, res) {
 	var queryObj = {};
 	var vendorBodyParams = {};
