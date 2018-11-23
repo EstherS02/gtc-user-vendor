@@ -1,7 +1,6 @@
 'use strict';
 
 const crypto = require('crypto');
-const expressValidator = require('express-validator');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const providers = require('../../config/providers');
@@ -9,11 +8,9 @@ const status = require('../../config/status');
 const roles = require('../../config/roles');
 
 export function index(req, res) {
-    console.log('req.user', req.user);
-    var result = {};
-    var queryObj = {};
-    var userQueryObj = {};
-    var includeArr = [];
+
+    var result = {}, queryObj = {}, searchObj = {}, userQueryObj = {};
+    var includeArr = [], searchArray = [];
     var offset, limit, field, order;
 
     offset = req.query.offset ? parseInt(req.query.offset) : 0;
@@ -25,17 +22,36 @@ export function index(req, res) {
     order = req.query.order ? req.query.order : "asc";
     delete req.query.order;
 
-    queryObj.status = status['ACTIVE'];
-    userQueryObj = {
-            status: status['ACTIVE'],
-            role: roles["ADMIN"]
-        };
+	queryObj.status = status['ACTIVE'];
+	if(req.query.status)
+		queryObj['status'] = req.query.status
+	else{
+		queryObj['status'] = {
+			'$ne': status["DELETED"]
+		}
+	}
+
+	if (req.query.fields && req.query.text) {
+		var searchText = req.query.text;
+		var searchFields = req.query.fields;
+		searchFields = searchFields.split(",");
+		for (var i = 0; i < searchFields.length; i++) {
+			var obj = {}
+			obj[searchFields[i]] = {
+				like: '%' + searchText + '%'
+			}
+			searchArray.push(obj);
+		}
+		searchObj['$or'] = searchArray;
+	}
+
+	userQueryObj = Object.assign(searchObj, userQueryObj);
+	userQueryObj['role'] = roles['ADMIN'];
+	userQueryObj['status'] = status['ACTIVE'];
         
     includeArr = [{
-        model: model["User"],
-        attributes: {
-            exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on', 'deleted_at']
-        },
+		model: model["User"],
+		attributes: ['id', 'first_name', 'last_name', 'email'],
         where: userQueryObj
     }];
 
