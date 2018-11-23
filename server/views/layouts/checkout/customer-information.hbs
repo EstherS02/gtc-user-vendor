@@ -3,8 +3,10 @@
 	var state = {{{ DisplayJSON state }}};
 	var shippingAddress = {{{ DisplayJSON shipping_address }}};
 	var billingAddress = {{{ DisplayJSON billing_address }}};
+	var shippingLocation = {{{ DisplayJSON shippingLocation }}}
 
 	$(document).ready(function() {
+		$('#gtc-form-alert').css("display", "none")
 		var customerInformationObj = {};
 
 		if ($('#inputBillingAddressId').val()) {
@@ -100,6 +102,30 @@
 
 		$("#customer-information").submit(function(e) {
 			e.preventDefault();
+
+			//here we enter our code....
+			var errorLog = [];
+			var selectedShippingCountry = Number($("#shipping-select-country").val());
+			var selectedCountryName = $("#shipping-select-country option:selected").text();
+			console.log(selectedCountryName)
+			var error = []
+
+			$.each(shippingLocation, function(key, value) {
+				var countries = value.country_id;
+				if ($.inArray(selectedShippingCountry, countries) == -1) {
+					//console.log(value.product_name + " Not available for " + selectedCountryName);
+					error.push(value.product_name + " Not available for " + selectedCountryName);
+				}
+			})
+
+			if (error.length != 0) {
+				console.log(error.length);
+				for (var i = 0; i < error.length; i++) {
+					alert(error[i]);
+				}
+				return;
+			}
+
 			$.ajax({
 				url: '/api/cart/validate',
 				type: 'POST',
@@ -229,6 +255,12 @@
 		window.location.href = "/cart";
 	}
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}
+<div class="alert" id="gtc-form-alert">
+	<button type="button" class="close" data-dismiss="alert">
+		<span aria-hidden="true">&times;</span>
+	</button>
+	<span class="form-message"></span>
+</div>
 <div id="vendorAlert" tabindex="1">
 	<div class="gtc-container"></div>
 </div>
@@ -324,8 +356,8 @@
 													</div>
 												{{else}}
 													<div class="form-group">
-														<input type="text" name="billing_first_name" class="form-control form-control-sm input-rounded-border"
-														 placeholder="First name" required="required">
+														<input type="text" name="billing_first_name" class="form-control form-control-sm input-rounded-border" placeholder="First name"
+														 required="required">
 													</div>
 												{{/if}}
 											</div>
@@ -337,8 +369,7 @@
 													</div>
 												{{else}}
 													<div class="form-group">
-														<input type="text" name="billing_last_name" class="form-control form-control-sm input-rounded-border"
-														 placeholder="Last name">
+														<input type="text" name="billing_last_name" class="form-control form-control-sm input-rounded-border" placeholder="Last name">
 													</div>
 												{{/if}}
 											</div>
@@ -420,8 +451,7 @@
 										<div class="col-12">
 											<div class="form-group">
 												<div class="customCheckbox">
-													<input id="different_shipping_address" class="customCheckboxInput" name="different_shipping_address" type="checkbox"
-													 checked="checked">
+													<input id="different_shipping_address" class="customCheckboxInput" name="different_shipping_address" type="checkbox" checked="checked">
 													<label for="different_shipping_address"></label>
 													<small class="m-l-sm text-black">Shipping Address is different than my billing address above</small>
 												</div>
@@ -447,14 +477,14 @@
 											<div class="col">
 												<input type="hidden" id="inputShippingAddressId" name="shipping_address_id" value="{{shipping_address.[0].id}}" />
 												<div class="form-group">
-													<input type="text" name="shipping_first_name" class="form-control form-control-sm input-rounded-border"
-													 value="{{shipping_address.[0].User.first_name}}" placeholder="First name" required="required">
+													<input type="text" name="shipping_first_name" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].User.first_name}}"
+													 placeholder="First name" required="required">
 												</div>
 											</div>
 											<div class="col">
 												<div class="form-group">
-													<input type="text" name="shipping_last_name" class="form-control form-control-sm input-rounded-border"
-													 value="{{shipping_address.[0].User.last_name}}" placeholder="Last name">
+													<input type="text" name="shipping_last_name" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].User.last_name}}"
+													 placeholder="Last name">
 												</div>
 											</div>
 											<div class="col-12">
@@ -465,14 +495,14 @@
 											</div>
 											<div class="col-12">
 												<div class="form-group">
-													<input type="text" name="shipping_addressline1" class="form-control form-control-sm input-rounded-border"
-													 value="{{shipping_address.[0].address_line1}}" placeholder="Address" required="required">
+													<input type="text" name="shipping_addressline1" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].address_line1}}"
+													 placeholder="Address" required="required">
 												</div>
 											</div>
 											<div class="col-12">
 												<div class="form-group">
-													<input type="text" name="shipping_addressline2" class="form-control form-control-sm input-rounded-border"
-													 value="{{shipping_address.[0].address_line2}}" placeholder="App, Suite">
+													<input type="text" name="shipping_addressline2" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].address_line2}}"
+													 placeholder="App, Suite">
 												</div>
 											</div>
 											<div class="col-4 p-n-r">
@@ -515,8 +545,7 @@
 											</div>
 											<div class="col-6">
 												<div class="form-group">
-													<input type="text" name="shipping_phone" class="form-control form-control-sm input-rounded-border"
-													 placeholder="Phone" required="required">
+													<input type="text" name="shipping_phone" class="form-control form-control-sm input-rounded-border" placeholder="Phone" required="required">
 												</div>
 											</div>
 										</div>
@@ -614,8 +643,12 @@
 								{{#if cart.coupon_applied}}
 									<div class="m-t-sm text-center">
 										<label class="m-b-xs">Promo Code #{{cart.coupon_code}} Applied</label>
-										<p><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}}
-													% {{/ifCond}}OFF </strong></p>
+										<p>
+											<strong class="text-black"> -
+												{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}
+												{{#ifCond cart.discount_type "==" 1}}
+													% {{/ifCond}}OFF </strong>
+										</p>
 									</div>
 								{{/if}}
 							{{/if}}

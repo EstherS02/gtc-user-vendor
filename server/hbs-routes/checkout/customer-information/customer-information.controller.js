@@ -134,6 +134,28 @@ function processCheckout(req, res, callback) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		shippingLocation: function(callback) {
+			var resultObj = {};
+			var shippingCountry={};
+			cartService.shippingLocationFilter(LoggedInUser.id)
+				.then(function(response) {
+					var char = JSON.parse(JSON.stringify(response));
+					_.each(char, function(o) {
+						if (_.isUndefined(resultObj[o.product_id])) {
+							resultObj[o.product_id] = {};
+							resultObj[o.product_id]["vendor_id"] = o.vendor_id;
+							resultObj[o.product_id]["product_name"] = o.product_name;
+							resultObj[o.product_id]["country_id"] = [];
+						}												
+						resultObj[o.product_id]["country_id"].push(o.country_id)
+					})
+					shippingCountry.rows=resultObj;
+					return callback(null, resultObj);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		}
 	}, function(err, results) {
 		if (!err) {
@@ -183,6 +205,7 @@ function processCheckout(req, res, callback) {
 				state: results.state,
 				country: results.country,
 				categories: results.categories,
+				shippingLocation:results.shippingLocation,
 				bottomCategory: bottomCategory,
 				selected_billing_address: selected_billing_address,
 				selected_shipping_address: selected_shipping_address,

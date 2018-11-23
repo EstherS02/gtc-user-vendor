@@ -5,6 +5,8 @@ var _ = require('lodash');
 const service = require('../service');
 const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
+const RawQueries = require('../../raw-queries/sql-queries');
+const Sequelize_Instance = require('../../sqldb/index');
 
 export async function cartCalculation(userID, req, res) {
 	var cart = {};
@@ -245,4 +247,21 @@ export async function cartCalculation(userID, req, res) {
 		console.log("index Error :::", error);
 		return error;
 	}
+}
+
+export async function shippingLocationFilter(params) {
+	return new Promise((resolve, reject) => {
+		if (params) {
+			Sequelize_Instance.query(RawQueries.vendorShippingLocation(params), {
+				model: model['Cart'],
+				type: Sequelize_Instance.QueryTypes.SELECT
+			}).then((results) => {
+				resolve(results)
+			}).catch(function(error) {
+				reject(error);
+			});
+		} else {
+			resolve()
+		}
+	});
 }
