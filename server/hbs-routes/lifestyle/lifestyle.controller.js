@@ -94,7 +94,7 @@ export function lifestyle(req, res) {
 		subscriptionProviders: function(callback) {
 			vendorService.TopSellingVendors(0, 6, marketplace['LIFESTYLE'])
 				.then((response) => {
-					return callback(null, response);
+					return callback(null, response.rows);
 				})
 				.catch((error) => {
 					console.log("wholesalers Error:::", error);

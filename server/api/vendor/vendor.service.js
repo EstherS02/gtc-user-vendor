@@ -104,7 +104,8 @@ export async function vendorwithProductCount(params) {
 	});
 }
 
-export async function TopSellingVendors(offset, limit, marketplace) {
+export async function TopSellingVendors(offset, limit, marketplace, location = null) {
+	var result = {};
 	var orderModelName = "Order";
 	var vendorModelName = "Vendor";
 	var countryModelName = "Country";
@@ -113,6 +114,18 @@ export async function TopSellingVendors(offset, limit, marketplace) {
 	var vendorPlanModelName = "VendorPlan";
 	var orderVendorModelName = "OrderVendor";
 	var vendorRatingModelName = "VendorRating";
+	var queryObj = {
+		status: status['ACTIVE'],
+		id: {
+			$col: 'OrderVendors->Order->OrderItems->Product.vendor_id'
+		}
+	};
+	var marketPlaceQuery = {};
+	if (marketplace) 
+		marketPlaceQuery.marketplace_id = marketplace;		
+
+	if (location)
+		queryObj.base_location = location;
 
 	var includeArray = [{
 		model: model[vendorPlanModelName],
@@ -145,9 +158,7 @@ export async function TopSellingVendors(offset, limit, marketplace) {
 				include: [{
 					model: model[productModelName],
 					attributes: [],
-					where: {
-						marketplace_id: marketplace
-					}
+					where: marketPlaceQuery
 				}]
 			}]
 		}]
@@ -161,12 +172,7 @@ export async function TopSellingVendors(offset, limit, marketplace) {
 
 	try {
 		const vendorResponse = await model[vendorModelName].findAll({
-			where: {
-				status: status['ACTIVE'],
-				id: {
-					$col: 'OrderVendors->Order->OrderItems->Product.vendor_id'
-				}
-			},
+			where: queryObj,
 			attributes: ['id', 'vendor_name', 'vendor_profile_pic_url', [sequelize.fn('SUM', sequelize.col('OrderVendors->Order->OrderItems.quantity')), 'sales_count'],
 				[sequelize.literal('(SUM(VendorRatings.rating) / COUNT(VendorRatings.user_id))'), 'vendor_rating']
 			],
@@ -177,16 +183,27 @@ export async function TopSellingVendors(offset, limit, marketplace) {
 			order: sequelize.literal('sales_count DESC'),
 			group: ['OrderVendors->Order->OrderItems.id']
 		});
+
+		const vendorResponseCount = await model[vendorModelName].findAll({
+			where: queryObj,
+			attributes: ['id', 'vendor_name', 'vendor_profile_pic_url', [sequelize.fn('SUM', sequelize.col('OrderVendors->Order->OrderItems.quantity')), 'sales_count'],
+				[sequelize.literal('(SUM(VendorRatings.rating) / COUNT(VendorRatings.user_id))'), 'vendor_rating']
+			],
+			include: includeArray,
+			subQuery: false,
+			group: ['OrderVendors->Order->OrderItems.id']
+		});
+
 		const vendors = JSON.parse(JSON.stringify(vendorResponse));
+		const count = JSON.parse(JSON.stringify(vendorResponseCount)).length;
 		await Promise.all(vendors.map(async (vendor) => {
-			vendor['products_count'] = await service.countRows(productModelName, {
+			var productQuery = {
 				vendor_id: vendor.id,
-				marketplace_id: marketplace,
 				status: status['ACTIVE']
-			});
-			vendor['exclusive_product_sale'] = await service.countRows(productModelName, {
+			};
+
+			var exclusiveSaleQuery = {
 				vendor_id: vendor.id,
-				marketplace_id: marketplace,
 				status: status['ACTIVE'],
 				exclusive_sale: 1,
 				exclusive_start_date: {
@@ -195,9 +212,19 @@ export async function TopSellingVendors(offset, limit, marketplace) {
 				exclusive_end_date: {
 					'$gte': new Date()
 				}
-			});
+			};
+
+			if (marketplace) {
+				productQuery.marketplace_id= marketplace;
+				exclusiveSaleQuery.marketplace_id= marketplace;
+			}
+
+			vendor['products_count'] = await service.countRows(productModelName, productQuery);
+			vendor['exclusive_product_sale'] = await service.countRows(productModelName, exclusiveSaleQuery);
 		}));
-		return vendors;
+		result.rows = vendors;
+		result.count = count;
+		return result;
 	} catch (error) {
 		console.log("Error:::", error);
 		return error;

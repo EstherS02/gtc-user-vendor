@@ -98,7 +98,7 @@ export function directory(req, res) {
 		wholesalers: function(callback) {
 			vendorService.TopSellingVendors(0, 6, marketplace['WHOLESALE'])
 				.then((response) => {
-					return callback(null, response);
+					return callback(null, response.rows);
 				})
 				.catch((error) => {
 					console.log("wholesalers Error:::", error);
@@ -108,7 +108,7 @@ export function directory(req, res) {
 		retailers: function(callback) {
 			vendorService.TopSellingVendors(0, 6, marketplace['PUBLIC'])
 				.then((response) => {
-					return callback(null, response);
+					return callback(null, response.rows);
 				})
 				.catch((error) => {
 					console.log("wholesalers Error:::", error);
@@ -118,7 +118,7 @@ export function directory(req, res) {
 		servicesProviders: function(callback) {
 			vendorService.TopSellingVendors(0, 6, marketplace['SERVICE'])
 				.then((response) => {
-					return callback(null, response);
+					return callback(null, response.rows);
 				})
 				.catch((error) => {
 					console.log("wholesalers Error:::", error);
@@ -128,7 +128,7 @@ export function directory(req, res) {
 		vendorCounts: function(callback) {
 			vendorService.activeVendorcounts(marketplace['WHOLESALE'])
 				.then((vendorCount) => {
-					return callback(null,vendorCount);
+					return callback(null,vendorCount.rows);
 				}).catch((error) => {
 					return callback(error);
 				});
@@ -137,7 +137,7 @@ export function directory(req, res) {
 		subscriptionProviders: function(callback) {
 			vendorService.TopSellingVendors(0, 6, marketplace['LIFESTYLE'])
 				.then((response) => {
-					return callback(null, response);
+					return callback(null, response.rows);
 				})
 				.catch((error) => {
 					console.log("wholesalers Error:::", error);

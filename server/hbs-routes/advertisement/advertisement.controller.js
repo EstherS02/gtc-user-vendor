@@ -9,7 +9,7 @@ const model = require('../../sqldb/model-connect');
 const vendorPlan = require('../../config/gtc-plan');
 const position = require('../../config/position');
 const notifictionService = require('../../api/notification/notification.service');
-
+const querystring = require('querystring');
 
 export function adList(req, res) {
 
@@ -18,7 +18,7 @@ export function adList(req, res) {
 		queryObj = {},
 		queryURI = {},
 		queryPaginationObj = {};
-	var offset, limit, order, page, field, user_id;
+	var offset, limit, order, page, field, user_id, maxSize;
 	var includeArrAds = [];
 
 	if (req.user)
@@ -35,16 +35,20 @@ export function adList(req, res) {
 	delete req.query.offset;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
 	queryPaginationObj['order'] = order;
 	delete req.query.order;
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
 	delete req.query.page;
 	field = req.query.field ? parseInt(req.query.field) : 'created_on';
 	queryPaginationObj['field'] = field;
 	delete req.query.page;
+
+	offset = (page - 1) * limit;
 
 	if (req.query.status) {
 		queryURI['status'] = req.query.status;
@@ -52,7 +56,7 @@ export function adList(req, res) {
 	}
 	if (req.query.keyword) {
 		queryURI['keyword'] = req.query.keyword;
-		queryObj['product_name'] = {
+		queryObj['name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
 	}
@@ -101,7 +105,6 @@ export function adList(req, res) {
 		ads: function(callback) {
 			service.findAllRows('ProductAdsSetting', includeArrAds, queryObj, offset, limit, field, 'desc')
 				.then(function(response) {
-					console.log(response);
 					return callback(null, response);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -110,19 +113,28 @@ export function adList(req, res) {
 		},
 	}, function(err, results) {
 		if (!err) {
+			maxSize = results.ads.count / limit;
+			if (results.ads.count % limit)
+				maxSize++;
+
+			queryPaginationObj['maxSize'] = maxSize;
+
 			res.render('vendorNav/advertisement/ad-list', {
 				title: "Global Trade Connect",
 				LoggedInUser: LoggedInUser,
 				categories: results.categories,
 				ads: results.ads,
-				status: status,
+				statusCode: status,
 				queryPaginationObj: queryPaginationObj,
 				bottomCategory: bottomCategory,
 				cart: results.cartInfo,
 				marketPlace: marketplace,
 				selectedPage: 'ad-form',
 				vendorPlan: vendorPlan,
-				position:position
+				position:position,
+				queryParamsString: querystring.stringify(queryURI),
+				queryPaginationObj: queryPaginationObj,
+				queryURI: queryURI
 			});
 		} else {
 			res.render('vendorNav/ad-form', err);

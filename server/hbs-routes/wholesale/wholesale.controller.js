@@ -178,7 +178,7 @@ export function wholesale(req, res) {
 		wholesalers: function(callback) {
 			vendorService.TopSellingVendors(0, 6, marketplace['WHOLESALE'])
 				.then((response) => {
-					return callback(null, response);
+					return callback(null, response.rows);
 				})
 				.catch((error) => {
 					console.log("wholesalers Error:::", error);
