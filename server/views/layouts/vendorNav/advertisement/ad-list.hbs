@@ -1,4 +1,5 @@
  <script>
+	var params = {{{ DisplayJSON queryParamsString }}};
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -15,15 +16,35 @@
 			}
 		}
 	}
+
+	function limit(size) {
+		params = replaceUrlParam(params, "limit", size);
+		params = replaceUrlParam(params, "page", 1);
+		params = replaceUrlParam(params, "offset", 0);
+		location.href = "advertisement?"+ params;
+	}
+
+	function replaceUrlParam(existingQueryParams, paramsName, paramsValue) {
+		var urlParams = new URLSearchParams(existingQueryParams);
+		if (paramsValue) {
+			urlParams.set(paramsName, paramsValue);
+		} else {
+			urlParams.delete(paramsName);
+		}
+		return urlParams;
+	}
+
 	$(document).ready(function() {
 		$("#gtc-cart-alert").hide();
 		$(".checkbox").change(function(e) {
    			$('#checkbox').prop('checked', false);
 		});
-	})
+	});
+
 	function changeStatus(e) {
 		window.location.href = '/advertisement?status=' + e.value;
 	}
+
 	function search(e) {
 		window.location.href = '/advertisement?keyword=' + e.value;
 	}
@@ -41,7 +62,7 @@
 		}
 		else {
 			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-			$('#gtc-cart-alert .cart-message').text('Select one product to edit')
+			$('#gtc-cart-alert .cart-message').text('Select one AD to edit')
 			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
 			$("#gtc-cart-alert").slideUp(500);
 			});
@@ -51,9 +72,8 @@
 	function add() {
 		window.location.href = '/advertisement/add';
 	}
-// }
-
-</script>{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+</script>
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -66,37 +86,37 @@
 					<div class="ibox-content">
 						<div class="content-body">
 							<div class="row">
-								<div class="col-md-7">
-										<div class="form-inline">
-										<div class="form-group mb-2">
-											<button class="btn btn-small btn-muted" onclick="add();">CREATE AD</button>
+								<div class="col-md-12">
+									<span class="pull-right" style="font-size:12px"><a href="/advertisement">Clear All</a></span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-inline pull-left m-t-md">
+										<div class="form-group m-r">
+											<button class="btn btn-md btn-muted" onclick="add();">CREATE AD</button>
 										</div>
-										<div class="form-group mx-sm-3 mb-2">
+										<div class="form-group m-r">
 											<div class="select-container">
-												<select class="form-control-customized form-control-sm" name="{{this.type}}" onChange="changeStatus(this);">
+												<select id="inputStatus" class="form-control-customized form-control-sm custom-dropdown" onChange="changeStatus(this);">
 													{{#select queryURI.status}}
-													<option disabled selected>CHANGE STATUS</option>
-													<option value="ACTIVE">Active</option>
-													<option value="INACTIVE">InActive</option>
-													<option value="SUSPENDED">Suspended</option>
-													<option value="SOLDOUT">Sold Out</option>
+														<option disabled selected>CHANGE STATUS</option>
+														<option value="ACTIVE">Active</option>
+														<option value="INACTIVE">InActive</option>
+														<option value="SUSPENDED">Suspended</option>
+														<option value="SOLDOUT">Sold Out</option>
 													{{/select}}
 												</select>
 											</div>
 										</div>
-										<div class="form-group mb-2">
-											<button class="btn btn-small btn-muted"  onclick="edit();">EDIT/FEATURE</button>
+										<div class="form-group">
+											<button class="btn btn-md btn-muted"  onclick="edit();">EDIT/FEATURE</button>
 										</div>
-										</div>
-								</div>
-								<div class="col-md-5">
-									<div class="form-inline ml-auto pull-right">
-										<div class="form-group mx-sm-3 mb-2 form-inline">
-										</div>
-										<div class="form-group mb-2">
+									</div>
+									<div class="form-inline pull-right m-t-md">
+										<div class="form-group m-r">
 											<div class="input-group gtc-rounded">
-												<input type="search" class="form-control form-control-sm" placeholder="Search products" name="{{this.type}}" onChange="search(this);"
-												value="{{queryURI.keyword}}">
+												<input type="text" placeholder="Search AD" class="form-control form-control-sm" onChange="search(this);" {{#if queryURI.keyword}} value={{queryURI.keyword}}{{/if}}>
 												<button type="submit" class="btn btn-sm btn-gtc">
 													<i class="fa fa-search"></i>
 												</button>
@@ -105,102 +125,110 @@
 									</div>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-sm-12">
-									<div class="alert" id="gtc-cart-alert">
-										<button type="button" class="close" data-dismiss="alert">
-											<span aria-hidden="true">&times;</span>
-										</button>
-										<span class="cart-message"></span>
-									</div>
-									<div class="cart-top-header">
-										<div class="alignleft cart-top-left">
-											<span class="m-r-sm text-muted">{{this.collectionSize}} items total</span>
+							{{#if ads.count}}
+								<div class="row py-2">
+									<div class="col-md-12">
+										<div class="alert" id="gtc-cart-alert">
+											<button type="button" class="close" data-dismiss="alert">
+												<span aria-hidden="true">&times;</span>
+											</button>
+											<span class="cart-message"></span>
 										</div>
-										<div class="alignright cart-top-right">
-											<span class="m-r-sm text-muted">
-												Entries per page : 
-												<a href="listings/{{this.type}}?"> 10</a>
-												<a href="listings/{{this.type}}?"> 25</a>
-												<a href="listings/{{this.type}}?"> 100</a>
-												<a href="listings/{{this.type}}?"> All </a>
-											</span>
+										<small class="font-weight-light">{{ads.count}} items total</small>
+										<div class="float-right">
+											<small class="font-weight-light">Entries per page : </small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
+											</small>
 										</div>
 									</div>
 								</div>
-								<div class="col-md-12">
-									<div class="table-responsive">
-										<table class="table table-hover">
+								<div class="row">
+									<div class="col-md-12">
+										<table class="table order-table">
 											<thead>
 												<tr>
-													<th scope="col">
-														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
+													<th>
+														<div class="customCheckbox">
+															<input type="checkbox" onclick="selectAll(this);" id="inputCheckbox" class="customCheckboxInput">
+															<label class="checkbox-b" for="inputCheckbox"></label>
+														</div>
 													</th>
-													<th scope="col">Name</th>
-													<th scope="col">Start Date</th>
-													<th scope="col">End Date</th>
-													<th scope="col">Target URl</th>
-													<th scope="col">Country</th>
-													<th scope="col">Province</th>
-													<th scope="col">City</th>
-													<th scope="col">Status</th>
+													<th style="width:30%;">Name</th>
+													<th>Start Date</th>
+													<th>End Date</th>
+													<th>Target URL</th>
+													<th>Status</th>
+													<th>Impressions</th>
+													<th>Clicks</th>
+													<th>CTR</th>
 												</tr>
 											</thead>
 											<tbody>
-												{{#if ads.rows}}
 												{{#each ads.rows}}
-												<tr>
-													<td scope="row"><input type="checkbox" class="checkbox" name="selected" value={{this.id}}></td>
-													<td scope="row">
-														<img src="{{this.image_url}}" onError="imgError(this)" style="width: 30px;" />
-														{{this.name}}
+													<tr>
+														<td>
+															<div class="customCheckbox">
+																<input type="checkbox" id="inputTerms{{this.id}}" class="customCheckboxInput" name="selected" value={{this.id}}>
+																<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
+															</div>
 														</td>
-														<td scope="row">{{prettifyDate this.start_date }}</td>
-														<td scope="row">{{prettifyDate this.end_date }}</td>
-														<td scope="row">{{target_url}}</td>
-														<td scope="row">{{this.Country.name}}</td>
-														<td scope="row">{{this.State.name}}</td>
-														<td scope="row">{{this.city}}</td>
-
-														{{#ifCond this.status '==' ../statusCode.ACTIVE}}
-															<td class="text_green_color">Active</td>
-															{{else ifCond this.status '==' ../statusCode.INACTIVE}}
-															<td class="text_red_color">InActive</td>
-															{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
-															<td class="text_orange_color">Suspended</td>
-															{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
-															<td class="text_red_color">Sold Out</td>
-														{{/ifCond}}
+														<td>{{this.name}}</td>
+														<td>{{prettifyDate this.start_date }}</td>
+														<td>{{prettifyDate this.end_date }}</td>
+														<td>{{this.target_url}}</td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
 													</tr>
-													{{/each}}
-													{{else}}
-													<tr><td colspan="7" style="text-align:center;">No Product Found</td></tr>
-													{{/if}}
-												</tbody>
-											</table>
-										</div>
-										{{!-- {{#pagination collectionSize page pageSize maxSize}}
-										<nav aria-label="Page navigation example">
-											<ul class="pagination justify-content-center">
-												{{#unless startFromFirstPage}}
-												<li class="page-item">
-													<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-												</li>
-												{{/unless}} {{#each pages}}
-												<li class="page-item {{#if isCurrent}} active {{/if}}">
-													<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-												</li>
-												{{/each}} {{#unless endAtLastPage}}
-												<li class="page-item">
-													<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-												</li>
-												{{/unless}}
-											</ul>
-										</nav>
-										{{/pagination}} --}}
+												{{/each}}
+											</tbody>
+										</table>
 									</div>
 								</div>
-							</div>
+								{{#ifCond ads.count '>' queryURI.limit}}
+									<div class="row">
+										<div class="col-md-12 align-self-center">
+											{{#pagination ads.count queryURI.page queryURI.limit 2}}
+												<nav aria-label="Page navigation example">
+													<ul class="pagination justify-content-center">
+														{{#unless startFromFirstPage}}
+															<li class="justify-content-center align-self-center">
+																<a href="../advertisement?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">
+																	<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+															</li>
+														{{/unless}}
+														{{#each pages}}
+															<li class="page-item {{#if isCurrent}} active {{/if}}">
+																<a class="page-link" href="../advertisement?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryURI.limit)}}">{{page}}</a>
+															</li>
+														{{/each}}
+														{{#unless endAtLastPage}}
+															<li class="justify-content-center align-self-center">
+																<a href="../advertisement?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">Next&nbsp;
+																	<i class="fa fa-angle-double-right"></i>
+																</a>
+															</li>
+														{{/unless}}
+													</ul>
+												</nav>
+											{{/pagination}}
+										</div>
+									</div>
+								{{/ifCond}}
+							{{else}}
+									<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+							{{/if}}
 						</div>
 					</div>
 				</div>
