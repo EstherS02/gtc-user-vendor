@@ -22,6 +22,9 @@ export function index(req, res) {
 		let offset = req.query.offset? req.query.offset * limit : 0;
 		params.limit = limit;
 		params.offset = offset;
+		if(req.query.text){
+			params.text = req.query.text;
+		}
 		Sequelize_Instance.query(RawQueries.userWithorderCount(params), {
 			model: model['User'],
 			type: Sequelize_Instance.QueryTypes.SELECT

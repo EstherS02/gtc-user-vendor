@@ -6,11 +6,12 @@ const model = require('../../sqldb/model-connect');
 const providers = require('../../config/providers');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
+const Sequelize = require('sequelize');
 
 export function index(req, res) {
 
-    var result = {}, queryObj = {}, searchObj = {}, userQueryObj = {};
-    var includeArr = [], searchArray = [];
+    var result = {}, queryObj = {}, userQueryObj = {};
+    var includeArr = [];
     var offset, limit, field, order;
 
     offset = req.query.offset ? parseInt(req.query.offset) : 0;
@@ -22,7 +23,6 @@ export function index(req, res) {
     order = req.query.order ? req.query.order : "asc";
     delete req.query.order;
 
-	queryObj.status = status['ACTIVE'];
 	if(req.query.status)
 		queryObj['status'] = req.query.status
 	else{
@@ -31,23 +31,16 @@ export function index(req, res) {
 		}
 	}
 
-	if (req.query.fields && req.query.text) {
-		var searchText = req.query.text;
-		var searchFields = req.query.fields;
-		searchFields = searchFields.split(",");
-		for (var i = 0; i < searchFields.length; i++) {
-			var obj = {}
-			obj[searchFields[i]] = {
-				like: '%' + searchText + '%'
-			}
-			searchArray.push(obj);
-		}
-		searchObj['$or'] = searchArray;
-	}
-
-	userQueryObj = Object.assign(searchObj, userQueryObj);
 	userQueryObj['role'] = roles['ADMIN'];
 	userQueryObj['status'] = status['ACTIVE'];
+
+    if(req.query.text){
+        userQueryObj['$or']=[
+                Sequelize.where(Sequelize.fn('concat_ws', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    $like: '%' + req.query.text + '%'
+                })
+            ]
+    }
         
     includeArr = [{
 		model: model["User"],
