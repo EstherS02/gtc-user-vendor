@@ -1,18 +1,16 @@
 'use strict';
 
 const crypto = require('crypto');
-const expressValidator = require('express-validator');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const providers = require('../../config/providers');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
+const Sequelize = require('sequelize');
 
 export function index(req, res) {
-    console.log('req.user', req.user);
-    var result = {};
-    var queryObj = {};
-    var userQueryObj = {};
+
+    var result = {}, queryObj = {}, userQueryObj = {};
     var includeArr = [];
     var offset, limit, field, order;
 
@@ -25,17 +23,28 @@ export function index(req, res) {
     order = req.query.order ? req.query.order : "asc";
     delete req.query.order;
 
-    queryObj.status = status['ACTIVE'];
-    userQueryObj = {
-            status: status['ACTIVE'],
-            role: roles["ADMIN"]
-        };
+	if(req.query.status)
+		queryObj['status'] = req.query.status
+	else{
+		queryObj['status'] = {
+			'$ne': status["DELETED"]
+		}
+	}
+
+	userQueryObj['role'] = roles['ADMIN'];
+	userQueryObj['status'] = status['ACTIVE'];
+
+    if(req.query.text){
+        userQueryObj['$or']=[
+                Sequelize.where(Sequelize.fn('concat_ws', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    $like: '%' + req.query.text + '%'
+                })
+            ]
+    }
         
     includeArr = [{
-        model: model["User"],
-        attributes: {
-            exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on', 'deleted_at']
-        },
+		model: model["User"],
+		attributes: ['id', 'first_name', 'last_name', 'email'],
         where: userQueryObj
     }];
 

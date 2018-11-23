@@ -124,7 +124,7 @@ export function adList(req, res) {
 				LoggedInUser: LoggedInUser,
 				categories: results.categories,
 				ads: results.ads,
-				status: status,
+				statusCode: status,
 				queryPaginationObj: queryPaginationObj,
 				bottomCategory: bottomCategory,
 				cart: results.cartInfo,

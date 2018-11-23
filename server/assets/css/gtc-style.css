@@ -3404,7 +3404,7 @@ padding-left: 15px;
 .terms_head
 {
 	color: #7F7F7F;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: bold;
 }
 .terms_para_head
@@ -3414,7 +3414,7 @@ padding-left: 15px;
 }
 .terms_para
 {
-	font-size:10px;
+	font-size:13px;
 	margin-bottom: 5px;
 	
 }
@@ -3436,7 +3436,7 @@ padding-left: 15px;
 .terms_topics-para
 {
 	color:#7F7F7F;
-	font-size:10px;
+	font-size:13px;
 	margin-bottom:4px;
 }
 /*---------------------Discussion--------------------------------------------*/
@@ -5588,3 +5588,14 @@ color: #2d4373; }
 	color: #0f478c
 }
 /*  marketplace search ends */
+/* common styles margins,padding,left,right starts */
+.rt-7
+{
+	right:7px;
+}
+.rt-20
+{
+  right:20px;	
+}
+/* common styles margins,padding,left,right starts */
+
