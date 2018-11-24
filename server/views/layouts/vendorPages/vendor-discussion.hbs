@@ -64,7 +64,7 @@
 			form.append("file", cropperOutputImage, fileDetails["fileName"]);
 
 			//form.append("file", $("#selectedBlogFile")[0].files[0]);
-			var url = '/api/vendor-props/blog-post';
+			var url = '/api/vendor-info/blog-post';
 			if (imgVal) {
 				$.ajax({
 					type: 'POST',
@@ -121,7 +121,7 @@
 		var form = new FormData();
 
 		form.append("file", $("#selectedFile" + e)[0].files[0]);
-		var url = '/api/vendor-props/blog-comment';
+		var url = '/api/vendor-info/blog-comment';
 		if (imgVal) {
 			$.ajax({
 				type: 'POST',
@@ -335,7 +335,7 @@ function userLike(e) {
 		dataInfo.id = e;
 		$.ajax({
 			type: "POST",
-			url: "/api/vendor-props/blog-like",
+			url: "/api/vendor-info/blog-like",
 			data: dataInfo,
 			success: function(res) {
 				document.getElementById("LikeCount" + e).innerHTML = "<p id='LikeCount'" + e + ">" + res.count + "Likes</p>";
