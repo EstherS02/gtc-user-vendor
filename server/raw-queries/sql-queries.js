@@ -299,7 +299,7 @@ let sqlQueries = {
 	 LEFT OUTER JOIN product ON product.id = cart.product_id
 	 left OUTER JOIN vendor_shipping_location ON vendor_shipping_location.vendor_id = product.vendor_id
 	 left outer JOIN country ON country.id = product.product_location 
-	 WHERE cart.user_id=`+ params + ``;
+	 WHERE cart.user_id=`+ params + ` AND cart.status=1`;
 		return query;
 	}
 };
