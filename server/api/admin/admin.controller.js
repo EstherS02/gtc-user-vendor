@@ -42,9 +42,7 @@ export function index(req, res) {
         
     includeArr = [{
         model: model["User"],
-        attributes: {
-            exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on', 'deleted_at']
-        },
+        attributes: ['id','first_name','last_name'],
         where: userQueryObj
     }];
 
