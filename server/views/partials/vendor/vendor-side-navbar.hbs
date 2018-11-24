@@ -192,9 +192,11 @@
 				<li class="nav-bar">
 					<a href="/gtc-mail/deleted" class="vs-link">Deleted</a>
 				</li>
+				{{#if LoggedInUser.Vendor.id}}
 				<li class="nav-bar">
 					<a href="/gtc-mail/mail-settings" class="vs-link">GTC Mail Settings</a>
 				</li>
+				{{/if}}
 			</ul>
 		</li>
 		<li class="nav-bar">

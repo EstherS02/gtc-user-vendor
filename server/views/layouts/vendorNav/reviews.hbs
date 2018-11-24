@@ -16,7 +16,7 @@
 									<h2>My Reviews</h2>
 								</div>
 								<div class="content-body">
-									<p style="font-size:10px"><span class="text_gray_color">Sort by</span>
+									<p style="font-size:13px"><span class="text_gray_color">Sort by</span>
 										<span class="text_blue_color">
 											<a href="/reviews?sort=mostRecent" class="{{#ifCond queryPaginationObj.field '==' 'mostRecent' }}text_black_color review-sort {{/ifCond}}">Most Recent</a>
 										</span>&nbsp;
@@ -39,19 +39,19 @@
 													</p>
 												</div>
 												<div class="col-md-2">
-													<p style="font-size: 11px;">{{starCount this.rating}}</p>
+													<p style="font-size: 13px;">{{starCount this.rating}}</p>
 												</div>
 											</div>
-											<div class="text_blue_color" style="font-size: 12px;font-weight:bold;text-transform:uppercase;margin-top:0.5rem;">{{this.title}}</div>
+											<div class="text_blue_color" style="font-size: 13px;font-weight:bold;text-transform:uppercase;margin-top:0.5rem;">{{this.title}}</div>
 											<div style="font-size: smaller;text-align:justify;">{{this.comment}}</div>
 										{{/each}}
 									</div>
 								</div>
 							</div>
 							<div class="col-md-3">
-								<p class="list_bg_blue" style="font-size: 11px;margin-bottom: 0px; ">{{this.avgRating}} &nbsp;&nbsp;{{starCount this.avgRating}}</p>
-								<div style="border: 1px solid #E6E6E6; padding: 10px; font-size:10px">
-									<p class="text_blue_color" style="font-size: 10px">{{this.avgRating}} of 7 star based on {{this.ratingCount}} reviews</p>
+								<p class="list_bg_blue" style="font-size: 13px;margin-bottom: 0px; ">{{this.avgRating}} &nbsp;&nbsp;{{starCount this.avgRating}}</p>
+								<div style="border: 1px solid #E6E6E6; padding: 10px; font-size:13px">
+									<p class="text_blue_color" style="font-size: 13px">{{this.avgRating}} of 7 star based on {{this.ratingCount}} reviews</p>
 									<hr style="margin-top: 10px; " />
 									<div class="row rating-row">
 										{{#each Ratings}}

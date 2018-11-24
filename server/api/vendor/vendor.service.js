@@ -104,7 +104,7 @@ export async function vendorwithProductCount(params) {
 	});
 }
 
-export async function TopSellingVendors(offset, limit, marketplace, location = null) {
+export async function TopSellingVendors(offset, limit, marketplace, location = null, order=null) {
 	var result = {};
 	var orderModelName = "Order";
 	var vendorModelName = "Vendor";
@@ -126,6 +126,9 @@ export async function TopSellingVendors(offset, limit, marketplace, location = n
 
 	if (location)
 		queryObj.base_location = location;
+
+	if (order == null)
+		order = 'asc';
 
 	var includeArray = [{
 		model: model[vendorPlanModelName],
@@ -181,6 +184,9 @@ export async function TopSellingVendors(offset, limit, marketplace, location = n
 			offset: offset,
 			limit: limit,
 			order: sequelize.literal('sales_count DESC'),
+			order: [
+				['vendor_name', ]
+			],
 			group: ['OrderVendors->Order->OrderItems.id']
 		});
 

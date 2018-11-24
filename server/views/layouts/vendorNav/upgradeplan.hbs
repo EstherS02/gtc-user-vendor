@@ -188,11 +188,13 @@
 				$('#myModal').hide();
 				setTimeout(function() {
 					$('#paymentSuccess').modal('show');
+					$('#paybtn').prop('disabled', true);
 				}, 1000);
 			},
 			error: function(error) {
-				$('#complete-order-submit').prop('disabled', false);
-				$('#complete-order-submit').css({
+				$("#planPay_error").html(error);
+				$('#paybtn').prop('disabled', false);
+				$('#paybtn').css({
 					'cursor': "pointer"
 				});
 			}
@@ -526,12 +528,13 @@
 			</div>
 			<div class="modal-body">
 				<p id="Plan_cost"></p>
+				<p id="planPay_error"></p>
 			</div>
 			<div class="modal-footer">
 				<button type="reset" class="btn btn-small btn-muted" data-dismiss="modal">
 					<b>CANCEL<b/>
 				</button>
-				<button type="submit" class="btn btn-small btn-primary" onclick="makePayment()">
+				<button type="submit" id="paybtn" class="btn btn-small btn-primary" onclick="makePayment()">
 					<b>PAY</b>
 				</button>
 				{{!-- <button type="button" class="btn btn-default" data-dismiss="modal" onclick="makePayment()">PAY</button>

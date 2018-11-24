@@ -1348,7 +1348,7 @@ label.error {
 .login-banner-1 {
 	background: #638ac5;
 	color: #fff;
-	min-height: 575px;
+	min-height: 520px;
 }
 .login-banner-1 img {
 	max-height: 220px;
@@ -2079,7 +2079,7 @@ p.summary-info span {
 }
 
 .cart-summary {
-	padding: 40px;
+	padding: 35px;
 }
 
 .cart-summary h2 {
@@ -2451,7 +2451,7 @@ p.summary-info span {
 	border-radius: .2rem;
 }
 .terms_para {
-	font-size: 10px;
+	font-size: 13px;
 	margin-bottom: 5px;
 	text-align: justify;
 	line-height: 1.5;

@@ -8,7 +8,6 @@
 	$(document).ready(function() {
 		$('#cancel-alert').hide();
 		$("#dispatch-alert").hide();
-
 		$('#cancelReason').validate({
 			rules: {
 				reason_for_cancel: {
@@ -50,19 +49,15 @@
 					maxlength: "Maximum 20 characters",
 					minlength: "Minimun 8 characters"
 				}
-
 			}
 		});
-
 
 		$('#cancelReason').submit(function(e) {
 			e.preventDefault();
 			if ($('#cancelReason').valid()) {
-
 				let cancelObj = $("#cancelReason :input").filter(function(index, element) {
 					return $(element).val() != '';
 				}).serialize();
-
 				$.ajax({
 					url: '/api/payment/cancel-order-item/',
 					type: 'POST',
@@ -76,7 +71,6 @@
 						setTimeout(function() {
 							location.reload(true);
 						}, 3000);
-
 					},
 					error: function(error) {
 						$('#cancel-alert').removeClass('alert-success').addClass('alert-danger');
@@ -93,11 +87,9 @@
 		$('#dispatchForm').submit(function(e) {
 			e.preventDefault();
 			if ($('#dispatchForm').valid()) {
-
 				let dispatchInput = $("#dispatchForm :input").filter(function(index, element) {
 					return $(element).val() != '';
 				}).serialize();
-
 				$.ajax({
 					url: '/api/order/dispatch/' + {{ order.Order.id }},
 					type: 'PUT',
@@ -123,7 +115,6 @@
 				});
 			}
 		});
-
 	});
 
 	function selectBox(ele) {
@@ -775,15 +766,17 @@
 						<input type="hidden" id="item_id" name="item_id" value="">
 						<div class="col-lg-12">
 							<div class="form-group">
-								<input class="required" type="checkbox" onclick="selectBox(this);" name="checkbox" id="cancelCheckbox"/>
-								<label class="label-control">Are you sure you want to cancel this item from your order?</label>
+								<div class="customCheckbox">
+									 <input type="checkbox" id="cancelCheckbox" class="customCheckboxInput" onclick="selectBox(this);">
+                                    <label class="checkbox-b" for="cancelCheckbox"></label>
+                                    <small class="m-l-sm font-sm1">Are you sure you want to cancel this item from your order?</small>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
-
 					<button class="ladda-button btn btn-small btn-primary" id="submitBtn" disabled="disabled" type="submit" data-style="expand-left">
 						<span class="ladda-label">Submit</span>
 						<span class="ladda-spinner"></span>

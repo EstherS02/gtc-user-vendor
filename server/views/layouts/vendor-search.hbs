@@ -2,10 +2,20 @@
 <script>
 	function sortSearch(e) {
 		var url = window.location.href;
-		var uri = updateQueryStringParameter(url, 'field', e.value);
-		uri = updateQueryStringParameter(uri, 'order', 'asc');
+		var order;
+		var field;
+		if (e.value == 'vendor_name_asc') {
+			order = 'asc';
+			field = 'vendor_name';
+		} else if (e.value == 'vendor_name_desc') {
+			order = 'desc';
+			field = 'product_name';
+		}
+		var uri = updateQueryStringParameter(url, 'field', field);
+		uri = updateQueryStringParameter(uri, 'order', order)
 		window.location.href = uri;
 	}
+
 	function updateQueryStringParameter(uri, key, value) {
 		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
 		var separator = uri.indexOf('?') !== -1 ? "&" : "?";
@@ -94,10 +104,11 @@
 						<div class="form-group">
 							<label class="label-control m-r-md">Sort by</label>
 							<div class="select-container">
-								<select name="order" onchange="sortSearch(this)" class="form-control-customized rounded form-control-sm form-control-border"
+								<select name="order" onchange="sortSearch(this)" class="form-control-customized rounded form-control-sm form-control-border" style="font-family: 'FontAwesome', Helvetica;"
 								 id="sortValue">
-									<option disabled="true" selected>Sort by</option>
-									<option value="vendor_name">Alphabetical</option>
+									<option disabled="true" selected="true">Sort by</option>
+									<option  value="vendor_name_asc" {{#ifCond queryURI.order "==" 'asc'}} selected="true" {{/ifCond}}>Alphabetical &#xf063;</option>
+									<option value="vendor_name_desc" {{#ifCond queryURI.order "==" 'desc'}} selected="true" {{/ifCond}}>Alphabetical &#xf062;</option>
 								</select>
 							</div>
 						</div>
