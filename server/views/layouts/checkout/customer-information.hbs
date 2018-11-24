@@ -103,26 +103,23 @@
 		$("#customer-information").submit(function(e) {
 			e.preventDefault();
 
-			//here we enter our code....
+			//ourcode....
+			$("#result").html("");
 			var errorLog = [];
 			var selectedShippingCountry = Number($("#shipping-select-country").val());
 			var selectedCountryName = $("#shipping-select-country option:selected").text();
-			console.log(selectedCountryName)
 			var error = []
-
 			$.each(shippingLocation, function(key, value) {
 				var countries = value.country_id;
 				if ($.inArray(selectedShippingCountry, countries) == -1) {
-					//console.log(value.product_name + " Not available for " + selectedCountryName);
 					error.push(value.product_name + " Not available for " + selectedCountryName);
 				}
 			})
 
 			if (error.length != 0) {
-				console.log(error.length);
-				for (var i = 0; i < error.length; i++) {
-					alert(error[i]);
-				}
+				$.each(error, function(index, value) {
+					$("#result").append('\u2022  ' + value + '<br>');
+				});
 				return;
 			}
 
@@ -255,18 +252,13 @@
 		window.location.href = "/cart";
 	}
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}
-<div class="alert" id="gtc-form-alert">
-	<button type="button" class="close" data-dismiss="alert">
-		<span aria-hidden="true">&times;</span>
-	</button>
-	<span class="form-message"></span>
-</div>
 <div id="vendorAlert" tabindex="1">
 	<div class="gtc-container"></div>
 </div>
 <div class="wrapper-content">
 	<div class="container-sm">
 		<div class="title-header-1 gtc-p-l-r">
+			<div style="color: #721c24;background-color: #f8d7da;border-color: #f5c6cb;" id="result"></div>
 			<div class="alignleft">
 				<ul class="breadcrumb">
 					<li>
