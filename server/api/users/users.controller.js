@@ -12,81 +12,85 @@ const service = require('../service');
 const moment = require('moment');
 const Sequelize_Instance = require('../../sqldb/index');
 const RawQueries = require('../../raw-queries/sql-queries');
+const sequelize = require('sequelize');
 
 export function index(req, res) {
 	return new Promise((resolve, reject) => {
-		let field = 'created_on';
-		let order = 'desc';
-		var params = req.query;
-		let limit = req.query.limit? req.query.limit : 50;
-		let offset = req.query.offset? req.query.offset * limit : 0;
-		params.limit = limit;
-		params.offset = offset;
-		if(req.query.text){
-			params.text = req.query.text;
+
+	let field = 'created_on';
+	let order = 'desc';
+
+	var offset, limit;
+	var queryObj = {};
+	var queryObj1 = {};
+	queryObj1.role = roles['USER']
+	
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	delete req.query.limit;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	delete req.query.offset;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
+
+	if(req.query.text){
+        queryObj['$or']=[
+                sequelize.where(sequelize.fn('concat_ws', sequelize.col('first_name'), ' ', sequelize.col('last_name'), ' ', sequelize.col('email')), {
+                    $like: '%' + req.query.text + '%'
+                })
+            ]
+    }
+    if(req.query.status){
+    	queryObj.status = req.query.status;
+    }else{
+		queryObj.status = {
+			'$ne': status["DELETED"]
 		}
-		Sequelize_Instance.query(RawQueries.userWithorderCount(params), {
-			model: model['User'],
-			type: Sequelize_Instance.QueryTypes.SELECT
-		}).then((results) => {
-			return res.status(200).send(results);
-		}).catch(function(error) {
-			console.log("error:::", error)
-			return res.status(500).send(error);
-		});
+	}
+
+	queryObj.role = roles['USER'];
+	model['User'].findAll({
+		where: queryObj,
+		subQuery: false,
+		offset: offset,
+		limit: limit,
+		include:[{
+			model:model['Order'],
+			attributes:[],
+			requires:false
+		}],
+		attributes: ['id','first_name','last_name','created_on','email','status',[sequelize.literal('COUNT(Orders.id)'), 'order_count']],
+		group:['id'],
+		order: [
+			[field, order]
+		],
+		raw: true
+	}).then(function(rows) {
+		var result={};
+		if (rows.length > 0) {
+			return model['User'].count({
+					where: queryObj1
+				}).then(function(count) {
+					result.count = count;
+					result.rows = rows;
+					return res.status(200).send(result);
+				}).catch(function(error) {
+					return res.status(500).send("Internal Server Error");
+				});
+		} else {
+			result.count = 0;
+			result.rows = rows;
+			res.status(200).send(result);
+			return;
+		}
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return
+	})
 	});
-	// 		console.log("------------------------------")
 
-	// var offset, limit, field, order;
-	// var queryObj = {};
-
-	// offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	// delete req.query.offset;
-	// limit = req.query.limit ? parseInt(req.query.limit) : 10;
-	// delete req.query.limit;
-	// field = req.query.field ? req.query.field : "id";
-	// delete req.query.field;
-	// order = req.query.order ? req.query.order : "asc";
-	// delete req.query.order;
-
-	// queryObj = req.query;
-	// queryObj.role = roles['USER'];
-	// // userWithorderCount
-	// model['User'].findAndCountAll({
-	// 	where: queryObj,
-	// 	offset: offset,
-	// 	limit: limit,
-	// 	include:[{
-	// 		model:model['Order'],
-	// 		where:{
-	// 			status:status['ACTIVE']
-	// 		},
-	// 		attributes:['id'],
-	// 		requires:false
-	// 	}],
-	// 	attributes: {
-	// 		exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-	// 	},
-	// 	order: [
-	// 		[field, order]
-	// 	],
-	// 	raw: true
-	// }).then(function(rows) {
-	// 		console.log("------------------------------",rows.rows)
-
-	// 	if (rows.length > 0) {
-
-	// 		res.status(200).send(rows);
-	// 		return;
-	// 	} else {
-	// 		res.status(200).send(rows);
-	// 		return;
-	// 	}
-	// }).catch(function(error) {
-	// 	console.log('Error :::', error);
-	// 	res.status(500).send("Internal server error");
-	// 	return
-	// })
 }
 
 export function create(req, res) {
@@ -104,7 +108,7 @@ export function create(req, res) {
 	}
 
 	var errors = req.validationErrors();
-	if (errors) {
+	if (errors) {emailemail
 		res.status(400).send('Oops, something was not right');
 		return;
 	}
@@ -113,8 +117,13 @@ export function create(req, res) {
 	bodyParams['salt'] = makeSalt();
 	bodyParams['hashed_pwd'] = encryptPassword(req);
 
+	var emailVerified = 0;
+
+	if (req.body.email_verified)
+		emailVerified = req.body.email_verified;
+
 	if (req.body.provider == providers["OWN"]) {
-		bodyParams["email_verified"] = 0;
+		bodyParams["email_verified"] = emailVerified;
 		bodyParams['email_verified_token'] = randomCode;
 		bodyParams['email_verified_token_generated'] = new Date();
 	}
@@ -720,34 +729,48 @@ export function forgotPassword(req, res) {
 		})
 }
 
-export function updateContactEmail(req, res) {
+export async function edit(req, res){
+	var userID = req.params.id;
+	var userModel = 'User';
+	var bodyParam = {};
 
-	if (req.body.userId == req.user.id) {
-		let userId = req.user.id;
-		let contactEmailUpdate = {
-			'user_contact_email': req.body.contact_email
-		}
+	req.checkBody('first_name', 'Missing first name').notEmpty();
+	req.checkBody('email', 'Missing email address').notEmpty();
 
-		return service.updateRow("User", contactEmailUpdate, userId)
-			.then(function(response) {
-				return res.status(200).send({
-					"message": "SUCCESS",
-					"messageDetails": "Contact Email updated Successfully"
-				});
-			}).catch(function(err) {
-				return res.status(500).send({
-					"message": "ERROR",
-					"messageDetails": "Contact Email updated UnSuccessfull with errors",
-					"errorDescription": err
-				});
-			});
-	} else {
+	var errors = req.validationErrors();
+	if (errors) {
+		console.log("Error::",errors)
 		return res.status(400).send({
-			"message": "ERROR",
-			"messageDetails": "Bad Request, Not authorized to updated"
+			"message": "Error",
+			"messageDetails": error
 		});
 	}
 
+	bodyParam = req.body;
+
+	try{
+		const existingUser = await service.findIdRow(userModel, userID);
+		if(existingUser){
+			const User = await service.updateRecordNew(userModel, bodyParam, {
+				id: userID
+			});
+			return res.status(200).send({
+				"message": "Success",
+				"messageDetails": "User details updated successfully."
+			});
+		}else{
+			return res.status(400).send({
+				"message": "Error",
+				"messageDetails": "User not Found."
+			});
+		}
+	}catch(error){
+		console.log("Error::",error);
+		return res.status(500).send({
+			"message": "Error",
+			"messageDetails": "Internal Server Error."
+		});
+	}
 }
 
 exports.authenticate = authenticate;
