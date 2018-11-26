@@ -111,6 +111,14 @@ export function adList(req, res) {
 					return callback(null);
 				});
 		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		}
 	}, function(err, results) {
 		if (!err) {
 			maxSize = results.ads.count / limit;
@@ -131,6 +139,7 @@ export function adList(req, res) {
 				marketPlace: marketplace,
 				selectedPage: 'ad-form',
 				vendorPlan: vendorPlan,
+				unreadCounts: results.unreadCounts,
 				position:position,
 				queryParamsString: querystring.stringify(queryURI),
 				queryPaginationObj: queryPaginationObj,

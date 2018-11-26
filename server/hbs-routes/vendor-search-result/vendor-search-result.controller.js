@@ -37,11 +37,13 @@ export function index(req, res) {
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 
-	field = req.query.field ? req.query.field : "sales_count";
+	field = req.query.field ? req.query.field : "vendor_name";
+	queryURI['field'] = field;
 	queryPaginationObj['field'] = field;
 	delete req.query.field;
 
-	order = req.query.order ? req.query.order : "desc";
+	order = req.query.order ? req.query.order : "asc";
+	queryURI['order'] = order;
 	queryPaginationObj['order'] = order;
 	delete req.query.order;
 
@@ -128,7 +130,7 @@ export function index(req, res) {
 				});
 		},
 		vendors: function(callback) {
-			vendorService.TopSellingVendors(offset, limit, selectedMarketPlaceID, selectedLocation)
+			vendorService.TopSellingVendors(offset, limit, selectedMarketPlaceID, selectedLocation, order)
 				.then(function(response) {
 					vendorIds = _.map(response.rows, 'id');
 					return callback(null, response);

@@ -16,6 +16,8 @@ const durationUnit = require('../../config/duration-unit');
 const service = require('../service');
 const Sequelize_Instance = require('../../sqldb/index');
 const RawQueries = require('../../raw-queries/sql-queries');
+const sequelize = require('sequelize');
+
 
 export async function createStarterSeller(req, res) {
 	var queryObj = {};
@@ -139,23 +141,77 @@ export function move(copyFrom, moveTo) {
 
 export function index(req, res) {
 	return new Promise((resolve, reject) => {
-		let queryObj = {};
+		var queryObj = {};
+		var queryObj1= {};
 		let productQueryObj ={};
 		let field = 'created_on';
 		let order = 'desc';
 		var params = req.query;
-		let limit = req.query.limit? req.query.limit : 50;
+		let limit = req.query.limit? parseInt(req.query.limit) : 10;
 		let offset = req.query.offset? req.query.offset * limit : 0;
-		params.limit = limit;
-		params.offset = offset;
-		Sequelize_Instance.query(RawQueries.vendorWithProductCount(params), {
-			model: model['Vendor'],
-			type: Sequelize_Instance.QueryTypes.SELECT
-		}).then((results) => {
-			return res.status(200).send(results);
-		}).catch(function(error) {
-			console.log("error:::", error)
-			return res.status(500).send(error);
+		var vendorPlanQuery ={};
+		var userQueryObj={};
+		userQueryObj.role= roles['VENDOR'];
+		if(req.query.plan_id){
+			vendorPlanQuery.plan_id = req.query.plan_id;
+		}
+		if(req.query.status){
+			queryObj.status = queryObj1.status= req.query.status;
+			vendorPlanQuery.status=req.query.status;
+		}
+		if(req.query.text){
+			queryObj['$or']=[
+                sequelize.where(sequelize.fn('concat_ws', sequelize.col('User.first_name'), ' ', sequelize.col('User.last_name'),' ',sequelize.col('vendor_name')), {
+                    $like: '%' + req.query.text + '%'
+                })
+            ];
+		}
+		let results={};
+		var includeArr=[{
+			model:model['User'],
+			where:userQueryObj,
+			attributes:['first_name','last_name']
+		},{
+			model:model['VendorPlan'],
+			where:vendorPlanQuery,
+			attributes:['plan_id'],
+			required:false
+		},{
+			model:model['Product'],
+			attributes:[],
+			required:false
+		}];
+		var result = {};
+		model["Vendor"].findAll({
+			include: includeArr,
+			where: queryObj,
+			subQuery: false,
+			attributes:['id','vendor_name','user_id','created_on',[sequelize.literal('COUNT(Products.id)'), 'product_count']],
+			offset: offset,
+			limit: limit,
+			group:['id'],
+			order: [
+				[field, order]
+			]
+		}).then(function(rows) {
+			if (rows.length > 0) {
+				return model['Vendor'].count({
+					where: queryObj1
+				}).then(function(count) {
+					result.count = count;
+					result.rows = rows;
+					return res.status(200).send(result);
+				}).catch(function(error) {
+					return res.status(500).send("Internal Server Error");
+				});
+			} else {
+				result.count = 0;
+				result.rows = rows;
+				return res.status(200).send(result);
+			}
+	}).catch(function(error) {
+		console.log("error:::::",error)
+			return res.status(500).send("Internal Server Error");
 		});
 	});
 }
