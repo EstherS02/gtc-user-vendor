@@ -12,81 +12,84 @@ const service = require('../service');
 const moment = require('moment');
 const Sequelize_Instance = require('../../sqldb/index');
 const RawQueries = require('../../raw-queries/sql-queries');
+const sequelize = require('sequelize');
+
 
 export function index(req, res) {
 	return new Promise((resolve, reject) => {
 		let field = 'created_on';
 		let order = 'desc';
-		var params = req.query;
+		// var params = req.query;
 		let limit = req.query.limit? req.query.limit : 50;
 		let offset = req.query.offset? req.query.offset * limit : 0;
-		params.limit = limit;
-		params.offset = offset;
-		if(req.query.text){
-			params.text = req.query.text;
-		}
-		Sequelize_Instance.query(RawQueries.userWithorderCount(params), {
-			model: model['User'],
-			type: Sequelize_Instance.QueryTypes.SELECT
-		}).then((results) => {
-			return res.status(200).send(results);
-		}).catch(function(error) {
-			console.log("error:::", error)
-			return res.status(500).send(error);
-		});
-	});
-	// 		console.log("------------------------------")
+		// params.limit = limit;
+		// params.offset = offset;
+		// if(req.query.text){
+		// 	params.text = req.query.text;
+		// }
 
 	// var offset, limit, field, order;
-	// var queryObj = {};
+	var queryObj = {};
+	var queryObj1 = {};
+	queryObj.role = roles['USER']
+	
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	delete req.query.limit;
+	offset = req.query.offset ? parseInt(req.query.offset) * limit : 0;
+	delete req.query.offset;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
 
-	// offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	// delete req.query.offset;
-	// limit = req.query.limit ? parseInt(req.query.limit) : 10;
-	// delete req.query.limit;
-	// field = req.query.field ? req.query.field : "id";
-	// delete req.query.field;
-	// order = req.query.order ? req.query.order : "asc";
-	// delete req.query.order;
+	if(req.query.text){
+        queryObj['$or']=[
+                Sequelize.where(Sequelize.fn('concat_ws', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    $like: '%' + req.query.text + '%'
+                })
+            ]
+    }
 
-	// queryObj = req.query;
-	// queryObj.role = roles['USER'];
-	// // userWithorderCount
-	// model['User'].findAndCountAll({
-	// 	where: queryObj,
-	// 	offset: offset,
-	// 	limit: limit,
-	// 	include:[{
-	// 		model:model['Order'],
-	// 		where:{
-	// 			status:status['ACTIVE']
-	// 		},
-	// 		attributes:['id'],
-	// 		requires:false
-	// 	}],
-	// 	attributes: {
-	// 		exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-	// 	},
-	// 	order: [
-	// 		[field, order]
-	// 	],
-	// 	raw: true
-	// }).then(function(rows) {
-	// 		console.log("------------------------------",rows.rows)
+	queryObj.role = roles['USER'];
+	model['User'].findAll({
+		where: queryObj,
+		subQuery: false,
+		offset: offset,
+		limit: limit,
+		include:[{
+			model:model['Order'],
+			attributes:[],
+			requires:false
+		}],
+		attributes: ['id','first_name','last_name','created_on','email',[sequelize.literal('COUNT(Orders.id)'), 'order_count']],
+		group:['id'],
+		order: [
+			[field, order]
+		],
+		raw: true
+	}).then(function(rows) {
+		var result={};
+		if (rows.length > 0) {
+			return model['User'].count({
+					where: queryObj1
+				}).then(function(count) {
+					result.count = count;
+					result.rows = rows;
+					return res.status(200).send(result);
+				}).catch(function(error) {
+					return res.status(500).send("Internal Server Error");
+				});
+		} else {
+			res.status(200).send(rows);
+			return;
+		}
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return
+	})
+	});
 
-	// 	if (rows.length > 0) {
-
-	// 		res.status(200).send(rows);
-	// 		return;
-	// 	} else {
-	// 		res.status(200).send(rows);
-	// 		return;
-	// 	}
-	// }).catch(function(error) {
-	// 	console.log('Error :::', error);
-	// 	res.status(500).send("Internal server error");
-	// 	return
-	// })
 }
 
 export function create(req, res) {
