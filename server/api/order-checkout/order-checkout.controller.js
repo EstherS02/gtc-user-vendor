@@ -1,9 +1,12 @@
+import { exists } from 'fs';
+
 'use strict';
 
 const async = require('async');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
+const cartService = require('../../api/cart/cart.service');
 const status = require('../../config/status');
 const discount = require('../../config/discount');
 const _ = require('lodash');
@@ -26,6 +29,7 @@ export function addCustomerInformation(req, res) {
 				shipping_address_id: shipping_address_id
 			});
 		}).catch(err => {
+			console.log("err -----------------", err);
 			return res.status(500).send(err);
 		});
 }
@@ -82,28 +86,35 @@ function processShippingAddress(req, billing_address_id) {
 				if (errors) {
 					reject(errors);
 				} else {
-					var shipping_address = {
-						user_id: req.user.id,
-						address_type: ADDRESS_TYPE['SHIPPINGADDRESS'],
-						first_name: req.body.shipping_first_name,
-						last_name: req.body.shipping_last_name,
-						company_name: req.body.shipping_company_name,
-						address_line1: req.body.shipping_addressline1,
-						address_line2: req.body.shipping_addressline2,
-						province_id: req.body.shipping_state,
-						country_id: req.body.shipping_country,
-						city: req.body.shipping_city,
-						postal_code: req.body.shipping_postal,
-						phone: req.body.shipping_phone,
-						status: status['ACTIVE'],
-						created_by: req.user.first_name,
-						created_on: new Date()
-					};
-					service.createRow('Address', shipping_address).then(address => {
-						resolve(address.id);
-					}).catch(err => {
-						reject(err);
-					});
+					validateShippingCountry(req)
+						.then((response) => {
+							if (response) {
+								var shipping_address = {
+									user_id: req.user.id,
+									address_type: ADDRESS_TYPE['SHIPPINGADDRESS'],
+									first_name: req.body.shipping_first_name,
+									last_name: req.body.shipping_last_name,
+									company_name: req.body.shipping_company_name,
+									address_line1: req.body.shipping_addressline1,
+									address_line2: req.body.shipping_addressline2,
+									province_id: req.body.shipping_state,
+									country_id: req.body.shipping_country,
+									city: req.body.shipping_city,
+									postal_code: req.body.shipping_postal,
+									phone: req.body.shipping_phone,
+									status: status['ACTIVE'],
+									created_by: req.user.first_name,
+									created_on: new Date()
+								};
+								return service.createRow('Address', shipping_address);
+							} else {
+								return reject(response);
+							}
+						}).then((address) => {
+							resolve(address.id);
+						}).catch((err) => {
+							reject(err);
+						});
 				}
 			}
 		} else {
@@ -135,3 +146,51 @@ function validateShippingAddress(req) {
 	req.checkBody('shipping_phone', 'Shipping Address Phone Number is Required').notEmpty();
 	return;
 }
+
+async function validateShippingCountry(req) {
+	var queryObj = {};
+	var includeArr = [];
+	var validationArray = [];
+	const cartModelName = "Cart";
+	const vendorShippingLocationModelName = "VendorShippingLocation";
+
+	queryObj['user_id'] = req.user.id;
+	queryObj['status'] = status["ACTIVE"];
+
+	includeArr = [{
+		model: model["Product"],
+		attributes: ['id', 'product_name']
+	}]
+
+	try {
+		const cartResponse = await service.findAllRows(cartModelName, includeArr, queryObj, 0, null, 'id', 'ASC');
+
+		if (cartResponse.count > 0) {
+			for (let cartProduct of cartResponse.rows) {
+				var queryObject = {};
+
+				queryObject['vendor_id'] = cartProduct.vendor_id;
+				queryObject['country_id'] = req.body.shipping_country;
+				queryObject['status'] = status["ACTIVE"];
+
+				const exists = await service.findOneRow(vendorShippingLocationModelName, queryObject);
+				if (!exists) {
+					validationArray.push({
+						msg: cartProduct.Product.product_name + " invalid",
+						param: "shipping_country"
+					});
+				}
+			}
+			if (validationArray.length > 0) {
+				return validationArray;
+			} else {
+				return true;
+			}
+		} else {
+			return true;
+		}
+	} catch (error) {
+		return error;
+	}
+}
+
