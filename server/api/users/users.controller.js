@@ -19,23 +19,15 @@ export function index(req, res) {
 	return new Promise((resolve, reject) => {
 		let field = 'created_on';
 		let order = 'desc';
-		// var params = req.query;
-		let limit = req.query.limit? req.query.limit : 50;
-		let offset = req.query.offset? req.query.offset * limit : 0;
-		// params.limit = limit;
-		// params.offset = offset;
-		// if(req.query.text){
-		// 	params.text = req.query.text;
-		// }
 
-	// var offset, limit, field, order;
+	var offset, limit;
 	var queryObj = {};
 	var queryObj1 = {};
-	queryObj.role = roles['USER']
+	queryObj1.role = roles['USER']
 	
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	delete req.query.limit;
-	offset = req.query.offset ? parseInt(req.query.offset) * limit : 0;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
 	field = req.query.field ? req.query.field : "id";
 	delete req.query.field;
@@ -44,10 +36,13 @@ export function index(req, res) {
 
 	if(req.query.text){
         queryObj['$or']=[
-                Sequelize.where(Sequelize.fn('concat_ws', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                sequelize.where(sequelize.fn('concat_ws', sequelize.col('first_name'), ' ', sequelize.col('last_name'), ' ', sequelize.col('email')), {
                     $like: '%' + req.query.text + '%'
                 })
             ]
+    }
+    if(req.query.status){
+    	queryObj.status = queryObj.status = req.query.status;
     }
 
 	queryObj.role = roles['USER'];
@@ -61,7 +56,7 @@ export function index(req, res) {
 			attributes:[],
 			requires:false
 		}],
-		attributes: ['id','first_name','last_name','created_on','email',[sequelize.literal('COUNT(Orders.id)'), 'order_count']],
+		attributes: ['id','first_name','last_name','created_on','email','status',[sequelize.literal('COUNT(Orders.id)'), 'order_count']],
 		group:['id'],
 		order: [
 			[field, order]
@@ -80,7 +75,9 @@ export function index(req, res) {
 					return res.status(500).send("Internal Server Error");
 				});
 		} else {
-			res.status(200).send(rows);
+			result.count = 0;
+			result.rows = rows;
+			res.status(200).send(result);
 			return;
 		}
 	}).catch(function(error) {
@@ -107,7 +104,7 @@ export function create(req, res) {
 	}
 
 	var errors = req.validationErrors();
-	if (errors) {
+	if (errors) {emailemail
 		res.status(400).send('Oops, something was not right');
 		return;
 	}
