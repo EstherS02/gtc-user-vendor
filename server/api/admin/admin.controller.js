@@ -32,7 +32,7 @@ export function index(req, res) {
 	}
 
 	userQueryObj['role'] = roles['ADMIN'];
-	userQueryObj['status'] = status['ACTIVE'];
+	// userQueryObj['status'] = status['ACTIVE'];
 
     if(req.query.text){
         userQueryObj['$or']=[
@@ -44,7 +44,7 @@ export function index(req, res) {
         
     includeArr = [{
 		model: model["User"],
-		attributes: ['id', 'first_name', 'last_name', 'email'],
+		attributes: ['id', 'first_name', 'last_name', 'email','status'],
         where: userQueryObj
     }];
 
