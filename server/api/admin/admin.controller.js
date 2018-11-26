@@ -7,6 +7,7 @@ const providers = require('../../config/providers');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
 const Sequelize = require('sequelize');
+const service = require('../service');
 
 export function index(req, res) {
 
@@ -32,7 +33,7 @@ export function index(req, res) {
 	}
 
 	userQueryObj['role'] = roles['ADMIN'];
-	userQueryObj['status'] = status['ACTIVE'];
+	// userQueryObj['status'] = status['ACTIVE'];
 
     if(req.query.text){
         userQueryObj['$or']=[
@@ -44,7 +45,7 @@ export function index(req, res) {
         
     includeArr = [{
 		model: model["User"],
-		attributes: ['id', 'first_name', 'last_name', 'email'],
+		attributes: ['id', 'first_name', 'last_name', 'email','status'],
         where: userQueryObj
     }];
 
@@ -192,6 +193,63 @@ function encryptPassword(req) {
         return '';
     var saltWithEmail = new Buffer(req.body.salt + req.body.email.toString('base64'), 'base64');
     return crypto.pbkdf2Sync(req.body.password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
+}
+
+export async function edit(req, res){
+	var adminID = req.params.id, userID;
+	var userModel = 'User';
+	var adminModel = 'Admin';
+	var bodyParam = {};
+
+	req.checkBody('first_name', 'Missing first name').notEmpty();
+	req.checkBody('email', 'Missing email address').notEmpty();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		console.log("Error::",errors)
+		return res.status(400).send({
+			"message": "Error",
+			"messageDetails": error
+		});
+	}
+
+	bodyParam = req.body;
+
+	try{
+
+		const existingAdmin = await service.findIdRow ( adminModel, adminID );
+		if(existingAdmin){
+
+			userID= existingAdmin.user_id;
+			const existingUser = await service.findIdRow(userModel, userID);
+			if(existingUser){
+				const User = await service.updateRecordNew(userModel, bodyParam, {
+					id: userID
+				});
+				return res.status(200).send({
+					"message": "Success",
+					"messageDetails": "Admin details updated successfully."
+				});
+			}else{
+				return res.status(400).send({
+					"message": "Error",
+					"messageDetails": "Admin not Found."
+				});
+			}
+		}else{
+			return res.status(400).send({
+				"message": "Error",
+				"messageDetails": "Admin not Found."
+			});
+		}
+		
+	}catch(error){
+		console.log("Error::",error);
+		return res.status(500).send({
+			"message": "Error",
+			"messageDetails": "Internal Server Error."
+		});
+	}
 }
 
 exports.authenticate = authenticate;

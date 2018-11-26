@@ -148,16 +148,17 @@ export function index(req, res) {
 		let order = 'desc';
 		var params = req.query;
 		let limit = req.query.limit? parseInt(req.query.limit) : 10;
-		let offset = req.query.offset? req.query.offset * limit : 0;
+		let offset = req.query.offset? parseInt(req.query.offset) : 0;
 		var vendorPlanQuery ={};
 		var userQueryObj={};
 		userQueryObj.role= roles['VENDOR'];
+
+		
 		if(req.query.plan_id){
 			vendorPlanQuery.plan_id = req.query.plan_id;
 		}
 		if(req.query.status){
 			queryObj.status = queryObj1.status= req.query.status;
-			vendorPlanQuery.status=req.query.status;
 		}
 		if(req.query.text){
 			queryObj['$or']=[
