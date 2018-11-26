@@ -17,8 +17,8 @@ const sequelize = require('sequelize');
 export function index(req, res) {
 	return new Promise((resolve, reject) => {
 
-		let field = 'created_on';
-		let order = 'desc';
+	let field = 'created_on';
+	let order = 'desc';
 
 	var offset, limit;
 	var queryObj = {};
@@ -42,8 +42,12 @@ export function index(req, res) {
             ]
     }
     if(req.query.status){
-    	queryObj.status = queryObj.status = req.query.status;
-    }
+    	queryObj.status = req.query.status;
+    }else{
+		queryObj.status = {
+			'$ne': status["DELETED"]
+		}
+	}
 
 	queryObj.role = roles['USER'];
 	model['User'].findAll({
@@ -113,8 +117,13 @@ export function create(req, res) {
 	bodyParams['salt'] = makeSalt();
 	bodyParams['hashed_pwd'] = encryptPassword(req);
 
+	var emailVerified = 0;
+
+	if (req.body.email_verified)
+		emailVerified = req.body.email_verified;
+
 	if (req.body.provider == providers["OWN"]) {
-		bodyParams["email_verified"] = 0;
+		bodyParams["email_verified"] = emailVerified;
 		bodyParams['email_verified_token'] = randomCode;
 		bodyParams['email_verified_token_generated'] = new Date();
 	}
@@ -756,7 +765,7 @@ export async function edit(req, res){
 			});
 		}
 	}catch(error){
-		console.log("Error::=========================",error);
+		console.log("Error::",error);
 		return res.status(500).send({
 			"message": "Error",
 			"messageDetails": "Internal Server Error."
