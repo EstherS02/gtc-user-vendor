@@ -720,34 +720,47 @@ export function forgotPassword(req, res) {
 		})
 }
 
-export function updateContactEmail(req, res) {
+export async function edit(req, res){
+	var userID = req.params.id;
+	var userModel = 'User';
 
-	if (req.body.userId == req.user.id) {
-		let userId = req.user.id;
-		let contactEmailUpdate = {
-			'user_contact_email': req.body.contact_email
-		}
+	req.checkBody('first_name', 'Missing first name').notEmpty();
+	req.checkBody('email', 'Missing email address').notEmpty();
 
-		return service.updateRow("User", contactEmailUpdate, userId)
-			.then(function(response) {
-				return res.status(200).send({
-					"message": "SUCCESS",
-					"messageDetails": "Contact Email updated Successfully"
-				});
-			}).catch(function(err) {
-				return res.status(500).send({
-					"message": "ERROR",
-					"messageDetails": "Contact Email updated UnSuccessfull with errors",
-					"errorDescription": err
-				});
-			});
-	} else {
+	var errors = req.validationErrors();
+	if (errors) {
+		console.log("Error::",errors)
 		return res.status(400).send({
-			"message": "ERROR",
-			"messageDetails": "Bad Request, Not authorized to updated"
+			"message": "Error",
+			"messageDetails": error
 		});
 	}
 
+	bodyParam = req.body;
+
+	try{
+		const existingUser = await service.findIdRow(userModel, userID);
+		if(existingUser){
+			const User = await service.updateRecordNew(userModel, bodyParam, {
+				id: userID
+			});
+			return res.status(200).send({
+				"message": "Success",
+				"messageDetails": "User details updated successfully."
+			});
+		}else{
+			return res.status(400).send({
+				"message": "Error",
+				"messageDetails": "User not Found."
+			});
+		}
+	}catch(error){
+		console.log("Error::",error);
+		return res.status(500).send({
+			"message": "Error",
+			"messageDetails": "Internal Server Error."
+		});
+	}
 }
 
 exports.authenticate = authenticate;
