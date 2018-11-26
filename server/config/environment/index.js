@@ -92,7 +92,8 @@ var all = {
 			featureProductAutoRenewal: "FEATURE-PRODUCT-AUTO-RENEWAL",
 			vendorOrderConformation: "VENDOR-ORDER-CONFORMATION",
 			vendorOrderShipped:"VENDOR-ORDER-SHIPPED",
-			orderDelivered: "ORDER-DELEIVERED"
+			orderDelivered: "ORDER-DELEIVERED",
+			vendorCoupon : "COUPON-CODE"
 		}
 	},
 	//Notification
