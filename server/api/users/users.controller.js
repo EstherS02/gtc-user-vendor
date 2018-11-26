@@ -14,9 +14,9 @@ const Sequelize_Instance = require('../../sqldb/index');
 const RawQueries = require('../../raw-queries/sql-queries');
 const sequelize = require('sequelize');
 
-
 export function index(req, res) {
 	return new Promise((resolve, reject) => {
+
 		let field = 'created_on';
 		let order = 'desc';
 		// var params = req.query;
@@ -80,7 +80,9 @@ export function index(req, res) {
 					return res.status(500).send("Internal Server Error");
 				});
 		} else {
-			res.status(200).send(rows);
+			result.count = 0;
+			result.rows = rows;
+			res.status(200).send(result);
 			return;
 		}
 	}).catch(function(error) {
@@ -726,6 +728,7 @@ export function forgotPassword(req, res) {
 export async function edit(req, res){
 	var userID = req.params.id;
 	var userModel = 'User';
+	var bodyParam = {};
 
 	req.checkBody('first_name', 'Missing first name').notEmpty();
 	req.checkBody('email', 'Missing email address').notEmpty();
@@ -758,7 +761,7 @@ export async function edit(req, res){
 			});
 		}
 	}catch(error){
-		console.log("Error::",error);
+		console.log("Error::=========================",error);
 		return res.status(500).send({
 			"message": "Error",
 			"messageDetails": "Internal Server Error."
