@@ -1,4 +1,6 @@
-import { exists } from 'fs';
+import {
+	exists
+} from 'fs';
 
 'use strict';
 
@@ -6,7 +8,6 @@ const async = require('async');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
-const cartService = require('../../api/cart/cart.service');
 const status = require('../../config/status');
 const discount = require('../../config/discount');
 const _ = require('lodash');
@@ -29,7 +30,6 @@ export function addCustomerInformation(req, res) {
 				shipping_address_id: shipping_address_id
 			});
 		}).catch(err => {
-			console.log("err -----------------", err);
 			return res.status(500).send(err);
 		});
 }
@@ -88,32 +88,28 @@ function processShippingAddress(req, billing_address_id) {
 				} else {
 					validateShippingCountry(req)
 						.then((response) => {
-							if (response) {
-								var shipping_address = {
-									user_id: req.user.id,
-									address_type: ADDRESS_TYPE['SHIPPINGADDRESS'],
-									first_name: req.body.shipping_first_name,
-									last_name: req.body.shipping_last_name,
-									company_name: req.body.shipping_company_name,
-									address_line1: req.body.shipping_addressline1,
-									address_line2: req.body.shipping_addressline2,
-									province_id: req.body.shipping_state,
-									country_id: req.body.shipping_country,
-									city: req.body.shipping_city,
-									postal_code: req.body.shipping_postal,
-									phone: req.body.shipping_phone,
-									status: status['ACTIVE'],
-									created_by: req.user.first_name,
-									created_on: new Date()
-								};
-								return service.createRow('Address', shipping_address);
-							} else {
-								return reject(response);
-							}
+							var shipping_address = {
+								user_id: req.user.id,
+								address_type: ADDRESS_TYPE['SHIPPINGADDRESS'],
+								first_name: req.body.shipping_first_name,
+								last_name: req.body.shipping_last_name,
+								company_name: req.body.shipping_company_name,
+								address_line1: req.body.shipping_addressline1,
+								address_line2: req.body.shipping_addressline2,
+								province_id: req.body.shipping_state,
+								country_id: req.body.shipping_country,
+								city: req.body.shipping_city,
+								postal_code: req.body.shipping_postal,
+								phone: req.body.shipping_phone,
+								status: status['ACTIVE'],
+								created_by: req.user.first_name,
+								created_on: new Date()
+							};
+							return service.createRow('Address', shipping_address);
 						}).then((address) => {
 							resolve(address.id);
-						}).catch((err) => {
-							reject(err);
+						}).catch((error) => {
+							return reject(error);
 						});
 				}
 			}
@@ -147,7 +143,7 @@ function validateShippingAddress(req) {
 	return;
 }
 
-async function validateShippingCountry(req) {
+function validateShippingCountry(req) {
 	var queryObj = {};
 	var includeArr = [];
 	var validationArray = [];
@@ -160,9 +156,9 @@ async function validateShippingCountry(req) {
 	includeArr = [{
 		model: model["Product"],
 		attributes: ['id', 'product_name']
-	}]
+	}];
 
-	try {
+	return new Promise(async (resolve, reject) => {
 		const cartResponse = await service.findAllRows(cartModelName, includeArr, queryObj, 0, null, 'id', 'ASC');
 
 		if (cartResponse.count > 0) {
@@ -176,21 +172,19 @@ async function validateShippingCountry(req) {
 				const exists = await service.findOneRow(vendorShippingLocationModelName, queryObject);
 				if (!exists) {
 					validationArray.push({
-						msg: cartProduct.Product.product_name + " invalid",
+						msg: cartProduct.Product.product_name.substring(0, 100) + ".....is Not Available To Ship Your Country",
 						param: "shipping_country"
 					});
+
 				}
 			}
 			if (validationArray.length > 0) {
-				return validationArray;
+				return reject(validationArray);
 			} else {
-				return true;
+				return resolve(true);
 			}
 		} else {
-			return true;
+			return resolve(true);
 		}
-	} catch (error) {
-		return error;
-	}
+	});
 }
-
