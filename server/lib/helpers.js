@@ -141,6 +141,15 @@ Handlebars.registerHelper('SUMFloat', function(v1, v2, options) {
 	return parseFloat(v1) + parseFloat(v2);
 });
 
+Handlebars.registerHelper('SUMFloatDisplay', function(v1, v2, count, options) {
+	var a = parseFloat(v1) + parseFloat(v2);
+	if (a > count) {
+		return count;
+	} else {
+		return a;
+	}
+});
+
 Handlebars.registerHelper('quantityPrice', function(quantity, price, symbol, options) {
 	var amt = parseInt(quantity) * parseFloat(price);
 	return numeral(amt).format(symbol + '0,0.00');
