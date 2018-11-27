@@ -19,6 +19,11 @@ body {
 a:hover {
 	text-decoration: none;
 }
+/*  */
+.header-md-text a:hover{
+	color: #a4bfda;
+}
+/*  */
 a {
 	color: #4078b0;
 }

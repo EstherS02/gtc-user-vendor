@@ -99,6 +99,16 @@ export function shop(req, res) {
 					return callback(error);
 				});
 		},
+		buyerCount: function(callback) {
+			productService.userBuyerCount(marketplace['PUBLIC'])
+			.then((response) => {
+				return callback(null, response);
+			})
+			.catch((error) => {
+				console.log(" Error:::", error);
+				return callback(error);
+			});
+		}
 	}, function(err, results) {
 		if (!err) {
 			res.render('shop', {
@@ -110,7 +120,8 @@ export function shop(req, res) {
 				publicMarketplace: results.publicMarketplace,
 				retailers: results.retailers,
 				cart: results.cartInfo,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				buyerCount:results.buyerCount
 			});
 		} else {
 			res.render('shop', err);
