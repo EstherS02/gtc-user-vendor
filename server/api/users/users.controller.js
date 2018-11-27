@@ -42,9 +42,9 @@ export function index(req, res) {
             ]
     }
     if(req.query.status){
-    	queryObj.status = req.query.status;
+    	queryObj.status  = queryObj1['status'] = req.query.status;
     }else{
-		queryObj.status = {
+		queryObj.status = queryObj1['status'] = {
 			'$ne': status["DELETED"]
 		}
 	}
@@ -85,12 +85,11 @@ export function index(req, res) {
 			return;
 		}
 	}).catch(function(error) {
-		console.log('Error :::', error);
-		res.status(500).send("Internal server error");
-		return
-	})
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return;
+		})
 	});
-
 }
 
 export function create(req, res) {
