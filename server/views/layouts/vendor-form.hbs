@@ -33,7 +33,7 @@
 		$('#profile-picture-modal').on('shown.bs.modal', function() {
 			if (test == 'div.icon') {
 				cropper = new Cropper(cropperInputImage, {
-					aspectRatio: 16 / 16,
+					aspectRatio: NaN,//16 / 16,
 					minCropBoxHeight: 280,
 					minCropBoxWidth: 1364,
 					viewMode: 1,
@@ -43,7 +43,7 @@
 				});
 			} else {
 				cropper = new Cropper(cropperInputImage, {
-					aspectRatio: 16 / 9,
+					aspectRatio: NaN,//16 / 9,
 					minCropBoxHeight: 280,
 					minCropBoxWidth: 1364,
 					viewMode: 1,

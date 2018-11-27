@@ -45,7 +45,7 @@ $(document).ready(function() {
 
 	$('#profile-picture-modal').on('shown.bs.modal', function() {
 		cropper = new Cropper(cropperInputImage, {
-			aspectRatio: 16 / 16,
+			aspectRatio: NaN,//16 / 16,
 			viewMode: 1,
 			ready: function() { }
 		});
@@ -407,13 +407,15 @@ aria-hidden="true">
 									<div class="col-lg-6">
 										<div class="row">
 											<div class="col-md-8 text-center">
+											<div class = "col-md-12" style="width:100%;height:200px;justify-content: center; position: relative;border: 1px solid #f0f0f0;">
 												{{#if user.user_pic_url}}
-												<img id="UploadedImage" onError="imgError(this)" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />
+												<img id="UploadedImage" onError="imgError(this)" src="{{user.user_pic_url}}" style="width: 70%; min-height=200px;min-height=200px;height=200px" alt="avt" />
 												{{else}}
 												<img id="UploadedImage" src="img/avatar.png" style="width: 70%; " alt="avt" /> 
 												{{/if}}
 												<p id="profileImage" class="text_blue_color">Change Avatar</p>
 												<input id="imageUpload" type="file" name="file" onclick="this.value=null;" placeholder="Photo" style="display:none" capture>
+											</div>
 											</div>
 										</div>
 										<br/>

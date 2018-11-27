@@ -11,7 +11,7 @@ var controller = require('./vendor.controller');
 router.get('/me', auth.isAuthenticated(), controller.me);
 router.get('/',auth.hasRole(roles['ADMIN']),controller.index);
 router.post('/starter-seller', auth.hasRole(roles['USER']), auth.isEmailVerified(), auth.isAccountActive(), multipartMiddleware, controller.createStarterSeller);
-router.post('/', controller.create);
+router.post('/',auth.hasRole(roles['VENDOR']), controller.create);
 
 
 module.exports = router;

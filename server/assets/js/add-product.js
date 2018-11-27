@@ -154,9 +154,9 @@ $(document).ready(function() {
 
 	$('#profile-picture-modal').on('shown.bs.modal', function() {
 		cropper = new Cropper(cropperInputImage, {
-			aspectRatio: 16 / 16,
-			minCropBoxHeight: 280,
-			minCropBoxWidth: 1364,
+			aspectRatio: NaN,//16 / 16,
+			// minCropBoxHeight: 280,
+			// minCropBoxWidth: 1364,
 			viewMode: 1,
 			ready: function() { }
 		});
@@ -176,7 +176,7 @@ $(document).ready(function() {
 		}
 	}
 
-	$("#country").change(function() {
+	$("#country").change(function() {	
 		var country_id = $('#country').val();
 		$.ajax({
 			url: '/api/states?country_id=' + country_id,
