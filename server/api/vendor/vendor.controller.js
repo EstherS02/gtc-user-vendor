@@ -18,7 +18,6 @@ const Sequelize_Instance = require('../../sqldb/index');
 const RawQueries = require('../../raw-queries/sql-queries');
 const sequelize = require('sequelize');
 
-
 export async function createStarterSeller(req, res) {
 	var queryObj = {};
 	var bodyParams = {};
@@ -152,14 +151,20 @@ export function index(req, res) {
 		var vendorPlanQuery ={};
 		var userQueryObj={};
 		userQueryObj.role= roles['VENDOR'];
+		vendorPlanQuery.status = 1;
 
-		
 		if(req.query.plan_id){
 			vendorPlanQuery.plan_id = req.query.plan_id;
 		}
-		if(req.query.status){
-			queryObj.status = queryObj1.status= req.query.status;
+
+		if(req.query.status)
+			queryObj['status'] = queryObj1['status'] = req.query.status
+		else{
+			queryObj['status'] = queryObj1['status'] = {
+				'$ne': status["DELETED"]
+			}
 		}
+
 		if(req.query.text){
 			queryObj['$or']=[
                 sequelize.where(sequelize.fn('concat_ws', sequelize.col('User.first_name'), ' ', sequelize.col('User.last_name'),' ',sequelize.col('vendor_name')), {
@@ -187,7 +192,7 @@ export function index(req, res) {
 			include: includeArr,
 			where: queryObj,
 			subQuery: false,
-			attributes:['id','vendor_name','user_id','created_on',[sequelize.literal('COUNT(Products.id)'), 'product_count']],
+			attributes:['id','vendor_name','user_id','status','created_on',[sequelize.literal('COUNT(Products.id)'), 'product_count']],
 			offset: offset,
 			limit: limit,
 			group:['id'],

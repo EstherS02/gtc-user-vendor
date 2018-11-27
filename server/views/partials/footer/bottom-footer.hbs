@@ -30,6 +30,11 @@
         }
         });
 	});
+    $(window).bind("pageshow", function(event) {
+    if (event.originalEvent.persisted) {
+        window.location.reload(); 
+    }
+});
 </script>
 <style>
 	.footer-social-links li:hover {

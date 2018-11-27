@@ -123,7 +123,7 @@
 
 		$('#profile-cover-picture-modal').on('shown.bs.modal', function() {
 			cropper = new Cropper(cropperInputImage, {
-				aspectRatio: 40 / 16,
+				aspectRatio: NaN,//40 / 16,
 				minCropBoxHeight: 280,
 				minCropBoxWidth: 1364,
 				viewMode: 1,
@@ -230,7 +230,7 @@
 
 		$('#profile-picture-modal').on('shown.bs.modal', function() {
 			cropper = new Cropper(cropperInputImage, {
-				aspectRatio: 16 / 16,
+				aspectRatio: NaN,//16 / 16,
 				minCropBoxHeight: 280,
 				minCropBoxWidth: 1364,
 				viewMode: 1,
