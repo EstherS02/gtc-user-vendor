@@ -23,6 +23,10 @@ a:hover {
 .header-md-text a:hover{
 	color: #a4bfda;
 }
+
+.dropdown-v-list ul li a:hover{
+    color: #080806;
+}
 /*  */
 a {
 	color: #4078b0;
