@@ -525,8 +525,13 @@ function mailVendor(){
 										{{else ifCond product.marketplace_type_id '==' wholesaleTypes.WTT}}
 										{{else ifCond product.marketplace_type_id '==' wholesaleTypes.RFQ}}
                                         {{else}}
-                            			<h1 class="p-rate"><span class="p-symbol">{{currency product.price '$'}}</h1>
-                                         {{/ifCond}}
+                                        	{{#if product.product_discounted_price}}
+                                        		<h1 class="p-rate"><span class="p-symbol">{{currency product.product_discounted_price '$'}}</h1>
+                                        		<small class="discount-price-flag">{{timeLeft product.exclusive_end_date}}&nbsp;<strong>SAVE {{currency product.discount '$'}}</strong></small>
+                                        	{{else}}
+                            					<h1 class="p-rate"><span class="p-symbol">{{currency product.price '$'}}</h1>
+											{{/if}}
+										{{/ifCond}}
                             			<p class="discount-text text-muted m-t-sm m-b-sm">This product has discounts on bulk orders.</p>
                             			<div class="p-social-compare">
                             				<div class="alignleft icon">
