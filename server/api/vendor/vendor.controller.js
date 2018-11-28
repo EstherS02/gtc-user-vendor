@@ -149,7 +149,7 @@ export async function createVendor(req, res) {
 	}
 
 	bodyParams = req.body;
-	bodyParams['user_id'] = req.user.id;
+	// bodyParams['user_id'] = req.user.id;
 	bodyParams['status'] = status['ACTIVE'];
 	bodyParams['created_on'] = new Date();
 	bodyParams['created_by'] = req.user.first_name;
@@ -168,6 +168,7 @@ export async function createVendor(req, res) {
             bodyParamsUser["role"] = roles["VENDOR"];
             bodyParamsUser["email_verified"] = 1;
             bodyParamsUser['created_on'] = new Date();
+
 
             const newUser = await service.createRow(userModelName, bodyParamsUser);
             if(newUser){
@@ -201,17 +202,13 @@ export async function createVendor(req, res) {
 				}
 
 				const newVendor = await service.createRow(vendorModelName, bodyParams);
-				const updateExistingUser = await service.updateRow(userModelName, {
-					role: roles['VENDOR'],
-					last_updated_by: req.user.first_name,
-					last_updated_on: new Date()
-				}, req.user.id);
 
 				var verndorPlanObj = {};
 				verndorPlanObj['vendor_id'] = newVendor.id;
 				verndorPlanObj['plan_id'] = startSellerPlan.id;
 				verndorPlanObj['status'] = status['ACTIVE'];
 				verndorPlanObj['start_date'] = new Date();
+				verndorPlanObj['user_id']= newUser.id;
 
 				if (startSellerPlan.duration_unit == durationUnit['DAYS']) {
 					verndorPlanObj['end_date'] = moment().add(startSellerPlan.duration, 'days').format('YYYY-MM-DD');
@@ -241,6 +238,54 @@ export async function createVendor(req, res) {
 		return res.status(500).send("Internal server error");
 	}
 }
+
+export async function edit(req,res){
+	var queryObj = {};
+	var bodyParams = {};
+	var PlanModelName = "Plan";
+	var userModelName = "User";
+	var vendorModelName = "Vendor";
+	var vendorPlanModelName = "VendorPlan";
+	var bodyParamsUser = {};
+	if (!req.files.vendor_profile_picture) {
+		return res.status(400).send("Vendor profile picture missing.");
+	}
+
+	req.checkBody('vendor_name', 'Missing Query Param').notEmpty();
+	req.checkBody('address', 'Missing Query Param').notEmpty();
+	req.checkBody('base_location', 'Missing Query Param').notEmpty();
+	req.checkBody('province_id', 'Missing Query Param').notEmpty();
+	req.checkBody('city', 'Missing Query Param').notEmpty();
+	req.checkBody('currency_id', 'Missing Query Param').notEmpty();
+	req.checkBody('email', 'Email is Missing').notEmpty();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send(errors);
+		return;
+	}
+
+	bodyParams = req.body;
+	bodyParams['status'] = status['ACTIVE'];
+	bodyParams['last_updated_on'] = new Date();
+	bodyParams['last_updated_by'] = req.user.first_name;
+
+	queryObj['id'] = req.params.id;
+
+	try {
+		const existingVendor = await service.findOneRow(vendorModelName, queryObj);
+		if (!existingVendor) {
+			return res.status(500).send("Invalid Access");
+        }else{
+        	const updateExistingUser = await service.updateRow(vendorModelName, bodyParams ,req.params.id);
+        	return res.status(500).send("Updated successfully");
+        }
+    }catch (error) {
+		console.log("Error:::", error);
+		return res.status(500).send("Internal server error");
+	}
+}
+
 export function move(copyFrom, moveTo) {
 	return new Promise((resolve, reject) => {
 		mv(copyFrom, moveTo, {
