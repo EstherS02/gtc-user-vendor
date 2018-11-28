@@ -96,6 +96,13 @@ export function product(req, res) {
 						} else {
 							product['rating'] = 0;
 						}
+						const currentDate = new Date();
+						const exclusiveStartDate = new Date(product.exclusive_start_date);
+						const exclusiveEndDate = new Date(product.exclusive_end_date);
+						if (product.exclusive_sale && (exclusiveStartDate <= currentDate && exclusiveEndDate >= currentDate)) {
+							product['discount'] = ((product.price / 100) * product.exclusive_offer).toFixed(2);
+							product['product_discounted_price'] = (parseFloat(product['price']) - product['discount']).toFixed(2);
+						}
 						vendorID = product.vendor_id;
 						marketplaceID = product.marketplace_id;
 						categoryID = product.product_category_id;
