@@ -1,7 +1,7 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <script>
 	var counts = {{{ DisplayJSON globalProductCounts }}}
-  $(document).ready(function () {
+  // $(document).ready(function () {
     $('#depart').on('change', function () {
       $('#searchSubmit').prop('disabled', !$(this).val());
     }).trigger('change');
@@ -17,7 +17,7 @@
         return $(element).val() != '';
       }).serialize();
       window.location.href = '/products/search?' + formInput;
-    });
+    // });
   });
 </script>
 <div class="marketplace-banner products">

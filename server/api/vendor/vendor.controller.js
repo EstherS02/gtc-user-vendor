@@ -129,7 +129,7 @@ export async function createVendor(req, res) {
 	var userModelName = "User";
 	var vendorModelName = "Vendor";
 	var vendorPlanModelName = "VendorPlan";
-
+	var bodyParamsUser = {};
 	if (!req.files.vendor_profile_picture) {
 		return res.status(400).send("Vendor profile picture missing.");
 	}
@@ -157,18 +157,19 @@ export async function createVendor(req, res) {
 	queryObj['email'] = req.body.email;
 
 	try {
-		const existingVendor = await service.findOneRow(userModelName, queryObj);
-
-		if (!existingVendor) {
-
+		const existingUser = await service.findOneRow(userModelName, queryObj);
+		if (!existingUser) {
+			bodyParamsUser['first_name'] = req.body.first_name;
+			bodyParamsUser['last_name'] = req.body.last_name;
+			bodyParamsUser['email'] = req.body.email;
 			bodyParamsUser["provider"] = providers["OWN"];
             bodyParamsUser["contact_email"] = req.body.email;
             bodyParamsUser["status"] = status["ACTIVE"];
-            bodyParamsUser["role"] = roles["ADMIN"];
+            bodyParamsUser["role"] = roles["VENDOR"];
             bodyParamsUser["email_verified"] = 1;
             bodyParamsUser['created_on'] = new Date();
 
-            const newUser = await service.createRow(userModelName, bodyParams);
+            const newUser = await service.createRow(userModelName, bodyParamsUser);
             if(newUser){
 			var planQueryObj = {};
 			planQueryObj['status'] = status['ACTIVE'];
@@ -230,14 +231,14 @@ export async function createVendor(req, res) {
 				return res.status(404).send("Plan not found.");
 			}
 		}else{
-			return res.status(404).send(newUser);
+			return res.status(404).send("Unable to create User");
 		}
 		} else {
 			return res.status(409).send("Email already exists.");
 		}
 	} catch (error) {
 		console.log("Error:::", error);
-		return res.status(500).send(error);
+		return res.status(500).send("Internal server error");
 	}
 }
 export function move(copyFrom, moveTo) {
@@ -294,7 +295,6 @@ export function deleteAll(req, res) {
             return res.status(200).send(returnResponse);
 
 		} else {
-			// no email
         return res.status(500).send("No data found.");
 
 		}
@@ -315,9 +315,6 @@ export function index(req, res) {
 		userQueryObj.role= roles['VENDOR'];
 		vendorPlanQuery.status = 1;
 
-		if(req.query.plan_id){
-			vendorPlanQuery.plan_id = req.query.plan_id;
-		}
 
 		if(req.query.status)
 			queryObj['status'] = queryObj1['status'] = req.query.status
@@ -340,15 +337,26 @@ export function index(req, res) {
 			where:userQueryObj,
 			attributes:['first_name','last_name']
 		},{
-			model:model['VendorPlan'],
-			where:vendorPlanQuery,
-			attributes:['plan_id'],
-			required:false
-		},{
 			model:model['Product'],
 			attributes:[],
 			required:false
 		}];
+
+		if(req.query.plan_id){
+			vendorPlanQuery.plan_id = req.query.plan_id;
+			includeArr.push({
+			model:model['VendorPlan'],
+			where:vendorPlanQuery,
+			attributes:['plan_id'],
+		});
+		}else{
+			includeArr.push({
+			model:model['VendorPlan'],
+			where:vendorPlanQuery,
+			attributes:['plan_id'],
+			required:false
+		});
+		}
 		var result = {};
 		model["Vendor"].findAll({
 			include: includeArr,

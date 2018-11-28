@@ -11,6 +11,7 @@ var controller = require('./vendor.controller');
 router.get('/me', auth.isAuthenticated(), controller.me);
 router.get('/',auth.hasRole(roles['ADMIN']),controller.index);
 router.post('/delete',auth.hasRole(roles['ADMIN']),controller.deleteAll)//
+router.post('/create-vendor', auth.hasRole(roles['USER']), auth.isEmailVerified(), auth.isAccountActive(), multipartMiddleware, controller.createVendor);
 router.post('/starter-seller', auth.hasRole(roles['USER']), auth.isEmailVerified(), auth.isAccountActive(), multipartMiddleware, controller.createStarterSeller);
 router.post('/',auth.hasRole(roles['VENDOR']), controller.create);
 
