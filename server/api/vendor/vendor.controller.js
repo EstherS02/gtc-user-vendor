@@ -138,6 +138,51 @@ export function move(copyFrom, moveTo) {
 	});
 }
 
+export function deleteAll(req, res) {
+	var existsTable = [];
+	var deleteTable = [];
+	var userTable = [];
+	var vendorModel = 'Vendor';
+	var userModel = 'User';
+	var ids = JSON.parse(req.body.ids);//[104,105,106];//
+	var returnResponse = [];
+	var userQueryObj = {};
+	var queryObj = {};
+	queryObj['status'] = status['ACTIVE'];
+
+	for (let i = 0; i < ids.length; i++) {
+		queryObj['id'] = ids[i];
+		existsTable.push(service.findOneRow(vendorModel, queryObj, []))
+	}
+	Promise.all(existsTable).then((response) => {
+
+		if (response.length > 0) {
+			for (let i = 0; i < response.length; i++) {
+				queryObj['id'] = response[i].id;
+				userQueryObj['id'] = response[i].user_id;
+				deleteTable.push(service.updateRecord(vendorModel, {
+					status: status['DELETED']
+				}, queryObj));
+				userTable.push(service.updateRecord(userModel, {
+					status: status['DELETED']
+				}, userQueryObj));
+			}
+
+			Promise.all(deleteTable).then((response)=>{
+				returnResponse.push(response);
+			});
+			Promise.all(userTable).then((response)=>{
+				returnResponse.push(response);
+			});
+            return res.status(200).send(returnResponse);
+
+		} else {
+			// no email
+        return res.status(500).send("No data found.");
+
+		}
+	});
+}
 export function index(req, res) {
 	return new Promise((resolve, reject) => {
 		var queryObj = {};
