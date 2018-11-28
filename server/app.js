@@ -56,8 +56,8 @@ agenda.define(config.jobs.couponNotification, couponNotification);
 
 agenda.on('ready', function() {
 	console.log('agenda onReady');
-	agenda.every('8 hours', config.jobs.orderItemPayout);
-	agenda.every('8 hours', config.jobs.vendorPayouts);
+	agenda.every('5 minutes', config.jobs.orderItemPayout);
+	agenda.every('5 minutes', config.jobs.vendorPayouts);
 	agenda.every('12 hours', 'planRenewal');
 	agenda.every('12 hours', 'bulkUserPlanRenewal');
 	//agenda.every('12 hours', 'subscriptionAutoRenewal');

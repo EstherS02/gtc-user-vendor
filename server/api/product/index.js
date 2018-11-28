@@ -22,8 +22,6 @@ router.post('/', auth.hasRole(roles['VENDOR']), multipartMiddleware, auth.hasPer
 router.post('/import-product', auth.isAuthenticated(), controller.importProduct);
 router.put('/edit/:id', auth.hasRole(roles['VENDOR']), multipartMiddleware, auth.hasPermission(), controller.edit);
 router.put('/discount/:product_id', auth.hasRole(roles['VENDOR']), controller.discountProduct)
-router.post('/feature-payment', auth.isAuthenticated(), controller.featureProductWithPayment);
-router.post('/feature', auth.isAuthenticated(), controller.featureProductWithoutPayment);
 router.get('/vendor-marketplaces/:vendor_id', auth.isAuthenticated(), controller.vendorMarketplaces);
 router.get('/admin/vendors', auth.hasRole(roles['ADMIN']), controller.planActiveVendors);
 router.get('/admin/active-vendor-products', auth.hasRole(roles['ADMIN']), controller.activeVendorProducts);

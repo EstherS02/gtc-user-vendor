@@ -23,7 +23,7 @@
 		};
 		$('#profile-picture-modal').on('shown.bs.modal', function() {
 			cropper = new Cropper(cropperInputImage, {
-				aspectRatio: 16 / 16,
+				aspectRatio: NaN;//16 / 16,
 				minCropBoxHeight: 280,
 				minCropBoxWidth: 1264,
 				viewMode:1,
