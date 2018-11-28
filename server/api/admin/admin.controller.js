@@ -11,7 +11,9 @@ const service = require('../service');
 
 export function index(req, res) {
 
-    var result = {}, queryObj = {}, userQueryObj = {};
+    var result = {},
+        queryObj = {},
+        userQueryObj = {};
     var includeArr = [];
     var offset, limit, field, order;
 
@@ -24,28 +26,26 @@ export function index(req, res) {
     order = req.query.order ? req.query.order : "asc";
     delete req.query.order;
 
-	if(req.query.status)
-		queryObj['status'] = req.query.status
-	else{
-		queryObj['status'] = {
-			'$ne': status["DELETED"]
-		}
-	}
-
-	userQueryObj['role'] = roles['ADMIN'];
-	// userQueryObj['status'] = status['ACTIVE'];
-
-    if(req.query.text){
-        userQueryObj['$or']=[
-                Sequelize.where(Sequelize.fn('concat_ws', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
-                    $like: '%' + req.query.text + '%'
-                })
-            ]
+    if (req.query.status)
+        queryObj['status'] = req.query.status
+    else {
+        queryObj['status'] = {
+            '$ne': status["DELETED"]
+        }
     }
-        
+    userQueryObj['role'] = roles['ADMIN'];
+
+    if (req.query.text) {
+        userQueryObj['$or'] = [
+            Sequelize.where(Sequelize.fn('concat_ws', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                $like: '%' + req.query.text + '%'
+            })
+        ]
+    }
+
     includeArr = [{
-		model: model["User"],
-		attributes: ['id', 'first_name', 'last_name', 'email','status'],
+        model: model["User"],
+        attributes: ['id', 'first_name', 'last_name', 'email', 'status'],
         where: userQueryObj
     }];
 
@@ -80,6 +80,55 @@ export function index(req, res) {
     });
 }
 
+export function deleteAdmin(req, res) {
+
+    var existsTable = [];
+    var deleteTable = [];
+    var userTable = [];
+    var adminModel = 'Admin';
+    var userModel = 'User';
+    var ids = JSON.parse(req.body.ids);
+    var returnResponse = [];
+    var userQueryObj = {};
+    var queryObj = {};
+    queryObj['status'] = status['ACTIVE'];
+
+    for (let i = 0; i < ids.length; i++) {
+        queryObj['id'] = ids[i];
+        existsTable.push(service.findOneRow(adminModel, queryObj, []))
+    }
+    Promise.all(existsTable).then((response) => {
+        if (response.length > 0) {
+
+            for (var i = 0; i < response.length; i++) {
+                if (response[i]) {
+                    queryObj['id'] = response[i]['id'];
+					userQueryObj['id'] = response[i]['user_id'];
+
+                    deleteTable.push(service.updateRecord(adminModel, {
+                        status: status['DELETED']
+                    }, queryObj));
+                    userTable.push(service.updateRecord(userModel, {
+                        status: status['DELETED']
+                    }, userQueryObj));
+                }
+            }
+
+            Promise.all(deleteTable).then((response) => {
+                returnResponse.push(response);
+            });
+            Promise.all(userTable).then((response) => {
+                returnResponse.push(response);
+                returnResponse.push(response);
+            });
+            return res.status(200).send(returnResponse);
+
+        } else {
+             return res.status(500).send("No data found.");
+        }
+    });
+}
+
 export function create(req, res) {
 
     var queryObj = {};
@@ -111,8 +160,8 @@ export function create(req, res) {
             res.status(409).send("Email address already exists");
             return;
         } else {
-			bodyParams["provider"] = providers["OWN"];
-			bodyParams["contact_email"] = req.body.email;
+            bodyParams["provider"] = providers["OWN"];
+            bodyParams["contact_email"] = req.body.email;
             bodyParams["status"] = status["ACTIVE"];
             bodyParams["role"] = roles["ADMIN"];
             bodyParams["email_verified"] = 1;
@@ -195,61 +244,62 @@ function encryptPassword(req) {
     return crypto.pbkdf2Sync(req.body.password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
 }
 
-export async function edit(req, res){
-	var adminID = req.params.id, userID;
-	var userModel = 'User';
-	var adminModel = 'Admin';
-	var bodyParam = {};
+export async function edit(req, res) {
+    var adminID = req.params.id,
+        userID;
+    var userModel = 'User';
+    var adminModel = 'Admin';
+    var bodyParam = {};
 
-	req.checkBody('first_name', 'Missing first name').notEmpty();
-	req.checkBody('email', 'Missing email address').notEmpty();
+    req.checkBody('first_name', 'Missing first name').notEmpty();
+    req.checkBody('email', 'Missing email address').notEmpty();
 
-	var errors = req.validationErrors();
-	if (errors) {
-		console.log("Error::",errors)
-		return res.status(400).send({
-			"message": "Error",
-			"messageDetails": error
-		});
-	}
+    var errors = req.validationErrors();
+    if (errors) {
+        console.log("Error::", errors)
+        return res.status(400).send({
+            "message": "Error",
+            "messageDetails": error
+        });
+    }
 
-	bodyParam = req.body;
+    bodyParam = req.body;
 
-	try{
+    try {
 
-		const existingAdmin = await service.findIdRow ( adminModel, adminID );
-		if(existingAdmin){
+        const existingAdmin = await service.findIdRow(adminModel, adminID);
+        if (existingAdmin) {
 
-			userID= existingAdmin.user_id;
-			const existingUser = await service.findIdRow(userModel, userID);
-			if(existingUser){
-				const User = await service.updateRecordNew(userModel, bodyParam, {
-					id: userID
-				});
-				return res.status(200).send({
-					"message": "Success",
-					"messageDetails": "Admin details updated successfully."
-				});
-			}else{
-				return res.status(400).send({
-					"message": "Error",
-					"messageDetails": "Admin not Found."
-				});
-			}
-		}else{
-			return res.status(400).send({
-				"message": "Error",
-				"messageDetails": "Admin not Found."
-			});
-		}
-		
-	}catch(error){
-		console.log("Error::",error);
-		return res.status(500).send({
-			"message": "Error",
-			"messageDetails": "Internal Server Error."
-		});
-	}
+            userID = existingAdmin.user_id;
+            const existingUser = await service.findIdRow(userModel, userID);
+            if (existingUser) {
+                const User = await service.updateRecordNew(userModel, bodyParam, {
+                    id: userID
+                });
+                return res.status(200).send({
+                    "message": "Success",
+                    "messageDetails": "Admin details updated successfully."
+                });
+            } else {
+                return res.status(400).send({
+                    "message": "Error",
+                    "messageDetails": "Admin not Found."
+                });
+            }
+        } else {
+            return res.status(400).send({
+                "message": "Error",
+                "messageDetails": "Admin not Found."
+            });
+        }
+
+    } catch (error) {
+        console.log("Error::", error);
+        return res.status(500).send({
+            "message": "Error",
+            "messageDetails": "Internal Server Error."
+        });
+    }
 }
 
 exports.authenticate = authenticate;

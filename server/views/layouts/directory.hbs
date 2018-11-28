@@ -1,27 +1,45 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <script>
+    // $(document).ready(function () {
+      //  $('#depart').on('change', function () {
+       //     $('#searchSubmit').prop('disabled', !$(this).val());
+       // }).trigger('change');
+      //  $('#category').on('change', function () {
+       //     $('#searchSubmit').prop('disabled', !$(this).val());
+       // }).trigger('change');
+      //  $('#location').on('change', function () {
+      //      $('#searchSubmit').prop('disabled', !$(this).val());
+       // }).trigger('change');
+       // $("#searchForm").submit(function (e) {
+        //    e.preventDefault();
+          //  let formInput = $("#searchForm :input").filter(function (index, element) {
+           //     return $(element).val() != '';
+           // }).serialize();
+          //  window.location.href = '/directories/search?' + formInput;
+       // });
+    // });
 	$(document).ready(function() {
-		$('#searchSubmitDirectory').prop('disabled', true);
-		$('#depart').val('');
-		$('#category').val('');
-		$('#location').val('');
-		$('#depart').on('change', function() {
-			$('#searchSubmitDirectory').prop('disabled', !$(this).val());
-		}).trigger('change');
-		$('#category').on('change', function() {
-			$('#searchSubmitDirectory').prop('disabled', !$(this).val());
-		}).trigger('change');
-		$('#location').on('change', function() {
-			$('#searchSubmitDirectory').prop('disabled', !$(this).val());
-		}).trigger('change');
-		$("#searchForm").submit(function(e) {
-			e.preventDefault();
-			let formInput = $("#searchForm :input").filter(function(index, element) {
-				return $(element).val() != '';
-			}).serialize();
-			window.location.href = '/directories/search?' + formInput;
+			$('#searchSubmitDirectory').prop('disabled', true);
+			$('#depart').val('');
+			$('#category').val('');
+			$('#location').val('');
+			$('#depart').on('change', function() {
+				$('#searchSubmitDirectory').prop('disabled', !$(this).val());
+			}).trigger('change');
+			$('#category').on('change', function() {
+				$('#searchSubmitDirectory').prop('disabled', !$(this).val());
+			}).trigger('change');
+			$('#location').on('change', function() {
+				$('#searchSubmitDirectory').prop('disabled', !$(this).val());
+			}).trigger('change');
+			$("#searchForm").submit(function(e) {
+				e.preventDefault();
+				let formInput = $("#searchForm :input").filter(function(index, element) {
+					return $(element).val() != '';
+				}).serialize();
+				window.location.href = '/directories/search?' + formInput;
+			});
 		});
-	});
 </script>
 <div class="marketplace-banner directory">
 	<div class="gtc-container">
