@@ -1,6 +1,6 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <script>
-    $(document).ready(function () {
+    // $(document).ready(function () {
         $('#depart').on('change', function () {
             $('#searchSubmit').prop('disabled', !$(this).val());
         }).trigger('change');
@@ -17,7 +17,7 @@
             }).serialize();
             window.location.href = '/directories/search?' + formInput;
         });
-    });
+    // });
 </script>
 <div class="marketplace-banner directory">
     <div class="gtc-container">
