@@ -166,6 +166,7 @@ export async function saveCoupon(req, res) {
 	const couponExcludedProductModelName = "CouponExcludedProduct";
 	const couponCategoryModelName = "CouponCategory";
 	const couponExcludedCategoryModelName = "CouponExcludedCategory";
+	
 
 	req.checkBody('coupon_name', 'Counpon name is required').notEmpty();
 	req.checkBody('code', 'Counpon code is required').notEmpty();
@@ -397,16 +398,18 @@ export async function saveCoupon(req, res) {
 			}, audit);
 			return couponExcludeProductResponse;
 		}));
-		if (req.user.user_contact_email) {
-			sendEmailCouponcode(req.user.Vendor.id,req.user.id);
-		}
+		 if (req.user.user_contact_email) {
+			sendEmailCouponcode(req.user.Vendor.id,req.user.id,coupon.id);
+	       }
+		
+
     	return res.status(200).send('Coupon added successfully.');
 	} catch (error) {
 		console.log("saveCoupon Error:::", error);
 		return res.status(500).send('Internal server error');
 	}
 }
-function sendEmailCouponcode(couponVendorId, couponUserId) {
+function sendEmailCouponcode(couponVendorId, couponUserId,couponId) {
 	var includeArr = [];
 	const offset = 0;
 	const limit = null;
@@ -489,6 +492,11 @@ function sendEmailCouponcode(couponVendorId, couponUserId) {
 											});
 											//return;
 										}
+										agenda.now(config.jobs.couponNotification, {
+											couponId: couponId,
+											couponuserId:couponUserId,
+											code: config.notification.templates.couponCode
+										});
 									}).catch(function(error) {
 										console.log('Error :::', error);
 										return;

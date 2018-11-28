@@ -108,7 +108,8 @@ var all = {
 			refundSuccessful: 'REFUND_SUCCESSFUL',
 			productReview: 'PRODUCT_REVIEW',
 			newPostFromBuyerOnYourDB: 'BUYER_POST_ON_DESCUSSION_BOARD',
-			likesComments: 'LIKE_AND_COMMENT'
+			likesComments: 'LIKE_AND_COMMENT',
+			couponCode : 'COUPON_CODE'
 		}
 	},
 	jobs: {
@@ -127,7 +128,8 @@ var all = {
 		"subscriptionAutoRenewal": "subscriptionAutoRenewal",
 		"featureProductAutoRenewal": "featureProductAutoRenewal",
 		"vendorPayouts": "vendor-payouts",
-		"orderNotification": "notification-order"
+		"orderNotification": "notification-order",
+		"couponNotification" : "notification-coupon"
 	},
 	fee: {
 		gtc_fees: 0.01,
