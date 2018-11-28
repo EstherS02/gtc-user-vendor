@@ -666,7 +666,7 @@ $(document).ready(function() {
 		if(checkedFeaturePositions.length == 1 && checkedFeaturePositions[0] == 'position_profilepage'){
 			featureProductInput = featureProductInput+'&product_id='+ product_id;
 			$.ajax({
-				url: '/api/product/feature',
+				url: '/api/feature-product',
 				type: 'POST',
 				data: featureProductInput,
 				success: function(data) {
@@ -739,7 +739,7 @@ $(document).ready(function() {
 			}).serialize();
 			featurePaymentInput = featurePaymentInput + '&feature_amount=' + feature_amount;
 			$.ajax({
-				url: '/api/product/feature-payment?' + featureProductInput + '&product_id=' + product_id,
+				url: '/api/feature-product/payment?' + featureProductInput + '&product_id=' + product_id,
 				type: 'POST',
 				data: featurePaymentInput,
 				success: function(data) {
