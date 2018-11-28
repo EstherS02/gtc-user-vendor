@@ -133,11 +133,13 @@ export async function create(req, res) {
 		const endDate = new Date(req.body.exclusive_end_date);
 		const currentDate = new Date();
 
-		if (startDate >= currentDate && endDate > startDate) {
+		if(startDate <= currentDate){
+			return res.status(400).send("Start date must be greater than current date.");
+		}else if(endDate < startDate){
+			return res.status(400).send("End date must be greater than start date.");
+		}else{
 			req.body.exclusive_end_date = new Date(req.body.exclusive_end_date);
 			req.body.exclusive_start_date = new Date(req.body.exclusive_start_date);
-		} else {
-			return res.status(400).send("Invalid exclusive Start date and End date.");
 		}
 	}
 
@@ -280,12 +282,15 @@ export async function edit(req, res) {
 
 		const startDate = new Date(req.body.exclusive_start_date);
 		const endDate = new Date(req.body.exclusive_end_date);
+		const currentDate = new Date();
 
-		if (startDate < endDate && endDate > startDate) {
+		if(startDate <= currentDate){
+			return res.status(400).send("Start date must be greater than current date.");
+		}else if(endDate < startDate){
+			return res.status(400).send("End date must be greater than start date.");
+		}else{
 			req.body.exclusive_end_date = new Date(req.body.exclusive_end_date);
 			req.body.exclusive_start_date = new Date(req.body.exclusive_start_date);
-		} else {
-			return res.status(400).send("Invalid exclusive Start date and End date.");
 		}
 	}
 
