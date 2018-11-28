@@ -90,7 +90,13 @@
                                 <ul class="footer-menu-list">
                                     <li><a href="#">Customer Service</a></li>
                                     <li><a href="#">Refund Policy</a></li>
-                                    <li><a href="/login#FAQ" >FAQs</a></li>
+                                    <li>
+                                        {{#if LoggedInUser.id}}
+                                            <a href="/faq" >FAQs</a>
+                                        {{else}}
+                                            <a href="/login#FAQ" >FAQs</a>
+                                        {{/if}}
+                                    </li>
                                     <li><a href="#">Terms & Conditions</a></li>
                                     <li><a href="#">Privacy Policy</a></li>
                                     <li><a href="#">Blog</a></li>
