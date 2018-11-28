@@ -73,7 +73,6 @@ module.exports = async function(job, done) {
 										bodyParams.status = 1;
 										bodyParams.created_on = new Date();
 										bodyParams.created_by = "Administrator";
-										bodyParams.created_on = new Date();
 										bodyParamsArray.push(bodyParams);
 									}
 									var finalresults = bodyParamsArray.filter(o => Object.keys(o).length);
