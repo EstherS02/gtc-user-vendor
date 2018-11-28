@@ -80,13 +80,16 @@ export function index(req, res) {
     });
 }
 
-export function deleteAll(req, res) {
+export function deleteAdmin(req, res) {
+
+	console.log("**********************************", req.body.ids)
+
     var existsTable = [];
     var deleteTable = [];
     var userTable = [];
-    var vendorModel = 'Admin';
+    var adminModel = 'Admin';
     var userModel = 'User';
-    var ids = JSON.parse(req.body.ids);//[3,4]; //
+    var ids = JSON.parse(req.body.ids);
     var returnResponse = [];
     var userQueryObj = {};
     var queryObj = {};
@@ -94,15 +97,22 @@ export function deleteAll(req, res) {
 
     for (let i = 0; i < ids.length; i++) {
         queryObj['id'] = ids[i];
-        existsTable.push(service.findOneRow(vendorModel, queryObj, []))
+        existsTable.push(service.findOneRow(adminModel, queryObj, []))
     }
     Promise.all(existsTable).then((response) => {
         if (response.length > 0) {
+			console.log("******************************", response);
+			console.log("*******------------------****", response.length);
+
             for (var i = 0; i < response.length; i++) {
                 if (response[i]) {
                     queryObj['id'] = response[i]['id'];
-                    userQueryObj['id'] = response[i]['user_id'];
-                    deleteTable.push(service.updateRecord(vendorModel, {
+					userQueryObj['id'] = response[i]['user_id'];
+					
+					console.log("^^^^^^^^^^^^^^^^^^", queryObj);
+					console.log("--------------", userQueryObj);
+
+                    deleteTable.push(service.updateRecord(adminModel, {
                         status: status['DELETED']
                     }, queryObj));
                     userTable.push(service.updateRecord(userModel, {
@@ -115,6 +125,7 @@ export function deleteAll(req, res) {
                 returnResponse.push(response);
             });
             Promise.all(userTable).then((response) => {
+                returnResponse.push(response);
                 returnResponse.push(response);
             });
             return res.status(200).send(returnResponse);

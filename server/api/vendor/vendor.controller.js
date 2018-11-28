@@ -138,13 +138,13 @@ export function move(copyFrom, moveTo) {
 	});
 }
 
-export function deleteAll(req, res) {
+export function deleteVendor(req, res) {
 	var existsTable = [];
 	var deleteTable = [];
 	var userTable = [];
 	var vendorModel = 'Vendor';
 	var userModel = 'User';
-	var ids = JSON.parse(req.body.ids);//[104,105,106];//
+	var ids = JSON.parse(req.body.ids);
 	var returnResponse = [];
 	var userQueryObj = {};
 	var queryObj = {};
@@ -177,9 +177,7 @@ export function deleteAll(req, res) {
             return res.status(200).send(returnResponse);
 
 		} else {
-			// no email
-        return res.status(500).send("No data found.");
-
+     	   return res.status(500).send("No data found.");
 		}
 	});
 }
