@@ -176,7 +176,7 @@ $(document).ready(function() {
 		}
 	}
 
-	$("#country").change(function() {	
+	$("#country").change(function() {
 		var country_id = $('#country').val();
 		$.ajax({
 			url: '/api/states?country_id=' + country_id,
