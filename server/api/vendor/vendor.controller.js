@@ -162,6 +162,7 @@ export async function createVendor(req, res) {
 			bodyParamsUser['first_name'] = req.body.first_name;
 			bodyParamsUser['last_name'] = req.body.last_name;
 			bodyParamsUser['email'] = req.body.email;
+			bodyParamsUser['user_contact_email'] = req.body.email;
 			bodyParamsUser["provider"] = providers["OWN"];
             bodyParamsUser["contact_email"] = req.body.email;
             bodyParamsUser["status"] = status["ACTIVE"];
