@@ -6,6 +6,9 @@
 <script>
   var userInfo = {{{DisplayJSON LoggedInUser}}}
   $(document).ready(function() {
+	  $('#marketplace_type').val('');
+	  $('#category').val('');
+	  $('#location').val('');
     $("a[title='seller']").click(function() {
       if (userInfo.email) {} else {
         $('#myModal').modal('show');
@@ -32,7 +35,7 @@
                             <div class="form-group m-b-sm">
                                 <div class="select-container">
                                     <select class="form-control-customized form-control-sm rounded" id="marketplace_type" name="marketplace_type">
-                                        <option disabled selected>Type</option>
+                                        <option value='' disabled selected>Type</option>
                                         {{#each type}}
                                           <option value="{{this.id}}">{{ this.name}}</option>
                                         {{/each}}
@@ -44,7 +47,7 @@
                             <div class="form-group m-b-sm">
                                 <div class="select-container">
                                     <select class="form-control-customized form-control-sm rounded" id="category" name="category">
-                                        <option disabled selected>Category</option>
+                                        <option value='' disabled selected>Category</option>
                                         {{#each categories}}
                                             <option value="{{this.id}}">{{ this.name}}</option>
                                         {{/each}}
@@ -56,7 +59,7 @@
                             <div class="form-group m-b-sm">
                                 <div class="select-container">
                                     <select class="form-control-customized form-control-sm rounded" id="location" name="location">
-                                        <option disabled selected>Location</option>
+                                        <option value='' disabled selected>Location</option>
                                         {{#each country}}
                                             <option value="{{this.id}}">{{ this.name}}</option>
                                         {{/each}}
