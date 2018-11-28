@@ -49,35 +49,45 @@ export function index(req, res) {
         where: userQueryObj
     }];
 
-    model['Admin'].findAll({
-        include: includeArr,
-        where: queryObj,
-        offset: offset,
-        limit: limit,
-        order: [
-            [field, order]
-        ]
-    }).then(function(rows) {
-        if (rows.length > 0) {
-            model['Admin'].count({
-                where: queryObj
-            }).then(function(count) {
-                result.count = count;
-                result.rows = rows;
-                return res.status(200).send(result);
-            }).catch(function(error) {
-                console.log("Error:::", error);
-                return res.status(500).send("Internal server error.");
-            });
-        } else {
-            result.count = 0;
-            result.rows = rows;
-            return res.status(200).send(result);
-        }
-    }).catch(function(error) {
-        console.log("Error:::", error);
-        return res.status(500).send("Internal server error.");
-    });
+    service.findRows('Admin', queryObj, offset, limit, field, order, includeArr)
+    .then(function(products){
+        return res.status(200).send(products);
+    }).catch(function(error){
+        return res.status(500).send({
+            "message": "ERROR",
+            "messageDetails": "Unable to display Administrator.",
+            "errorDescription": error
+        });
+    })
+    // model['Admin'].findAll({
+    //     include: includeArr,
+    //     where: queryObj,
+    //     offset: offset,
+    //     limit: limit,
+    //     order: [
+    //         [field, order]
+    //     ]
+    // }).then(function(rows) {
+    //     if (rows.length > 0) {
+    //         model['Admin'].count({
+    //             where: queryObj
+    //         }).then(function(count) {
+    //             result.count = count;
+    //             result.rows = rows;
+    //             return res.status(200).send(result);
+    //         }).catch(function(error) {
+    //             console.log("Error:::", error);
+    //             return res.status(500).send("Internal server error.");
+    //         });
+    //     } else {
+    //         result.count = 0;
+    //         result.rows = rows;
+    //         return res.status(200).send(result);
+    //     }
+    // }).catch(function(error) {
+    //     console.log("Error:::", error);
+    //     return res.status(500).send("Internal server error.");
+    // });
 }
 
 export function deleteAll(req, res) {
