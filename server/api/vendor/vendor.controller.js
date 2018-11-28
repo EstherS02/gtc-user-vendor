@@ -122,7 +122,124 @@ export async function createStarterSeller(req, res) {
 		return res.status(500).send(error);
 	}
 }
+export async function createVendor(req, res) {
+	var queryObj = {};
+	var bodyParams = {};
+	var PlanModelName = "Plan";
+	var userModelName = "User";
+	var vendorModelName = "Vendor";
+	var vendorPlanModelName = "VendorPlan";
 
+	if (!req.files.vendor_profile_picture) {
+		return res.status(400).send("Vendor profile picture missing.");
+	}
+
+	req.checkBody('vendor_name', 'Missing Query Param').notEmpty();
+	req.checkBody('address', 'Missing Query Param').notEmpty();
+	req.checkBody('base_location', 'Missing Query Param').notEmpty();
+	req.checkBody('province_id', 'Missing Query Param').notEmpty();
+	req.checkBody('city', 'Missing Query Param').notEmpty();
+	req.checkBody('currency_id', 'Missing Query Param').notEmpty();
+	req.checkBody('email', 'Email is Missing').notEmpty();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send(errors);
+		return;
+	}
+
+	bodyParams = req.body;
+	bodyParams['user_id'] = req.user.id;
+	bodyParams['status'] = status['ACTIVE'];
+	bodyParams['created_on'] = new Date();
+	bodyParams['created_by'] = req.user.first_name;
+
+	queryObj['email'] = req.body.email;
+
+	try {
+		const existingVendor = await service.findOneRow(userModelName, queryObj);
+
+		if (!existingVendor) {
+
+			bodyParamsUser["provider"] = providers["OWN"];
+            bodyParamsUser["contact_email"] = req.body.email;
+            bodyParamsUser["status"] = status["ACTIVE"];
+            bodyParamsUser["role"] = roles["ADMIN"];
+            bodyParamsUser["email_verified"] = 1;
+            bodyParamsUser['created_on'] = new Date();
+
+            const newUser = await service.createRow(userModelName, bodyParams);
+            if(newUser){
+			var planQueryObj = {};
+			planQueryObj['status'] = status['ACTIVE'];
+			planQueryObj['id'] = plans['STARTER_SELLER'];
+
+			const startSellerPlan = await service.findOneRow(PlanModelName, planQueryObj);
+
+			if (startSellerPlan) {
+				const vendorProfilePicture = req.files.vendor_profile_picture;
+				const parsedFile = path.parse(vendorProfilePicture.originalFilename);
+				const timeInMilliSeconds = new Date().getTime();
+				const uploadPath = config.images_base_path + "/vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+
+				const vendorProfilePictureUpload = await move(vendorProfilePicture.path, uploadPath);
+				if (vendorProfilePictureUpload) {
+					bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+				}
+
+				if (req.files.vendor_cover_picture) {
+					const vendorCoverPicture = req.files.vendor_cover_picture;
+					const parsedFileVendorCover = path.parse(vendorCoverPicture.originalFilename);
+					const timeInMilliSeconds = new Date().getTime();
+					const uploadPathVendorCover = config.images_base_path + "/vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+
+					const vendorCoverPictureUpload = await move(vendorCoverPicture.path, uploadPathVendorCover);
+					if (vendorCoverPictureUpload) {
+						bodyParams['vendor_cover_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+					}
+				}
+
+				const newVendor = await service.createRow(vendorModelName, bodyParams);
+				const updateExistingUser = await service.updateRow(userModelName, {
+					role: roles['VENDOR'],
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				}, req.user.id);
+
+				var verndorPlanObj = {};
+				verndorPlanObj['vendor_id'] = newVendor.id;
+				verndorPlanObj['plan_id'] = startSellerPlan.id;
+				verndorPlanObj['status'] = status['ACTIVE'];
+				verndorPlanObj['start_date'] = new Date();
+
+				if (startSellerPlan.duration_unit == durationUnit['DAYS']) {
+					verndorPlanObj['end_date'] = moment().add(startSellerPlan.duration, 'days').format('YYYY-MM-DD');
+				}
+
+				if (startSellerPlan.duration_unit == durationUnit['MONTHS']) {
+					var totalDays = startSellerPlan.duration * 28;
+					verndorPlanObj['end_date'] = moment().add(totalDays, 'days').format('YYYY-MM-DD');
+				}
+
+				verndorPlanObj['created_on'] = new Date();
+				verndorPlanObj['created_by'] = req.user.first_name;
+
+				const newPlan = await service.createRow(vendorPlanModelName, verndorPlanObj);
+				return res.status(201).send("Vendor created successfully.");
+			} else {
+				return res.status(404).send("Plan not found.");
+			}
+		}else{
+			return res.status(404).send(newUser);
+		}
+		} else {
+			return res.status(409).send("Email already exists.");
+		}
+	} catch (error) {
+		console.log("Error:::", error);
+		return res.status(500).send(error);
+	}
+}
 export function move(copyFrom, moveTo) {
 	return new Promise((resolve, reject) => {
 		mv(copyFrom, moveTo, {
