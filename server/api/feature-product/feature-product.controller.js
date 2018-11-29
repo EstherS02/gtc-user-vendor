@@ -47,7 +47,7 @@ export function index(req, res) {
 	.then(function(products){
 		return res.status(200).send(products);
 	}).catch(function(error){
-		console.log("=========================================", error);
+		console.log("Error:::", error);
 		return res.status(500).send({
 			"message": "ERROR",
 			"messageDetails": "Unable to display featured products.",

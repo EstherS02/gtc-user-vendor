@@ -149,7 +149,7 @@ export async function createVendor(req, res) {
 	}
 
 	bodyParams = req.body;
-	bodyParams['user_id'] = req.user.id;
+	// bodyParams['user_id'] = req.user.id;
 	bodyParams['status'] = status['ACTIVE'];
 	bodyParams['created_on'] = new Date();
 	bodyParams['created_by'] = req.user.first_name;
@@ -162,77 +162,75 @@ export async function createVendor(req, res) {
 			bodyParamsUser['first_name'] = req.body.first_name;
 			bodyParamsUser['last_name'] = req.body.last_name;
 			bodyParamsUser['email'] = req.body.email;
+			bodyParamsUser['user_contact_email'] = req.body.email;
 			bodyParamsUser["provider"] = providers["OWN"];
-            bodyParamsUser["contact_email"] = req.body.email;
-            bodyParamsUser["status"] = status["ACTIVE"];
-            bodyParamsUser["role"] = roles["VENDOR"];
-            bodyParamsUser["email_verified"] = 1;
-            bodyParamsUser['created_on'] = new Date();
+			bodyParamsUser["contact_email"] = req.body.email;
+			bodyParamsUser["status"] = status["ACTIVE"];
+			bodyParamsUser["role"] = roles["VENDOR"];
+			bodyParamsUser["email_verified"] = 1;
+			bodyParamsUser['created_on'] = new Date();
 
-            const newUser = await service.createRow(userModelName, bodyParamsUser);
-            if(newUser){
-			var planQueryObj = {};
-			planQueryObj['status'] = status['ACTIVE'];
-			planQueryObj['id'] = plans['STARTER_SELLER'];
 
-			const startSellerPlan = await service.findOneRow(PlanModelName, planQueryObj);
+			const newUser = await service.createRow(userModelName, bodyParamsUser);
+			if (newUser) {
+				var planQueryObj = {};
+				planQueryObj['status'] = status['ACTIVE'];
+				planQueryObj['id'] = plans['STARTER_SELLER'];
 
-			if (startSellerPlan) {
-				const vendorProfilePicture = req.files.vendor_profile_picture;
-				const parsedFile = path.parse(vendorProfilePicture.originalFilename);
-				const timeInMilliSeconds = new Date().getTime();
-				const uploadPath = config.images_base_path + "/vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+				const startSellerPlan = await service.findOneRow(PlanModelName, planQueryObj);
 
-				const vendorProfilePictureUpload = await move(vendorProfilePicture.path, uploadPath);
-				if (vendorProfilePictureUpload) {
-					bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
-				}
-
-				if (req.files.vendor_cover_picture) {
-					const vendorCoverPicture = req.files.vendor_cover_picture;
-					const parsedFileVendorCover = path.parse(vendorCoverPicture.originalFilename);
+				if (startSellerPlan) {
+					const vendorProfilePicture = req.files.vendor_profile_picture;
+					const parsedFile = path.parse(vendorProfilePicture.originalFilename);
 					const timeInMilliSeconds = new Date().getTime();
-					const uploadPathVendorCover = config.images_base_path + "/vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+					const uploadPath = config.images_base_path + "/vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 
-					const vendorCoverPictureUpload = await move(vendorCoverPicture.path, uploadPathVendorCover);
-					if (vendorCoverPictureUpload) {
-						bodyParams['vendor_cover_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+					const vendorProfilePictureUpload = await move(vendorProfilePicture.path, uploadPath);
+					if (vendorProfilePictureUpload) {
+						bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 					}
+
+					if (req.files.vendor_cover_picture) {
+						const vendorCoverPicture = req.files.vendor_cover_picture;
+						const parsedFileVendorCover = path.parse(vendorCoverPicture.originalFilename);
+						const timeInMilliSeconds = new Date().getTime();
+						const uploadPathVendorCover = config.images_base_path + "/vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+
+						const vendorCoverPictureUpload = await move(vendorCoverPicture.path, uploadPathVendorCover);
+						if (vendorCoverPictureUpload) {
+							bodyParams['vendor_cover_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+						}
+					}
+
+					const newVendor = await service.createRow(vendorModelName, bodyParams);
+
+					var verndorPlanObj = {};
+					verndorPlanObj['vendor_id'] = newVendor.id;
+					verndorPlanObj['plan_id'] = startSellerPlan.id;
+					verndorPlanObj['status'] = status['ACTIVE'];
+					verndorPlanObj['start_date'] = new Date();
+					verndorPlanObj['user_id'] = newUser.id;
+
+					if (startSellerPlan.duration_unit == durationUnit['DAYS']) {
+						verndorPlanObj['end_date'] = moment().add(startSellerPlan.duration, 'days').format('YYYY-MM-DD');
+					}
+
+					if (startSellerPlan.duration_unit == durationUnit['MONTHS']) {
+						var totalDays = startSellerPlan.duration * 28;
+						verndorPlanObj['end_date'] = moment().add(totalDays, 'days').format('YYYY-MM-DD');
+					}
+
+					verndorPlanObj['created_on'] = new Date();
+					verndorPlanObj['created_by'] = req.user.first_name;
+
+					const newPlan = await service.createRow(vendorPlanModelName, verndorPlanObj);
+					return res.status(201).send("Vendor created successfully.");
+				} else {
+					return res.status(404).send("Plan not found.");
 				}
-
-				const newVendor = await service.createRow(vendorModelName, bodyParams);
-				const updateExistingUser = await service.updateRow(userModelName, {
-					role: roles['VENDOR'],
-					last_updated_by: req.user.first_name,
-					last_updated_on: new Date()
-				}, req.user.id);
-
-				var verndorPlanObj = {};
-				verndorPlanObj['vendor_id'] = newVendor.id;
-				verndorPlanObj['plan_id'] = startSellerPlan.id;
-				verndorPlanObj['status'] = status['ACTIVE'];
-				verndorPlanObj['start_date'] = new Date();
-
-				if (startSellerPlan.duration_unit == durationUnit['DAYS']) {
-					verndorPlanObj['end_date'] = moment().add(startSellerPlan.duration, 'days').format('YYYY-MM-DD');
-				}
-
-				if (startSellerPlan.duration_unit == durationUnit['MONTHS']) {
-					var totalDays = startSellerPlan.duration * 28;
-					verndorPlanObj['end_date'] = moment().add(totalDays, 'days').format('YYYY-MM-DD');
-				}
-
-				verndorPlanObj['created_on'] = new Date();
-				verndorPlanObj['created_by'] = req.user.first_name;
-
-				const newPlan = await service.createRow(vendorPlanModelName, verndorPlanObj);
-				return res.status(201).send("Vendor created successfully.");
 			} else {
-				return res.status(404).send("Plan not found.");
+				return res.status(404).send("Unable to create User");
 			}
-		}else{
-			return res.status(404).send("Unable to create User");
-		}
 		} else {
 			return res.status(409).send("Email already exists.");
 		}
@@ -241,6 +239,76 @@ export async function createVendor(req, res) {
 		return res.status(500).send("Internal server error");
 	}
 }
+
+export async function edit(req, res) {
+	var queryObj = {};
+	var bodyParams = {};
+	var PlanModelName = "Plan";
+	var userModelName = "User";
+	var vendorModelName = "Vendor";
+	var vendorPlanModelName = "VendorPlan";
+	var bodyParamsUser = {};
+	// if (!req.files.vendor_profile_picture) {
+	// 	return res.status(400).send("Vendor profile picture missing.");
+	// }
+
+	req.checkBody('vendor_name', 'Missing Query Param').notEmpty();
+	req.checkBody('address', 'Missing Query Param').notEmpty();
+	req.checkBody('base_location', 'Missing Query Param').notEmpty();
+	req.checkBody('province_id', 'Missing Query Param').notEmpty();
+	req.checkBody('city', 'Missing Query Param').notEmpty();
+	req.checkBody('currency_id', 'Missing Query Param').notEmpty();
+	req.checkBody('email', 'Email is Missing').notEmpty();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send(errors);
+		return;
+	}
+
+	bodyParams = req.body;
+	bodyParams['status'] = status['ACTIVE'];
+	bodyParams['last_updated_on'] = new Date();
+	bodyParams['last_updated_by'] = req.user.first_name;
+
+	queryObj['id'] = req.params.id;
+	if (req.files.vendor_profile_picture) {
+		const vendorProfilePicture = req.files.vendor_profile_picture;
+		const parsedFile = path.parse(vendorProfilePicture.originalFilename);
+		const timeInMilliSeconds = new Date().getTime();
+		const uploadPath = config.images_base_path + "/vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+
+		const vendorProfilePictureUpload = await move(vendorProfilePicture.path, uploadPath);
+		if (vendorProfilePictureUpload) {
+			bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+		}
+	}
+
+	if (req.files.vendor_cover_picture) {
+		const vendorCoverPicture = req.files.vendor_cover_picture;
+		const parsedFileVendorCover = path.parse(vendorCoverPicture.originalFilename);
+		const timeInMilliSeconds = new Date().getTime();
+		const uploadPathVendorCover = config.images_base_path + "/vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+
+		const vendorCoverPictureUpload = await move(vendorCoverPicture.path, uploadPathVendorCover);
+		if (vendorCoverPictureUpload) {
+			bodyParams['vendor_cover_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+		}
+	}
+	try {
+		const existingVendor = await service.findOneRow(vendorModelName, queryObj);
+		if (!existingVendor) {
+			return res.status(500).send("Invalid Access");
+		} else {
+			const updateExistingUser = await service.updateRow(vendorModelName, bodyParams, req.params.id);
+			return res.status(500).send("Updated successfully");
+		}
+	} catch (error) {
+		console.log("Error:::", error);
+		return res.status(500).send("Internal server error");
+	}
+}
+
 export function move(copyFrom, moveTo) {
 	return new Promise((resolve, reject) => {
 		mv(copyFrom, moveTo, {
@@ -286,85 +354,85 @@ export function deleteVendor(req, res) {
 				}, userQueryObj));
 			}
 
-			Promise.all(deleteTable).then((response)=>{
+			Promise.all(deleteTable).then((response) => {
 				returnResponse.push(response);
 			});
-			Promise.all(userTable).then((response)=>{
+			Promise.all(userTable).then((response) => {
 				returnResponse.push(response);
 			});
-            return res.status(200).send(returnResponse);
+			return res.status(200).send(returnResponse);
 
 		} else {
-     	   return res.status(500).send("No data found.");
+			return res.status(500).send("No data found.");
 		}
 	});
 }
 export function index(req, res) {
 	return new Promise((resolve, reject) => {
 		var queryObj = {};
-		var queryObj1= {};
-		let productQueryObj ={};
+		var queryObj1 = {};
+		let productQueryObj = {};
 		let field = 'created_on';
 		let order = 'desc';
 		var params = req.query;
-		let limit = req.query.limit? parseInt(req.query.limit) : 10;
-		let offset = req.query.offset? parseInt(req.query.offset) : 0;
-		var vendorPlanQuery ={};
-		var userQueryObj={};
-		userQueryObj.role= roles['VENDOR'];
+		let limit = req.query.limit ? parseInt(req.query.limit) : 10;
+		let offset = req.query.offset ? parseInt(req.query.offset) : 0;
+		var vendorPlanQuery = {};
+		var userQueryObj = {};
+		userQueryObj.role = roles['VENDOR'];
 		vendorPlanQuery.status = 1;
 
 
-		if(req.query.status)
+		if (req.query.status)
 			queryObj['status'] = queryObj1['status'] = req.query.status
-		else{
+		else {
 			queryObj['status'] = queryObj1['status'] = {
 				'$ne': status["DELETED"]
 			}
 		}
 
-		if(req.query.text){
-			queryObj['$or']=[
-                sequelize.where(sequelize.fn('concat_ws', sequelize.col('User.first_name'), ' ', sequelize.col('User.last_name'),' ',sequelize.col('vendor_name')), {
-                    $like: '%' + req.query.text + '%'
-                })
-            ];
+		if (req.query.text) {
+			queryObj['$or'] = [
+				sequelize.where(sequelize.fn('concat_ws', sequelize.col('User.first_name'), ' ', sequelize.col('User.last_name'), ' ', sequelize.col('vendor_name')), {
+					$like: '%' + req.query.text + '%'
+				})
+			];
 		}
-		let results={};
-		var includeArr=[{
-			model:model['User'],
-			where:userQueryObj,
-			attributes:['first_name','last_name']
-		},{
-			model:model['Product'],
-			attributes:[],
-			required:false
+		let results = {};
+		var includeArr = [{
+			model: model['User'],
+			where: userQueryObj,
+			attributes: ['first_name', 'last_name']
+		}, {
+			model: model['Product'],
+			attributes: [],
+			required: false
 		}];
 
-		if(req.query.plan_id){
+		if (req.query.plan_id) {
 			vendorPlanQuery.plan_id = req.query.plan_id;
 			includeArr.push({
-			model:model['VendorPlan'],
-			where:vendorPlanQuery,
-			attributes:['plan_id'],
-		});
-		}else{
+				model: model['VendorPlan'],
+				where: vendorPlanQuery,
+				attributes: ['plan_id'],
+			});
+		} else {
 			includeArr.push({
-			model:model['VendorPlan'],
-			where:vendorPlanQuery,
-			attributes:['plan_id'],
-			required:false
-		});
+				model: model['VendorPlan'],
+				where: vendorPlanQuery,
+				attributes: ['plan_id'],
+				required: false
+			});
 		}
 		var result = {};
 		model["Vendor"].findAll({
 			include: includeArr,
 			where: queryObj,
 			subQuery: false,
-			attributes:['id','vendor_name','user_id','status','created_on',[sequelize.literal('COUNT(Products.id)'), 'product_count']],
+			attributes: ['id', 'vendor_name', 'user_id', 'status', 'created_on', [sequelize.literal('COUNT(Products.id)'), 'product_count']],
 			offset: offset,
 			limit: limit,
-			group:['id'],
+			group: ['id'],
 			order: [
 				[field, order]
 			]
@@ -384,8 +452,8 @@ export function index(req, res) {
 				result.rows = rows;
 				return res.status(200).send(result);
 			}
-	}).catch(function(error) {
-		console.log("error:::::",error)
+		}).catch(function(error) {
+			console.log("error:::::", error)
 			return res.status(500).send("Internal Server Error");
 		});
 	});
