@@ -326,7 +326,7 @@
 @media screen and (min-width: 1281px) and (max-width: 1375px) {
 	.brand-logo img {
 		padding: 13px;
-		width: 120px;
+		width: 140px;
 		height: 70px
 	}
 	#searchCollapseBar {
@@ -444,7 +444,7 @@
 @media screen and (min-width: 1376px) and (max-width: 1440px) {
 	.brand-logo img {
 		padding: 13px;
-		width: 140px;
+		width: 170px;
 		height: 70px
 	}
 	#searchCollapseBar {

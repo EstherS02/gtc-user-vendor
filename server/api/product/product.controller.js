@@ -133,11 +133,13 @@ export async function create(req, res) {
 		const endDate = new Date(req.body.exclusive_end_date);
 		const currentDate = new Date();
 
-		if (startDate >= currentDate && endDate > startDate) {
+		if(startDate <= currentDate){
+			return res.status(400).send("Start date must be greater than current date.");
+		}else if(endDate < startDate){
+			return res.status(400).send("End date must be greater than start date.");
+		}else{
 			req.body.exclusive_end_date = new Date(req.body.exclusive_end_date);
 			req.body.exclusive_start_date = new Date(req.body.exclusive_start_date);
-		} else {
-			return res.status(400).send("Invalid exclusive Start date and End date.");
 		}
 	}
 
@@ -280,12 +282,15 @@ export async function edit(req, res) {
 
 		const startDate = new Date(req.body.exclusive_start_date);
 		const endDate = new Date(req.body.exclusive_end_date);
+		const currentDate = new Date();
 
-		if (startDate < endDate && endDate > startDate) {
+		if(startDate <= currentDate){
+			return res.status(400).send("Start date must be greater than current date.");
+		}else if(endDate < startDate){
+			return res.status(400).send("End date must be greater than start date.");
+		}else{
 			req.body.exclusive_end_date = new Date(req.body.exclusive_end_date);
 			req.body.exclusive_start_date = new Date(req.body.exclusive_start_date);
-		} else {
-			return res.status(400).send("Invalid exclusive Start date and End date.");
 		}
 	}
 
@@ -1016,141 +1021,6 @@ function resMessage(message, messageDetails) {
 		message: message,
 		messageDetails: messageDetails
 	};
-}
-
-export function featureProductWithPayment(req, res) {
-
-	if (req.query.product_id) {
-
-		var featureQueryObj = {
-			product_id: req.query.product_id
-		}
-
-		service.findOneRow('FeaturedProduct', featureQueryObj)
-			.then(function(row) {
-				if (!row) {
-
-					var featuredProductBodyParam = req.query;
-
-					featuredProductBodyParam['status'] = status['ACTIVE'];
-					featuredProductBodyParam['created_by'] = req.user.Vendor.vendor_name;
-					featuredProductBodyParam['created_on'] = new Date();
-
-					service.findIdRow('PaymentSetting', req.body.payment_details, [])
-						.then(function(cardDetails) {
-
-							return stripe.chargeCustomerCard(cardDetails.stripe_customer_id, cardDetails.stripe_card_id,
-								req.body.feature_amount, 'Payment for Featuring Product', 'usd');
-						}).then(function(paymentDetails) {
-
-							if (paymentDetails.paid) {
-
-								var paymentObj = {
-									date: new Date(paymentDetails.created),
-									amount: paymentDetails.amount / 100.0,
-									payment_method: paymentMethod['STRIPE'],
-									status: status['ACTIVE'],
-									payment_response: JSON.stringify(paymentDetails),
-									created_by: req.user.Vendor.vendor_name,
-									created_on: new Date()
-								}
-								service.createRow('Payment', paymentObj)
-									.then(function(paymentRow) {
-
-										featuredProductBodyParam['payment_id'] = paymentRow.id;
-
-										service.createRow('FeaturedProduct', featuredProductBodyParam)
-											.then(function(featuredRow) {
-												return res.status(200).send({
-													"message": "SUCCESS",
-													"messageDetails": "Product Featured Successfully"
-												});
-											}).catch(function(error) {
-												console.log("Error::",error);
-												return res.status(400).send({
-													"message": "ERROR",
-													"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
-													"errorDescription": error
-												});
-											})
-									}).catch(function(error) {
-										console.log("Error::",error);
-										return res.status(400).send({
-											"message": "ERROR",
-											"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
-											"errorDescription": error
-										});
-									})
-							} else {
-								return res.status(500).send({
-									"message": "ERROR",
-									"messageDetails": "Featuring Product UnSuccessfull with Stripe Payment Error. Please try after sometimes"
-								});
-							}
-						}).catch(function(error) {
-							console.log("Error::",error);
-							return res.status(500).send({
-								"message": "ERROR",
-								"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
-								"errorDescription": error
-							});
-						})
-				} else {
-					return res.status(200).send({
-						"message": "MESSAGE",
-						"messageDetails": "You have already featured this product."
-					});
-				}
-			}).catch(function(error) {
-				return res.status(500).send({
-					"message": "ERROR",
-					"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
-					"errorDescription": error
-				});
-			});
-	}
-}
-
-export function featureProductWithoutPayment(req, res){
-
-	if (req.body.product_id) {
-		var featureQueryObj = {
-			product_id: req.body.product_id
-		}
-		service.findOneRow('FeaturedProduct', featureQueryObj)
-			.then(function(row) {
-				if (!row) {
-					var featuredProductBodyParam = req.body;
-					featuredProductBodyParam['status'] =status.ACTIVE;
-					service.createRow('FeaturedProduct', featuredProductBodyParam)
-						.then(function(featuredRow) {
-							return res.status(200).send({
-								"message": "SUCCESS",
-								"messageDetails": "Product Featured Successfully"
-							});
-						}).catch(function(error) {
-							console.log("Error::",error);
-							return res.status(400).send({
-								"message": "ERROR",
-								"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
-								"errorDescription": error
-							});
-						})
-				}else {
-						return res.status(200).send({
-							"message": "MESSAGE",
-							"messageDetails": "You have already featured this product."
-						});
-					}
-			}).catch(function(error) {
-				console.log("Error::",error);
-				return res.status(500).send({
-					"message": "ERROR",
-					"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
-					"errorDescription": error
-				});
-			});
-	}
 }
 
 export function vendorMarketplaces(req, res){	
