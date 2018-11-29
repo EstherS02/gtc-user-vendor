@@ -171,7 +171,7 @@ export function create(req, res) {
             return;
         } else {
             bodyParams["provider"] = providers["OWN"];
-            bodyParams["contact_email"] = req.body.email;
+            bodyParams["user_contact_email"] = req.body.email;
             bodyParams["status"] = status["ACTIVE"];
             bodyParams["role"] = roles["ADMIN"];
             bodyParams["email_verified"] = 1;
