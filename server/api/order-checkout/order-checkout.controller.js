@@ -210,6 +210,16 @@ function validateShippingCountry(userId, countryId) {
 
 				const exists = await service.findOneRow(vendorShippingLocationModelName, queryObject);
 				if (!exists) {
+					if (cartProduct.Product.product_name.length > 100) {
+						validationArray.push({
+							msg: cartProduct.Product.product_name.substring(0, 100) + "... is Not Available To Ship Your Country",
+							param: "shipping_country"
+						});
+					} else {
+						validationArray.push({
+							msg: cartProduct.Product.product_name + " is Not Available To Ship Your Country",
+							param: "shipping_country"
+						});					}
 					validationArray.push({
 						msg: cartProduct.Product.product_name + " is Not Available To Ship Your Country",
 						param: "shipping_country"
