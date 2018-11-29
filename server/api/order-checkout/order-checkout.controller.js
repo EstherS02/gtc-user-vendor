@@ -142,7 +142,19 @@ function processShippingAddress(req, billing_address_id) {
 				}
 			}
 		} else {
-			return resolve();
+			service.findIdRow(addressModelName, shippingAddressId)
+				.then((address) => {
+					if (address) {
+						shippingAddressId = address.id;
+						return validateShippingCountry(req.user.id, address.country_id)
+					} else {
+						return resolve(shippingAddressId);
+					}
+				}).then((response) => {
+					return resolve(shippingAddressId);
+				}).catch((error) => {
+					return reject(error);
+				});
 		}
 	});
 }
