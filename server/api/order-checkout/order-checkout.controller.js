@@ -25,10 +25,9 @@ export function addCustomerInformation(req, res) {
 			billing_address_id = billing_address_id_result;
 			return processShippingAddress(req, billing_address_id);
 		}).then(shipping_address_id_result => {
-			shipping_address_id = shipping_address_id_result;
 			return res.status(200).send({
 				billing_address_id: billing_address_id,
-				shipping_address_id: shipping_address_id
+				shipping_address_id: shipping_address_id_result
 			});
 		}).catch(err => {
 			return res.status(500).send(err);
@@ -76,39 +75,41 @@ function processBillingAddress(req) {
 
 function processShippingAddress(req, billing_address_id) {
 	var addressModelName = 'Address';
-	return new Promise((resolve, reject) => {
+	var shippingAddressId = billing_address_id;
+
+	return new Promise(async (resolve, reject) => {
 		if (req.body.different_shipping_address == "on") {
 			if (req.body.shipping_address_select_id) {
 				service.findIdRow(addressModelName, req.body.shipping_address_select_id)
-					.then(function(response) {
-						if (!response && response != null) {
-							validateShippingCountry(req.user.id, response.country_id)
+					.then((address) => {
+						if (address) {
+							shippingAddressId = address.id;
+							return validateShippingCountry(req.user.id, address.country_id)
 						} else {
-							return reject([{
-								msg: "Shipping Country is Not Exists",
-								param: "shipping_country"
-							}]);
+							return resolve(shippingAddressId);
 						}
-					}).catch(function(err) {
-						return reject(err);
+					}).then((response) => {
+						return resolve(shippingAddressId);
+					}).catch((error) => {
+						return reject(error);
 					});
 			} else if (req.body.shipping_address_id) {
 				service.findIdRow(addressModelName, req.body.shipping_address_id)
-					.then(function(response) {
-						if (!response && response != null) {
-							validateShippingCountry(req.user.id, response.country_id)
+					.then((address) => {
+						if (address) {
+							shippingAddressId = address.id;
+							return validateShippingCountry(req.user.id, address.country_id)
 						} else {
-							return reject([{
-								msg: "Shipping Country is Not Exists",
-								param: "shipping_country"
-							}]);
+							return resolve(shippingAddressId);
 						}
-					}).catch(function(err) {
-						return reject(err);
+					}).then((response) => {
+						return resolve(shippingAddressId);
+					}).catch((error) => {
+						return reject(error);
 					});
 			} else {
-				validateShippingAddress(req);
-				let errors = req.validationErrors();
+				const validateBodyParams = await validateShippingAddress(req);
+				const errors = req.validationErrors();
 				if (errors) {
 					return reject(errors);
 				} else {
@@ -133,14 +134,15 @@ function processShippingAddress(req, billing_address_id) {
 							};
 							return service.createRow('Address', shipping_address);
 						}).then((address) => {
-							return resolve(address.id);
+							shippingAddressId = address.id;
+							return resolve(shippingAddressId);
 						}).catch((error) => {
 							return reject(error);
 						});
 				}
 			}
 		} else {
-			return resolve(billing_address_id);
+			return resolve();
 		}
 	});
 }
@@ -170,7 +172,6 @@ function validateShippingAddress(req) {
 }
 
 function validateShippingCountry(userId, countryId) {
-	console.log("userId", "countryId", userId, countryId);
 	var queryObj = {};
 	var includeArr = [];
 	var validationArray = [];
@@ -196,9 +197,9 @@ function validateShippingCountry(userId, countryId) {
 				queryObject['status'] = status["ACTIVE"];
 
 				const exists = await service.findOneRow(vendorShippingLocationModelName, queryObject);
-				if (!exists && exists != null) {
+				if (!exists) {
 					validationArray.push({
-						msg: cartProduct.Product.product_name.substring(0, 100) + "... is Not Available To Ship Your Country",
+						msg: cartProduct.Product.product_name + " is Not Available To Ship Your Country",
 						param: "shipping_country"
 					});
 				}
