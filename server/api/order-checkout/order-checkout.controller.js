@@ -219,11 +219,8 @@ function validateShippingCountry(userId, countryId) {
 						validationArray.push({
 							msg: cartProduct.Product.product_name + " is Not Available To Ship Your Country",
 							param: "shipping_country"
-						});					}
-					validationArray.push({
-						msg: cartProduct.Product.product_name + " is Not Available To Ship Your Country",
-						param: "shipping_country"
-					});
+						});
+					}
 				}
 			}
 			if (validationArray.length > 0) {
