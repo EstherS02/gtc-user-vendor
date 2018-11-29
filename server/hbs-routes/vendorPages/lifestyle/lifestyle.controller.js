@@ -133,6 +133,20 @@ export function vendorLifestyle(req, res) {
 					return callback(null);
 				});
 		},
+		vendorPlan: function(callback){
+			var queryObj ={};
+			queryObj['plan_id'] = Plan['LIFESTYLE_PROVIDER'];
+			queryObj['vendor_id'] = vendor_id;
+			queryObj['status'] = status['ACTIVE'];
+			var includeArr=[];
+			service.findRow('VendorPlan',queryObj, includeArr)
+			.then(function(response) {
+					return callback(null, response);
+
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -208,7 +222,7 @@ export function vendorLifestyle(req, res) {
 		// console.log(results);
 		queryPaginationObj['maxSize'] = 5;
 
-		if (!err && results.VendorDetail) {
+		if (!err && results.vendorPlan) {
 			res.render('vendorPages/vendor-lifestyle', {
 				title: "Global Trade Connect",
 				VendorDetail: results.VendorDetail,
@@ -227,7 +241,7 @@ export function vendorLifestyle(req, res) {
 				categoryWithProductCount: results.categoryWithProductCount
 			});
 		} else {
-			res.render('vendor-lifestyle', err);
+			res.render('404');
 		}
 	});
 }

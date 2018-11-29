@@ -154,7 +154,20 @@ export function vendorWholesale(req, res) {
 					return callback(null, response);
 
 				}).catch(function(error) {
-					console.log('Error :::::::::::::::::::::::::::::::::::::::::::::::::::::::',vendor_id, error);
+					return callback(null);
+				});
+		},
+		vendorPlan: function(callback){
+			var queryObj ={};
+			queryObj['plan_id'] = Plan['WHOLESALE'];
+			queryObj['vendor_id'] = vendor_id;
+			queryObj['status'] = status['ACTIVE'];
+			var includeArr=[];
+			service.findRow('VendorPlan',queryObj, includeArr)
+			.then(function(response) {
+					return callback(null, response);
+
+				}).catch(function(error) {
 					return callback(null);
 				});
 		},
@@ -264,8 +277,8 @@ export function vendorWholesale(req, res) {
 				});
 		},
 	}, function(err, results) {
-		console.log(results.VendorDetail)
-		if (!err && results.VendorDetail) {
+
+		if (!err && results.vendorPlan) {
 			res.render('vendorPages/vendor-wholesale', {
 				title: "Global Trade Connect",
 				VendorDetail: results.VendorDetail,

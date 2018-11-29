@@ -248,9 +248,6 @@ export async function edit(req, res) {
 	var vendorModelName = "Vendor";
 	var vendorPlanModelName = "VendorPlan";
 	var bodyParamsUser = {};
-	// if (!req.files.vendor_profile_picture) {
-	// 	return res.status(400).send("Vendor profile picture missing.");
-	// }
 
 	req.checkBody('vendor_name', 'Missing Query Param').notEmpty();
 	req.checkBody('address', 'Missing Query Param').notEmpty();
