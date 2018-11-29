@@ -75,34 +75,12 @@ function processBillingAddress(req) {
 }
 
 function processShippingAddress(req, billing_address_id) {
-	console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%",req.body)
 	var addressModelName = 'Address';
-	var includeArr = [];
 	return new Promise((resolve, reject) => {
 		if (req.body.different_shipping_address == "on") {
 			if (req.body.shipping_address_select_id) {
-				console.log("********************************",req.body.shipping_address_select_id)
-				service.findIdRow(addressModelName, req.body.shipping_address_select_id, includeArr)
+				service.findIdRow(addressModelName, req.body.shipping_address_select_id)
 					.then(function(response) {
-						console.log("shipping_address_select_id----------------------------", JSON.stringify(response))
-						if (!response && response != null) {
-							validateShippingCountry(req.user.id, response.country_id)
-						}
-						else {
-							return reject([{
-								msg: "Shipping Country is Not Exists",
-								param: "shipping_country"
-							}]);
-						}
-					}).catch(function(err) {
-						console.log("error", err);
-					});
-			} else if (req.body.shipping_address_id) {
-				console.log("********************************",req.body.shipping_address_id)
-				service.findIdRow(addressModelName, req.body.shipping_address_id, includeArr)
-					.then(function(response) {
-						console.log("shipping_address_id----------------------------", JSON.stringify(response))
-						console.log("shipping_address_id----------------------------", response.country_id)
 						if (!response && response != null) {
 							validateShippingCountry(req.user.id, response.country_id)
 						} else {
@@ -112,13 +90,27 @@ function processShippingAddress(req, billing_address_id) {
 							}]);
 						}
 					}).catch(function(err) {
-						console.log("error", err);
+						return reject(err);
+					});
+			} else if (req.body.shipping_address_id) {
+				service.findIdRow(addressModelName, req.body.shipping_address_id)
+					.then(function(response) {
+						if (!response && response != null) {
+							validateShippingCountry(req.user.id, response.country_id)
+						} else {
+							return reject([{
+								msg: "Shipping Country is Not Exists",
+								param: "shipping_country"
+							}]);
+						}
+					}).catch(function(err) {
+						return reject(err);
 					});
 			} else {
 				validateShippingAddress(req);
 				let errors = req.validationErrors();
 				if (errors) {
-					reject(errors);
+					return reject(errors);
 				} else {
 					validateShippingCountry(req.user.id, req.body.shipping_country)
 						.then((response) => {
@@ -141,14 +133,14 @@ function processShippingAddress(req, billing_address_id) {
 							};
 							return service.createRow('Address', shipping_address);
 						}).then((address) => {
-							resolve(address.id);
+							return resolve(address.id);
 						}).catch((error) => {
 							return reject(error);
 						});
 				}
 			}
 		} else {
-			resolve(billing_address_id);
+			return resolve(billing_address_id);
 		}
 	});
 }
@@ -178,6 +170,7 @@ function validateShippingAddress(req) {
 }
 
 function validateShippingCountry(userId, countryId) {
+	console.log("userId", "countryId", userId, countryId);
 	var queryObj = {};
 	var includeArr = [];
 	var validationArray = [];
@@ -194,7 +187,6 @@ function validateShippingCountry(userId, countryId) {
 
 	return new Promise(async (resolve, reject) => {
 		const cartResponse = await service.findAllRows(cartModelName, includeArr, queryObj, 0, null, 'id', 'ASC');
-		console.log("%%%%%%%%%%%%%%%%%%%%%%5", JSON.stringify(cartResponse));
 		if (cartResponse.count > 0) {
 			for (let cartProduct of cartResponse.rows) {
 				var queryObject = {};
@@ -204,13 +196,11 @@ function validateShippingCountry(userId, countryId) {
 				queryObject['status'] = status["ACTIVE"];
 
 				const exists = await service.findOneRow(vendorShippingLocationModelName, queryObject);
-				console.log(JSON.stringify(exists))
 				if (!exists && exists != null) {
 					validationArray.push({
-						msg: cartProduct.Product.product_name.substring(0, 100) + ".....is Not Available To Ship Your Country",
+						msg: cartProduct.Product.product_name.substring(0, 100) + "... is Not Available To Ship Your Country",
 						param: "shipping_country"
 					});
-
 				}
 			}
 			if (validationArray.length > 0) {
