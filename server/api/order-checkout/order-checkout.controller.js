@@ -1,6 +1,7 @@
 import {
 	exists
 } from 'fs';
+import jsonpatch from 'fast-json-patch';
 
 'use strict';
 
@@ -74,19 +75,52 @@ function processBillingAddress(req) {
 }
 
 function processShippingAddress(req, billing_address_id) {
+	console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%",req.body)
+	var addressModelName = 'Address';
+	var includeArr = [];
 	return new Promise((resolve, reject) => {
 		if (req.body.different_shipping_address == "on") {
 			if (req.body.shipping_address_select_id) {
-				resolve(req.body.shipping_address_select_id);
+				console.log("********************************",req.body.shipping_address_select_id)
+				service.findIdRow(addressModelName, req.body.shipping_address_select_id, includeArr)
+					.then(function(response) {
+						console.log("shipping_address_select_id----------------------------", JSON.stringify(response))
+						if (!response && response != null) {
+							validateShippingCountry(req.user.id, response.country_id)
+						}
+						else {
+							return reject([{
+								msg: "Shipping Country is Not Exists",
+								param: "shipping_country"
+							}]);
+						}
+					}).catch(function(err) {
+						console.log("error", err);
+					});
 			} else if (req.body.shipping_address_id) {
-				resolve(req.body.shipping_address_id);
+				console.log("********************************",req.body.shipping_address_id)
+				service.findIdRow(addressModelName, req.body.shipping_address_id, includeArr)
+					.then(function(response) {
+						console.log("shipping_address_id----------------------------", JSON.stringify(response))
+						console.log("shipping_address_id----------------------------", response.country_id)
+						if (!response && response != null) {
+							validateShippingCountry(req.user.id, response.country_id)
+						} else {
+							return reject([{
+								msg: "Shipping Country is Not Exists",
+								param: "shipping_country"
+							}]);
+						}
+					}).catch(function(err) {
+						console.log("error", err);
+					});
 			} else {
 				validateShippingAddress(req);
 				let errors = req.validationErrors();
 				if (errors) {
 					reject(errors);
 				} else {
-					validateShippingCountry(req)
+					validateShippingCountry(req.user.id, req.body.shipping_country)
 						.then((response) => {
 							var shipping_address = {
 								user_id: req.user.id,
@@ -143,34 +177,35 @@ function validateShippingAddress(req) {
 	return;
 }
 
-function validateShippingCountry(req) {
+function validateShippingCountry(userId, countryId) {
 	var queryObj = {};
 	var includeArr = [];
 	var validationArray = [];
 	const cartModelName = "Cart";
 	const vendorShippingLocationModelName = "VendorShippingLocation";
 
-	queryObj['user_id'] = req.user.id;
+	queryObj['user_id'] = userId;
 	queryObj['status'] = status["ACTIVE"];
 
 	includeArr = [{
 		model: model["Product"],
-		attributes: ['id', 'product_name']
+		attributes: ['id', 'product_name', 'vendor_id']
 	}];
 
 	return new Promise(async (resolve, reject) => {
 		const cartResponse = await service.findAllRows(cartModelName, includeArr, queryObj, 0, null, 'id', 'ASC');
-
+		console.log("%%%%%%%%%%%%%%%%%%%%%%5", JSON.stringify(cartResponse));
 		if (cartResponse.count > 0) {
 			for (let cartProduct of cartResponse.rows) {
 				var queryObject = {};
 
-				queryObject['vendor_id'] = cartProduct.vendor_id;
-				queryObject['country_id'] = req.body.shipping_country;
+				queryObject['vendor_id'] = cartProduct.Product.vendor_id;
+				queryObject['country_id'] = countryId;
 				queryObject['status'] = status["ACTIVE"];
 
 				const exists = await service.findOneRow(vendorShippingLocationModelName, queryObject);
-				if (!exists) {
+				console.log(JSON.stringify(exists))
+				if (!exists && exists != null) {
 					validationArray.push({
 						msg: cartProduct.Product.product_name.substring(0, 100) + ".....is Not Available To Ship Your Country",
 						param: "shipping_country"
