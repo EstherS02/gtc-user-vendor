@@ -129,7 +129,8 @@ var all = {
 		"featureProductAutoRenewal": "featureProductAutoRenewal",
 		"vendorPayouts": "vendor-payouts",
 		"orderNotification": "notification-order",
-		"couponNotification" : "notification-coupon"
+		"couponNotification" : "notification-coupon",
+		"couponStatusInactive": "coupon-status"
 	},
 	fee: {
 		gtc_fees: 0.01,
