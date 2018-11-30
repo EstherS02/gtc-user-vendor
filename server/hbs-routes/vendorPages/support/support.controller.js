@@ -75,6 +75,19 @@ export function vendorSupport(req, res) {
 					return callback(null);
 				});
 		},
+		vendorPlan: function(callback){
+			var queryObj ={};
+			queryObj['vendor_id'] = vendor_id;
+			queryObj['status'] = status['ACTIVE'];
+			var includeArr=[];
+			service.findRow('VendorPlan',queryObj, includeArr)
+			.then(function(response) {
+					return callback(null, response);
+
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
 				model: model['Country']
@@ -124,7 +137,7 @@ export function vendorSupport(req, res) {
 				});
 		}
 	}, function(err, results) {
-		if (!err) {
+		if (!err && results.vendorPlan) {
 			res.render('vendorPages/vendor-support', {
 				title: "Global Trade Connect",
 				VendorDetail: results.VendorDetail,
@@ -138,7 +151,7 @@ export function vendorSupport(req, res) {
 				Plan: Plan,
 			});
 		} else {
-			res.render('vendor-support', err);
+			res.render('404');
 		}
 	});
 }

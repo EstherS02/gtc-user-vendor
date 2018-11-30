@@ -130,6 +130,26 @@ export function vendorShop(req, res) {
 					return callback(null);
 				});
 		},
+		vendorPlan: function(callback){
+			var queryObj ={};
+			queryObj['$or'] = [{
+					plan_id: Plan['PUBLIC_SELLER']
+				},{
+					plan_id: Plan['WHOLESALER']
+				},{
+					plan_id: Plan['STARTER_SELLER']
+				}];
+			queryObj['vendor_id'] = vendor_id;
+			queryObj['status'] = status['ACTIVE'];
+			var includeArr=[];
+			service.findRow('VendorPlan',queryObj, includeArr)
+			.then(function(response) {
+					return callback(null, response);
+
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -202,8 +222,9 @@ export function vendorShop(req, res) {
 				});
 		},
 	}, function(err, results) {
+		console.log("===========",results.vendorPlan)
 		queryPaginationObj['maxSize'] = 5;
-		if (!err && results.VendorDetail) {
+		if (!err && results.vendorPlan) {
 			res.render('vendorPages/vendor-shop', {
 				title: "Global Trade Connect",
 				queryPaginationObj: queryPaginationObj,

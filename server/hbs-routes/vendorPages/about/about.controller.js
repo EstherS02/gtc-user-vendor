@@ -13,7 +13,7 @@ const moment = require('moment');
 const async = require('async');
 
 export function vendorAbout(req, res) {
-	console.log("==================",req.headers.referer)
+	
 	var vendor_id;
 	if (req.params.id) {
 		vendor_id = req.params.id
@@ -116,6 +116,19 @@ export function vendorAbout(req, res) {
 					return callback(null);
 				});
 		},
+		vendorPlan: function(callback){
+			var queryObj ={};
+			queryObj['vendor_id'] = vendor_id;
+			queryObj['status'] = status['ACTIVE'];
+			var includeArr=[];
+			service.findRow('VendorPlan',queryObj, includeArr)
+			.then(function(response) {
+					return callback(null, response);
+
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
 		categories: function(callback) {
 			var categoryModel = "Category";
 			var includeArr = [];
@@ -140,7 +153,7 @@ export function vendorAbout(req, res) {
 				});
 		}
 	}, function(err, results) {
-		if (!err) {
+		if (!err && results.vendorPlan) {
 			res.render('vendorPages/vendor-about', {
 				categories: results.categories,
 				bottomCategory: bottomCategory,
@@ -154,7 +167,7 @@ export function vendorAbout(req, res) {
 				Plan: Plan,
 			});
 		} else {
-			res.render('vendor-about', err);
+			res.render('404');
 		}
 	});
 }
