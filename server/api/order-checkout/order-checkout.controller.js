@@ -76,25 +76,31 @@ function processBillingAddress(req) {
 function processShippingAddress(req, billing_address_id) {
 	var addressModelName = 'Address';
 	var shippingAddressId = billing_address_id;
-
+	var shipping_address = {
+		user_id: req.user.id,
+		address_type: ADDRESS_TYPE['SHIPPINGADDRESS'],
+		first_name: req.body.shipping_first_name,
+		last_name: req.body.shipping_last_name,
+		company_name: req.body.shipping_company_name,
+		address_line1: req.body.shipping_addressline1,
+		address_line2: req.body.shipping_addressline2,
+		province_id: req.body.shipping_state,
+		country_id: req.body.shipping_country,
+		city: req.body.shipping_city,
+		postal_code: req.body.shipping_postal,
+		phone: req.body.shipping_phone,
+		status: status['ACTIVE'],
+		created_by: req.user.first_name,
+		created_on: new Date()
+	};
 	return new Promise(async (resolve, reject) => {
 		if (req.body.different_shipping_address == "on") {
-			if (req.body.shipping_address_select_id) {
-				service.findIdRow(addressModelName, req.body.shipping_address_select_id)
-					.then((address) => {
-						if (address) {
-							shippingAddressId = address.id;
-							return validateShippingCountry(req.user.id, address.country_id)
-						} else {
-							return resolve(shippingAddressId);
-						}
-					}).then((response) => {
-						return resolve(shippingAddressId);
-					}).catch((error) => {
-						return reject(error);
-					});
-			} else if (req.body.shipping_address_id) {
-				service.findIdRow(addressModelName, req.body.shipping_address_id)
+			if (req.body.shipping_address_select_id || req.body.shipping_address_id) {
+				var shipping_address_id = req.body.shipping_address_select_id? req.body.shipping_address_select_id: req.body.shipping_address_id;
+				var queryObj = {
+					id: shipping_address_id
+				};
+				service.updateRecord(addressModelName, shipping_address, queryObj)
 					.then((address) => {
 						if (address) {
 							shippingAddressId = address.id;
@@ -115,23 +121,6 @@ function processShippingAddress(req, billing_address_id) {
 				} else {
 					validateShippingCountry(req.user.id, req.body.shipping_country)
 						.then((response) => {
-							var shipping_address = {
-								user_id: req.user.id,
-								address_type: ADDRESS_TYPE['SHIPPINGADDRESS'],
-								first_name: req.body.shipping_first_name,
-								last_name: req.body.shipping_last_name,
-								company_name: req.body.shipping_company_name,
-								address_line1: req.body.shipping_addressline1,
-								address_line2: req.body.shipping_addressline2,
-								province_id: req.body.shipping_state,
-								country_id: req.body.shipping_country,
-								city: req.body.shipping_city,
-								postal_code: req.body.shipping_postal,
-								phone: req.body.shipping_phone,
-								status: status['ACTIVE'],
-								created_by: req.user.first_name,
-								created_on: new Date()
-							};
 							return service.createRow('Address', shipping_address);
 						}).then((address) => {
 							shippingAddressId = address.id;
