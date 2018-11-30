@@ -57,28 +57,30 @@ module.exports = async function(job, done) {
 				if (item.Vendor.vendor_payout_stripe_id != null) {
 					paymentMethodType = paymentMethod['STRIPE'];
 					vendorResponse = await stripe.vendorStripePayout(vendorAmt, currency, item.Vendor.vendor_payout_stripe_id, orderId)
-				} else {
+				} else if (item.Vendor.vendor_payout_paypal_email != null) {
 					paymentMethodType = paymentMethod['PAYPAL'];
 					vendorResponse = await stripe.vendorPaypalPayout('EMAIL', vendorAmt, 'CAD', item.Vendor.vendor_payout_paypal_email, orderId)
 				}
 
-				const newPayment = await service.createRow(paymentModelName, {
-					date: new Date(vendorResponse.created * 1000),
-					amount: vendorResponse.amount / 100.0,
-					payment_method: paymentMethodType,
-					status: status['ACTIVE'],
-					payment_response: JSON.stringify(vendorResponse),
-					created_by: "Administrator",
-					created_on: new Date()
-				});
+				if (vendorResponse) {
+					const newPayment = await service.createRow(paymentModelName, {
+						date: new Date(vendorResponse.created * 1000),
+						amount: vendorResponse.amount / 100.0,
+						payment_method: paymentMethodType,
+						status: status['ACTIVE'],
+						payment_response: JSON.stringify(vendorResponse),
+						created_by: "Administrator",
+						created_on: new Date()
+					});
 
-				const orderVendorPayoutResponse = await service.createRow(orderVendorPayoutModelName, {
-					order_vendor_id: item.id,
-					payment_id: newPayment.id,
-					status: status['ACTIVE'],
-					created_by: "Administrator",
-					created_on: new Date()
-				});
+					const orderVendorPayoutResponse = await service.createRow(orderVendorPayoutModelName, {
+						order_vendor_id: item.id,
+						payment_id: newPayment.id,
+						status: status['ACTIVE'],
+						created_by: "Administrator",
+						created_on: new Date()
+					});
+				}
 			}
 		}));
 		done();
