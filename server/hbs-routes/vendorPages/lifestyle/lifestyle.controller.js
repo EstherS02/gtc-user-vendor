@@ -139,6 +139,10 @@ export function vendorLifestyle(req, res) {
 					plan_id: Plan['LIFESTYLE_PROVIDER']
 				},{
 					plan_id: Plan['STARTER_SELLER']
+				},{
+					plan_id: Plan['PUBLIC_SELLER']
+				},{
+					plan_id: Plan['WHOLESALER']
 				}];
 			queryObj['vendor_id'] = vendor_id;
 			queryObj['status'] = status['ACTIVE'];
