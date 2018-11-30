@@ -224,23 +224,39 @@ export async function createVendor(req, res) {
 					verndorPlanObj['created_by'] = req.user.first_name;
 
 					const newPlan = await service.createRow(vendorPlanModelName, verndorPlanObj);
-					return res.status(201).send("Vendor created successfully.");
+					return res.status(201).send({
+						"message": "Success",
+						"messageDetails": "Vendor created successfully."
+					});
 				} else {
-					return res.status(404).send("Plan not found.");
+					return res.status(404).send({
+						"message": "Error",
+						"messageDetails": "Plan not found."
+					});
 				}
 			} else {
-				return res.status(404).send("Unable to create User");
+				return res.status(404).send({
+					"message": "Error",
+					"messageDetails": "Unable to create User."
+				});
 			}
 		} else {
-			return res.status(409).send("Email already exists.");
+			return res.status(409).send({
+				"message": "Error",
+				"messageDetails": "Email already exists."
+			});
 		}
 	} catch (error) {
 		console.log("Error:::", error);
-		return res.status(500).send("Internal server error");
+		return res.status(500).send({
+			"message": "Error",
+			"messageDetails": "Internal server error."
+		});
 	}
 }
 
 export async function edit(req, res) {
+
 	var queryObj = {};
 	var bodyParams = {};
 	var PlanModelName = "Plan";
@@ -248,9 +264,6 @@ export async function edit(req, res) {
 	var vendorModelName = "Vendor";
 	var vendorPlanModelName = "VendorPlan";
 	var bodyParamsUser = {};
-	// if (!req.files.vendor_profile_picture) {
-	// 	return res.status(400).send("Vendor profile picture missing.");
-	// }
 
 	req.checkBody('vendor_name', 'Missing Query Param').notEmpty();
 	req.checkBody('address', 'Missing Query Param').notEmpty();
@@ -298,14 +311,23 @@ export async function edit(req, res) {
 	try {
 		const existingVendor = await service.findOneRow(vendorModelName, queryObj);
 		if (!existingVendor) {
-			return res.status(500).send("Invalid Access");
+			return res.status(400).send({
+				"message": "Error",
+				"messageDetails": "Invalid Access."
+			});
 		} else {
 			const updateExistingUser = await service.updateRow(vendorModelName, bodyParams, req.params.id);
-			return res.status(500).send("Updated successfully");
+			return res.status(200).send({
+				"message": "Success",
+				"messageDetails": "Updated successfully."
+			});
 		}
 	} catch (error) {
 		console.log("Error:::", error);
-		return res.status(500).send("Internal server error");
+		return res.status(500).send({
+			"message": "Error",
+			"messageDetails": "Internal server error."
+		});
 	}
 }
 

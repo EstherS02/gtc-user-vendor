@@ -192,6 +192,19 @@ export function vendorDiscussion(req, res) {
 					return callback(null);
 				});
 		},
+		vendorPlan: function(callback){
+			var queryObj ={};
+			queryObj['vendor_id'] = vendor_id;
+			queryObj['status'] = status['ACTIVE'];
+			var includeArr=[];
+			service.findRow('VendorPlan',queryObj, includeArr)
+			.then(function(response) {
+					return callback(null, response);
+
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -214,11 +227,11 @@ export function vendorDiscussion(req, res) {
 				});
 		},
 	}, function(err, results) {
-		if (!err) {
-			if (results.discussion) {
+		if (!err && results.vendorPlan) {
+			// if (results.discussion) {
 				var maxSize = 5;
-				queryPaginationObj['maxSize'] = maxSize;
-			}
+				queryPaginationObj['maxSize'] = 5;
+			// }
 			res.render('vendorPages/vendor-discussion', {
 				title: "Global Trade Connect",
 				discussionBoard: results.discussion,
@@ -237,7 +250,7 @@ export function vendorDiscussion(req, res) {
 				Plan: Plan,
 			});
 		} else {
-			res.render('vendorPages/vendor-discussion', err);
+			res.render('404');
 		}
 	});
 }

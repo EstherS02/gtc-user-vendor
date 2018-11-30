@@ -68,6 +68,19 @@ export function vendor(req, res) {
 					return callback(null);
 				});
 		},
+		vendorPlan: function(callback){
+			var queryObj ={};
+			queryObj['status'] = status['ACTIVE'];
+			queryObj['vendor_id'] = vendor_id;
+			var includeArr=[];
+			service.findRow('VendorPlan',queryObj, includeArr)
+			.then(function(response) {
+					return callback(null, response);
+
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
 		featuredProducts: function(callback) {
 			queryObj['position'] = 'position_profilepage';
 			queryObj['is_featured_product'] = 1;
@@ -196,7 +209,7 @@ export function vendor(req, res) {
 			});
 		},
 	}, function(err, results) {
-		if (!err) {
+		if (!err && results.vendorPlan) {
 			res.render('vendorPages/vendor', {
 				title: "Global Trade Connect",
 				categories: results.categories,
@@ -213,7 +226,7 @@ export function vendor(req, res) {
 				// selectedPage:'shop'
 			});
 		} else {
-			res.render('vendor', err);
+			res.render('404');
 		}
 	});
 }
