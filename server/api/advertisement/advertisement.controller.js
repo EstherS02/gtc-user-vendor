@@ -4,9 +4,12 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
+const RawQueries = require('../../raw-queries/sql-queries');
+const Sequelize_Instance = require('../../sqldb/index');
 const service = require('../../api/service');
 const async = require('async');
 const path = require('path');
+const sequelize = require('sequelize');
 const _ = require('lodash');
 
 const AdModel = 'ProductAdsSetting';
@@ -175,7 +178,26 @@ export async function editAd(req, res) {
 	}
 }
 
+export function index(req,res){
+		return new Promise((resolve, reject) => {
+			Sequelize_Instance.query(RawQueries.adProducts(), {
+				model: model['Product'],
+				type: Sequelize_Instance.QueryTypes.SELECT
+			}).then((results) => {
+				var result = {};
+				// resolve(results)
+				result.count = results.lenght;
+				result.rows = results;
+				return res.status(200).send(result);
 
+			}).catch(function(error) {
+				return res.status(500).send(error);
+				
+			});
+	// }
+	});
+
+}
 
 
 

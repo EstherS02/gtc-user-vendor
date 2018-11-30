@@ -222,7 +222,6 @@ export function vendorShop(req, res) {
 				});
 		},
 	}, function(err, results) {
-		console.log("===========",results.vendorPlan)
 		queryPaginationObj['maxSize'] = 5;
 		if (!err && results.vendorPlan) {
 			res.render('vendorPages/vendor-shop', {

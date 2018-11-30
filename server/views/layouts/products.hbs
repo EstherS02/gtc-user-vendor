@@ -1,25 +1,23 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <script>
 	var counts = {{{ DisplayJSON globalProductCounts }}}
-  // $(document).ready(function () {
-    $('#depart').on('change', function () {
-      $('#searchSubmit').prop('disabled', !$(this).val());
-    }).trigger('change');
-    $('#category').on('change', function () {
-      $('#searchSubmit').prop('disabled', !$(this).val());
-    }).trigger('change');
-    $('#location').on('change', function () {
-      $('#searchSubmit').prop('disabled', !$(this).val());
-    }).trigger('change');
-    $("#searchForm").submit(function (e) {
-      e.preventDefault();
-      let formInput = $("#searchForm :input").filter(function (index, element) {
-        return $(element).val() != '';
-      }).serialize();
-      window.location.href = '/products/search?' + formInput;
-    // });
+  $(document).ready(function() {
+  	$("#searchSubmit").prop('disabled', true);
+	$('#depart, #category, #location').on('change', function() {
+		if ($(this).val() == '') {
+			$('#searchSubmit').prop('disabled', true);
+		} else {
+			$('#searchSubmit').prop('disabled', false);
+		}
+	});
+  	$("#searchForm").submit(function(e) {
+  		e.preventDefault();
+  		let formInput = $("#searchForm :input").filter(function(index, element) {
+  			return $(element).val() != '';
+  		}).serialize();
+  		window.location.href = '/products/search?' + formInput;
+  	});
   });
-
 </script>
 <div class="marketplace-banner products">
 	<div class="gtc-container">
@@ -74,7 +72,7 @@
 							</div>
 						</div>
 						<div class="col-md-12 text-center">
-							<button class="btn btn-md btn-directory" id="searchSubmitProduct">SEARCH PRODUCTS</button>
+							<button type="button" class="btn btn-md btn-directory" id="searchSubmit">SEARCH PRODUCTS</button>
 						</div>
 					</div>
 				</form>
