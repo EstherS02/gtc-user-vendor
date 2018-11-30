@@ -399,30 +399,28 @@ export async function saveCoupon(req, res) {
 			return couponExcludeProductResponse;
 		}));
 		 if (req.user.user_contact_email) {
-			sendEmailCouponcode(req.user.Vendor.id,req.user.id,coupon.id);
-	       }
-		
-
-    	return res.status(200).send('Coupon added successfully.');
+			vendorTouserSendemail(req.user.Vendor.id,coupon.id);
+		   }
+	
+		return res.status(200).send('Coupon added successfully.');
 	} catch (error) {
 		console.log("saveCoupon Error:::", error);
 		return res.status(500).send('Internal server error');
 	}
 }
-function sendEmailCouponcode(couponVendorId, couponUserId,couponId) {
+function vendorTouserSendemail(couponVendorId,couponId) {
 	var includeArr = [];
 	const offset = 0;
 	const limit = null;
 	const field = "id";
 	const order = "asc";
 	var queryObjects = {};
-	queryObjects.user_id = couponUserId;
+	queryObjects.vendor_id = couponVendorId;
 	queryObjects.status = status['ACTIVE'];
 	service.findAllRows("VendorFollower", includeArr, queryObjects, offset, limit, field, order)
-		.then(function(vendorFollowersCount) {
-			var vendorFollowersCount = vendorFollowersCount;
-			if (vendorFollowersCount.count != 0) {
-
+		.then(function(userFollowersCount) {
+			if(userFollowersCount.count!=0)
+			{
 				var includeArr = [{
 					model: model['CouponProduct'],
 					attributes: ['coupon_id', 'product_id'],
@@ -445,17 +443,12 @@ function sendEmailCouponcode(couponVendorId, couponUserId,couponId) {
 						for (var i = 0; i < productscoupons.length; i++) {
 							productsname.push(productscoupons[i].Product.product_name);
 						}
-						var includeArr = [{
-							model: model['Vendor'],
-							attributes: ['id', 'vendor_name'],
-							include: [{
+    					var	includeArr=[{
 								model: model['User'],
 								attributes: ['id', 'email', 'user_contact_email', 'email_verified', 'first_name'],
 							}]
-
-						}]
 						var queryObj = {
-							user_id: couponUserId,
+							vendor_id: couponVendorId,
 							status: status['ACTIVE']
 						}
 						var field = "id";
@@ -471,36 +464,37 @@ function sendEmailCouponcode(couponVendorId, couponUserId,couponId) {
 								var emailTemplateModel = 'EmailTemplate';
 								queryObjEmailTemplate['name'] = config.email.templates.vendorCoupon;
 								service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-									.then(function(response) {
-										for (var i = 0; i < resultsarr.length; i++) {
-											var agenda = require('../../app').get('agenda');
-											var email = resultsarr[i].Vendor.User.email;
+								 	.then(function(response) {
+										 for (var i = 0; i < resultsarr.length; i++) {
+								 			var agenda = require('../../app').get('agenda');
+											var email = resultsarr[i].User.email;
 											var subject = response.subject;
-											var body;
-											var body = response.body;
-											body = body.replace('%first_name%', resultsarr[i].Vendor.User.first_name);
-											body = body.replace('%couponCode%', CouponDetails.rows[0].code);
-											body = body.replace('%product%', productsname);
-											var mailArray = [];
-											mailArray.push({
-												to: email,
-												subject: subject,
-												html: body
-											});
-											agenda.now(config.jobs.email, {
-												mailArray: mailArray
-											});
-											//return;
+								 			var body;
+								 			var body = response.body;
+								 			body = body.replace('%first_name%', resultsarr[i].User.first_name);
+								 			body = body.replace('%couponCode%', CouponDetails.rows[0].code);
+								 			body = body.replace('%product%', productsname);
+								 			var mailArray = [];
+								 			mailArray.push({
+								 				to: email,
+								 				subject: subject,
+								 				html: body
+								 			});
+								 			agenda.now(config.jobs.email, {
+								 				mailArray: mailArray
+								 			});
+								 			//return;
 										}
 										agenda.now(config.jobs.couponNotification, {
 											couponId: couponId,
-											couponuserId:couponUserId,
+											couponvendorId: couponVendorId,
 											code: config.notification.templates.couponCode
-										});
-									}).catch(function(error) {
-										console.log('Error :::', error);
-										return;
-									})
+									   });
+								 	
+								 	}).catch(function(error) {
+								 		console.log('Error :::', error);
+								 		return;
+								 	})
 							})
 
 					}).catch(function(error) {
@@ -508,12 +502,9 @@ function sendEmailCouponcode(couponVendorId, couponUserId,couponId) {
 						return callback(null);
 					});
 			}
-			else {
-				console.log("vendor no one followers");
+			else{
+				console.log("no one user_followers for this vendors");
 			}
-			//return callback(null, paymentSettings);
-		}).catch(function(error) {
-			console.log('Error :::', error);
-			return callback(null);
-		});
+
+		})
 }

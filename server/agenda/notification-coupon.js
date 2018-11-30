@@ -21,7 +21,7 @@ module.exports = async function(job, done) {
 		// coupon code notification starts//
 		if (code == config.notification.templates.couponCode) {
 			//vendor follower created user Id
-			const couponuserId = job.attrs.data.couponuserId;
+			const couponvendorId = job.attrs.data.couponvendorId;
 			const couponID = job.attrs.data.couponId;
 			var includeArr = [];
 			var queryObj = {
@@ -35,17 +35,12 @@ module.exports = async function(job, done) {
 					var coupondetails = [];
 					var productscoupons = CouponDetails.rows[0].code;
 					coupondetails.push(productscoupons);
-					var includeArr = [{
-						model: model['Vendor'],
-						attributes: ['id', 'vendor_name'],
-						include: [{
+					var	includeArr = [{
 							model: model['User'],
 							attributes: ['id', 'email', 'user_contact_email', 'email_verified', 'first_name'],
 						}]
-
-					}]
 					var queryObj = {
-						user_id: couponuserId,
+						vendor_id: couponvendorId,
 						status: status['ACTIVE']
 					}
 					var field = "id";
@@ -65,7 +60,7 @@ module.exports = async function(job, done) {
 									for (var j = 0; j < resultsarr.length; j++) {
 										var Coupondetails = coupondetails;
 										var bodyParams = {};
-										bodyParams.user_id = resultsarr[j].Vendor.User.id;
+										bodyParams.user_id = resultsarr[j].User.id;
 										bodyParams.description = response.description.replace('%couponcode%', Coupondetails);
 										bodyParams.name = response.name;
 										bodyParams.code = response.code;
