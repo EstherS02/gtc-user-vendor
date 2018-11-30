@@ -134,7 +134,11 @@ export function vendorServices(req, res) {
 		},
 		vendorPlan: function(callback){
 			var queryObj ={};
-			queryObj['plan_id'] = Plan['SERVICE_PROVIDER'];
+			queryObj['$or'] = [{
+					plan_id: Plan['SERVICE_PROVIDER']
+				},{
+					plan_id: Plan['STARTER_SELLER']
+				}];
 			queryObj['vendor_id'] = vendor_id;
 			queryObj['status'] = status['ACTIVE'];
 			var includeArr=[];

@@ -132,7 +132,13 @@ export function vendorShop(req, res) {
 		},
 		vendorPlan: function(callback){
 			var queryObj ={};
-			queryObj['plan_id'] = Plan['PUBLIC_SELLER'];
+			queryObj['$or'] = [{
+					plan_id: Plan['PUBLIC_SELLER']
+				},{
+					plan_id: Plan['WHOLESALER']
+				},{
+					plan_id: Plan['STARTER_SELLER']
+				}];
 			queryObj['vendor_id'] = vendor_id;
 			queryObj['status'] = status['ACTIVE'];
 			var includeArr=[];
