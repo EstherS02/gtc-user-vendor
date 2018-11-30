@@ -33,7 +33,6 @@ module.exports = async function(job, done) {
 		}));
 		done();
 	} catch (error) {
-		console.log("vendorPayout Error:::", error);
 		return error;
 	}
 };
