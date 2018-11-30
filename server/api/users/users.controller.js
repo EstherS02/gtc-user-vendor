@@ -700,31 +700,48 @@ export function forgotPassword(req, res) {
 											agenda.now(config.jobs.email, {
 												mailArray: mailArray
 											});
-											return res.status(201).send("Instructions have been sent to your associated email account. Check your email and follow the instructions to reset your password.");
+											return res.status(201).send({
+												"message": "Success",
+												"messageDetails": "Instructions have been sent to associated email address. Please check the email and follow the instructions to reset password."
+											});
 										} else {
-											return res.status(201).send("You didn't have contact email to reset your password.");
+											return res.status(201).send({
+												"message": "Success",
+												"messageDetails": "The account doesn't have any contact email address, to send reset password instructions."
+											});
 										}
 									} else {
-										return res.status(404).send("Unable to reset password. Please try later.");
+										return res.status(400).send({
+											"message": "Error",
+											"messageDetails": "Unable to reset password. Please try later."
+										});
 									}
 								}).catch(function(error) {
 									console.log('Error :::', error);
-									res.status(500).send("Internal server error. Please try later.");
-									return;
+									return res.status(500).send({
+										"message": "ERROR",
+										"messageDetails": "Internal server error. Please try later."
+									});
 								});
 						} else {
-							res.status(404).send("Unable to reset password. Please try later");
-							return;
+							return res.status(400).send({
+								"message": "Error",
+								"messageDetails": "Unable to reset password. Please try later."
+							});
 						}
 					})
 			} else {
-				res.status(404).send("Your search did not return any results. Please try again with other information.");
-				return;
+				return res.status(400).send({
+					"message": "Error",
+					"messageDetails": "Your search did not return any results. Please try again with other information."
+				});
 			}
-		})
-		.catch(function(error) {
-			res.status(500).send("Internal server error. Please try later.")
-			return;
+		}).catch(function(error) {
+			console.log('Error :::', error);
+			return res.status(500).send({
+				"message": "ERROR",
+				"messageDetails": "Internal server error. Please try later."
+			});
 		})
 }
 

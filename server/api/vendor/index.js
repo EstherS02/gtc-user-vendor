@@ -14,7 +14,7 @@ router.post('/delete',auth.hasRole(roles['ADMIN']),controller.deleteVendor);
 router.post('/create-vendor', auth.hasRole(roles['ADMIN']), auth.isEmailVerified(), auth.isAccountActive(), multipartMiddleware, controller.createVendor);
 router.post('/starter-seller', auth.hasRole(roles['USER']), auth.isEmailVerified(), auth.isAccountActive(), multipartMiddleware, controller.createStarterSeller);
 router.post('/',auth.hasRole(roles['VENDOR']), controller.create);
-router.post('/:id',auth.hasRole(roles['VENDOR']), controller.edit);
+router.put('/:id',auth.hasRole(roles['VENDOR']), auth.isEmailVerified(), auth.isAccountActive(), multipartMiddleware, controller.edit);
 router.put('/',auth.hasRole(roles['ADMIN']),controller.deleteVendor)
 
 module.exports = router;

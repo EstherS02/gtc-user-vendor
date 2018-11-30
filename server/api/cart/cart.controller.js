@@ -508,6 +508,9 @@ export async function applyCoupon(req, res) {
 										appliedCouponCode = coupon.code;
 										break;
 									}
+								} else if((!coupon.excluse_sale_item && (cartProduct.Product.exclusive_sale || !cartProduct.Product.exclusive_sale) && (!exclusiveEndDate || exclusiveEndDate > currentDate))) {
+									errorResponse = "This coupon is not applicable for this product";
+									continue;
 								} else {
 									continue;
 								}

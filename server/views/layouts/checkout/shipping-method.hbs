@@ -133,15 +133,15 @@
 									<div class="col-12">
 										<div class="form-group m-b-none">
 											<div class="address-content">
-												{{#if selected_billing_address}}
-													<h3>{{selected_billing_address.first_name}} {{selected_billing_address.last_name}}</h3>
-													<p>{{selected_billing_address.company_name}}</p>
-													<p>{{selected_billing_address.address_line1}}</p>
-													<p>{{selected_billing_address.address_line2}}</p>
-													<p>{{selected_billing_address.city}}</p>
-													<p>{{selected_billing_address.State.name}}, {{selected_billing_address.Country.name}}</p>
-													<p>{{selected_billing_address.postal_code}}</p>
-													<p>{{selected_billing_address.phone}}</p>
+												{{#if selected_shipping_address}}
+													<h3>{{selected_shipping_address.first_name}} {{selected_shipping_address.last_name}}</h3>
+													<p>{{selected_shipping_address.company_name}}</p>
+													<p>{{selected_shipping_address.address_line1}}</p>
+													<p>{{selected_shipping_address.address_line2}}</p>
+													<p>{{selected_shipping_address.city}}</p>
+													<p>{{selected_shipping_address.State.name}}, {{selected_shipping_address.Country.name}}</p>
+													<p>{{selected_shipping_address.postal_code}}</p>
+													<p>{{selected_shipping_address.phone}}</p>
 												{{else}}
 													-
 												{{/if}}
