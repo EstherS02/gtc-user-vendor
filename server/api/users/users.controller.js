@@ -758,7 +758,7 @@ export async function edit(req, res){
 		console.log("Error::",errors)
 		return res.status(400).send({
 			"message": "Error",
-			"messageDetails": error
+			"messageDetails": errors
 		});
 	}
 

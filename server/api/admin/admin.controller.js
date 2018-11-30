@@ -101,7 +101,6 @@ export function deleteAdmin(req, res) {
     var returnResponse = [];
     var userQueryObj = {};
     var queryObj = {};
-    queryObj['status'] = status['ACTIVE'];
 
     for (let i = 0; i < ids.length; i++) {
         queryObj['id'] = ids[i];
@@ -259,10 +258,11 @@ export async function edit(req, res) {
         userID;
     var userModel = 'User';
     var adminModel = 'Admin';
-    var bodyParam = {};
+    var userBodyParam = {}, adminBodyParam = {};
 
     req.checkBody('first_name', 'Missing first name').notEmpty();
-    req.checkBody('email', 'Missing email address').notEmpty();
+	req.checkBody('email', 'Missing email address').notEmpty();
+	req.checkBody('status', 'Missing admin status').notEmpty();
 
     var errors = req.validationErrors();
     if (errors) {
@@ -271,9 +271,10 @@ export async function edit(req, res) {
             "message": "Error",
             "messageDetails": error
         });
-    }
-
-    bodyParam = req.body;
+	}
+	
+	userBodyParam = req.body;
+	adminBodyParam['status'] = req.body.status; 
 
     try {
 
@@ -283,9 +284,14 @@ export async function edit(req, res) {
             userID = existingAdmin.user_id;
             const existingUser = await service.findIdRow(userModel, userID);
             if (existingUser) {
-                const User = await service.updateRecordNew(userModel, bodyParam, {
+                const User = await service.updateRecordNew(userModel, userBodyParam, {
                     id: userID
-                });
+				});
+
+				const Admin = await service.updateRecordNew(adminModel, adminBodyParam, {
+                    id: existingAdmin.id
+				});				
+						
                 return res.status(200).send({
                     "message": "Success",
                     "messageDetails": "Admin details updated successfully."
