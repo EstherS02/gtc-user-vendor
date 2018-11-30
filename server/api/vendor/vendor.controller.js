@@ -130,6 +130,7 @@ export async function createVendor(req, res) {
 	var vendorModelName = "Vendor";
 	var vendorPlanModelName = "VendorPlan";
 	var bodyParamsUser = {};
+
 	if (!req.files.vendor_profile_picture) {
 		return res.status(400).send("Vendor profile picture missing.");
 	}
@@ -149,7 +150,6 @@ export async function createVendor(req, res) {
 	}
 
 	bodyParams = req.body;
-	// bodyParams['user_id'] = req.user.id;
 	bodyParams['status'] = status['ACTIVE'];
 	bodyParams['created_on'] = new Date();
 	bodyParams['created_by'] = req.user.first_name;
@@ -176,6 +176,8 @@ export async function createVendor(req, res) {
 				var planQueryObj = {};
 				planQueryObj['status'] = status['ACTIVE'];
 				planQueryObj['id'] = plans['STARTER_SELLER'];
+
+				bodyParams['user_id'] = newUser.id;
 
 				const startSellerPlan = await service.findOneRow(PlanModelName, planQueryObj);
 
@@ -394,8 +396,8 @@ export function index(req, res) {
 		var queryObj = {};
 		var queryObj1 = {};
 		let productQueryObj = {};
-		let field = 'created_on';
-		let order = 'desc';
+		let field = 'id';
+		let order = 'asc';
 		var params = req.query;
 		let limit = req.query.limit ? parseInt(req.query.limit) : 10;
 		let offset = req.query.offset ? parseInt(req.query.offset) : 0;
