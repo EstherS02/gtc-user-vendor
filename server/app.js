@@ -67,7 +67,7 @@ agenda.on('ready', function() {
 	agenda.every('12 hours', 'starterPlanExpire');
 	agenda.every('12 hours', 'featureProductExpire');
 	agenda.every('12 hours', 'subscriptionExpire');
-	agenda.every('1 minute', config.jobs.couponStatusInactive);
+	agenda.every('12 hours', config.jobs.couponStatusInactive);
 	agenda.start();
 });
 
