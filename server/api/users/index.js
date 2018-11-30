@@ -16,6 +16,6 @@ router.put('/user-profile', auth.isAuthenticated(), controller.userProfile);
 router.put('/user-vendor-follow', auth.isAuthenticatedUser(), controller.vendorFollow);
 router.get('/forgot-password/:email', controller.forgotPassword);
 router.put('/reset-password', controller.resetPassword);
-router.put('/:id',auth.isAuthenticated(), controller.edit);
+router.put('/edit/:id',auth.isAuthenticated(), controller.edit);
 
 module.exports = router;
