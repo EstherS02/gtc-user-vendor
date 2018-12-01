@@ -74,7 +74,7 @@ $(document).ready(function() {
 	$("#b_country").change(function() {
 		var country_id = $('#b_country').val();
 		$.ajax({
-			url: '/api/states?country_id=' + country_id,
+			url: '/api/states?country_id=' + country_id + '&field=name&order=asc',
 			type: 'GET',
 			success: function(result) {
 				$("#b_state").empty();
@@ -94,7 +94,7 @@ $(document).ready(function() {
 	$('#s_country').change(function() {
 		var country_id = $('#s_country').val();
 		$.ajax({
-			url: '/api/states?country_id=' + country_id,
+			url: '/api/states?country_id=' + country_id+ '&field=name&order=asc',
 			type: 'GET',
 			success: function(result) {
 				$("#s_state").empty();
