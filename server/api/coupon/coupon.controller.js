@@ -399,10 +399,10 @@ export async function saveCoupon(req, res) {
 			return couponExcludeProductResponse;
 		}));
 		var agenda = require('../../app').get('agenda');
-		agenda.now(config.jobs.couponEmail, {
+			agenda.now(config.jobs.couponEmail, {
 		 	couponResponse: coupon,
 		 });
-	 	agenda.now(config.jobs.couponNotification, {
+		agenda.now(config.jobs.couponNotification, {
 			couponResponse: coupon,
 			code: config.notification.templates.couponCode
 	   });

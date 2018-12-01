@@ -26,44 +26,43 @@ module.exports = async function(job, done) {
 				model: model['User'],
 				attributes: ['id', 'email', 'user_contact_email', 'email_verified', 'first_name'],
 			}]
-			var queryObjects = {
+			var queryObject = {
 				vendor_id: couponDetails.vendor_id,
 				status: status['ACTIVE']
 			}
 			var field = "id";
 			var order = "ASC";
 			var limit = null;
-			service.findAllRows(vendorFollowerModelName, includeArr, queryObjects, 0, limit, field, order)
+			service.findAllRows(vendorFollowerModelName, includeArr, queryObject, 0, limit, field, order)
 				.then(function(results) {
 					if (results.count > 0) {
-						var resultsArr = [];
-						for (var i = 0; i < results.rows.length; i++) {
-							resultsArr.push(results.rows[i]);
-						}
 						var queryObjNotification = {};
 						queryObjNotification['code'] = config.notification.templates.couponCode;
 						service.findOneRow(notificationSettingModelName, queryObjNotification)
-							.then(function(response) {
-								var bodyParamsArray = [];
-								for (var j = 0; j < resultsArr.length; j++) {
-									var bodyParams = {};
-									bodyParams.user_id = resultsArr[j].User.id;
-									bodyParams.description = response.description.replace('%couponcode%', couponDetails.code);
-									bodyParams.name = response.name;
-									bodyParams.code = response.code;
-									bodyParams.is_read = 0;
-									bodyParams.status = 1;
-									bodyParams.created_on = new Date();
-									bodyParams.created_by = "Administrator";
-									bodyParamsArray.push(bodyParams);
+							.then(async function(response) {
+								if (response) {
+									var bodyParamsArray = [];
+									for (let result of results.rows) {
+										var bodyParams = {};
+										bodyParams.user_id = result.User.id;
+										bodyParams.description = response.description.replace('%couponcode%', couponDetails.code);
+										bodyParams.name = response.name;
+										bodyParams.code = response.code;
+										bodyParams.is_read = 0;
+										bodyParams.status = 1;
+										bodyParams.created_on = new Date();
+										bodyParams.created_by = "Administrator";
+										bodyParamsArray.push(bodyParams);
+									}
+									var finalresults = bodyParamsArray.filter(o => Object.keys(o).length);
+									await service.createBulkRow(notificationModelName, finalresults);
 								}
-								var finalresults = bodyParamsArray.filter(o => Object.keys(o).length);
-								service.createBulkRow(notificationModelName, finalresults);
+								done();
 
 							})
 					}
 					else {
-						Console.log("<<<<<<<<<<<<<<<<<<<<NO FOLLOWERS OF THIS VENDOR>>>>>>>>>>>>>>>>>")
+						done();
 					}
 
 				})
@@ -71,6 +70,6 @@ module.exports = async function(job, done) {
 		// coupon code notification ends//
 		done();
 	} catch (error) {
-		done(error);
+		return error;
 	}
 };
