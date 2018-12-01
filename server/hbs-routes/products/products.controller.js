@@ -3,17 +3,20 @@
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
+const position = require('../../config/position');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const productService = require('../../api/product/product.service');
 const notifictionService = require('../../api/notification/notification.service');
 const async = require('async');
+const sequelize = require('sequelize');
 
 export function products(req, res) {
 	var marketplaceModel = "Marketplace";
 	var categoryModel = "Category";
 	var subcategoryModel = "SubCategory";
+	var productAdModelName = 'ProductAdsSetting';
 	var countryModel = "Country";
 	var offset, limit, field, order;
 	var queryObj = {};
@@ -151,9 +154,28 @@ export function products(req, res) {
 				.then(function(counts) {
 					return callback(null, counts);
 				}).catch(function(error) {
-					return callback(null);
+					return callback(error);
 				});
-		}
+		},
+		productsRandomAd: function(callback) {
+			var queryObj = {};
+			queryObj['position'] = position['PRODUCTS'].id;
+			model[productAdModelName].findOne({
+				order: [
+					[sequelize.literal('RAND()')]
+				],
+				limit: 1,
+				where: queryObj
+			}).then(function(row) {
+				if (row) {
+					return callback(null, row.toJSON());
+				} else {
+					return callback(null);
+				}
+			}).catch(function(error) {
+				return callback(error);
+			});
+		},
 	}, function(err, results) {
 		if (!err) {
 			res.render('products', {
@@ -172,7 +194,8 @@ export function products(req, res) {
 				depart: results.depart,
 				globalProductCounts:results.globalProductCounts,
 				unreadCounts: results.unreadCounts,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				productsRandomAd:results.productsRandomAd
 			});
 		} else {
 			res.render('products', err);

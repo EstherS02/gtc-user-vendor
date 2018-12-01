@@ -4,6 +4,7 @@ const async = require('async');
 const sequelize = require('sequelize');
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
+const position = require('../../config/position');
 const service = require('../../api/service');
 const cartService = require('../../api/cart/cart.service');
 const vendorService = require('../../api/vendor/vendor.service');
@@ -15,6 +16,8 @@ export function directory(req, res) {
 	var countryModel = "Country";
 	var marketplaceModel = "Marketplace";
 	var vendorModel = "VendorUserProduct";
+	var productAdModelName = 'ProductAdsSetting';
+
 	var offset, limit, field, order;
 	var queryObj = {},
 		LoggedInUser = {},
@@ -128,12 +131,12 @@ export function directory(req, res) {
 		vendorCounts: function(callback) {
 			vendorService.activeVendorcounts(marketplace['WHOLESALE'])
 				.then((vendorCount) => {
-					return callback(null,vendorCount.rows);
+					return callback(null, vendorCount.rows);
 				}).catch((error) => {
 					return callback(error);
 				});
-		
-    	},
+
+		},
 		subscriptionProviders: function(callback) {
 			vendorService.TopSellingVendors(0, 6, marketplace['LIFESTYLE'])
 				.then((response) => {
@@ -143,6 +146,25 @@ export function directory(req, res) {
 					console.log("wholesalers Error:::", error);
 					return callback(error);
 				});
+		},
+		directoryRandomAd: function(callback) {
+			var queryObj = {};
+			queryObj['position'] = position['DIRECTORY'].id;
+			model[productAdModelName].findOne({
+				order: [
+					[sequelize.literal('RAND()')]
+				],
+				limit: 1,
+				where: queryObj
+			}).then(function(row) {
+				if (row) {
+					return callback(null, row.toJSON());
+				} else {
+					return callback(null);
+				}
+			}).catch(function(error) {
+				return callback(error);
+			});
 		},
 	}, function(err, results) {
 		if (!err) {
@@ -155,12 +177,13 @@ export function directory(req, res) {
 				wholesalers: results.wholesalers,
 				retailers: results.retailers,
 				servicesProviders: results.servicesProviders,
-				vendorCounts:results.vendorCounts,
+				vendorCounts: results.vendorCounts,
 				subscriptionProviders: results.subscriptionProviders,
 				depart: results.depart,
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
-				marketPlace: marketplace
+				marketPlace: marketplace,
+				directoryRandomAd: results.directoryRandomAd
 			});
 		} else {
 			res.render('directory', err);
