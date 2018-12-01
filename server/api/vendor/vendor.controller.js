@@ -132,21 +132,27 @@ export async function createVendor(req, res) {
 	var bodyParamsUser = {};
 
 	if (!req.files.vendor_profile_picture) {
-		return res.status(400).send("Vendor profile picture missing.");
+		return res.status(400).send({
+			"message": "Error",
+			"messageDetails": "Vendor profile picture missing."
+		});
 	}
 
-	req.checkBody('vendor_name', 'Missing Query Param').notEmpty();
-	req.checkBody('address', 'Missing Query Param').notEmpty();
-	req.checkBody('base_location', 'Missing Query Param').notEmpty();
-	req.checkBody('province_id', 'Missing Query Param').notEmpty();
-	req.checkBody('city', 'Missing Query Param').notEmpty();
-	req.checkBody('currency_id', 'Missing Query Param').notEmpty();
+	req.checkBody('vendor_name', 'Vendor Name is Missing').notEmpty();
+	req.checkBody('address', 'Vendor Address is Missing').notEmpty();
+	req.checkBody('base_location', 'Vendor Country is Missing').notEmpty();
+	req.checkBody('province_id', 'Vendor Province is Missing').notEmpty();
+	req.checkBody('city', 'Vendor City is Missing').notEmpty();
+	req.checkBody('currency_id', 'Vendor Currency is Missing').notEmpty();
 	req.checkBody('email', 'Email is Missing').notEmpty();
 
 	var errors = req.validationErrors();
 	if (errors) {
-		res.status(400).send(errors);
-		return;
+		console.log("Error::", errors)
+		return res.status(400).send({
+			"message": "Error",
+			"messageDetails": errors[0].msg
+		});
 	}
 
 	bodyParams = req.body;
@@ -265,26 +271,37 @@ export async function edit(req, res) {
 	var userModelName = "User";
 	var vendorModelName = "Vendor";
 	var vendorPlanModelName = "VendorPlan";
-	var bodyParamsUser = {};
+	var userBodyParam = {};
 
-	req.checkBody('vendor_name', 'Missing Query Param').notEmpty();
-	req.checkBody('address', 'Missing Query Param').notEmpty();
-	req.checkBody('base_location', 'Missing Query Param').notEmpty();
-	req.checkBody('province_id', 'Missing Query Param').notEmpty();
-	req.checkBody('city', 'Missing Query Param').notEmpty();
-	req.checkBody('currency_id', 'Missing Query Param').notEmpty();
+	req.checkBody('first_name', 'First Name is Missing').notEmpty();
+	req.checkBody('vendor_name', 'Vendor Name is Missing').notEmpty();
+	req.checkBody('address', 'Vendor Address is Missing').notEmpty();
+	req.checkBody('base_location', 'Vendor Country is Missing').notEmpty();
+	req.checkBody('province_id', 'Vendor State is Missing').notEmpty();
+	req.checkBody('city', 'Vendor City is Missing').notEmpty();
+	req.checkBody('currency_id', 'Vendor Currency is Missing').notEmpty();
 	req.checkBody('email', 'Email is Missing').notEmpty();
 
 	var errors = req.validationErrors();
 	if (errors) {
-		res.status(400).send(errors);
-		return;
+		console.log("Error::", errors)
+		return res.status(400).send({
+			"message": "Error",
+			"messageDetails": errors[0].msg
+		});
 	}
 
 	bodyParams = req.body;
-	bodyParams['status'] = status['ACTIVE'];
+	//bodyParams['status'] = status['ACTIVE'];
 	bodyParams['last_updated_on'] = new Date();
 	bodyParams['last_updated_by'] = req.user.first_name;
+
+	userBodyParam['first_name'] = req.body.first_name;
+	userBodyParam['last_name'] = req.body.last_name;
+	userBodyParam['status'] = req.body.status;
+	userBodyParam['email_verified'] = req.body.email_verified;
+	userBodyParam['last_updated_on'] = new Date();
+	userBodyParam['last_updated_by'] = req.user.first_name;
 
 	queryObj['id'] = req.params.id;
 	if (req.files.vendor_profile_picture) {
@@ -315,13 +332,20 @@ export async function edit(req, res) {
 		if (!existingVendor) {
 			return res.status(400).send({
 				"message": "Error",
-				"messageDetails": "Invalid Access."
+				"messageDetails": "Vendor Not Access."
 			});
 		} else {
-			const updateExistingUser = await service.updateRow(vendorModelName, bodyParams, req.params.id);
+			const updateExistingVendor = await service.updateRecordNew(vendorModelName, bodyParams, {
+				id:req.params.id
+			});
+
+			const User = await service.updateRecordNew(userModelName, userBodyParam, {
+				id: existingVendor.user_id
+			});	
+
 			return res.status(200).send({
 				"message": "Success",
-				"messageDetails": "Updated successfully."
+				"messageDetails": "Vendor Updated successfully."
 			});
 		}
 	} catch (error) {
