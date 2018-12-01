@@ -3,6 +3,7 @@ const sequelize = require('sequelize');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
+const position = require('../../config/position');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const productService = require('../../api/product/product.service');
@@ -12,6 +13,7 @@ const async = require('async');
 
 export function lifestyle(req, res) {
 	var vendorModel = "VendorUserProduct";
+	var productAdModelName = 'ProductAdsSetting';
 	var categoryModel = "Category";
 	var offset, limit, field, order;
 	var queryObj = {},
@@ -112,7 +114,26 @@ export function lifestyle(req, res) {
 				console.log(" Error:::", error);
 				return callback(error);
 			});
-		}
+		},
+		lifestyleRandomAd: function(callback) {
+			var queryObj = {};
+			queryObj['position'] = position['LIFESTYLE'].id;
+			model[productAdModelName].findOne({
+				order: [
+					[sequelize.literal('RAND()')]
+				],
+				limit: 1,
+				where: queryObj
+			}).then(function(row) {
+				if (row) {
+					return callback(null, row.toJSON());
+				} else {
+					return callback(null);
+				}
+			}).catch(function(error) {
+				return callback(error);
+			});
+		},
 	}, function(err, results) {
 		if (!err) {
 			res.render('lifestyle', {
@@ -125,7 +146,8 @@ export function lifestyle(req, res) {
 				subscriptionProviders: results.subscriptionProviders,
 				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser,
-				buyerCount:results.buyerCount
+				buyerCount:results.buyerCount,
+				lifestyleRandomAd:results.lifestyleRandomAd
 			});
 		} else {
 			res.render('lifestyle', err);
