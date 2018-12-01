@@ -143,10 +143,10 @@ var all = {
 		lifestyle_fee: 10
 	},
 	payment: {
-		"cancelOrderItem": 0,
-		"returnOrderItem": 0,
-		"noResposeOrderItem": 0,
-		"vendorPayout": 0
+		"cancelOrderItem": 3,
+		"returnOrderItem": 3,
+		"noResposeOrderItem": 3,
+		"vendorPayout": 30
 	},
 	sesTransporter: {
 		accessKeyId: process.env.SES_ACCESS_KEY_ID,
