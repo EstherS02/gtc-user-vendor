@@ -44,10 +44,15 @@
 		<div class="row">
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-topseller">
+					{{#if subscriptionProviders}}
 					<h2 class="header-lg-text">TOP SELLING SUBSCRIPTIONS PROVIDERS <a class="see-all" href="/subscription-providers/search">SEE ALL</a></h2>
+					{{else}}
+					<h2 class="header-lg-text">TOP SELLING SUBSCRIPTIONS PROVIDERS <a class="see-all cursor-not-allowed">SEE ALL</a></h2>
+					{{/if}}
 				</div>
 				<div class="product-list-body">
 					<div class="row">
+						{{#if subscriptionProviders}}
 						{{#each subscriptionProviders}}
 						<div class="col-md-6">
 							<div class="product-body">
@@ -104,15 +109,23 @@
 								</div>
 							</div>
 							{{/each}}
+							{{else}}
+								<p class="no-data">No top selling subscription providers</p>
+							{{/if}}
 						</div>
 					</div>
 				</div>
 				<div class="col-md-6 no-padding">
 					<div class="header-lg bg-featured-product">
+						{{#if featuredProducts.rows}}
 						<h2 class="header-lg-text">FEATURED SUBSCRIPTIONS <a class="see-all" href="/lifestyle/search?is_featured_product=1">SEE ALL</a></h2>
+						{{else}}
+						<h2 class="header-lg-text">FEATURED SUBSCRIPTIONS <a class="see-all cursor-not-allowed">SEE ALL</a></h2>
+						{{/if}}
 					</div>
 					<div class="product-list-body">
 						<div class="row">
+							{{#if featuredProducts.rows}}
 							{{#each featuredProducts.rows}}
 							<div class="col-md-6">
 								<div class="product-body">
@@ -172,6 +185,9 @@
 								</div>
 							</div>
 							{{/each}}
+							{{else}}
+								<p class="no-data">No featured subscription</p>
+							{{/if}}
 						</div>
 					</div>
 				</div>
@@ -182,7 +198,11 @@
 		<div class="gtc-container">
 			<div class="row">
 				<div class="col-md-12 no-padding">
+					{{#if lifestyleMarketplace.rows}}
 					<h2 class="header-lg-text">LIFESTYLE SUBSCRIPTIONS MARKETPLACE <a class="see-all" href="/lifestyle/search">SEE ALL</a></h2>
+					{{else}}
+					<h2 class="header-lg-text">LIFESTYLE SUBSCRIPTIONS MARKETPLACE <a class="see-all cursor-not-allowed">SEE ALL</a></h2>
+					{{/if}}
 				</div>
 			</div>
 		</div>
@@ -212,6 +232,7 @@
 						<div style="clear: both;"></div>
 					</div>
 				</div>
+				{{#if lifestyleMarketplace.rows}}
 				{{#each lifestyleMarketplace.rows}}
 				<div class="col-md-3 no-padding">
 					<div class="product-list-body">
@@ -284,6 +305,9 @@
 					</div>
 				</div>
 				{{/each}}
+				{{else}}
+					<p class="no-data">No lifestyle products</p>
+				{{/if}}
 			</div>
 		</div>
 	</div>

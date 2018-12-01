@@ -103,6 +103,12 @@ export function userProfile(req, res) {
 				});
 		},
 		country: function(callback) {
+			var offset, limit, field, order;
+			var queryObj = {},
+			offset = 0;
+			limit = null;
+			field = "name";
+			order = "asc";
 			service.findRows(countryModel, queryObj, offset, limit, field, order)
 				.then(function(country) {
 					return callback(null, country.rows);
