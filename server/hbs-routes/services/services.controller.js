@@ -5,6 +5,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 const vendorService = require('../../api/vendor/vendor.service');
@@ -15,6 +16,7 @@ const productService = require('../../api/product/product.service');
 export function services(req, res) {
 	var categoryModel = "Category";
 	var vendorModel = "VendorUserProduct";
+	var productAdModelName = 'ProductAdsSetting';
 	var offset, limit, field, order;
 	var queryObj = {};
 	var LoggedInUser = {};
@@ -108,7 +110,26 @@ export function services(req, res) {
 				console.log(" Error:::", error);
 				return callback(error);
 			});
-		}
+		},
+		serviceRandomAd: function(callback) {
+			var queryObj = {};
+			queryObj['position'] = position['SERVICE'].id;
+			model[productAdModelName].findOne({
+				order: [
+					[sequelize.literal('RAND()')]
+				],
+				limit: 1,
+				where: queryObj
+			}).then(function(row) {
+				if (row) {
+					return callback(null, row.toJSON());
+				} else {
+					return callback(null);
+				}
+			}).catch(function(error) {
+				return callback(error);
+			});
+		},
 	}, function(err, results) {
 		if (!err) {
 			res.render('services', {
@@ -121,7 +142,8 @@ export function services(req, res) {
 				servicesProviders: results.servicesProviders,
 				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser,
-				buyerCount:results.buyerCount
+				buyerCount:results.buyerCount,
+				serviceRandomAd:results.serviceRandomAd
 			});
 		} else {
 			res.render('services', err);

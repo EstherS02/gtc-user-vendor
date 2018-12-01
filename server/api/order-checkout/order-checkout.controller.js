@@ -96,7 +96,7 @@ function processShippingAddress(req, billing_address_id) {
 	return new Promise(async (resolve, reject) => {
 		if (req.body.different_shipping_address == "on") {
 			if (req.body.shipping_address_select_id || req.body.shipping_address_id) {
-				var shipping_address_id = req.body.shipping_address_select_id? req.body.shipping_address_select_id: req.body.shipping_address_id;
+				var shipping_address_id = req.body.shipping_address_select_id ? req.body.shipping_address_select_id : req.body.shipping_address_id;
 				var queryObj = {
 					id: shipping_address_id
 				};

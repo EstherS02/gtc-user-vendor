@@ -226,12 +226,10 @@ $(document).ready(function() {
 		rules: {
 			first_name: "required",
 			b_postal_code: {
-				number: true,
-				maxlength: 6
+				maxlength: 10
 			},
 			s_postal_code: {
-				number: true,
-				maxlength: 6
+				maxlength: 10
 			},
 			user_contact_email: {
 				email: true
@@ -240,11 +238,9 @@ $(document).ready(function() {
 		messages: {
 			first_name: "Please enter first name",
 			b_postal_code: {
-				number: "Please enter a valid postal code",
 				maxlength: "Please enter a valid postal code"
 			},
 			s_postal_code: {
-				number: "Please enter a valid postal code",
 				maxlength: "Please enter a valid postal code"
 			},
 			user_contact_email: {

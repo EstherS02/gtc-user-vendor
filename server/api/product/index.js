@@ -25,5 +25,7 @@ router.put('/discount/:product_id', auth.hasRole(roles['VENDOR']), controller.di
 router.get('/vendor-marketplaces/:vendor_id', auth.isAuthenticated(), controller.vendorMarketplaces);
 router.get('/admin/vendors', auth.hasRole(roles['ADMIN']), controller.planActiveVendors);
 router.get('/admin/active-vendor-products', auth.hasRole(roles['ADMIN']), controller.activeVendorProducts);
+router.post('/attributes', auth.hasRole(roles['ADMIN']), controller.createAttribute);
+router.put('/attributes/:id', auth.hasRole(roles['ADMIN']), controller.updateAttribute);
 
 module.exports = router;
