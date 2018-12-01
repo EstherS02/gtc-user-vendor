@@ -307,7 +307,12 @@ let sqlQueries = {
 	 left outer JOIN country ON country.id = product.product_location 
 	 WHERE cart.user_id=`+ params + ` AND cart.status=1`;
 		return query;
-	}
+	},
+    adProducts:function(){
+        let query = `SELECT product_ads_setting.id AS id,product_ads_setting.name AS product_name,1 AS type, product_ads_setting.start_date AS start_date, product_ads_setting.end_date AS end_date, product_ads_setting.impression AS impression, product_ads_setting.clicks AS clicks, product_ads_setting.status AS \'status\', product_ads_setting.created_by AS created_by, product_ads_setting.created_on AS created_on, product_ads_setting.last_updated_by AS last_updated_by
+         FROM product_ads_setting UNION (SELECT featured_product.id AS id, product.product_name AS product_name,2 AS type, featured_product.start_date AS start_date, featured_product.end_date AS end_date, featured_product.impression AS impression, featured_product.clicks AS clicks, featured_product.status AS \'status\',featured_product.created_by AS created_by, featured_product.created_on AS created_on, featured_product.last_updated_by AS last_updated_by FROM featured_product JOIN  product ON featured_product.product_id= product.id)`;
+    return query;
+    }
 };
 
 module.exports = sqlQueries;

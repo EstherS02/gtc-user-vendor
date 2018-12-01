@@ -243,10 +243,12 @@ var params = {{{ DisplayJSON queryParamsString }}};
 														<td class={{#ifCond this.status '==' ../statusCode.ACTIVE}} "text_green_color"
 																	{{else ifCond this.status '==' ../statusCode.SUSPENDED}} "text_orange_color"
 																	{{else ifCond this.status '==' ../statusCode.SOLDOUT}} "text_red_color"
+																	{{else ifCond this.status '==' ../statusCode.INACTIVE}} "text_red_color"
 																	{{/ifCond}}>
 															{{#ifCond this.status '==' ../statusCode.ACTIVE}}Active
 															{{else ifCond this.status '==' ../statusCode.SUSPENDED}}Suspended
 															{{else ifCond this.status '==' ../statusCode.SOLDOUT}}Sold Out
+															{{else ifCond this.status '==' ../statusCode.INACTIVE}}Inactive
 															{{/ifCond}} 
 														</td>
 													</tr>

@@ -37,6 +37,7 @@ var vendorPayouts = require('./agenda/vendor-payouts');
 var orderNotification = require('./agenda/notification-order');
 var couponNotification = require('./agenda/notification-coupon');
 var couponEmail = require('./agenda/coupon-email');
+var couponStatusInactive = require('./agenda/coupon-status');
 
 agenda.define(config.jobs.email, sendEmailNew);
 agenda.define(config.jobs.aliExpressScrape, aliExpressScrape);
@@ -55,6 +56,7 @@ agenda.define(config.jobs.vendorPayouts, vendorPayouts);
 agenda.define(config.jobs.orderNotification, orderNotification);
 agenda.define(config.jobs.couponNotification, couponNotification);
 agenda.define(config.jobs.couponEmail, couponEmail);
+agenda.define(config.jobs.couponStatusInactive, couponStatusInactive);
 
 agenda.on('ready', function() {
 	console.log('agenda onReady');
@@ -67,6 +69,7 @@ agenda.on('ready', function() {
 	agenda.every('12 hours', 'starterPlanExpire');
 	agenda.every('12 hours', 'featureProductExpire');
 	agenda.every('12 hours', 'subscriptionExpire');
+	agenda.every('12 hours', config.jobs.couponStatusInactive);
 	agenda.start();
 });
 
