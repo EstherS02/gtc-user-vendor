@@ -44,10 +44,15 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 		<div class="row">
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-topseller">
+					{{#if retailers}}
 					<h2 class="header-lg-text">TOP SELLERS <a class="see-all" href="/retailers/search">SEE ALL</a></h2>
+					{{else}}
+					<h2 class="header-lg-text">TOP SELLERS <a class="see-all cursor-not-allowed">SEE ALL</a></h2>
+					{{/if}}
 				</div>
 				<div class="product-list-body">
 					<div class="row">
+						{{#if retailers}}
 						{{#each retailers}}
 						<div class="col-md-6">
 							<div class="product-body">
@@ -103,15 +108,24 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 								</div>
 							</div>
 							{{/each}}
+							{{else}}
+								<p class="no-data">No top sellers in Shop</p>
+							{{/if}}
 						</div>
 					</div>
 				</div>
 				<div class="col-md-6 no-padding">
 					<div class="header-lg bg-featured-product">
+						{{#if featuredProducts.rows}}
 						<h2 class="header-lg-text">FEATURED PRODUCTS <a class="see-all" href="/shop/search?is_featured_product=1">SEE ALL</a></h2>
+						{{else}}
+						<h2 class="header-lg-text">FEATURED PRODUCTS <a class="see-all cursor-not-allowed">SEE ALL</a></h2>
+						{{/if}}
+						
 					</div>
 					<div class="product-list-body">
 						<div class="row">
+							{{#if featuredProducts.rows}}
 							{{#each featuredProducts.rows}}
 							<div class="col-md-6">
 								<div class="product-body">
@@ -171,6 +185,9 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 								</div>
 							</div>
 							{{/each}}
+							{{else}}
+								<p class="no-data">No featured products</p>
+							{{/if}}
 						</div>
 					</div>
 				</div>
@@ -181,7 +198,11 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 		<div class="gtc-container">
 			<div class="row">
 				<div class="col-md-12 no-padding">
+					{{#if publicMarketplace.rows}}
 					<h2 class="header-lg-text">PUBLIC MARKETPLACE <a class="see-all" href="/shop/search">SEE ALL</a></h2>
+					{{else}}
+					<h2 class="header-lg-text">PUBLIC MARKETPLACE <a class="see-all cursor-not-allowed">SEE ALL</a></h2>
+					{{/if}}
 				</div>
 			</div>
 		</div>
@@ -211,6 +232,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 						<div style="clear: both;"></div>
 					</div>
 				</div>
+				{{#if publicMarketplace.rows}}
 				{{#each publicMarketplace.rows}}
 				<div class="col-md-3 no-padding">
 					<div class="product-list-body">
@@ -283,6 +305,9 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 					</div>
 				</div>
 				{{/each}}
+				{{else}}
+					<p class="no-data">No public  products</p>
+				{{/if}}
 			</div>
 		</div>
 	</div>
