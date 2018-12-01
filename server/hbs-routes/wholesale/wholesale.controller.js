@@ -5,6 +5,7 @@ const populate = require('../../utilities/populate')
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
+const position = require('../../config/position');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const plan = require('../../config/gtc-plan');
@@ -39,6 +40,7 @@ export function wholeSaleProductView(req, res) {
 
 export function wholesale(req, res) {
 	var vendorModel = "VendorUserProduct";
+	var productAdModelName = 'ProductAdsSetting';
 	var categoryModel = "Category";
 	var countryModel = "Country";
 	var typeModel = "MarketplaceType";
@@ -209,8 +211,26 @@ export function wholesale(req, res) {
 				console.log("Error:::", error);
 					return callback(error);
 			})
-
-		}
+		},
+		wholesaleRandomAd: function(callback) {
+			var queryObj = {};
+			queryObj['position'] = position['WHOLESALE'].id;
+			model[productAdModelName].findOne({
+				order: [
+					[sequelize.literal('RAND()')]
+				],
+				limit: 1,
+				where: queryObj
+			}).then(function(row) {
+				if (row) {
+					return callback(null, row.toJSON());
+				} else {
+					return callback(null);
+				}
+			}).catch(function(error) {
+				return callback(error);
+			});
+		},
 	}, function(err, results) {
 		if (!err) {
 			res.render('wholesale', {
@@ -230,7 +250,8 @@ export function wholesale(req, res) {
 				type: results.type,
 				LoggedInUser: LoggedInUser,
 				wholesaleProductCount: results.wholesaleProductCount,
-				wholesalerCount: results.wholesalerCount
+				wholesalerCount: results.wholesalerCount,
+				wholesaleRandomAd:results.wholesaleRandomAd
 			});
 		} else {
 			res.render('wholesale', err);
