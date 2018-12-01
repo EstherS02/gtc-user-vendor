@@ -43,11 +43,16 @@
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-topseller">
 					<h2 class="header-lg-text">TOP SELLING SERVICE PROVIDERS
+						{{#if servicesProviders}}
 						<a class="see-all" href="/services-providers/search">SEE ALL</a>
+						{{else}}
+						<a class="see-all cursor-not-allowed">SEE ALL</a>
+						{{/if}}
 					</h2>
 				</div>
 				<div class="product-list-body">
 					<div class="row">
+						{{#if servicesProviders}}
 						{{#each servicesProviders}}
 							<div class="col-md-6">
 								<div class="product-body">
@@ -107,17 +112,25 @@
 								</div>
 							</div>
 						{{/each}}
+						{{else}}
+							<p class="no-data">No top selling providers</p>
+						{{/if}}
 					</div>
 				</div>
 			</div>
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-featured-product">
 					<h2 class="header-lg-text">FEATURED SERVICES
-						<a class="see-all" href="/services/search?is_featured_product=1">SEE ALL</a>
+						{{#if featuredService.rows}}
+							<a class="see-all" href="/services/search?is_featured_product=1">SEE ALL</a>
+						{{else}}
+							<a class="see-all cursor-not-allowed">SEE ALL</a>
+						{{/if}}
 					</h2>
 				</div>
 				<div class="product-list-body">
 					<div class="row">
+						{{#if featuredService.rows}}
 						{{#each featuredService.rows}}
 							<div class="col-md-6">
 								<div class="product-body">
@@ -181,6 +194,9 @@
 								</div>
 							</div>
 						{{/each}}
+						{{else}}
+							<p class="no-data">No featured services</p>
+						{{/if}}
 					</div>
 				</div>
 			</div>
@@ -191,9 +207,15 @@
 	<div class="gtc-container">
 		<div class="row">
 			<div class="col-md-12 no-padding">
+				{{#if serviceMarketplace.rows}}
 				<h2 class="header-lg-text">SERVICES MARKETPLACE
 					<a class="see-all" href="/services/search">SEE ALL</a>
 				</h2>
+				{{else}}
+				<h2 class="header-lg-text">SERVICES MARKETPLACE
+					<a class="see-all cursor-not-allowed">SEE ALL</a>
+				</h2>
+				{{/if}}
 			</div>
 		</div>
 	</div>
@@ -224,6 +246,7 @@
 					<div style="clear: both;"></div>
 				</div>
 			</div>
+			{{#if serviceMarketplace.rows}}
 			{{#each serviceMarketplace.rows}}
 				<div class="col-md-3 no-padding">
 					<div class="product-list-body">
@@ -298,6 +321,9 @@
 					</div>
 				</div>
 			{{/each}}
+			{{else}}
+				<p class="no-data">No service products</p>
+			{{/if}}
 		</div>
 	</div>
 </div>

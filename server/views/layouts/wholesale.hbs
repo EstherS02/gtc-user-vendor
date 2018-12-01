@@ -82,10 +82,15 @@
     <div class="row">
       <div class="col-md-6 no-padding">
         <div class="header-lg bg-topseller">
-          <h2 class="header-lg-text">TOP SELLERS <a class="see-all" href="/wholesalers/search">SEE ALL</a></h2>
+			{{#if wholesalers}}
+				<h2 class="header-lg-text">TOP SELLERS <a class="see-all" href="/wholesalers/search">SEE ALL</a></h2>
+			{{else}}
+				<h2 class="header-lg-text">TOP SELLERS <a class="see-all cursor-not-allowed">SEE ALL</a></h2>
+			{{/if}}
         </div>
         <div class="product-list-body">
           <div class="row">
+			{{#if wholesalers}}
             {{#each wholesalers}}
             <div class="col-md-6">
               <div class="product-body">
@@ -141,15 +146,23 @@
               </div>
             </div>
             {{/each}}
+			{{else}}
+				<p class="no-data">No top sellers in wholesalers</p>
+			{{/if}}
           </div>
         </div>
       </div>
       <div class="col-md-6 no-padding">
         <div class="header-lg bg-featured-product">
-          <h2 class="header-lg-text">FEATURED PRODUCTS <a class="see-all" href="/wholesale/search?is_featured_product=1">SEE ALL</a></h2>
+			{{#if featuredProducts.rows}}
+			<h2 class="header-lg-text">FEATURED PRODUCTS <a class="see-all" href="/wholesale/search?is_featured_product=1">SEE ALL</a></h2>
+			{{else}}
+			<h2 class="header-lg-text">FEATURED PRODUCTS <a class="see-all cursor-not-allowed">SEE ALL</a></h2>
+			{{/if}}
         </div>
         <div class="product-list-body">
           <div class="row">
+			{{#if featuredProducts.rows}}
             {{#each featuredProducts.rows}}
             <div class="col-md-6">
               <div class="product-body">
@@ -203,6 +216,9 @@
               </div>
             </div>
             {{/each}}
+			{{else}}
+				<p class="no-data">No featuredproducts</p>
+			{{/if}}
           </div>
         </div>
       </div>
@@ -227,10 +243,15 @@
       <div class="col-md-12 no-padding">
         <div class="wts-header-bg">
           <h4 class="header-md-text">
+			 {{#if wantToSell}}
             <b>WTS</b> - Want To Sell <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTS}}">SEE ALL</a>
+			{{else}}
+			<b>WTS</b> - Want To Sell <a class="cursor-not-allowed">SEE ALL</a>
+			{{/if}}
           </h4>
         </div>
       </div>
+	  {{#if wantToSell}}
       {{#each wantToSell}}
       <div class="col-md-3 no-padding">
         <div class="product-list-body">
@@ -301,6 +322,9 @@
       </div>
     </div>
     {{/each}}
+	{{else}}
+		<p class="no-data">No WTS products</p>
+	{{/if}}
   </div>
 </div>
 </div>
@@ -311,10 +335,15 @@
       <div class="col-md-12 no-padding">
         <div class="wtb-header-bg">
           <h4 class="header-md-text">
-            <b>WTB</b> - Want To Buy <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTB}}">SEE ALL</a>
+			  {{#if wantToBuy}}
+			  <b>WTB</b> - Want To Buy <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTB}}">SEE ALL</a>
+			  {{else}}
+			  <b>WTB</b> - Want To Buy <a class="cursor-not-allowed">SEE ALL</a>
+			  {{/if}}
           </h4>
         </div>
       </div>
+	  {{#if wantToBuy}}
       {{#each wantToBuy}}
       <div class="col-md-3 no-padding">
         <div class="product-list-body">
@@ -382,6 +411,9 @@
         </div>
       </div>
       {{/each}}
+	  {{else}}
+		<p class="no-data">No WTB products</p>
+	  {{/if}}
     </div>
   </div>
 </div>
@@ -392,10 +424,15 @@
       <div class="col-md-12 no-padding">
         <div class="wtt-header-bg">
           <h4 class="header-md-text">
-            <b>WTT</b> - Want To Trade<a href="/wholesale/search?marketplace_type={{marketPlaceType.WTT}}">SEE ALL</a>
+			  {{#if wantToTrade}}
+			  <b>WTT</b> - Want To Trade<a href="/wholesale/search?marketplace_type={{marketPlaceType.WTT}}">SEE ALL</a>
+			  {{else}}
+			  <b>WTT</b> - Want To Trade<a class="cursor-not-allowed">SEE ALL</a>
+			  {{/if}}
           </h4>
         </div>
       </div>
+	  {{#if wantToTrade}}
       {{#each wantToTrade}}
       <div class="col-md-3 no-padding">
         <div class="product-list-body">
@@ -466,6 +503,9 @@
       </div>
     </div>
     {{/each}}
+	{{else}}
+		<p class="no-data">No WTT products</p>
+	{{/if}}
   </div>
 </div>
 </div>
@@ -476,10 +516,15 @@
       <div class="col-md-12 no-padding">
         <div class="rfq-header-bg">
           <h4 class="header-md-text">
-            <b>RFQ</b> - Request For Quote <a href="/wholesale/search?marketplace_type={{marketPlaceType.RFQ}}">SEE ALL</a>
+			  {{#if requestForQuote}}
+				  <b>RFQ</b> - Request For Quote <a href="/wholesale/search?marketplace_type={{marketPlaceType.RFQ}}">SEE ALL</a>
+			  {{else}}
+			 	 <b>RFQ</b> - Request For Quote <a class="cursor-not-allowed">SEE ALL</a>
+			  {{/if}}
           </h4>
         </div>
       </div>
+	  {{#if requestForQuote}}
       {{#each requestForQuote}}
       <div class="col-md-3 no-padding">
         <div class="product-list-body">
@@ -550,7 +595,9 @@
       </div>
     </div>
     {{/each}}
-
+	{{else}}
+		<p class="no-data">No RFQ products</p>
+	{{/if}}
   </div>
 </div>
 </div>
