@@ -1,5 +1,7 @@
 'use strict';
 
+const mv = require('mv');
+const path = require('path');
 const crypto = require('crypto');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
@@ -8,6 +10,7 @@ const status = require('../../config/status');
 const roles = require('../../config/roles');
 const Sequelize = require('sequelize');
 const service = require('../service');
+
 
 export function index(req, res) {
 
@@ -58,36 +61,6 @@ export function index(req, res) {
             "errorDescription": error
         });
     })
-
-    // model['Admin'].findAll({
-    //     include: includeArr,
-    //     where: queryObj,
-    //     offset: offset,
-    //     limit: limit,
-    //     order: [
-    //         [field, order]
-    //     ]
-    // }).then(function(rows) {
-    //     if (rows.length > 0) {
-    //         model['Admin'].count({
-    //             where: queryObj
-    //         }).then(function(count) {
-    //             result.count = count;
-    //             result.rows = rows;
-    //             return res.status(200).send(result);
-    //         }).catch(function(error) {
-    //             console.log("Error:::", error);
-    //             return res.status(500).send("Internal server error.");
-    //         });
-    //     } else {
-    //         result.count = 0;
-    //         result.rows = rows;
-    //         return res.status(200).send(result);
-    //     }
-    // }).catch(function(error) {
-    //     console.log("Error:::", error);
-    //     return res.status(500).send("Internal server error.");
-    // });
 }
 
 export function deleteAdmin(req, res) {
@@ -138,7 +111,7 @@ export function deleteAdmin(req, res) {
     });
 }
 
-export function create(req, res) {
+export async function create(req, res) {
 
     var queryObj = {};
 
@@ -164,7 +137,7 @@ export function create(req, res) {
 
     model['User'].findOne({
         where: queryObj
-    }).then(function(user) {
+    }).then(async function(user) {
         if (user) {
             res.status(409).send("Email address already exists");
             return;
@@ -175,6 +148,18 @@ export function create(req, res) {
             bodyParams["role"] = roles["ADMIN"];
             bodyParams["email_verified"] = 1;
             bodyParams['created_on'] = new Date();
+            if (req.files.admin_profile_pic) {
+                const userProfilePicture = req.files.admin_profile_pic;
+                const parsedFile = path.parse(userProfilePicture.originalFilename);
+                const timeInMilliSeconds = new Date().getTime();
+                const uploadPath = config.images_base_path + "/user/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+
+                const userProfilePictureUpload = await move(userProfilePicture.path, uploadPath);
+                if (userProfilePictureUpload) {
+                    bodyParams['user_pic_url'] = config.imageUrlRewritePath.base + "user/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+                }
+            }
+
 
             model['User'].create(bodyParams)
                 .then(function(user) {
@@ -215,6 +200,20 @@ export function create(req, res) {
     }).catch(function(error) {
         res.status(500).send("Internal server error");
         return;
+    });
+}
+export function move(copyFrom, moveTo) {
+    return new Promise((resolve, reject) => {
+        mv(copyFrom, moveTo, {
+            clobber: true,
+            mkdirp: true
+        }, function(error) {
+            if (!error) {
+                return resolve(true);
+            } else {
+                return reject(error);
+            }
+        });
     });
 }
 
@@ -277,7 +276,17 @@ export async function edit(req, res) {
 	adminBodyParam['status'] = req.body.status; 
 
     try {
+         if (req.files.admin_profile_pic) {
+                const userProfilePicture = req.files.admin_profile_pic;
+                const parsedFile = path.parse(userProfilePicture.originalFilename);
+                const timeInMilliSeconds = new Date().getTime();
+                const uploadPath = config.images_base_path + "/user/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 
+                const userProfilePictureUpload = await move(userProfilePicture.path, uploadPath);
+                if (userProfilePictureUpload) {
+                    userBodyParam['user_pic_url'] = config.imageUrlRewritePath.base + "user/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+                }
+            }
         const existingAdmin = await service.findIdRow(adminModel, adminID);
         if (existingAdmin) {
 
