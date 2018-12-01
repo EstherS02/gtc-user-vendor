@@ -108,12 +108,96 @@
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-topseller">
 					<h2 class="header-lg-text">TOP SELLING WHOLESALERS
-						<a class="see-all" href="/wholesalers/search">SEE ALL</a>
+						{{#if wholesalers}}
+							<a class="see-all" href="/wholesalers/search">SEE ALL</a>
+						{{else}}
+							<a class="see-all cursor-not-allowed">SEE ALL</a>
+						{{/if}}
 					</h2>
 				</div>
 				<div class="product-list-body">
 					<div class="row">
-						{{#each wholesalers}}
+						{{#if wholesalers}}
+							{{#each wholesalers}}
+								<div class="col-md-6">
+									<div class="product-body">
+										<div class="table-responsive">
+											<table class="table shoping-cart-table">
+												<tbody>
+													<tr class="d-flex">
+														<td class="col-2">
+															<h2 class="v-num">#
+																<span>{{SUMFloat @index 1}}</span>
+															</h2>
+														</td>
+														<td class="col-3">
+															<div class="product-left-col">
+																<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}">
+																	<img class="object-fit" src="{{this.vendor_profile_pic_url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
+																</a>
+															</div>
+														</td>
+														<td class="col-7">
+															<div class="product-middle-col">
+																<h3>
+																	<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-5 col-5 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-7 col-7 no-padding overflow-txt">
+																		<span class="text-500">{{this.Country.name}}</span>
+																	</div>
+																	<div class="col-md-5 col-5 no-padding">
+																		<span>Inventory</span>
+																	</div>
+																	<div class="col-md-7 col-7 no-padding">
+																		<b class="text-blue">{{this.products_count}} Products</b> Listed
+																		<span class="text-red text-500 d-block">{{this.exclusive_product_sale}} on Sale
+																			<span>
+																	</div>
+																	<div class="col-md-5 col-5 no-padding">
+																		<span>Seller Rating</span>
+																	</div>
+																	<div class="col-md-7 col-7 no-padding">
+																		<div class="v-rating">
+																			<a href="vendor/{{this.id}}" title="{{this.vendor_name}}">
+																				{{starCount this.vendor_rating}}
+																			</a>
+																		</div>
+																	</div>
+																</div>
+															</div>
+										</div>
+										</td>
+										</tr>
+										</tbody>
+										</table>
+									</div>
+								</div>
+					</div>
+					{{/each}}
+					{{else}}
+						<p class="no-data">No top sellers in wholesalers</p>
+						{{/if}}
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6 no-padding">
+			<div class="header-lg bg-featured-product">
+				<h2 class="header-lg-text">TOP SELLING RETAILERS
+					{{#if retailers}}
+						<a class="see-all" href="/retailers/search">SEE ALL</a>
+					{{else}}
+						<a class="see-all cursor-not-allowed">SEE ALL</a>
+					{{/if}}
+				</h2>
+			</div>
+			<div class="product-list-body">
+				<div class="row">
+					{{#if retailers}}
+						{{#each retailers}}
 							<div class="col-md-6">
 								<div class="product-body">
 									<div class="table-responsive">
@@ -129,8 +213,7 @@
 														<div class="product-left-col">
 															<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}">
 																<img class="object-fit" src="{{this.vendor_profile_pic_url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
-															</a>
-														</div>
+																</a< </div>
 													</td>
 													<td class="col-7">
 														<div class="product-middle-col">
@@ -164,84 +247,17 @@
 																</div>
 															</div>
 														</div>
-									</div>
-									</td>
-									</tr>
-									</tbody>
-									</table>
-								</div>
-							</div>
-					</div>
-					{{/each}}
-				</div>
-			</div>
-		</div>
-		<div class="col-md-6 no-padding">
-			<div class="header-lg bg-featured-product">
-				<h2 class="header-lg-text">TOP SELLING RETAILERS
-					<a class="see-all" href="/retailers/search">SEE ALL</a>
-				</h2>
-			</div>
-			<div class="product-list-body">
-				<div class="row">
-					{{#each retailers}}
-						<div class="col-md-6">
-							<div class="product-body">
-								<div class="table-responsive">
-									<table class="table shoping-cart-table">
-										<tbody>
-											<tr class="d-flex">
-												<td class="col-2">
-													<h2 class="v-num">#
-														<span>{{SUMFloat @index 1}}</span>
-													</h2>
-												</td>
-												<td class="col-3">
-													<div class="product-left-col">
-														<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}">
-															<img class="object-fit" src="{{this.vendor_profile_pic_url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
-															</a< </div>
-												</td>
-												<td class="col-7">
-													<div class="product-middle-col">
-														<h3>
-															<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
-														</h3>
-														<div class="row no-margins">
-															<div class="col-md-5 col-5 no-padding">
-																<span>Origin</span>
-															</div>
-															<div class="col-md-7 col-7 no-padding overflow-txt">
-																<span class="text-500">{{this.Country.name}}</span>
-															</div>
-															<div class="col-md-5 col-5 no-padding">
-																<span>Inventory</span>
-															</div>
-															<div class="col-md-7 col-7 no-padding">
-																<b class="text-blue">{{this.products_count}} Products</b> Listed
-																<span class="text-red text-500 d-block">{{this.exclusive_product_sale}} on Sale
-																	<span>
-															</div>
-															<div class="col-md-5 col-5 no-padding">
-																<span>Seller Rating</span>
-															</div>
-															<div class="col-md-7 col-7 no-padding">
-																<div class="v-rating">
-																	<a href="vendor/{{this.id}}" title="{{this.vendor_name}}">
-																		{{starCount this.vendor_rating}}
-																	</a>
-																</div>
-															</div>
-														</div>
-													</div>
-												</td>
-											</tr>
-										</tbody>
-									</table>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										</div>
 									</div>
 								</div>
-							</div>
-					{{/each}}
+						{{/each}}
+					{{else}}
+						<p class="no-data">No top selling retailers</p>
+					{{/if}}
 					</div>
 				</div>
 			</div>
@@ -256,140 +272,156 @@
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-service">
 					<h2 class="header-lg-text">TOP SELLING SERVICES PROVIDERS
-						<a class="see-all" href="/services-providers/search">SEE ALL</a>
+						{{#if servicesProviders}}
+							<a class="see-all" href="/services-providers/search">SEE ALL</a>
+						{{else}}
+							<a class="see-all cursor-not-allowed">SEE ALL</a>
+						{{/if}}
 					</h2>
 				</div>
 				<div class="product-list-body">
 					<div class="row">
-						{{#each servicesProviders}}
-							<div class="col-md-6">
-								<div class="product-body">
-									<div class="table-responsive">
-										<table class="table shoping-cart-table">
-											<tbody>
-												<tr class="d-flex">
-													<td class="col-2">
-														<h2 class="v-num">#
-															<span>{{SUMFloat @index 1}}</span>
-														</h2>
-													</td>
-													<td class="col-3">
-														<div class="product-left-col">
-															<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}">
-																<img class="object-fit" src="{{this.vendor_profile_pic_url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
-															</a>
-														</div>
-													</td>
-													<td class="col-7">
-														<div class="product-middle-col">
-															<h3>
-																<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
-															</h3>
-															<div class="row no-margins">
-																<div class="col-md-5 col-5 no-padding">
-																	<span>Origin</span>
-																</div>
-																<div class="col-md-7 col-7 no-padding overflow-txt">
-																	<span class="text-500">{{this.Country.name}}</span>
-																</div>
-																<div class="col-md-5 col-5 no-padding">
-																	<span>Inventory</span>
-																</div>
-																<div class="col-md-7 col-7 no-padding">
-																	<b class="text-blue">{{this.products_count}} Products</b> Listed
-																	<span class="text-red text-500 d-block">{{this.exclusive_product_sale}} on Sale
-																		<span>
-																</div>
-																<div class="col-md-5 col-5 no-padding">
-																	<span>Seller Rating</span>
-																</div>
-																<div class="col-md-7 col-7 no-padding">
-																	<div class="v-rating">
-																		<a href="vendor/{{this.id}}" title="{{this.vendor_name}}">
-																			{{starCount this.vendor_rating}}
-																		</a>
+						{{#if servicesProviders}}
+							{{#each servicesProviders}}
+								<div class="col-md-6">
+									<div class="product-body">
+										<div class="table-responsive">
+											<table class="table shoping-cart-table">
+												<tbody>
+													<tr class="d-flex">
+														<td class="col-2">
+															<h2 class="v-num">#
+																<span>{{SUMFloat @index 1}}</span>
+															</h2>
+														</td>
+														<td class="col-3">
+															<div class="product-left-col">
+																<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}">
+																	<img class="object-fit" src="{{this.vendor_profile_pic_url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
+																</a>
+															</div>
+														</td>
+														<td class="col-7">
+															<div class="product-middle-col">
+																<h3>
+																	<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-5 col-5 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-7 col-7 no-padding overflow-txt">
+																		<span class="text-500">{{this.Country.name}}</span>
+																	</div>
+																	<div class="col-md-5 col-5 no-padding">
+																		<span>Inventory</span>
+																	</div>
+																	<div class="col-md-7 col-7 no-padding">
+																		<b class="text-blue">{{this.products_count}} Products</b> Listed
+																		<span class="text-red text-500 d-block">{{this.exclusive_product_sale}} on Sale
+																			<span>
+																	</div>
+																	<div class="col-md-5 col-5 no-padding">
+																		<span>Seller Rating</span>
+																	</div>
+																	<div class="col-md-7 col-7 no-padding">
+																		<div class="v-rating">
+																			<a href="vendor/{{this.id}}" title="{{this.vendor_name}}">
+																				{{starCount this.vendor_rating}}
+																			</a>
+																		</div>
 																	</div>
 																</div>
 															</div>
-														</div>
-													</td>
-												</tr>
-											</tbody>
-										</table>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
-							</div>
-						{{/each}}
+							{{/each}}
+						{{else}}
+							<p class="no-data">No top selling providers </p>
+						{{/if}}
 					</div>
 				</div>
 			</div>
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-lifestyle">
 					<h2 class="header-lg-text">TOP SELLING SUBSCRIPTION PROVIDERS
-						<a class="see-all" href="/subscription-providers/search">SEE ALL</a>
+						{{#if subscriptionProviders}}
+							<a class="see-all" href="/subscription-providers/search">SEE ALL</a>
+						{{else}}
+							<a class="see-all cursor-not-allowed">SEE ALL</a>
+						{{/if}}
 					</h2>
 				</div>
 				<div class="product-list-body">
 					<div class="row">
-						{{#each subscriptionProviders}}
-							<div class="col-md-6">
-								<div class="product-body">
-									<div class="table-responsive">
-										<table class="table shoping-cart-table">
-											<tbody>
-												<tr class="d-flex">
-													<td class="col-2">
-														<h2 class="v-num">#
-															<span>{{SUMFloat @index 1}}</span>
-														</h2>
-													</td>
-													<td class="col-3">
-														<div class="product-left-col">
-															<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}">
-																<img class="object-fit" src="{{this.vendor_profile_pic_url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
-															</a>
-														</div>
-													</td>
-													<td class="col-7">
-														<div class="product-middle-col">
-															<h3>
-																<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
-															</h3>
-															<div class="row no-margins">
-																<div class="col-md-5 col-5 no-padding">
-																	<span>Origin</span>
-																</div>
-																<div class="col-md-7 col-7 no-padding overflow-txt">
-																	<span class="text-500">{{this.Country.name}}</span>
-																</div>
-																<div class="col-md-5 col-5 no-padding">
-																	<span>Inventory</span>
-																</div>
-																<div class="col-md-7 col-7 no-padding">
-																	<b class="text-blue">{{this.products_count}} Products</b> Listed
-																	<span class="text-red text-500 d-block">{{this.exclusive_product_sale}} on Sale
-																		<span>
-																</div>
-																<div class="col-md-5 col-5 no-padding">
-																	<span>Seller Rating</span>
-																</div>
-																<div class="col-md-7 col-7 no-padding">
-																	<div class="v-rating">
-																		<a href="vendor/{{this.id}}" title="{{this.vendor_name}}">
-																			{{starCount this.vendor_rating}}
-																		</a>
+						{{#if subscriptionProviders}}
+							{{#each subscriptionProviders}}
+								<div class="col-md-6">
+									<div class="product-body">
+										<div class="table-responsive">
+											<table class="table shoping-cart-table">
+												<tbody>
+													<tr class="d-flex">
+														<td class="col-2">
+															<h2 class="v-num">#
+																<span>{{SUMFloat @index 1}}</span>
+															</h2>
+														</td>
+														<td class="col-3">
+															<div class="product-left-col">
+																<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}">
+																	<img class="object-fit" src="{{this.vendor_profile_pic_url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
+																</a>
+															</div>
+														</td>
+														<td class="col-7">
+															<div class="product-middle-col">
+																<h3>
+																	<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-5 col-5 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-7 col-7 no-padding overflow-txt">
+																		<span class="text-500">{{this.Country.name}}</span>
+																	</div>
+																	<div class="col-md-5 col-5 no-padding">
+																		<span>Inventory</span>
+																	</div>
+																	<div class="col-md-7 col-7 no-padding">
+																		<b class="text-blue">{{this.products_count}} Products</b> Listed
+																		<span class="text-red text-500 d-block">{{this.exclusive_product_sale}} on Sale
+																			<span>
+																	</div>
+																	<div class="col-md-5 col-5 no-padding">
+																		<span>Seller Rating</span>
+																	</div>
+																	<div class="col-md-7 col-7 no-padding">
+																		<div class="v-rating">
+																			<a href="vendor/{{this.id}}" title="{{this.vendor_name}}">
+																				{{starCount this.vendor_rating}}
+																			</a>
+																		</div>
 																	</div>
 																</div>
 															</div>
-														</div>
-													</td>
-												</tr>
-											</tbody>
-										</table>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
-							</div>
-						{{/each}}
+							{{/each}}
+						{{else}}
+							<p class="no-data">No top selling subscription providers</p>
+						{{/if}}
 					</div>
 				</div>
 			</div>

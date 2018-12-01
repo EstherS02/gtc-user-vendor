@@ -1152,3 +1152,20 @@ button.update-btn1{
 	margin-top: 10px;
 }
 /*  */
+
+/*  */
+.no-data{
+    margin-top: 8px;
+    margin-bottom: 1rem;
+    margin-left: 17px;
+    color: #110b0d
+}
+.no-data-home{
+    margin-top: 8px;
+    margin-bottom: 1rem;
+    color: #110b0d
+}
+.cursor-not-allowed{
+	cursor:not-allowed;
+}
+/*  */
