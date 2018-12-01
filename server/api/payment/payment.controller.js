@@ -29,7 +29,6 @@ const stripe = require('../../payment/stripe.payment');
 const CURRENCY = 'usd';
 
 export async function makePayment(req, res) {
-	console.log("makePayment.........");
 	var vendorArray = [];
 	var cartItems = [];
 	var cartEmptyPromises = [];
