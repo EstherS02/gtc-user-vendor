@@ -1146,3 +1146,102 @@ export function activeVendorProducts(req,res){
 		return res.status(500).send(error);
 	});
 }
+
+
+export async function createAttribute(req,res){
+
+	var bodyParams ={}, categoryAttributeBodyParams ={};
+
+	req.checkBody('attr_name', 'Attribute Name Missing').notEmpty();
+	req.checkBody('category_id', 'Category Id Missing').notEmpty();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).send({
+			"message": "ERROR",
+			"messageDetails": errors
+		});
+	}
+
+	categoryAttributeBodyParams['category_id'] = req.body.category_id;
+	delete req.body.category_id;
+
+	bodyParams = req.body;
+	bodyParams['status'] = categoryAttributeBodyParams['status'] = status['ACTIVE'];
+	bodyParams['created_by'] = categoryAttributeBodyParams['created_by'] = req.user.first_name;
+	bodyParams['created_on'] = categoryAttributeBodyParams['created_on'] = new Date();
+
+	try{
+		const newAttribute = await service.createRow('Attribute', bodyParams);
+		if(newAttribute){
+			categoryAttributeBodyParams['attribute_id'] = newAttribute.id;
+			const newCategoryAttribute = await service.createRow('CategoryAttribute', categoryAttributeBodyParams);
+			return res.status(200).send({
+				"message": "Success",
+				"messageDetails": "Attribute Created successfully."
+			});
+		}
+	} catch(error){
+		console.log("Error::", error);
+		return res.status(500).send({
+			"message": "ERROR",
+			"messageDetails": errors
+		});
+	}
+}
+
+export async function updateAttribute(req,res){
+
+	var attributeId = req.params.id;
+	var bodyParams ={}, categoryAttributeBodyParams ={};
+
+	req.checkBody('attr_name', 'Attribute Name Missing').notEmpty();
+	req.checkBody('category_id', 'Category Id Missing').notEmpty();
+	req.checkBody('status', 'Attribute status Missing').notEmpty();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).send({
+			"message": "ERROR",
+			"messageDetails": errors
+		});
+	}
+
+	categoryAttributeBodyParams['status'] = req.body.status;
+	categoryAttributeBodyParams['category_id'] = req.body.category_id;
+	delete req.body.category_id;
+
+	bodyParams = req.body;
+	bodyParams['last_updated_by'] = categoryAttributeBodyParams['last_updated_by'] = req.user.first_name;
+	bodyParams['last_updated_on'] = categoryAttributeBodyParams['last_updated_on'] = new Date();
+
+	try{
+
+		const existingAttribute = await service.findIdRow('Attribute', attributeId);
+		if (existingAttribute) {
+			const updatedAttribute = await service.updateRecordNew('Attribute', bodyParams, {
+				id: existingAttribute.id
+			});
+			if(updatedAttribute){
+				const updatedCategoryAttribute = await service.updateRecordNew('CategoryAttribute', categoryAttributeBodyParams, {
+					attribute_id: attributeId
+				});
+				return res.status(200).send({
+					"message": "Success",
+					"messageDetails": "Attribute Updated successfully."
+				});
+			}
+		}else{
+			return res.status(404).send({
+				"message": "ERROR",
+				"messageDetails": "Attribute Not Found."
+			});
+		}
+	} catch(error){
+		console.log("Error::", error);
+		return res.status(500).send({
+			"message": "ERROR",
+			"messageDetails": errors
+		});
+	}
+}
