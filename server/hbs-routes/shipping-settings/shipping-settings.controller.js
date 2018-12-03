@@ -55,7 +55,7 @@ export function shippingSettings(req, res) {
 				var queryObj = {
 					status: statusCode['ACTIVE']
 			     }
-			    var field = "id";
+			    var field = "name";
 				var order = "ASC";
 				service.getAllFindRow(modelName, includeArr, queryObj, field, order)
 					.then(function(results) {

@@ -11,6 +11,82 @@ const statusCode = require('../../config/status');
 const populate = require('../../utilities/populate')
 const orderService = require('./order.service');
 
+export function index(req,res){
+		var offset, limit, field, order;
+	var queryObj = {};
+	var searchObj = {};
+	var searchArray = [];
+	let includeArr;
+
+	offset = req.query.offset ? parseInt(req.query.offset) : null;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : null;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
+
+	if (req.query.populate)
+		includeArr = populate.populateData(req.query.populate);
+	else
+		includeArr = [];
+
+	delete req.query.populate;
+
+	if (req.query.fields && req.query.text) {
+		var searchText = req.query.text;
+		var searchFields = req.query.fields;
+		searchFields = searchFields.split(",");
+		for (var i = 0; i < searchFields.length; i++) {
+			var obj = {}
+			obj[searchFields[i]] = {
+				like: '%' + searchText + '%'
+			}
+			searchArray.push(obj);
+		}
+		searchObj['$or'] = searchArray;
+		delete req.query.text;
+		delete req.query.fields;
+	}
+
+	queryObj = Object.assign(searchObj, req.query);
+
+	if (queryObj.startDate && queryObj.endDate) {
+		if (queryObj.columnName) {
+			queryObj[queryObj.columnName] = {
+				'$gte': new Date(parseInt(queryObj.startDate)),
+				'$lte': new Date(parseInt(queryObj.endDate))
+			}
+			delete queryObj.columnName;
+		}
+		delete queryObj.startDate;
+		delete queryObj.endDate;
+	}
+
+	if (!queryObj.status) {
+		queryObj['status'] = {
+			'$ne': status["DELETED"]
+		}
+	} else {
+		if (queryObj.status == status["DELETED"]) {
+			queryObj['status'] = {
+				'$eq': status["DELETED"]
+			}
+		}
+	}
+
+
+	service.findAllRows('Order', includeArr, queryObj, offset, limit, field, order)
+		.then(function(rows) {
+			res.status(200).send(rows);
+			return;
+		}).catch(function(error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
+}
 export function orderItemdetails(req, res) {
 	var refundObj = {};
 	var paramsID = req.params.id;

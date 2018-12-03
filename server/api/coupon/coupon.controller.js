@@ -398,122 +398,18 @@ export async function saveCoupon(req, res) {
 			}, audit);
 			return couponExcludeProductResponse;
 		}));
-		 if (req.user.user_contact_email) {
-			sendEmailCouponcode(req.user.Vendor.id,req.user.id,coupon.id);
-	       }
-		
-
-    	return res.status(200).send('Coupon added successfully.');
+		var agenda = require('../../app').get('agenda');
+			agenda.now(config.jobs.couponEmail, {
+		 	couponResponse: coupon,
+		 });
+		agenda.now(config.jobs.couponNotification, {
+			couponResponse: coupon,
+			code: config.notification.templates.couponCode
+	   });
+		return res.status(200).send('Coupon added successfully.');
 	} catch (error) {
 		console.log("saveCoupon Error:::", error);
 		return res.status(500).send('Internal server error');
 	}
 }
-function sendEmailCouponcode(couponVendorId, couponUserId,couponId) {
-	var includeArr = [];
-	const offset = 0;
-	const limit = null;
-	const field = "id";
-	const order = "asc";
-	var queryObjects = {};
-	queryObjects.user_id = couponUserId;
-	queryObjects.status = status['ACTIVE'];
-	service.findAllRows("VendorFollower", includeArr, queryObjects, offset, limit, field, order)
-		.then(function(vendorFollowersCount) {
-			var vendorFollowersCount = vendorFollowersCount;
-			if (vendorFollowersCount.count != 0) {
 
-				var includeArr = [{
-					model: model['CouponProduct'],
-					attributes: ['coupon_id', 'product_id'],
-					include: [{
-						model: model['Product'],
-						attributes: ['id', 'product_name'],
-					}]
-
-				}];
-				var queryObj = {
-					vendor_id: couponVendorId
-				}
-				var field = "id";
-				var order = "desc";
-				var limit = 1;
-				service.findAllRows('Coupon', includeArr, queryObj, 0, limit, field, order).
-					then(function(CouponDetails) {
-						var productscoupons = CouponDetails.rows[0].CouponProducts;
-						var productsname = [];
-						for (var i = 0; i < productscoupons.length; i++) {
-							productsname.push(productscoupons[i].Product.product_name);
-						}
-						var includeArr = [{
-							model: model['Vendor'],
-							attributes: ['id', 'vendor_name'],
-							include: [{
-								model: model['User'],
-								attributes: ['id', 'email', 'user_contact_email', 'email_verified', 'first_name'],
-							}]
-
-						}]
-						var queryObj = {
-							user_id: couponUserId,
-							status: status['ACTIVE']
-						}
-						var field = "id";
-						var order = "ASC";
-						var limit = null;
-						service.findAllRows('VendorFollower', includeArr, queryObj, 0, limit, field, order)
-							.then(function(results) {
-								var resultsarr = [];
-								for (var i = 0; i < results.rows.length; i++) {
-									resultsarr.push(results.rows[i]);
-								}
-								var queryObjEmailTemplate = {};
-								var emailTemplateModel = 'EmailTemplate';
-								queryObjEmailTemplate['name'] = config.email.templates.vendorCoupon;
-								service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-									.then(function(response) {
-										for (var i = 0; i < resultsarr.length; i++) {
-											var agenda = require('../../app').get('agenda');
-											var email = resultsarr[i].Vendor.User.email;
-											var subject = response.subject;
-											var body;
-											var body = response.body;
-											body = body.replace('%first_name%', resultsarr[i].Vendor.User.first_name);
-											body = body.replace('%couponCode%', CouponDetails.rows[0].code);
-											body = body.replace('%product%', productsname);
-											var mailArray = [];
-											mailArray.push({
-												to: email,
-												subject: subject,
-												html: body
-											});
-											agenda.now(config.jobs.email, {
-												mailArray: mailArray
-											});
-											//return;
-										}
-										agenda.now(config.jobs.couponNotification, {
-											couponId: couponId,
-											couponuserId:couponUserId,
-											code: config.notification.templates.couponCode
-										});
-									}).catch(function(error) {
-										console.log('Error :::', error);
-										return;
-									})
-							})
-
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
-			}
-			else {
-				console.log("vendor no one followers");
-			}
-			//return callback(null, paymentSettings);
-		}).catch(function(error) {
-			console.log('Error :::', error);
-			return callback(null);
-		});
-}

@@ -279,23 +279,27 @@ Handlebars.registerHelper('timeLeft', function(context, options) {
 			out.push(diff + ' ' + intervals[i]);
 		}
 		if (arrayEle['minutes'] < 60) {
-			secondsDiff = arrayEle['minutes'] + 'm left!';
-		} else if (arrayEle['hours'] < 24) {
+			secondsDiff = arrayEle['minutes'] + 'm ';
+		} else if (arrayEle['hours'] <= 24) {
 			secondsDiff = arrayEle['hours'] + 'h ';
-			if(arrayEle['minutes'] > 60) 
+			if(arrayEle['minutes'] > 60) {
 				secondsDiff = secondsDiff + arrayEle['minutes'] % 60;
-				 secondsDiff = secondsDiff +'m left!';
-		} else if (arrayEle['days'] < 30) {
+				 secondsDiff = secondsDiff +'m ';
+			}
+		} else if (arrayEle['days'] <= 30) {
 			secondsDiff = arrayEle['days'] + 'd ';
-			if(arrayEle['hours'] > 24)
+			if(arrayEle['hours'] > 24){
 			 secondsDiff = secondsDiff+ arrayEle['hours'] % 24;
-				 secondsDiff = secondsDiff +'h left!';
+				 secondsDiff = secondsDiff +'h ';
+			}
 		} else if (arrayEle['months'] <= 12 ) {
 			secondsDiff = arrayEle['months'] + 'mon ';
-			if(arrayEle['days'] > 30)
+			if(arrayEle['days'] > 30){
 			 secondsDiff = secondsDiff+ arrayEle['days'] % 24;
-				 secondsDiff = secondsDiff +'d left!';
+				 secondsDiff = secondsDiff +'d ';
+			}
 	}
+	secondsDiff = secondsDiff +' left!';
 }
 	return secondsDiff;
 });
