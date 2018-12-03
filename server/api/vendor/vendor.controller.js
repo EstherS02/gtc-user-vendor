@@ -173,9 +173,8 @@ export async function createVendor(req, res) {
 			bodyParamsUser["contact_email"] = req.body.email;
 			bodyParamsUser["status"] = status["ACTIVE"];
 			bodyParamsUser["role"] = roles["VENDOR"];
-			bodyParamsUser["email_verified"] = 1;
+			bodyParamsUser["email_verified"] = req.body.email_verified;
 			bodyParamsUser['created_on'] = new Date();
-
 
 			const newUser = await service.createRow(userModelName, bodyParamsUser);
 			if (newUser) {
