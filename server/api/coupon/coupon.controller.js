@@ -404,8 +404,7 @@ export async function saveCoupon(req, res) {
 		 });
 		agenda.now(config.jobs.couponNotification, {
 			couponResponse: coupon,
-			code: config.notification.templates.couponCode
-	   });
+		});
 		return res.status(200).send('Coupon added successfully.');
 	} catch (error) {
 		console.log("saveCoupon Error:::", error);

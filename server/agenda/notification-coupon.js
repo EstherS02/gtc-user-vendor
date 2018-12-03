@@ -18,10 +18,7 @@ module.exports = async function(job, done) {
 	console.log("..................coupon notification............");
 	try {
 		// coupon code notification starts//
-		if (code == config.notification.templates.couponCode) {
 			const couponDetails = job.attrs.data.couponResponse;
-			var couponCreatedArr = [];
-			couponCreatedArr.push(couponDetails.created_by);
 			var includeArr = [{
 				model: model['User'],
 				attributes: ['id', 'email', 'user_contact_email', 'email_verified', 'first_name'],
@@ -66,9 +63,9 @@ module.exports = async function(job, done) {
 					}
 
 				})
-		}
+		
 		// coupon code notification ends//
-		done();
+	
 	} catch (error) {
 		return error;
 	}
