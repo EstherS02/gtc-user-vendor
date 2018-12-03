@@ -115,16 +115,20 @@ export async function create(req, res) {
 
     var queryObj = {};
 
-    req.checkBody('email', 'Missing Query Param').notEmpty();
-    req.checkBody('email', 'Please enter a valid email address').isEmail();
-    req.checkBody('email', 'Email Address lowercase letters only').isLowercase();
-    req.checkBody('password', 'Missing Query Param').notEmpty();
-    req.checkBody('first_name', 'Missing Query Param').notEmpty();
+    req.checkBody('email', 'Email is missing').notEmpty();
+    req.checkBody('email', 'Invalid email address').isEmail();
+    req.checkBody('email', 'Email Address should be in lowercase only').isLowercase();
+    req.checkBody('password', 'Password is missing.').notEmpty();
+    req.checkBody('first_name', 'First name is missing.').notEmpty();
 
-    var errors = req.validationErrors();
+	var errors = req.validationErrors();
+	
     if (errors) {
-        res.status(400).send('Missing Query Params');
-        return;
+		console.log("Error::", errors)
+		return res.status(400).send({
+			"message": "Error",
+			"messageDetails": errors[0].msg
+		});
     }
 
     req.body.salt = makeSalt();
@@ -132,16 +136,20 @@ export async function create(req, res) {
 
     if (req.body.email) {
         queryObj['email'] = req.body.email;
-    }
+	}
+	
     const bodyParams = req.body;
 
     model['User'].findOne({
         where: queryObj
     }).then(async function(user) {
         if (user) {
-            res.status(409).send("Email address already exists");
-            return;
+			return res.status(409).send({
+				"message": "Error",
+				"messageDetails": "Email address already exists"
+			});
         } else {
+
             bodyParams["provider"] = providers["OWN"];
             bodyParams["user_contact_email"] = req.body.email;
             bodyParams["status"] = status["ACTIVE"];
@@ -149,6 +157,7 @@ export async function create(req, res) {
             bodyParams["email_verified"] = 1;
             bodyParams['created_on'] = new Date();
             if (req.files.admin_profile_pic) {
+
                 const userProfilePicture = req.files.admin_profile_pic;
                 const parsedFile = path.parse(userProfilePicture.originalFilename);
                 const timeInMilliSeconds = new Date().getTime();
@@ -158,8 +167,7 @@ export async function create(req, res) {
                 if (userProfilePictureUpload) {
                     bodyParams['user_pic_url'] = config.imageUrlRewritePath.base + "user/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
                 }
-            }
-
+			}
 
             model['User'].create(bodyParams)
                 .then(function(user) {
@@ -173,35 +181,49 @@ export async function create(req, res) {
 
                         model['Admin'].create(adminBodyParams)
                             .then(function(admin) {
-                                if (admin) {
+                                if (admin) {	
                                     delete rspUser.salt;
                                     delete rspUser.hashed_pwd;
-                                    res.status(201).send(rspUser);
-                                    return;
+                                    return res.status(201).send({
+										"message": "Success",
+										"messageDetails": "Admin Created Successfully."
+									});
                                 } else {
-                                    res.status(404).send("Not found");
-                                    return;
+                                    return res.status(404).send({
+										"message": "Error",
+										"messageDetails": "Admin Not Found."
+									});
                                 }
                             }).catch(function(error) {
                                 console.log('Error :::', error);
-                                res.status(500).send("Internal server error");
-                                return;
+                                return res.status(500).send({
+									"message": "Error",
+									"messageDetails": "Internal Server Error"
+								});
                             });
                     } else {
-                        res.status(404).send("Not found");
-                        return;
+                        return res.status(404).send({
+							"message": "Error",
+							"messageDetails": "Admin Not Found."
+						});
                     }
                 }).catch(function(error) {
                     console.log('Error :::', error);
-                    res.status(500).send("Internal server error");
-                    return;
+					return res.status(500).send({
+						"message": "Error",
+						"messageDetails": "Internal Server Error"
+					});
                 });
         }
     }).catch(function(error) {
-        res.status(500).send("Internal server error");
-        return;
+        console.log('Error :::', error);
+		return res.status(500).send({
+			"message": "Error",
+			"messageDetails": "Internal Server Error"
+		});
     });
 }
+
 export function move(copyFrom, moveTo) {
     return new Promise((resolve, reject) => {
         mv(copyFrom, moveTo, {
@@ -253,8 +275,8 @@ function encryptPassword(req) {
 }
 
 export async function edit(req, res) {
-    var adminID = req.params.id,
-        userID;
+
+    var adminID = req.params.id, userID;
     var userModel = 'User';
     var adminModel = 'Admin';
     var userBodyParam = {}, adminBodyParam = {};
@@ -263,12 +285,14 @@ export async function edit(req, res) {
 	req.checkBody('email', 'Missing email address').notEmpty();
 	req.checkBody('status', 'Missing admin status').notEmpty();
 
+	delete req.body.password;
+
     var errors = req.validationErrors();
     if (errors) {
         console.log("Error::", errors)
         return res.status(400).send({
             "message": "Error",
-            "messageDetails": error
+            "messageDetails": errors[0].msg
         });
 	}
 	
@@ -286,7 +310,8 @@ export async function edit(req, res) {
                 if (userProfilePictureUpload) {
                     userBodyParam['user_pic_url'] = config.imageUrlRewritePath.base + "user/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
                 }
-            }
+			}
+			
         const existingAdmin = await service.findIdRow(adminModel, adminID);
         if (existingAdmin) {
 
