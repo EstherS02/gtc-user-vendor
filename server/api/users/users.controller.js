@@ -762,6 +762,7 @@ export async function edit(req, res){
 		});
 	}
 
+	delete req.body.password;
 	bodyParam = req.body;
 
 	try{
