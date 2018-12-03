@@ -428,13 +428,17 @@ export function index(req, res) {
 		var vendorPlanQuery = {};
 		var userQueryObj = {};
 		userQueryObj.role = roles['VENDOR'];
-		vendorPlanQuery.status = 1;
+		userQueryObj['status']={
+				'$ne': status["DELETED"]
+			};
 
+		vendorPlanQuery.status = 1;
+		
 
 		if (req.query.status)
 			queryObj['status'] = queryObj1['status'] = req.query.status
 		else {
-			queryObj['status'] = queryObj1['status'] = {
+			queryObj['status'] = queryObj1['status'] ={
 				'$ne': status["DELETED"]
 			}
 		}
@@ -446,6 +450,11 @@ export function index(req, res) {
 				})
 			];
 		}
+		var countIncludeArr = [{
+			model: model['User'],
+			where: userQueryObj,
+			attributes: ['first_name', 'last_name']
+		}];
 		let results = {};
 		var includeArr = [{
 			model: model['User'],
@@ -463,6 +472,7 @@ export function index(req, res) {
 				model: model['VendorPlan'],
 				where: vendorPlanQuery,
 				attributes: ['plan_id'],
+				required:false
 			});
 		} else {
 			includeArr.push({
@@ -487,7 +497,8 @@ export function index(req, res) {
 		}).then(function(rows) {
 			if (rows.length > 0) {
 				return model['Vendor'].count({
-					where: queryObj1
+					where: queryObj1,
+					include:countIncludeArr
 				}).then(function(count) {
 					result.count = count;
 					result.rows = rows;

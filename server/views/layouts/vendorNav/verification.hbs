@@ -51,7 +51,7 @@
 			}
 
 			var obj = {};
-			obj['personal_id_verification_file_type'] = $('input[name=personal_id_verification_file_type]').val();
+			obj['personal_id_verification_file_type'] = $('input[name=personal_id_verification_file_type]:checked').val();
 			formData.append('data',JSON.stringify(obj));
 			if(!data){
 				$.ajax({
@@ -63,9 +63,10 @@
 					processData: false,
 					contentType: false,
 					success: function(data) {
-						ouputPopup(data);
+						ouputPopup(data.messageDetails);
 					},
 					error: function(err) {
+						console.log("error:::", err)
 						ouputPopupError(err);
 					}
 				});
@@ -80,7 +81,7 @@
 					contentType: false,
 					success: function(data) {
 						console.log("data", data)
-						ouputPopup(data);
+						ouputPopup(data.messageDetails);
 					},
 					error: function(err) {
 						console.log("error:::", err)
@@ -167,11 +168,11 @@
 										<br>
 										<input type="radio" value="nationalIdCard" name="personal_id_verification_file_type" {{setChecked "nationalIdCard" verification.personal_id_verification_file_type}}
 										/>
-										<label for="passport" class="upload-id-card">National Id card</label>
+										<label for="nationalIdCard" class="upload-id-card">National Id card</label>
 										<br>
 										<input type="radio" value="drivingLicense" name="personal_id_verification_file_type" {{setChecked "drivingLicense" verification.personal_id_verification_file_type}}
 										/>
-										<label for="passport" class="upload-id-card">Driving license</label>
+										<label for="drivingLicense" class="upload-id-card">Driving license</label>
 
 										<div class="input-group rt-7">
 											<div class="custom-file custom_error_message">
