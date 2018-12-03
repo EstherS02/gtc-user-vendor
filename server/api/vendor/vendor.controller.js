@@ -291,6 +291,7 @@ export async function edit(req, res) {
 		});
 	}
 
+	delete req.body.password;
 	bodyParams = req.body;
 	//bodyParams['status'] = status['ACTIVE'];
 	bodyParams['last_updated_on'] = new Date();

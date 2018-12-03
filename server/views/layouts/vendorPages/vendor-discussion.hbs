@@ -242,11 +242,18 @@ function ifPart(element) {
 		<img style="width: 30px;height:30px " class = "img-border-page" src="` + ProfilePicture(element.User) + `">
 	</div>
 	<div class="col-md-10 col-10">
-		<p class="discussion_here"><span class="discussion_hayden">` + element.User.first_name + element.User.last_name + `</span>&nbsp;- &nbsp;` + comment(element) + commentType(element) +
+		<p class="discussion_here"><span class="discussion_hayden">` + profileName(element.User) + `</span>&nbsp;- &nbsp;` + comment(element) + commentType(element) +
 			`</p>
 		</div>
 	</div></div>`;
 
+}
+
+function profileName(user) {
+	if (user.first_name && user.last_name) 
+		return user.first_name + user.last_name;
+	else
+		return user.first_name;
 }
 
 function ProfilePicture(context) {
@@ -459,7 +466,7 @@ aria-hidden="true">
 															<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
 														</div>
 														<div class="col-md-10 col-10">
-															<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}<p>&nbsp;-&nbsp; <img src="{{this.comment_media_url}}" width="25%" height="25%">- <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
+															<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{#if this.User.last_name}}{{this.User.last_name}}{{/if}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}<p>&nbsp;-&nbsp; <img src="{{this.comment_media_url}}" width="25%" height="25%">- <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
 														</div>
 													</div>
 													{{/ifCond}}
@@ -477,7 +484,7 @@ aria-hidden="true">
 																<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
 															</div>
 															<div class="col-md-10 col-10">
-																<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}&nbsp;-&nbsp;s<p><img src="{{this.comment_media_url}}" width="25%" height="25%">&nbsp;-&nbsp; <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
+																<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{#if this.User.last_name}}{{this.User.last_name}}{{/if}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}&nbsp;-&nbsp;s<p><img src="{{this.comment_media_url}}" width="25%" height="25%">&nbsp;-&nbsp; <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
 															</div>
 														</div>
 														{{/ifCond}}
