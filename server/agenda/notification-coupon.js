@@ -15,57 +15,56 @@ module.exports = async function(job, done) {
 	const vendorFollowerModelName = "VendorFollower";
 	const notificationSettingModelName = "NotificationSetting";
 	const notificationModelName = "Notification";
-	console.log("..................coupon notification............");
 	try {
 		// coupon code notification starts//
-			const couponDetails = job.attrs.data.couponResponse;
-			var includeArr = [{
-				model: model['User'],
-				attributes: ['id', 'email', 'user_contact_email', 'email_verified', 'first_name'],
-			}]
-			var queryObject = {
-				vendor_id: couponDetails.vendor_id,
-				status: status['ACTIVE']
-			}
-			var field = "id";
-			var order = "ASC";
-			var limit = null;
-			service.findAllRows(vendorFollowerModelName, includeArr, queryObject, 0, limit, field, order)
-				.then(function(results) {
-					if (results.count > 0) {
-						var queryObjNotification = {};
-						queryObjNotification['code'] = config.notification.templates.couponCode;
-						service.findOneRow(notificationSettingModelName, queryObjNotification)
-							.then(async function(response) {
-								if (response) {
-									var bodyParamsArray = [];
-									for (let result of results.rows) {
-										var bodyParams = {};
-										bodyParams.user_id = result.User.id;
-										bodyParams.description = response.description.replace('%couponcode%', couponDetails.code);
-										bodyParams.name = response.name;
-										bodyParams.code = response.code;
-										bodyParams.is_read = 0;
-										bodyParams.status = 1;
-										bodyParams.created_on = new Date();
-										bodyParams.created_by = "Administrator";
-										bodyParamsArray.push(bodyParams);
-									}
-									var finalresults = bodyParamsArray.filter(o => Object.keys(o).length);
-									await service.createBulkRow(notificationModelName, finalresults);
+		const couponDetails = job.attrs.data.couponResponse;
+		var includeArr = [{
+			model: model['User'],
+			attributes: ['id', 'email', 'user_contact_email', 'email_verified', 'first_name'],
+		}]
+		var queryObject = {
+			vendor_id: couponDetails.vendor_id,
+			status: status['ACTIVE']
+		}
+		var field = "id";
+		var order = "ASC";
+		var limit = null;
+		service.findAllRows(vendorFollowerModelName, includeArr, queryObject, 0, limit, field, order)
+			.then(function(results) {
+				if (results.count > 0) {
+					var queryObjNotification = {};
+					queryObjNotification['code'] = config.notification.templates.couponCode;
+					service.findOneRow(notificationSettingModelName, queryObjNotification)
+						.then(async function(response) {
+							if (response) {
+								var bodyParamsArray = [];
+								for (let result of results.rows) {
+									var bodyParams = {};
+									bodyParams.user_id = result.User.id;
+									bodyParams.description = response.description.replace('%couponcode%', couponDetails.code);
+									bodyParams.name = response.name;
+									bodyParams.code = response.code;
+									bodyParams.is_read = 0;
+									bodyParams.status = 1;
+									bodyParams.created_on = new Date();
+									bodyParams.created_by = "Administrator";
+									bodyParamsArray.push(bodyParams);
 								}
-								done();
+								var finalresults = bodyParamsArray.filter(o => Object.keys(o).length);
+								await service.createBulkRow(notificationModelName, finalresults);
+							}
+							done();
 
-							})
-					}
-					else {
-						done();
-					}
+						})
+				}
+				else {
+					done();
+				}
 
-				})
-		
+			})
+
 		// coupon code notification ends//
-	
+
 	} catch (error) {
 		return error;
 	}
