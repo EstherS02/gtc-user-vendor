@@ -8,21 +8,21 @@
 		$('#gtc-form-alert').css("display", "none")
 		var customerInformationObj = {};
 
-		if ($('#inputBillingAddressId').val()) {
+		/*if ($('#inputBillingAddressId').val()) {
 			$('#edit-billing-address').hide();
 		} else {
 			$('#show-billing-address').remove();
-		}
+		}*/
 
 		for (let i = 0; i < shippingAddress.length; i++) {
 			let option = '<option value="' + shippingAddress[i].id + '">' +
-				shippingAddress[i].address_line1 + '</option>';
+				shippingAddress[i].address_line1 +', ' +shippingAddress[i].city +', ' + shippingAddress[i].State.name +', ' + shippingAddress[i].Country.name+ '</option>';
 			$('select[name="shipping_address_select_id"]').append(option);
 		}
 
 		for (let i = 0; i < billingAddress.length; i++) {
 			let option = '<option value="' + billingAddress[i].id + '">' +
-				billingAddress[i].address_line1 + '</option>';
+				billingAddress[i].address_line1 + ', '+billingAddress[i].city+ ', '+billingAddress[i].State.name+ ', '+billingAddress[i].Country.name +'</option>';
 			$('select[name="billing_address_select_id"]').append(option);
 		}
 
@@ -50,11 +50,6 @@
 			}
 		});
 
-		if (shippingAddress && shippingAddress[0] && shippingAddress[0].Country)
-			$("#shipping-select-country").val(shippingAddress[0].Country.id).trigger('change');
-		if (shippingAddress && shippingAddress[0] && shippingAddress[0].State)
-			$("#shipping-select-state").val(shippingAddress[0].State.id);
-
 		$('#billing-select-country').on('change', function() {
 			$('#billing-select-state').empty();
 			let emptyOption = `<option value="">Choose Province</option>`;
@@ -67,10 +62,22 @@
 			}
 		});
 
-		if (billingAddress && billingAddress[0] && billingAddress[0].Country)
-			$("#billing-select-country").val(billingAddress[0].Country.id).trigger('change');
-		if (billingAddress && billingAddress[0] && billingAddress[0].State)
-			$("#billing-select-state").val(billingAddress[0].State.id)
+		if (billingAddress && billingAddress[0])
+			billingAddressValues(billingAddress[0]);
+		
+		function billingAddressValues(address) {
+			$("#billingAddressSelectId").val(address.id);
+			$("#billing_first_name").val(address.User? address.User.first_name : '');
+			$("#billing_last_name").val(address.User? address.User.last_name : '');
+			$("#billing_company").val(address.company_name ? address.company_name : '');
+			$("#billing_addressline1").val(address.address_line1 ? address.address_line1 : '');
+			$("#billing_addressline2").val(address.address_line2 ? address.address_line2 : '');
+			$("#billing-select-country").val(address.Country? address.Country.id : '')
+			$("#billing-select-state").val(address.State? address.State.id : '');
+			$("#billing_city").val(address.city? address.city : '');
+			$("#billing_postal").val(address.postal_code ? address.postal_code : address.postal_code);
+			$("#billing_phone").val(address.phone ? address.phone : '');
+		}
 
 		function getFormData($form) {
 			var unindexed_array = $form.serializeArray();
@@ -85,19 +92,43 @@
 
 		$('#billingAddressSelectId').on('change', function() {
 			if ($('#billingAddressSelectId').val()) {
-				$('#enableManuelBillingAddress').hide();
+				var result = billingAddress.filter(obj => {
+				  return obj.id == $('#billingAddressSelectId').val()
+				});
+				if (result.length > 0) {
+					billingAddressValues(result[0]);
+				}
 			} else {
-				$('#enableManuelBillingAddress').show();
+				billingAddressValues({});
 			}
 		});
 
 		$('#shippingAddressSelectId').on('change', function() {
 			if ($('#shippingAddressSelectId').val()) {
-				$('#enableManuelShippingAddress').hide();
+				var result = shippingAddress.filter(obj => {
+				  return obj.id == $('#shippingAddressSelectId').val()
+				});
+				if (result.length > 0) {
+					shippingAddressValues(result[0]);
+				}
 			} else {
-				$('#enableManuelShippingAddress').show();
+				shippingAddressValues({});
 			}
 		});
+
+		function shippingAddressValues(address) {
+			$("#inputShippingAddressId").val(address.id);
+			$("#shipping_first_name").val(address.User? address.User.first_name : '');
+			$("#shipping_company").val(address.company_name ? address.company_name : '');
+			$("#shipping_addressline1").val(address.address_line1 ? address.address_line1 : '');
+			$("#shipping_addressline2").val(address.address_line2 ? address.address_line2 : '');
+			$("#shipping_last_name").val(address.User? address.User.last_name : '');
+			$("#shipping-select-country").val(address.Country? address.Country.id : '')
+			$("#shipping-select-state").val(address.State? address.State.id : '');
+			$("#shipping_city").val(address.city? address.city : '');
+			$("#shipping_postal").val(address.postal_code ? address.postal_code : address.postal_code);
+			$("#shipping_phone").val(address.phone ? address.phone : '');
+		}
 
 		$("#customer-information").submit(function(e) {
 			e.preventDefault();
@@ -185,12 +216,12 @@
 		});
 	});
 
-	function editBillingAddressButton() {
+	/*function editBillingAddressButton() {
 		$('#display-billing-address').hide();
 		$('#edit-billing-address').show();
 		$('#show-billing-address').remove();
 		$('input[name="billing_address_id"]').val('');
-	}
+	}*/
 
 	function CartPage() {
 		window.location.href = "/cart";
@@ -281,7 +312,7 @@
 									</label>
 								</div>
 								<div class="col-md-8 col-12">
-									<div class="row" id="show-billing-address">
+									{{!-- <div class="row" id="show-billing-address">
 										<div class="col-12">
 											<div class="form-group">
 												<div class="address-content" id="display-billing-address">
@@ -301,8 +332,9 @@
 												</div>
 											</div>
 										</div>
-									</div>
-									<div class="row" id="edit-billing-address">
+									</div> --}}
+									{{!-- <div class="row" id="edit-billing-address"> --}}
+									<div class="row">
 										<div class="col-12">
 											<div class="form-group">
 												<div class="select-container">
@@ -319,45 +351,32 @@
 												</h2>
 											</div>
 											<div class="col">
-												{{#if LoggedInUser.first_name}}
-													<div class="form-group">
-														<input type="text" name="billing_first_name" value="{{LoggedInUser.first_name}}" class="form-control form-control-sm input-rounded-border"
-														 placeholder="First name" required="required">
-													</div>
-												{{else}}
-													<div class="form-group">
-														<input type="text" name="billing_first_name" class="form-control form-control-sm input-rounded-border" placeholder="First name"
-														 required="required">
-													</div>
-												{{/if}}
+												<div class="form-group">
+													<input type="text" name="billing_first_name" id="billing_first_name" class="form-control form-control-sm input-rounded-border"
+													 placeholder="First name" required="required">
+												</div>
 											</div>
 											<div class="col">
-												{{#if LoggedInUser.last_name}}
-													<div class="form-group">
-														<input type="text" name="billing_last_name" value="{{LoggedInUser.last_name}}" class="form-control form-control-sm input-rounded-border"
-														 placeholder="Last name">
-													</div>
-												{{else}}
-													<div class="form-group">
-														<input type="text" name="billing_last_name" class="form-control form-control-sm input-rounded-border" placeholder="Last name">
-													</div>
-												{{/if}}
+												<div class="form-group">
+													<input type="text" name="billing_last_name" id="billing_last_name" class="form-control form-control-sm input-rounded-border"
+													 placeholder="Last name">
+												</div>
 											</div>
 											<div class="col-12">
 												<div class="form-group">
-													<input type="text" name="billing_company" value="{{billing_address.[0].company_name}}" class="form-control form-control-sm input-rounded-border"
+													<input type="text" id="billing_company" name="billing_company" class="form-control form-control-sm input-rounded-border"
 													 placeholder="Company (optional)">
 												</div>
 											</div>
 											<div class="col-12">
 												<div class="form-group">
-													<input type="text" name="billing_addressline1" value="{{billing_address.[0].address_line1}}" class="form-control form-control-sm input-rounded-border"
+													<input type="text" name="billing_addressline1" id="billing_addressline1" class="form-control form-control-sm input-rounded-border"
 													 placeholder="Address" required="required">
 												</div>
 											</div>
 											<div class="col-12">
 												<div class="form-group">
-													<input type="text" name="billing_addressline2" value="{{billing_address.[0].address_line2}}" class="form-control form-control-sm input-rounded-border"
+													<input type="text" name="billing_addressline2" id="billing_addressline2" class="form-control form-control-sm input-rounded-border"
 													 placeholder="App, Suite">
 												</div>
 											</div>
@@ -387,19 +406,19 @@
 											</div>
 											<div class="col-4">
 												<div class="form-group">
-													<input type="text" name="billing_city" value="{{billing_address.[0].city}}" class="form-control form-control-sm input-rounded-border"
+													<input type="text" name="billing_city" id="billing_city" class="form-control form-control-sm input-rounded-border"
 													 placeholder="City" required="required">
 												</div>
 											</div>
 											<div class="col-4">
 												<div class="form-group">
-													<input type="text" name="billing_postal" value="{{billing_address.[0].postal_code}}" class="form-control form-control-sm input-rounded-border"
+													<input type="text" id="billing_postal" name="billing_postal" class="form-control form-control-sm input-rounded-border"
 													 placeholder="Postal">
 												</div>
 											</div>
 											<div class="col-6">
 												<div class="form-group">
-													<input type="text" name="billing_phone" value="{{billing_address.[0].phone}}" class="form-control form-control-sm input-rounded-border"
+													<input type="text" id="billing_phone" name="billing_phone" class="form-control form-control-sm input-rounded-border"
 													 placeholder="Phone" required="required">
 												</div>
 											</div>
@@ -445,33 +464,33 @@
 												</h2>
 											</div>
 											<div class="col">
-												<input type="hidden" id="inputShippingAddressId" name="shipping_address_id" value="{{shipping_address.[0].id}}" />
+												<input type="hidden" id="inputShippingAddressId" name="shipping_address_id" />
 												<div class="form-group">
-													<input type="text" name="shipping_first_name" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].User.first_name}}"
+													<input type="text" id="shipping_first_name" name="shipping_first_name" class="form-control form-control-sm input-rounded-border"
 													 placeholder="First name" required="required">
 												</div>
 											</div>
 											<div class="col">
 												<div class="form-group">
-													<input type="text" name="shipping_last_name" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].User.last_name}}"
+													<input type="text" id="shipping_last_name" name="shipping_last_name" class="form-control form-control-sm input-rounded-border"
 													 placeholder="Last name">
 												</div>
 											</div>
 											<div class="col-12">
 												<div class="form-group">
-													<input type="text" name="shipping_company" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].company_name}}"
+													<input type="text" id="shipping_company" name="shipping_company" class="form-control form-control-sm input-rounded-border"
 													 placeholder="Company (optional)">
 												</div>
 											</div>
 											<div class="col-12">
 												<div class="form-group">
-													<input type="text" name="shipping_addressline1" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].address_line1}}"
+													<input type="text" id="shipping_addressline1" name="shipping_addressline1" class="form-control form-control-sm input-rounded-border"
 													 placeholder="Address" required="required">
 												</div>
 											</div>
 											<div class="col-12">
 												<div class="form-group">
-													<input type="text" name="shipping_addressline2" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].address_line2}}"
+													<input type="text" id="shipping_addressline2" name="shipping_addressline2" class="form-control form-control-sm input-rounded-border"
 													 placeholder="App, Suite">
 												</div>
 											</div>
@@ -503,19 +522,19 @@
 											</div>
 											<div class="col-4">
 												<div class="form-group">
-													<input type="text" name="shipping_city" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].city}}"
+													<input type="text" id="shipping_city" name="shipping_city" class="form-control form-control-sm input-rounded-border"
 													 placeholder="City" required="required">
 												</div>
 											</div>
 											<div class="col-4">
 												<div class="form-group">
-													<input name="shipping_postal" type="text" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].postal_code}}"
+													<input id="shipping_postal" name="shipping_postal" type="text" class="form-control form-control-sm input-rounded-border"
 													 placeholder="Postal">
 												</div>
 											</div>
 											<div class="col-6">
 												<div class="form-group">
-													<input type="text" name="shipping_phone" class="form-control form-control-sm input-rounded-border" placeholder="Phone" required="required">
+													<input type="text" id="shipping_phone" name="shipping_phone" class="form-control form-control-sm input-rounded-border" placeholder="Phone" required="required">
 												</div>
 											</div>
 										</div>

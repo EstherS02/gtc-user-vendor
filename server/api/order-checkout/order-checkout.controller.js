@@ -35,34 +35,46 @@ export function addCustomerInformation(req, res) {
 }
 
 function processBillingAddress(req) {
+	var addressModelName = 'Address';
+	var billing_address = {
+		user_id: req.user.id,
+		address_type: ADDRESS_TYPE['BILLINGADDRESS'],
+		first_name: req.body.billing_first_name,
+		last_name: req.body.billing_last_name,
+		company_name: req.body.billing_company_name,
+		address_line1: req.body.billing_addressline1,
+		address_line2: req.body.billing_addressline2,
+		province_id: req.body.billing_state,
+		country_id: req.body.billing_country,
+		city: req.body.billing_city,
+		postal_code: req.body.billing_postal,
+		phone: req.body.billing_phone,
+		status: status['ACTIVE'],
+		created_by: req.user.first_name,
+		created_on: new Date()
+	};
 	return new Promise((resolve, reject) => {
-		if (req.body.billing_address_select_id) {
-			resolve(req.body.billing_address_select_id);
-		} else if (req.body.billing_address_id) {
-			resolve(req.body.billing_address_id);
+		if (req.body.billing_address_select_id || req.body.billing_address_id) {
+			var billingAddressId = req.body.billing_address_select_id ? req.body.billing_address_select_id : req.body.billing_address_id;
+			var queryObj = {
+				id: billingAddressId
+			};
+			delete billing_address.created_on;
+			delete billing_address.created_by;
+			billing_address.last_updated_on = new Date();
+			billing_address.last_updated_by = req.user.first_name;
+			service.updateRecord(addressModelName, billing_address, queryObj)
+				.then((address) => {
+					resolve(address.id);
+				}).catch((error) => {
+					reject(error);
+				});
 		} else {
 			validateBillingAddress(req);
 			let errors = req.validationErrors();
 			if (errors) {
 				reject(errors);
 			} else {
-				var billing_address = {
-					user_id: req.user.id,
-					address_type: ADDRESS_TYPE['BILLINGADDRESS'],
-					first_name: req.body.billing_first_name,
-					last_name: req.body.billing_last_name,
-					company_name: req.body.billing_company_name,
-					address_line1: req.body.billing_addressline1,
-					address_line2: req.body.billing_addressline2,
-					province_id: req.body.billing_state,
-					country_id: req.body.billing_country,
-					city: req.body.billing_city,
-					postal_code: req.body.billing_postal,
-					phone: req.body.billing_phone,
-					status: status['ACTIVE'],
-					created_by: req.user.first_name,
-					created_on: new Date()
-				};
 				service.createRow('Address', billing_address).then(address => {
 					resolve(address.id);
 				}).catch(err => {
@@ -100,16 +112,14 @@ function processShippingAddress(req, billing_address_id) {
 				var queryObj = {
 					id: shipping_address_id
 				};
+				delete shipping_address.created_by;
+				delete shipping_address.created_on;
+				shipping_address.last_updated_on = new Date();
+				shipping_address.last_updated_by = req.user.first_name;
 				service.updateRecord(addressModelName, shipping_address, queryObj)
 					.then((address) => {
-						if (address) {
-							shippingAddressId = address.id;
-							return validateShippingCountry(req.user.id, address.country_id)
-						} else {
-							return resolve(shippingAddressId);
-						}
-					}).then((response) => {
-						return resolve(shippingAddressId);
+						shippingAddressId = address.id;
+						return validateShippingCountry(req.user.id, address.country_id)
 					}).catch((error) => {
 						return reject(error);
 					});
