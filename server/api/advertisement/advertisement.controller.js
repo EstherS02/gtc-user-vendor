@@ -9,6 +9,7 @@ const Sequelize_Instance = require('../../sqldb/index');
 const service = require('../../api/service');
 const async = require('async');
 const path = require('path');
+const moment = require('moment');
 const sequelize = require('sequelize');
 const _ = require('lodash');
 
@@ -205,14 +206,102 @@ export async function index(req, res) {
 	var offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	var limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	var productAdsSettingTable = 'ProductAdsSetting';
-	var queryObj = {};
+	var queryObj = req.query;
+	var queryObj1 ={};
+	var queryObj2 =  {}
 	var newArray = [];
 	var results = {};
+	var productQuery ={};
+
+
 	var type = req.query.type ? parseInt(req.query.type) : 0;
+	
+	if (queryObj.fromDate && queryObj.toDate) {
+
+		if (queryObj.columnName) {
+
+			queryObj1[queryObj.columnName] = {
+
+				'$gte': new Date(parseInt(queryObj.fromDate)),
+				'$lte': new Date(parseInt(queryObj.toDate))
+			}
+			queryObj2[req.query.columnName]= queryObj1[req.query.columnName];
+			delete queryObj.columnName;
+		}
+		delete queryObj.fromDate;
+		delete queryObj.toDate;
+	}
+	if(queryObj.position){
+		if(type == 1){
+			if(queryObj.position != 7){
+			queryObj1['position'] = queryObj.position;
+			}
+		}else if(type == 2){
+			if(queryObj.position == 1){
+				queryObj2['position_homepage'] = 1;			
+			}else if(queryObj.position == 2){
+				queryObj2['position_wholesale_landing'] = 1;			
+			}else if(queryObj.position == 3){
+				queryObj2['position_shop_landing'] = 1;			
+			}else if(queryObj.position == 4){
+				queryObj2['position_service_landing'] = 1;			
+			}else if(queryObj.position == 5){
+				queryObj2['position_subscription_landing'] = 1;			
+			}else if(queryObj.position == 6){
+				queryObj2['position_profilepage'] = 1;			
+			}else{
+				queryObj2['position_searchresult'] = 1;			
+			}
+		}
+		else{
+			if(queryObj.position == 1){
+				queryObj2['position_homepage'] = 1;
+			}else if(queryObj.position == 2){
+				queryObj2['position_wholesale_landing'] = 1;			
+			}else if(queryObj.position == 3){
+				queryObj2['position_shop_landing'] = 1;			
+			}else if(queryObj.position == 4){
+				queryObj2['position_service_landing'] = 1;			
+			}else if(queryObj.position == 5){
+				queryObj2['position_subscription_landing'] = 1;			
+			}else if(queryObj.position == 6){
+				queryObj2['position_profilepage'] = 1;			
+			}else{
+				queryObj2['position_searchresult'] = 1;			
+			}	
+
+			if(queryObj.position != 7){
+				queryObj1['position'] = queryObj.position;
+			}else{
+				queryObj1['position'] = 0;
+			}
+		}		
+	}
+
+	if(queryObj.last30days){
+		var startDate = moment().add(-30,'days');
+		var endDate = moment().format("YYYY-MM-DD");
+		queryObj1['created_on'] = {
+				'$gte':startDate,//moment(startDate,"DD-MM-YYYY"),
+				'$lte':endDate
+			}
+			queryObj2['created_on']= queryObj1['created_on'];
+	}
+
+	if(queryObj.text){
+		queryObj1['name']={
+			$like: '%'+ queryObj.text +'%'
+		}
+		productQuery['product_name'] = queryObj1['name'];
+	}
+
+
+
+
 	results.count = 0;
 	if (type == 0 || type == 1) {
 		await model[productAdsSettingTable].findAndCountAll({
-			where: queryObj,
+			where: queryObj1,
 			include: [{
 				model: model['Payment'],
 				attributes: ['id', 'amount'],
@@ -232,9 +321,10 @@ export async function index(req, res) {
 	if (type == 0 || type == 2) {
 		const featuredProductTable = 'FeaturedProduct';
 		await model[featuredProductTable].findAndCountAll({
-			where: queryObj,
+			where: queryObj2,
 			include: [{
 				model: model['Product'],
+				where:productQuery,
 				attributes: ['product_name']
 			}, {
 				model: model['Payment'],

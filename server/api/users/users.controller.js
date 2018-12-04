@@ -437,7 +437,9 @@ export function changePassword(req, res) {
 }
 
 export function resetPassword(req, res) {
-	var queryObj, forgot_password_token, current_time, expire_time1, expire_time2;
+	var queryObj = {};
+	var forgot_password_token, current_time, expire_time1, expire_time2;
+	var UserModel = "User";
 
 	if (req.body) {
 		req.checkBody('email', 'Missing Query Param').notEmpty();
@@ -445,19 +447,18 @@ export function resetPassword(req, res) {
 		req.checkBody('new_confirm_password', 'Missing Query Param').notEmpty();
 		req.checkBody('new_confirm_password', 'new_confirm_password should be equal to new_password').equals(req.body.new_password);
 	}
+	
 	var errors = req.validationErrors();
 	if (errors) {
-		console.log("error", errors)
-		res.status(400).send(errors);
-		return;
+		console.log("Error::", errors)
+        return res.status(400).send({
+            "message": "Error",
+            "messageDetails": errors[0].msg
+        });
 	}
-	var UserModel = "User";
 
 	forgot_password_token = req.body.forgot_password_token;
-
-	queryObj = {
-		email: req.body.email
-	}
+	queryObj['email'] = req.body.email;
 
 	service.findOneRow(UserModel, queryObj, []).then(function(result) {
 		var userId = result.id;
@@ -469,10 +470,11 @@ export function resetPassword(req, res) {
 			forgot_password_token_generated: null
 		};
 
-
 		if (result.forgot_password_token != forgot_password_token) {
-			res.status(400).send("The forgot password link sent to your mail has been expired. Please generate new forget password password link by clicking the above forgot password button.");
-			return;
+			return res.status(400).send({
+				"message": "Error",
+				"messageDetails": "The forgot password link sent to your mail has been expired. Please generate new link."
+			})
 		}
 
 		current_time = new Date();
@@ -480,21 +482,33 @@ export function resetPassword(req, res) {
 		expire_time2 = moment(expire_time1).add(24, 'hours');
 
 		if (current_time >= expire_time2) {
-			res.status(400).send("The forgot password link sent to your mail has been expired. Please generate new forget password password link by clicking the above forgot password button.");
-			return;
+			return res.status(400).send({
+				"message": "Error",
+				"messageDetails": "The forgot password link sent to your mail has been expired. Please generate new link."
+			})
 		}
-		service.updateRow(UserModel, bodyParams, userId).then(function(response) {
+		service.updateRow(UserModel, bodyParams, userId)
+		.then(function(response) {
 			if (response) {
-				res.status(200).send("Your password has been updated successfully. Please login with the new password.")
-				return;
+				return res.status(200).send({
+					"message": "Success",
+					"messageDetails": "Password updated successfully."
+				})
 			} else {
-				res.status(304).send("Password Unable to update")
-				return;
+				return res.status(400).send({
+					"message": "Error",
+					"messageDetails": "Unable to update password."
+				})
 			}
+		}).catch(function(error){
+			console.log("Error::", error);
+			return res.status(500).send({
+				"message": "Error",
+            	"messageDetails": "Internal Server Error."
+			})
 		})
 	});
 }
-
 
 export function userProfile(req, res) {
 
@@ -702,7 +716,7 @@ export function forgotPassword(req, res) {
 											});
 											return res.status(201).send({
 												"message": "Success",
-												"messageDetails": "Instructions have been sent to associated email address. Please check the email and follow the instructions to reset password."
+												"messageDetails": "An email is on its way to you. Follow the instructions to reset your password."
 											});
 										} else {
 											return res.status(201).send({
@@ -733,7 +747,7 @@ export function forgotPassword(req, res) {
 			} else {
 				return res.status(400).send({
 					"message": "Error",
-					"messageDetails": "Your search did not return any results. Please try again with other information."
+					"messageDetails": "We could not find your email. Try another."
 				});
 			}
 		}).catch(function(error) {
