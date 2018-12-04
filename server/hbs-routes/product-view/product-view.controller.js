@@ -206,14 +206,12 @@ export function product(req, res) {
 					required: false,
 				}, {
 					model: model['TalkSetting'],
-					where: {
-						gtc_talk_enabled: status['ACTIVE']
-					},
 					required: false
 				}, {
 					model: model['User'],
 					attributes: ['id', 'first_name','last_name']
 				}];
+				vendorID = LoggedInUser.Vendor.id
 				service.findIdRow('Vendor', vendorID, vendorIncludeArr)
 					.then(function(response) {
 						return callback(null, response);

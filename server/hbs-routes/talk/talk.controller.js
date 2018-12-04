@@ -46,7 +46,7 @@ export function talk(req, res) {
 					return callback(null, talkSetting);
 				})
 				.catch(function(error) {
-					consolelog('Error:::', error);
+					console.log('Error:::', error);
 					return callback(error, null);
 				})
 		},
@@ -67,6 +67,19 @@ export function talk(req, res) {
 			service.findAllRows(timeModel, includeArr, queryObj1, 0, null, "id", "asc")
 				.then(function(timeZone) {
 					return callback(null, timeZone.rows);
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return callback(error, null);
+				})
+		},
+		vendorDetail: function(callback) {
+			var queryObj = {
+				id: req.user.Vendor.id
+			};
+			service.findOneRow('Vendor', queryObj, includeArr)
+				.then(function(vendorDetail) {
+					return callback(null, vendorDetail);
 				})
 				.catch(function(error) {
 					console.log('Error:::', error);
@@ -109,6 +122,7 @@ export function talk(req, res) {
 			res.render('vendorNav/talk', {
 				title: "Global Trade Connect",
 				talk: results.talk,
+				vendorDetail: results.vendorDetail,
 				busiHours: results.busiHours,
 				timeZone: results.timeZone,
 				dayCode: dayCode,
