@@ -944,9 +944,15 @@ function mailVendor(){
 		</div>
 	</div>
 </div>
-{{#if (and LoggedInUser.id
-		  (ne LoggedInUser.id VendorDetail.user_id))}}
+{{!-- {{#if (and LoggedInUser.id
+		  (ne LoggedInUser.id VendorDetail.user_id))}} --}}
+{{#ifCond VendorDetail.TalkSettings.[0].gtc_talk_enabled '==' "1"}}	
 {{>chat}}
-{{/if}}
+{{else}}
+   {{#ifCond VendorDetail.TalkSettings '==' ''}}
+   	{{>chat}}
+   {{/ifCond}}
+{{/ifCond}}
+{{!-- {{/if}} --}}
 {{> footer/bottom-footer}}
 
