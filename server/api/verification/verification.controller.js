@@ -50,24 +50,27 @@ export async function storeData(req, res) {
 		let vendor_id = req.user.Vendor.id;
 		bodyParam.vendor_id = vendor_id;
 		bodyParam.status = 1;
-		bodyParam.created_by = req.user.first_name + ' ' + (req.user.last_name ? req.user.last_name : null);
+		bodyParam.created_by = req.user.first_name;
 		bodyParam.created_on = new Date();
 		bodyParam.personal_id_verification_file_type = data.personal_id_verification_file_type;
 		if(req.files){
 			bodyParam.request_for_vendor_verification = 1;
 			bodyParam.vendor_verified_status = verificationStatus['WAITING'];
 		}else{
-			res.status(500).send("Upload atleast One Image");
+			res.status(500).send({
+						"message": "Error",
+						"messageDetails": "Upload atleast One Image"
+					});
 		}
 		for (let key in req.files) {
 			if (req.files.hasOwnProperty(key)) {
 				const parsedFile = path.parse(req.files[key].originalFilename);
 				const timeInMilliSeconds = new Date().getTime();
-				const uploadPath = config.images_base_path + "/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+				const uploadPath = config.images_base_path+ parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 
 				const productMediaUpload = await service.move(req.files[key].path, uploadPath);
 				if (productMediaUpload) {
-					bodyParam[key] = uploadPath;
+					bodyParam[key] = config.imageUrlRewritePath.base + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 					var status = key;
 					status = status.replace('link', 'status');
 					bodyParam[status] = verificationStatus['WAITING'];
@@ -77,10 +80,16 @@ export async function storeData(req, res) {
 		const createRow = await service.createRow(modelName, bodyParam);
 		if (createRow) {
 			if (!createRow) {
-				res.status(500).send("Internal server error");
+				res.status(500).send({
+						"message": "Error",
+						"messageDetails": "Internal server error."
+					});
 			} else {
 				
-				res.status(200).send("Verification Request Sent");
+				res.status(200).send({
+						"message": "Error",
+						"messageDetails": "Verification Request Sent"
+					});
 			}
 			return;
 		}
@@ -107,6 +116,7 @@ export async function updateData(req, res) {
 	var ID = req.params.id;
 	try {
 		const findData = await service.findIdRow(modelName, ID, includeArr);
+						 console.log("=====================",bodyParam)
 
 		if (findData) {
 			for (let key in req.files) {
@@ -116,7 +126,7 @@ export async function updateData(req, res) {
 					const uploadPath = config.images_base_path + "/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 					const productMediaUpload = await service.move(req.files[key].path, uploadPath);
 					if (productMediaUpload) {
-						bodyParam[key] = uploadPath;
+						bodyParam[key] = config.imageUrlRewritePath.base + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 						deleteImg[key] = findData[key];
 						var status = key;
 						status = status.replace('link', 'status');
@@ -125,27 +135,42 @@ export async function updateData(req, res) {
 				}
 			}
 			bodyParam.last_updated_on = new Date();
-			bodyParam.last_updated_by = req.user.first_name + ' ' + (req.user.last_name ? req.user.last_name : null);
+			bodyParam.last_updated_by = req.user.first_name;
 			const updateData = await service.updateRow(modelName, bodyParam, req.params.id);
 			if (!updateData) {
 
-				res.status(500).send("Internal server error");
+				res.status(500).send({
+						"message": "Error",
+						"messageDetails": "Internal server error."
+					});
 				return;
 			} else {
 				if(deleteImg){
 					for(let key in deleteImg){
-						const imgDeleteVar = await service.imgDelete(deleteImg[key]);
+						let newValue = deleteImg[key];
+						 newValue = newValue.replace(config.imageUrlRewritePath.base,'');  
+						 console.log("=====================",newValue)
+						const imgDeleteVar = await service.imgDelete(newValue);
 					}
 				}
-				res.status(200).send("Verification Request Sent");
+				res.status(200).send({
+						"message": "Success",
+						"messageDetails": "Verification Request Sent"
+					});
 				return;
 			}
 		} else {
-			res.status(500).send("Internal server error");
+			res.status(500).send({
+						"message": "Error",
+						"messageDetails": "Internal server error."
+					});
 			return;
 		}
 	} catch (error) {
 		console.log('Error :::', error);
-		return res.status(500).send("Internal server error");
+		return res.status(500).send({
+						"message": "Error",
+						"messageDetails": "Internal server error."
+					});
 	}
 }

@@ -6,13 +6,28 @@
 <script>
   var userInfo = {{{DisplayJSON LoggedInUser}}}
   $(document).ready(function() {
-	  $('#marketplace_type').val('');
-	  $('#category').val('');
-	  $('#location').val('');
+    $('#marketplace_type').val('');
+    $('#category').val('');
+    $('#location').val('');
     $("a[title='seller']").click(function() {
       if (userInfo.email) {} else {
         $('#myModal').modal('show');
       }
+    });
+    $("#searchSubmit").prop('disabled', true);
+    $('#depart, #category, #location').on('change', function() {
+      if ($(this).val() == '') {
+        $('#searchSubmit').prop('disabled', true);
+      } else {
+        $('#searchSubmit').prop('disabled', false);
+      }
+    });
+    $("#searchForm").submit(function(e) {
+      e.preventDefault();
+      let formInput = $("#searchForm :input").filter(function(index, element) {
+        return $(element).val() != '';
+      }).serialize();
+      window.location.href = '/products/search?' + formInput;
     });
   });
 </script>
