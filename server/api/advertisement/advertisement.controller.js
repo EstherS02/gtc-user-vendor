@@ -180,7 +180,7 @@ export async function editAd(req, res) {
 		});
 	}
 }
-// 
+// pls dont delete
 // export function index(req,res){
 // 		return new Promise((resolve, reject) => {
 // 			Sequelize_Instance.query(RawQueries.adProducts(), {
@@ -208,46 +208,50 @@ export async function index(req, res) {
 	var queryObj = {};
 	var newArray = [];
 	var results = {};
+	var type = req.query.type ? parseInt(req.query.type) : 0;
 	results.count = 0;
-	await model[productAdsSettingTable].findAndCountAll({
-		where: queryObj,
-		include:[{
-			model:model['Payment'],
-			attributes:['id','amount'],
-			required:false
-		}],
-		attributes: ['id', ['name', 'product_name'], 'position', 'start_date', 'end_date', 'status', 'impression', 'clicks', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on']
-	}).then(function(response) {
-		results.count = results.count + response.count;
-		var arrayItem = JSON.parse(JSON.stringify(response.rows));
+	if (type == 0 || type == 1) {
+		await model[productAdsSettingTable].findAndCountAll({
+			where: queryObj,
+			include: [{
+				model: model['Payment'],
+				attributes: ['id', 'amount'],
+				required: false
+			}],
+			attributes: ['id', ['name', 'product_name'], 'position', 'start_date', 'end_date', 'status', 'impression', 'clicks', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on']
+		}).then(function(response) {
+			results.count = results.count + response.count;
+			var arrayItem = JSON.parse(JSON.stringify(response.rows));
 
-		_.forOwn(arrayItem, function(element) {
-			element['type'] = 1;
-			newArray.push(element);
+			_.forOwn(arrayItem, function(element) {
+				element['type'] = 1;
+				newArray.push(element);
+			});
 		});
-	});
-
-	const featuredProductTable = 'FeaturedProduct';
-	await model[featuredProductTable].findAndCountAll({
-		where: queryObj,
-		include: [{
-			model: model['Product'],
-			attributes: ['product_name']
-		},{
-			model:model['Payment'],
-			attributes:['id','amount'],
-			required:false
-		}],
-		attributes: ['id', 'position_homepage', 'position_searchresult', 'position_profilepage', 'position_wholesale_landing', 'position_shop_landing', 'position_service_landing', 'position_subscription_landing', 'start_date', 'status', 'end_date', 'impression', 'clicks', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on']
-	}).then(function(response) {
-		results.count = results.count + response.count;
-		var arrayItem = JSON.parse(JSON.stringify(response.rows));
-		_.forOwn(arrayItem, function(element) {
-			element.type = 2;
-			element.product_name = element.Product.product_name;
-			newArray.push(element);
+	}
+	if (type == 0 || type == 2) {
+		const featuredProductTable = 'FeaturedProduct';
+		await model[featuredProductTable].findAndCountAll({
+			where: queryObj,
+			include: [{
+				model: model['Product'],
+				attributes: ['product_name']
+			}, {
+				model: model['Payment'],
+				attributes: ['id', 'amount'],
+				required: false
+			}],
+			attributes: ['id', 'position_homepage', 'position_searchresult', 'position_profilepage', 'position_wholesale_landing', 'position_shop_landing', 'position_service_landing', 'position_subscription_landing', 'start_date', 'status', 'end_date', 'impression', 'clicks', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on']
+		}).then(function(response) {
+			results.count = results.count + response.count;
+			var arrayItem = JSON.parse(JSON.stringify(response.rows));
+			_.forOwn(arrayItem, function(element) {
+				element.type = 2;
+				element.product_name = element.Product.product_name;
+				newArray.push(element);
+			});
 		});
-	});
+	}
 	let arrayEle = _.orderBy(newArray, 'created_on', 'desc');
 	results.rows = arrayEle.slice(offset, offset + limit);
 
