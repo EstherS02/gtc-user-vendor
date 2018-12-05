@@ -161,6 +161,17 @@ export function revenue(req, res) {
 					return callback(null);
 				});
 		},
+		vendorRevenue: function(callback) {
+			req.query.vendorID=req.user.Vendor.id;
+			reportsService.adFeaturedRevenue(req, res)
+				.then((response) => {
+					return callback(null, response);
+				})
+				.catch((error) => {
+					console.log("error--------------------", error)
+					return callback(null);
+				});
+		}
 	}, function(error, results) {
 		if (!error) {
 			return res.render('vendorNav/reporting/revenue', {
@@ -168,8 +179,9 @@ export function revenue(req, res) {
 				selectedPage: 'revenue',
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
-				cart:results.cartInfo,
-				unreadCounts:results.unreadCounts
+				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts,
+				vendorRevenue:results.vendorRevenue
 			});
 		}
 	})
@@ -201,8 +213,8 @@ export function processing(req, res) {
 				selectedPage: 'processing',
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
-				cart:results.cartInfo,
-				unreadCounts:results.unreadCounts
+				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts
 			});
 		}
 	})
@@ -234,8 +246,8 @@ export function subscription(req, res) {
 				selectedPage: 'subscription',
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
-				cart:results.cartInfo,
-				unreadCounts:results.unreadCounts
+				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts
 			});
 		}
 	})
@@ -267,8 +279,8 @@ export function gtcpay(req, res) {
 				selectedPage: 'gtcpay',
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
-				cart:results.cartInfo,
-				unreadCounts:results.unreadCounts
+				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts
 			});
 		}
 	})
@@ -300,8 +312,8 @@ export function membership(req, res) {
 				selectedPage: 'membership',
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
-				cart:results.cartInfo,
-				unreadCounts:results.unreadCounts
+				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts
 			});
 		}
 	})
