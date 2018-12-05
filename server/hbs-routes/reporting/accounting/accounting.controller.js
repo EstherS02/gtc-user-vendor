@@ -293,6 +293,47 @@ export function membership(req, res) {
 					return callback(null);
 				});
 		},
+		membershipDetails: function(callback)
+		{
+			var queryParams = {};
+			var field = "id";
+			var order = "desc";
+			var offset= 0;
+			var limit = null;
+			var limit = req.query.limit ? parseInt(req.query.limit) : 10;
+			var offset = req.query.offset ? parseInt(req.query.offset) : 0;
+			var page = req.query.page ? parseInt(req.query.page) : 1;
+
+			queryParams['page'] = page;
+			queryParams['limit'] = limit;
+			offset = (page - 1) * limit;
+		    var includeArr = [{
+			model: model['Payment'],
+			where: {
+			   id:  {
+				   $ne: null
+				   
+			   }
+		     },
+			attributes: ['id','amount','date','created_on'],
+    		}]
+ 		   var queryObj = {
+			vendor_id:  LoggedInUser.Vendor.id,
+			payment_id:  {
+				$ne: null
+				
+			}
+		    }
+
+		service.findAllRows('VendorPlan', includeArr, queryObj,offset, limit, field, order).
+		then(function(membershipDetails) {
+		var membershipDetails = membershipDetails;
+		return callback(null, membershipDetails);
+		}).catch(function(error) {
+		console.log('Error :::', error);
+		return callback(null);
+		});
+		}
 	}, function(error, results) {
 		if (!error) {
 			return res.render('vendorNav/reporting/membership', {
@@ -300,6 +341,7 @@ export function membership(req, res) {
 				selectedPage: 'membership',
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
+				membershipDetails:results.membershipDetails,
 				cart:results.cartInfo,
 				unreadCounts:results.unreadCounts
 			});
