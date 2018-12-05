@@ -141,3 +141,36 @@ export function accounting(req, res) {
 		}
 	});
 }
+
+export function revenue(req, res) {
+	var LoggedInUser = req.user;
+	async.series({
+		cartInfo: function(callback) {
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
+	}, function(error, results) {
+		if (!error) {
+			return res.render('vendorNav/reporting/revenue', {
+				title: "Global Trade Connect",
+				selectedPage: 'revenue',
+				LoggedInUser: LoggedInUser,
+				vendorPlan: vendorPlan,
+				cart:results.cartInfo,
+				unreadCounts:results.unreadCounts
+			});
+		}
+	})
+}
