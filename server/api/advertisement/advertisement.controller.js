@@ -282,7 +282,7 @@ export async function index(req, res) {
 		var startDate = moment().add(-30,'days');
 		var endDate = moment().format("YYYY-MM-DD");
 		queryObj1['created_on'] = {
-				'$gte':startDate,//moment(startDate,"DD-MM-YYYY"),
+				'$gte':startDate,
 				'$lte':endDate
 			}
 			queryObj2['created_on']= queryObj1['created_on'];
@@ -299,6 +299,7 @@ export async function index(req, res) {
 
 
 	results.count = 0;
+	results.total = 0;
 	if (type == 0 || type == 1) {
 		await model[productAdsSettingTable].findAndCountAll({
 			where: queryObj1,
@@ -314,6 +315,7 @@ export async function index(req, res) {
 
 			_.forOwn(arrayItem, function(element) {
 				element['type'] = 1;
+				element['feature_indefinitely'] = null;
 				newArray.push(element);
 			});
 		});
@@ -331,7 +333,7 @@ export async function index(req, res) {
 				attributes: ['id', 'amount'],
 				required: false
 			}],
-			attributes: ['id', 'position_homepage', 'position_searchresult', 'position_profilepage', 'position_wholesale_landing', 'position_shop_landing', 'position_service_landing', 'position_subscription_landing', 'start_date', 'status', 'end_date', 'impression', 'clicks', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on']
+			attributes: ['id', 'position_homepage','feature_indefinitely', 'position_searchresult', 'position_profilepage', 'position_wholesale_landing', 'position_shop_landing', 'position_service_landing', 'position_subscription_landing', 'start_date', 'status', 'end_date', 'impression', 'clicks', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on']
 		}).then(function(response) {
 			results.count = results.count + response.count;
 			var arrayItem = JSON.parse(JSON.stringify(response.rows));
@@ -343,7 +345,15 @@ export async function index(req, res) {
 		});
 	}
 	let arrayEle = _.orderBy(newArray, 'created_on', 'desc');
-	results.rows = arrayEle.slice(offset, offset + limit);
-
+	arrayEle = arrayEle.slice(offset, offset + limit);
+	var total_count = 0;
+	for (var i = 0; i < arrayEle.length; i++) {
+		if(arrayEle[i].Payment){
+			if(arrayEle[i].Payment.amount != null)
+			total_count = total_count + parseInt(arrayEle[i].Payment.amount);
+		}
+	}
+	results.rows = arrayEle;
+	results.total = total_count;
 	return res.status(200).send(results);
 }

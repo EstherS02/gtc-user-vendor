@@ -65,6 +65,22 @@ export async function AccountingReport(vendorID, queryParams) {
 		});
 		const featuredProductExpensive = await JSON.parse(JSON.stringify(featuredProductExpensiveResponse));
 		accounting['featured_product'] = await parseFloat(_.sumBy(featuredProductExpensive, 'Payment.amount'));
+		adminQueryObj.created_on = queryObj.created_on;
+		const productAdSettingsExpensiveResponse = await model['ProductAdsSetting'].findAll({
+			include: [ {
+				model: model['Payment'],
+				where: {
+					status: status['ACTIVE']
+				},
+				attributes: ['id', 'amount']
+			}],
+			where:adminQueryObj ,
+			attributes: ['id', 'product_id', 'payment_id']
+		});
+		delete adminQueryObj.created_on;
+		const productAdSettingsExpensive = await JSON.parse(JSON.stringify(productAdSettingsExpensiveResponse));
+		
+		accounting['featured_product'] = accounting['featured_product'] + await parseFloat(_.sumBy(productAdSettingsExpensive, 'Payment.amount'));
 
 		const processingFees = await model['OrderVendor'].findAll({
 			raw: true,
