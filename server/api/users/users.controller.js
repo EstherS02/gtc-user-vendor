@@ -442,12 +442,12 @@ export function resetPassword(req, res) {
 	var UserModel = "User";
 
 	if (req.body) {
-		req.checkBody('email', 'Missing Query Param').notEmpty();
-		req.checkBody('new_password', 'Missing Query Param').notEmpty();
-		req.checkBody('new_confirm_password', 'Missing Query Param').notEmpty();
-		req.checkBody('new_confirm_password', 'new_confirm_password should be equal to new_password').equals(req.body.new_password);
+		req.checkBody('email', 'Email is missing.').notEmpty();
+		req.checkBody('new_password', 'Password is missing.').notEmpty();
+		req.checkBody('new_confirm_password', 'Confirm password is missing.').notEmpty();
+		req.checkBody('new_confirm_password', 'Confirm password should be equal to new password.').equals(req.body.new_password);
 	}
-	
+
 	var errors = req.validationErrors();
 	if (errors) {
 		console.log("Error::", errors)
@@ -473,7 +473,7 @@ export function resetPassword(req, res) {
 		if (result.forgot_password_token != forgot_password_token) {
 			return res.status(400).send({
 				"message": "Error",
-				"messageDetails": "The forgot password link sent to your mail has been expired. Please generate new link."
+				"messageDetails": "The forgot password link sent to your mail has been expired. Request a new password reset email."
 			})
 		}
 
@@ -484,7 +484,7 @@ export function resetPassword(req, res) {
 		if (current_time >= expire_time2) {
 			return res.status(400).send({
 				"message": "Error",
-				"messageDetails": "The forgot password link sent to your mail has been expired. Please generate new link."
+				"messageDetails": "The forgot password link sent to your mail has been expired. Request a new password reset email."
 			})
 		}
 		service.updateRow(UserModel, bodyParams, userId)
@@ -497,7 +497,7 @@ export function resetPassword(req, res) {
 			} else {
 				return res.status(400).send({
 					"message": "Error",
-					"messageDetails": "Unable to update password."
+					"messageDetails": "Something went wrong, request a new password reset email."
 				})
 			}
 		}).catch(function(error){
@@ -507,7 +507,13 @@ export function resetPassword(req, res) {
             	"messageDetails": "Internal Server Error."
 			})
 		})
-	});
+	}).catch(function(error){
+		console.log("Error::", error);
+		return res.status(500).send({
+			"message": "Error",
+			"messageDetails": "Internal Server Error."
+		})
+	})
 }
 
 export function userProfile(req, res) {
@@ -663,7 +669,7 @@ export function forgotPassword(req, res) {
 
 	var queryParams = {},
 		bodyParams = {},
-		user_id;
+		user_id, role;
 	var userModel = 'User';
 	var randomCode = uuid.v1();
 	var queryParams = {
@@ -673,7 +679,9 @@ export function forgotPassword(req, res) {
 	service.findOneRow(userModel, queryParams, [])
 		.then(function(user) {
 			if (user) {
+
 				user_id = user.id;
+				role = user.role;
 				bodyParams['forgot_password_token'] = randomCode;
 				bodyParams['forgot_password_token_generated'] = new Date();
 
@@ -703,7 +711,11 @@ export function forgotPassword(req, res) {
 											var subject = response.subject;
 											var body;
 											body = response.body.replace('%USERNAME%', username);
-											body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + email + "&forgot_password_token=" + forgot_password_token);
+
+											if (role == roles['ADMIN'])
+												body = body.replace('%LINK%', config.clientURL + '/reset-password?email=' + email + "&forgot_password_token=" + forgot_password_token);							
+											else
+												body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + email + "&forgot_password_token=" + forgot_password_token);
 
 											var mailArray = [];
 											mailArray.push({
@@ -727,7 +739,7 @@ export function forgotPassword(req, res) {
 									} else {
 										return res.status(400).send({
 											"message": "Error",
-											"messageDetails": "Unable to reset password. Please try later."
+											"messageDetails": "Something went wrong, request a new password reset email."
 										});
 									}
 								}).catch(function(error) {
@@ -740,7 +752,7 @@ export function forgotPassword(req, res) {
 						} else {
 							return res.status(400).send({
 								"message": "Error",
-								"messageDetails": "Unable to reset password. Please try later."
+								"messageDetails": "Something went wrong, request a new password reset email."
 							});
 						}
 					})
