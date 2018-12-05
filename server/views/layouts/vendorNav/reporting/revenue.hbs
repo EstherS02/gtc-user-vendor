@@ -24,12 +24,6 @@
 									<table class="table order-table">
 										<thead>
 											<tr>
-												<th>
-													<div class="customCheckbox">
-														<input type="checkbox" onclick="selectAll(this);" id="inputCheckbox" class="customCheckboxInput">
-														<label class="checkbox-b" for="inputCheckbox"></label>
-													</div>
-												</th>
 												<th scope="col">Ad/Listing Name</th>
 												<th scope="col">type</th>
 												<th scope="col">Position</th>
@@ -41,15 +35,9 @@
 												<th scope="col">Cost to Vendor</th>
 											</tr>
 										</thead>
-										{{#if vendorRevenue}}
+										{{#if vendorRevenue.rows}}
 											{{#each vendorRevenue.rows}}
 												<tbody>
-													<td>
-														<div class="customCheckbox">
-															<input type="checkbox" id="inputTerms{{this.id}}" class="customCheckboxInput" name="selected" value= {{this.id}}>
-															<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
-														</div>
-													</td>
 													<td>{{this.product_name}}</td>
 													<td>{{this.type}}</td>
 													<td>{{this.position}}</td>
@@ -65,12 +53,10 @@
 													{{else}}
 														<td>0</td>
 													{{/if}}
-													<td>null</td>
+													<td>-</td>
 													<td>{{this.Payment.amount}}</td>
 												</tbody>
 											{{/each}}
-										{{else}}
-											<p class="no-data">no data found</p>
 										{{/if}}
 									</table>
 								</div>
