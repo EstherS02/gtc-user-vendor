@@ -174,3 +174,135 @@ export function revenue(req, res) {
 		}
 	})
 }
+
+export function processing(req, res) {
+	var LoggedInUser = req.user;
+	async.series({
+		cartInfo: function(callback) {
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
+	}, function(error, results) {
+		if (!error) {
+			return res.render('vendorNav/reporting/processing', {
+				title: "Global Trade Connect",
+				selectedPage: 'processing',
+				LoggedInUser: LoggedInUser,
+				vendorPlan: vendorPlan,
+				cart:results.cartInfo,
+				unreadCounts:results.unreadCounts
+			});
+		}
+	})
+}
+
+export function subscription(req, res) {
+	var LoggedInUser = req.user;
+	async.series({
+		cartInfo: function(callback) {
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
+	}, function(error, results) {
+		if (!error) {
+			return res.render('vendorNav/reporting/subscription', {
+				title: "Global Trade Connect",
+				selectedPage: 'subscription',
+				LoggedInUser: LoggedInUser,
+				vendorPlan: vendorPlan,
+				cart:results.cartInfo,
+				unreadCounts:results.unreadCounts
+			});
+		}
+	})
+}
+
+export function gtcpay(req, res) {
+	var LoggedInUser = req.user;
+	async.series({
+		cartInfo: function(callback) {
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
+	}, function(error, results) {
+		if (!error) {
+			return res.render('vendorNav/reporting/gtcpay', {
+				title: "Global Trade Connect",
+				selectedPage: 'gtcpay',
+				LoggedInUser: LoggedInUser,
+				vendorPlan: vendorPlan,
+				cart:results.cartInfo,
+				unreadCounts:results.unreadCounts
+			});
+		}
+	})
+}
+
+export function membership(req, res) {
+	var LoggedInUser = req.user;
+	async.series({
+		cartInfo: function(callback) {
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
+	}, function(error, results) {
+		if (!error) {
+			return res.render('vendorNav/reporting/membership', {
+				title: "Global Trade Connect",
+				selectedPage: 'membership',
+				LoggedInUser: LoggedInUser,
+				vendorPlan: vendorPlan,
+				cart:results.cartInfo,
+				unreadCounts:results.unreadCounts
+			});
+		}
+	})
+}
