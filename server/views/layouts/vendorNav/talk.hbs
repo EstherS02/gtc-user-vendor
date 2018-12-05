@@ -1,5 +1,23 @@
 <script type="text/javascript">
 	$(document).ready(function() {
+		$("#UpdateTalks").prop('disabled', true);
+		$('input[type=radio][name=gtc_talk_enabled]').change(function() {
+			$("#UpdateTalks").prop('disabled', false);
+		})
+		$('input[type=radio][name=talk_profile_pic_url_radio]').change(function() {
+			$("#UpdateTalks").prop('disabled', false);
+		})
+		$('textarea[name=default_msg]').keyup(function(){
+			if($('textarea[name=default_msg]').val()=='')
+			{
+               $("#UpdateTalks").prop('disabled', true);
+			}
+			else
+			{
+				$("#UpdateTalks").prop('disabled', false);
+			}
+        
+        });
 		$("#hideNewTimeSlotForm").hide();
 		$("#addTimeSlotFormNew").hide();
 		$("#addNewTimeSlotForm").click(function() {
@@ -16,7 +34,7 @@
 	});
 
 	$(document).ready(function() {
-		$("#uploadOperationHours").click(function(e) {
+			$("#uploadOperationHours").click(function(e) {
 			e.preventDefault();
 			// alert($('#start_time').val(), $('input[name=end_time]').val())
 			var op_hours = {};
@@ -59,10 +77,6 @@
 		});
 	}
 	$(document).ready(function() {
-		
-		if (!$('input[name=gtc_talk_enabled]').is(':checked')) {
-			$("#UpdateTalks").prop('disabled', false);
-		}
 		 document.getElementById('selectedFile').onchange = uploadOnChange;
          function uploadOnChange() {
          var filename = this.value;
@@ -101,7 +115,7 @@
 					}
 				});
 			} else {
-				var imgVal = $('input[name=talk_profile_pic_url]').val();
+ 				var imgVal = $('input[name=talk_profile_pic_url]').val();
 				var form = new FormData();
 				form.append("file", $("#selectedFile")[0].files[0]);
 				if (imgVal) {
