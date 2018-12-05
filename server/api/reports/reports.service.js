@@ -245,6 +245,10 @@ export async function adFeaturedRevenue(req,res){
 		}
 		productQuery['product_name'] = queryObj1['name'];
 	}
+	if(queryObj.vendorID){
+		queryObj1.vendor_id = queryObj.vendorID;
+		productQuery.vendor_id = queryObj.vendorID;
+	}
 
 	results.count = 0;
 	results.total = 0;
