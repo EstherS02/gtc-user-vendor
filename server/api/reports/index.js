@@ -17,5 +17,6 @@ router.get('/top-selling-cities', auth.isAuthenticated(), controller.topSellingC
 router.get('/active-buyers', auth.isAuthenticated(), controller.topActiveBuyers);
 router.get('/latest-tickets', auth.isAuthenticated(), controller.latestTickets);
 router.get('/latest-refunds', auth.isAuthenticated(), controller.latestRefunds);
+router.get('/accounting', auth.isAuthenticated(), controller.accounting);
 
 module.exports = router;

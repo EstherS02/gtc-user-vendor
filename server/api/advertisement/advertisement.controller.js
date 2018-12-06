@@ -209,7 +209,6 @@ export function index(req, res) {
 					return res.status(200).send(response);
 				})
 				.catch((error) => {
-					console.log("error--------------------",error)
 					return res.status(500).send(error);
 				});
 }

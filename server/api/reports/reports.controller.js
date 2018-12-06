@@ -8,6 +8,7 @@ const statusCode = require('../../config/status');
 const carrierCode = require('../../config/carriers');
 const orderStaus = require('../../config/order_status');
 const ReportService = require('../../utilities/reports');
+const reportsService = require('../../api/reports/reports.service');
 var moment = require('moment');
 var async = require('async');
 
@@ -167,6 +168,21 @@ export function latestRefunds(req, res){
 	/*if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;*/
 	queryObj.order_status = 6;
+	model['User'].findAll({
+		raw:true,
+		where:queryObj,
+		attributes: ['id', 'first_name', 'last_name', 'user_status'],
+		include:[{
+			model:model['Order'],
+			include:[{
+				model:model['OrderItem'],
+				where:queryObj,
+				include:[{
+					model:model['Product']
+				}]
+			}]
+		}]
+	});
 	model['UserOrder'].findAll({
 		raw: true,
 		where: queryObj,
@@ -342,4 +358,26 @@ export function comparePerformance(req, res){
 		console.log('comparePerformance err', err);
 		return res.status(500).send(err);
 	});
+}
+
+export function accounting(req,res){
+	var accountingQueryParams = {};
+	if(req.query.start_date){
+			accountingQueryParams['start_date'] = new Date(req.query.start_date);
+			accountingQueryParams['end_date'] = new Date(req.query.end_date);		
+			}
+		else{
+		accountingQueryParams['start_date'] = moment().subtract(30, 'days').format('MM/DD/YYYY');
+		accountingQueryParams['end_date'] = moment().subtract(1, 'days').format('MM/DD/YYYY');
+
+		}
+			reportsService.AccountingReport(0, accountingQueryParams)
+				.then((response) => {
+					console.log(response)
+					return res.status(200).send(response);
+				})
+				.catch((error) => {
+					console.log(error)
+					return res.status(200).send("internal server error");
+				});
 }
