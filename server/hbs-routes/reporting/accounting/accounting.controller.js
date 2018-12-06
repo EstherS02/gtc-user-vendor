@@ -141,3 +141,222 @@ export function accounting(req, res) {
 		}
 	});
 }
+
+export function revenue(req, res) {
+	var LoggedInUser = req.user;
+	async.series({
+		cartInfo: function(callback) {
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
+		vendorRevenue: function(callback) {
+			req.query.vendorID=req.user.Vendor.id;
+			reportsService.adFeaturedRevenue(req, res)
+				.then((response) => {
+					return callback(null, response);
+				})
+				.catch((error) => {
+					console.log("error--------------------", error)
+					return callback(null);
+				});
+		}
+	}, function(error, results) {
+		if (!error) {
+			return res.render('vendorNav/reporting/revenue', {
+				title: "Global Trade Connect",
+				selectedPage: 'revenue',
+				LoggedInUser: LoggedInUser,
+				vendorPlan: vendorPlan,
+				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts,
+				vendorRevenue:results.vendorRevenue
+			});
+		}
+	})
+}
+
+export function processing(req, res) {
+	var LoggedInUser = req.user;
+	async.series({
+		cartInfo: function(callback) {
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
+	}, function(error, results) {
+		if (!error) {
+			return res.render('vendorNav/reporting/processing', {
+				title: "Global Trade Connect",
+				selectedPage: 'processing',
+				LoggedInUser: LoggedInUser,
+				vendorPlan: vendorPlan,
+				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts
+			});
+		}
+	})
+}
+
+export function subscription(req, res) {
+	var LoggedInUser = req.user;
+	async.series({
+		cartInfo: function(callback) {
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
+	}, function(error, results) {
+		if (!error) {
+			return res.render('vendorNav/reporting/subscription', {
+				title: "Global Trade Connect",
+				selectedPage: 'subscription',
+				LoggedInUser: LoggedInUser,
+				vendorPlan: vendorPlan,
+				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts
+			});
+		}
+	})
+}
+
+export function gtcpay(req, res) {
+	var LoggedInUser = req.user;
+	async.series({
+		cartInfo: function(callback) {
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
+	}, function(error, results) {
+		if (!error) {
+			return res.render('vendorNav/reporting/gtcpay', {
+				title: "Global Trade Connect",
+				selectedPage: 'gtcpay',
+				LoggedInUser: LoggedInUser,
+				vendorPlan: vendorPlan,
+				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts
+			});
+		}
+	})
+}
+
+export function membership(req, res) {
+	var LoggedInUser = req.user;
+	async.series({
+		cartInfo: function(callback) {
+			cartService.cartCalculation(LoggedInUser.id, req, res)
+				.then((cartResult) => {
+					return callback(null, cartResult);
+				}).catch((error) => {
+					return callback(error);
+				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
+		membershipDetails: function(callback)
+		{
+			var queryParams = {};
+			var field = "id";
+			var order = "desc";
+			var offset= 0;
+			var limit = null;
+			var limit = req.query.limit ? parseInt(req.query.limit) : 10;
+			var offset = req.query.offset ? parseInt(req.query.offset) : 0;
+			var page = req.query.page ? parseInt(req.query.page) : 1;
+
+			queryParams['page'] = page;
+			queryParams['limit'] = limit;
+			offset = (page - 1) * limit;
+		    var includeArr = [{
+			model: model['Payment'],
+			where: {
+			   id:  {
+				   $ne: null
+				   
+			   }
+		     },
+			attributes: ['id','amount','date','created_on'],
+    		}]
+ 		   var queryObj = {
+			vendor_id:  LoggedInUser.Vendor.id,
+			payment_id:  {
+				$ne: null
+				
+			}
+		    }
+
+		service.findAllRows('VendorPlan', includeArr, queryObj,offset, limit, field, order).
+		then(function(membershipDetails) {
+		var membershipDetails = membershipDetails;
+		return callback(null, membershipDetails);
+		}).catch(function(error) {
+		console.log('Error :::', error);
+		return callback(null);
+		});
+		}
+	}, function(error, results) {
+		if (!error) {
+			return res.render('vendorNav/reporting/membership', {
+				title: "Global Trade Connect",
+				selectedPage: 'membership',
+				LoggedInUser: LoggedInUser,
+				vendorPlan: vendorPlan,
+				membershipDetails:results.membershipDetails,
+				cart: results.cartInfo,
+				unreadCounts: results.unreadCounts
+			});
+		}
+	})
+}

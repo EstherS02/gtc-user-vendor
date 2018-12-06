@@ -164,6 +164,7 @@ export async function adFeaturedRevenue(req,res){
 	var results = {};
 	var productQuery ={};
 
+	console.log("----------------------------------------query",req.user.Vendor.id);
 
 	var type = req.query.type ? parseInt(req.query.type) : 0;
 	
