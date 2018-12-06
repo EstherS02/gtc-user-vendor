@@ -95,7 +95,10 @@ export async function storeData(req, res) {
 		}
 	} catch (error) {
 		console.log('Error:::', error);
-		return res.status(500).send(error);
+		return res.status(500).send({
+						"message": "Error",
+						"messageDetails": "Verification Request Sent"
+					});
 	}
 
 
@@ -116,7 +119,6 @@ export async function updateData(req, res) {
 	var ID = req.params.id;
 	try {
 		const findData = await service.findIdRow(modelName, ID, includeArr);
-						 console.log("=====================",bodyParam)
 
 		if (findData) {
 			for (let key in req.files) {
@@ -147,12 +149,14 @@ export async function updateData(req, res) {
 			} else {
 				if(deleteImg){
 					for(let key in deleteImg){
-						let newValue = deleteImg[key];
-						 newValue = newValue.replace(config.imageUrlRewritePath.base,'');  
-						 console.log("=====================",newValue)
-						const imgDeleteVar = await service.imgDelete(newValue);
+						if(deleteImg[key] != '' && deleteImg[key] != null){
+							let newValue = deleteImg[key];
+						 	newValue = newValue.replace(config.imageUrlRewritePath.base,'');  
+							const imgDeleteVar = await service.imgDelete(newValue);
+						}
 					}
 				}
+				// src="/images/addressproof3-1544079897727.jpg"
 				res.status(200).send({
 						"message": "Success",
 						"messageDetails": "Verification Request Sent"

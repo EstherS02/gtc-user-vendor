@@ -204,11 +204,11 @@ export async function editAd(req, res) {
 
 // }
 export function index(req, res) {
-	reportsService.adFeaturedRevenue(req,res)
-				.then((response) => {
-					return res.status(200).send(response);
-				})
-				.catch((error) => {
-					return res.status(500).send(error);
-				});
+	reportsService.adFeaturedRevenue(req, res)
+		.then((response) => {
+			return res.status(200).send(response);
+		})
+		.catch((error) => {
+			return res.status(500).send(error);
+		});
 }

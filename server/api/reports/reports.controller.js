@@ -164,34 +164,28 @@ export function latestTickets(req, res){
 
 export function latestRefunds(req, res){
 	var queryObj = {};
+	var vendorQuery = {};
 	var result = {};
-	/*if (req.user.role == 2)
-		queryObj.vendor_id = req.user.Vendor.id;*/
-	queryObj.order_status = 6;
+	if (req.user.role == 2)
+		vendorQuery.vendor_id = req.user.Vendor.id;
+	queryObj.order_item_status = 6;
 	model['User'].findAll({
-		raw:true,
-		where:queryObj,
-		attributes: ['id', 'first_name', 'last_name', 'user_status'],
+		attributes: ['id', 'first_name', 'last_name', 'status'],
+		limit:5,
 		include:[{
 			model:model['Order'],
+			attributes:['id'],
 			include:[{
 				model:model['OrderItem'],
+				attributes:['id','order_item_status'],
 				where:queryObj,
 				include:[{
-					model:model['Product']
+					model:model['Product'],
+					where:vendorQuery,
+					attributes:[]
 				}]
 			}]
 		}]
-	});
-	model['UserOrder'].findAll({
-		raw: true,
-		where: queryObj,
-		attributes: ['id', 'first_name', 'last_name', 'user_status'],
-		group: ['id'],
-		order: [
-			['created_on', 'DESC']
-		],
-		limit: 5
 	}).then(function(results) {
 		if (results.length > 0)
 			result = results;
@@ -359,25 +353,23 @@ export function comparePerformance(req, res){
 		return res.status(500).send(err);
 	});
 }
-
-export function accounting(req,res){
+export function accounting(req, res) {
 	var accountingQueryParams = {};
-	if(req.query.start_date){
-			accountingQueryParams['start_date'] = new Date(req.query.start_date);
-			accountingQueryParams['end_date'] = new Date(req.query.end_date);		
-			}
-		else{
-		accountingQueryParams['start_date'] = moment().subtract(30, 'days').format('MM/DD/YYYY');
-		accountingQueryParams['end_date'] = moment().subtract(1, 'days').format('MM/DD/YYYY');
+	if (req.query.start_date) {
+		accountingQueryParams['start_date'] = new Date(req.query.start_date);
+		accountingQueryParams['end_date'] = new Date(req.query.end_date);
+	} else {
+		accountingQueryParams['start_date'] = moment().subtract(30, 'days').format('YYYY-MM-DD');
+		accountingQueryParams['end_date'] = moment().subtract(1, 'days').format('YYYY-MM-DD');
 
-		}
-			reportsService.AccountingReport(0, accountingQueryParams)
-				.then((response) => {
-					console.log(response)
-					return res.status(200).send(response);
-				})
-				.catch((error) => {
-					console.log(error)
-					return res.status(200).send("internal server error");
-				});
+	}
+	reportsService.AccountingReport(0, accountingQueryParams)
+		.then((response) => {
+			console.log(response)
+			return res.status(200).send(response);
+		})
+		.catch((error) => {
+			console.log(error)
+			return res.status(200).send("internal server error");
+		});
 }
