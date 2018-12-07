@@ -99,11 +99,11 @@ function getAllPerformance(queryObj, limit, offset) {
 
 }
 
-
-export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween) {
+export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween, offset, limit) {
     console.log('topPerformingProducts', orderItemQueryObj);
     return new Promise((resolve, reject) => {
-        var result = {};
+		var result = {};
+		var Limit = parseInt(limit), Offset = parseInt(offset);//added for admin perpose
         const pastRange = _.assign({}, orderItemQueryObj);
         pastRange.item_created_on = {
             $between: lhsBetween
@@ -122,9 +122,10 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
             order: [
                 [sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
             ],
-            limit: 5,
-            offset: 0
+            limit: Limit,
+            offset: Offset
         }).then(function(results) {
+
             if (results.length > 0)
                 result.rows = results;
             else
@@ -152,10 +153,11 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
     });
 }
 
-export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween) {
+export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween, offset, limit) {
     console.log('topPerformingMarketPlaces', orderItemQueryObj);
     return new Promise((resolve, reject) => {
-        var result = {};
+		var result = {};
+		var Limit = parseInt(limit), Offset = parseInt(offset);//added for admin perpose
         const pastRange = _.assign({}, orderItemQueryObj);
         pastRange.item_created_on = {
             $between: lhsBetween
@@ -172,8 +174,8 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
             order: [
                 [sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
             ],
-            limit: 5,
-            offset: 0
+            limit: Limit,
+            offset: Offset
         }).then(function(results) {
             if (results.length > 0)
                 result.rows = results;
@@ -201,10 +203,11 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
     })
 }
 
-export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween) {
+export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween,  offset, limit) {
     console.log('topPerformingCategories', orderItemQueryObj);
     return new Promise((resolve, reject) => {
-        var result = {};
+		var result = {};
+		var Limit = parseInt(limit), Offset = parseInt(offset);//added for admin perpose
         const pastRange = _.assign({}, orderItemQueryObj);
         pastRange.item_created_on = {
             $between: lhsBetween
@@ -221,8 +224,8 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
             order: [
                 [sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
             ],
-            limit: 5,
-            offset: 0
+            limit: Limit,
+            offset: Offset
         }).then(function(results) {
             if (results.length > 0)
                 result.rows = results;
