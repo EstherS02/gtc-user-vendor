@@ -113,14 +113,8 @@ export async function editAd(req, res) {
 
 	const startDate = new Date(req.body.start_date);
 	const endDate = new Date(req.body.end_date);
-	const currentDate = new Date();
 
-	if (startDate <= currentDate) {
-		return res.status(400).send({
-			"message": "Error",
-			"messageDetails": "Start date must be greater than current date."
-		});
-	} else if (endDate < startDate) {
+	if (endDate < startDate) {
 		return res.status(400).send({
 			"message": "Error",
 			"messageDetails": "End date must be greater than start date."
