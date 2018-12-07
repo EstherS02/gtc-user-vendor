@@ -99,11 +99,11 @@ function getAllPerformance(queryObj, limit, offset) {
 
 }
 
-
-export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween) {
+export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween, offset, limit) {
     console.log('topPerformingProducts', orderItemQueryObj);
     return new Promise((resolve, reject) => {
-        var result = {};
+		var result = {};
+		var Limit = parseInt(limit), Offset = parseInt(offset);//added for admin perpose
         const pastRange = _.assign({}, orderItemQueryObj);
         pastRange.item_created_on = {
             $between: lhsBetween
@@ -122,9 +122,10 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
             order: [
                 [sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
             ],
-            limit: 5,
-            offset: 0
+            limit: Limit,
+            offset: Offset
         }).then(function(results) {
+
             if (results.length > 0)
                 result.rows = results;
             else
@@ -152,10 +153,11 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
     });
 }
 
-export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween) {
+export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween, offset, limit) {
     console.log('topPerformingMarketPlaces', orderItemQueryObj);
     return new Promise((resolve, reject) => {
-        var result = {};
+		var result = {};
+		var Limit = parseInt(limit), Offset = parseInt(offset);//added for admin perpose
         const pastRange = _.assign({}, orderItemQueryObj);
         pastRange.item_created_on = {
             $between: lhsBetween
@@ -172,8 +174,8 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
             order: [
                 [sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
             ],
-            limit: 5,
-            offset: 0
+            limit: Limit,
+            offset: Offset
         }).then(function(results) {
             if (results.length > 0)
                 result.rows = results;
@@ -201,10 +203,11 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
     })
 }
 
-export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween) {
+export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween,  offset, limit) {
     console.log('topPerformingCategories', orderItemQueryObj);
     return new Promise((resolve, reject) => {
-        var result = {};
+		var result = {};
+		var Limit = parseInt(limit), Offset = parseInt(offset);//added for admin perpose
         const pastRange = _.assign({}, orderItemQueryObj);
         pastRange.item_created_on = {
             $between: lhsBetween
@@ -221,8 +224,8 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
             order: [
                 [sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
             ],
-            limit: 5,
-            offset: 0
+            limit: Limit,
+            offset: Offset
         }).then(function(results) {
             if (results.length > 0)
                 result.rows = results;
@@ -507,24 +510,27 @@ export function exportperformanceChanges(queryObj, lhsBetween, rhsBetween, limit
 
 // started selected values to exported the export functions//
 function getAllexportPerformance(queryObj, limit, offset) {
-    return new Promise((resolve, reject) => {
-        SequelizeInstance.query(`SELECT
-				( SELECT product_name FROM product WHERE product.id = order_items.product_id
-     				LIMIT 1 ) AS product_name,
-     			( SELECT NAME FROM marketplace WHERE product.marketplace_id = marketplace.id
-					LIMIT 1 ) AS marketplace_name,
-    			SUM(orders.total_price) AS total_sales,
-    			SUM(orders.total_price) - SUM(orders.gtc_fees) AS vendor_fee,
-    			SUM(orders.gtc_fees) AS gtc_fees
-				FROM
-    					orders
-					LEFT OUTER JOIN order_items ON orders.id = order_items.order_id
-					LEFT OUTER JOIN product ON order_items.product_id = product.id
+	return new Promise((resolve, reject) => {
+        SequelizeInstance.query(`SELECT orderVendor.order_id AS order_id,
+                order_item.product_id AS product_id,
+                ( SELECT product_name FROM product WHERE product.id = order_item.product_id
+                    LIMIT 1 ) AS product_name,
+                ( SELECT url FROM product_media WHERE product_media.product_id = product.id
+                    LIMIT 1 ) AS product_url,
+                ( SELECT NAME FROM marketplace WHERE product.marketplace_id = marketplace.id
+                    LIMIT 1 ) AS marketplace_name,
+                SUM(orderVendor.total_price) AS total_sales,
+                SUM(orderVendor.total_price) - SUM(orderVendor.gtc_fees) AS vendor_fee,
+                SUM(orderVendor.gtc_fees) AS gtc_fees
+                FROM
+                        order_vendor as orderVendor
+                    LEFT OUTER JOIN order_item ON orderVendor.order_id = order_item.order_id
+                    LEFT OUTER JOIN product ON order_item.product_id = product.id
 				WHERE
-    				product.vendor_id = :vendor_id and order_items.created_on between :from and :to
+    				product.vendor_id = :vendor_id and order_item.created_on between :from and :to
 				GROUP BY
-    				order_items.product_id
-    			ORDER BY SUM(orders.total_price) DESC
+    				order_item.product_id
+    			ORDER BY SUM(orderVendor.total_price) DESC
 				LIMIT :limit OFFSET :offset`, {
             replacements: {
                 vendor_id: queryObj.vendor_id,
