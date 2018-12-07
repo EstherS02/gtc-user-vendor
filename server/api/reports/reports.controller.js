@@ -64,10 +64,10 @@ export function topSellingCities(req, res){
 	var queryObj = {};
 	var result = {};
 
-	var limit = 5;
+	//var limit = 5;
 
-	if(req.query.limit)
-		limit = parseInt(req.query.limit);
+	// if(req.query.limit)
+	// 	limit = parseInt(req.query.limit);
 
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
@@ -84,7 +84,7 @@ export function topSellingCities(req, res){
 		order: [
 			[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
 		],
-		limit: limit
+		limit: 5
 	}).then(function(results) {
 		if (results.length > 0)
 			result = results;
@@ -207,8 +207,8 @@ export function latestRefunds(req, res){
 
 export function topProducts(req, res) {	
 
-	var limit = 5;
-	var offset = 0;
+	//var limit = 5;
+	//var offset = 0;
 	var orderItemQueryObj = {};	
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -232,7 +232,7 @@ export function topProducts(req, res) {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
 
-	ReportService.topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween, offset, limit).then((results) => {
+	ReportService.topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('topProducts err', err);
@@ -242,8 +242,8 @@ export function topProducts(req, res) {
 
 export function topMarketPlace(req, res) {
 
-	var limit = 5;
-	var offset = 0;
+	//var limit = 5;
+	//var offset = 0;
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];	
@@ -266,7 +266,7 @@ export function topMarketPlace(req, res) {
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	ReportService.topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween, offset, limit).then((results) => {
+	ReportService.topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('topMarketPlace err', err);
@@ -276,8 +276,8 @@ export function topMarketPlace(req, res) {
 
 export function topCategories(req, res) {
 
-	var limit = 5;
-	var offset = 0;
+	//var limit = 5;
+	//var offset = 0;
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];	
@@ -300,7 +300,7 @@ export function topCategories(req, res) {
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	ReportService.topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween, offset, limit).then((results) => {
+	ReportService.topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('topCategories err', err);
