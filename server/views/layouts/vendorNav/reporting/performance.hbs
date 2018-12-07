@@ -1,12 +1,28 @@
 <script>
-	$(function () {
-		$("#lhs_from, #lhs_to,#rhs_from,#rhs_to").datepicker();
+	$(function() {
+		/*$("#lhs_from, #lhs_to,#rhs_from,#rhs_to").datepicker();*/
+		$("#lhs_from").datepicker({
+			trigger: $("#lhs_fromRange"),
+			autoHide: true
+		});
+		$("#lhs_to").datepicker({
+			trigger: $("#lhs_toRange"),
+			autoHide: true
+		});
+		$("#rhs_from").datepicker({
+			trigger: $("#rhs_fromRange"),
+			autoHide: true
+		});
+		$("#rhs_to").datepicker({
+			trigger: $("#rhs_toRange"),
+			autoHide: true
+		});
 	});
 </script>
 
 <script type="text/javascript">
-    var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	function onSearch(){
+	var userInfo = {{{ DisplayJSON LoggedInUser }}}
+	function onSearch() {
 		var from = $('#lhs_from').val();
 		var to = $('#lhs_to').val();
 		var Cfrom = $('#rhs_from').val();
@@ -17,32 +33,29 @@
 	}
 	function downloadCSV(args) {
 		$.ajax({
-				type: 'POST',
-				url: '/api/export-csv/reportperformancecsv',
-				data: {"vendor_id": $('#login_vendoruserid').val()},
-				success: function(data) {
-					console.log("enter the loopsss");
-					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
-					var csvURL = null;
-					if (navigator.msSaveBlob) {
-						csvURL = navigator.msSaveBlob(csvData, 'Report.csv');
-					} else {
-						csvURL = window.URL.createObjectURL(csvData);
-					}
-					var tempLink = document.createElement('a');
-					tempLink.href = csvURL;
-					tempLink.setAttribute('download', 'Report.csv');
-					tempLink.click();
-				},
-				error: function(request, status, error) {
-					console.log('request', request);
-					console.log('status', status);
+			type: 'POST',
+			url: '/api/export-csv/reportperformancecsv',
+			data: { "vendor_id": $('#login_vendoruserid').val() },
+			success: function(data) {
+				var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+				var csvURL = null;
+				if (navigator.msSaveBlob) {
+					csvURL = navigator.msSaveBlob(csvData, 'Report.csv');
+				} else {
+					csvURL = window.URL.createObjectURL(csvData);
 				}
-			});
+				var tempLink = document.createElement('a');
+				tempLink.href = csvURL;
+				tempLink.setAttribute('download', 'Report.csv');
+				tempLink.click();
+			},
+			error: function(request, status, error) {
+				console.log('request', request);
+				console.log('status', status);
+			}
+		});
 	}
-</script>
-
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -50,14 +63,112 @@
 				{{> vendor/vendor-side-navbar}}
 			</div>
 			{{#if LoggedInUser.Vendor.VendorPlans}}
-			<div class="col-sm-10">
-				<div class="ibox">
-					<div class="ibox-content">
-						<div class="ibox-title">
-							<h2>Report Performance</h2>
-						</div>
-						<div class="content-body">
-							<div class="row">
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="ibox-title">
+								<h2>Report Performance</h2>
+							</div>
+							<div class="hr-line"></div>
+							<div class="content-body">
+								{{!-- Started --}}
+								<div class="row">
+									<div class="col-md-12">
+										<form class="form-inline pull-left m-t-md">
+											<div class="form-group">
+												<label class="label-control">Date Range </label>
+											</div>
+											<div class="form-group">
+												<div class="input-group mgT-5">
+													<input id="lhs_from" style="width:89px;height: 33px;" type="text" class="custom-form-control date_range_picker no-padding"
+													 value="{{queryURI.lhs_from}}" placeholder="MM/DD/YYYY" aria-label="lhs_fromRange" aria-describedby="lhs_fromRange">
+													<div class="input-group-append cursor-pointer">
+														<span class="input-group-text pad-3" id="lhs_fromRange">
+															<img class="calendar-icon" src="../../img/calendar.png">
+														</span>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="label-control">to </label>
+											</div>
+											<div class="form-group">
+												<div class="input-group mgT-5">
+													<input id="lhs_to" style="width:89px;height: 33px;" type="text" class="custom-form-control date_range_picker no-padding"
+													 value="{{queryURI.lhs_to}}" placeholder="MM/DD/YYYY" aria-label="lhs_toRange" aria-describedby="lhs_toRange">
+													<div class="input-group-append cursor-pointer">
+														<span class="input-group-text pad-3" id="lhs_toRange">
+															<img class="calendar-icon" src="../../img/calendar.png">
+														</span>
+													</div>
+												</div>
+											</div>
+											<div class="form-group mgT-5">
+												<div class="select-container">
+													<select id="inputDateRange" style="width:100px;padding:3px;" class="form-control-customized form-control-sm custom-dropdown"
+													 name="countyr">
+														<option value="0">LAST 30 DAY</option>
+													</select>
+												</div>
+											</div>
+
+											<div class="form-group mgT-5">
+												<div class="customCheckbox">
+													<input type="checkbox" onclick="selectAll(this);" id="compare" class="customCheckboxInput" checked>
+													<label class="checkbox-b" for="inputTerms"></label>
+												</div>
+
+											</div>
+											<div class="form-group">
+												<label class="label-control">compare to </label>
+											</div>
+											<div class="form-group">
+												<div class="input-group mgT-5">
+													<input id="rhs_from" style="width:89px;height: 33px;" type="text" class="custom-form-control date_range_picker no-padding"
+													 value="{{queryURI.lhs_from}}" placeholder="MM/DD/YYYY" aria-label="rhs_fromRange" aria-describedby="rhs_fromRange">
+													<div class="input-group-append cursor-pointer">
+														<span class="input-group-text pad-3" id="rhs_fromRange">
+															<img class="calendar-icon" src="../../img/calendar.png">
+														</span>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="label-control">to </label>
+											</div>
+											<div class="form-group">
+												<div class="input-group mgT-5">
+													<input id="rhs_to" style="width:89px;height: 33px;" type="text" class="custom-form-control date_range_picker no-padding"
+													 value="{{queryURI.rhs_to}}" placeholder="MM/DD/YYYY" aria-label="rhs_toRange" aria-describedby="rhs_toRange">
+													<div class="input-group-append cursor-pointer">
+														<span class="input-group-text pad-3" id="rhs_toRange">
+															<img class="calendar-icon" src="../../img/calendar.png">
+														</span>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<button type="button" class="update-btn1 report_update report_update_btn_override" style="color:#fff;background-color:#3bb802;margin-left:5px"
+												 onclick="onSearch()">UPDATE</button>
+
+											</div>
+
+										</form>
+										<form class="form-inline pull-right m-t-md">
+
+
+											<div class="form-group m-r">
+												<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
+												<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
+											</div>
+
+										</form>
+
+									</div>
+								</div>
+								{{!-- ended --}}
+								<br>{{!-- old code --}}
+								{{!-- <div class="row">
 								<div class="col-sm-6">
 									<div class="row">
 										<div class="col-sm-0">
@@ -141,87 +252,92 @@
 									</div>
 								</div>
 								<div class="col-md-2" style="left: 20px;">
-									{{!--
-									<select class="vend_edit_lists_buttonstyle float-right">
-										<option>EXPORT TO</option>
-									</select> --}}
+									
 									<div class="form-group mx-sm-3 mb-2">
 										<button class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button> 
 										<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
-										{{!-- <div class="select-container ">
-											<select class="form-control-customized form-control-sm" name="dateSelect">
-												<option disabled selected>Export</option>
-											</select>
-										</div> --}}
+										
 									</div>
 								</div>
-							</div>
+							</div> --}}
+								{{!-- old code --}}
+								{{!-- old code second row --}}
+								<div class="row">
+									<div class="col-md-2">
+										<p style="font-size:13px">Select a metric</p>
+									</div>
 
-							<div class="row">
-								<div class="col-md-2">
-									<p style="font-size:13px">Select a metric</p> </div>
-								
-								<div class="col-md-7">
-									
-										<div class="form-group" style="width:163px;margin-left:-63px">
-											
-											<div class="select-container ">
-												<select class="form-control-customized form-control-sm" name="dateSelect">
+									<div class="col-md-7">
+
+										<div class="form-group" style="width:273px;margin-left:-63px">
+
+											<div class="select-container">
+												{{!-- <select class="form-control-customized form-control-sm" name="dateSelect">
 													<option disabled selected>TOP PERFORMING PRODUCTS</option>
+												</select> --}}
+												<select id="inputDateRange" class="form-control-customized form-control-sm custom-dropdown" name="countyr">
+													<option value="0">TOP PERFORMING PRODUCTS</option>
 												</select>
 											</div>
 										</div>
-									{{!-- Select a metric
-									<select class="vend_edit_lists_buttonstyle" style="width: 250px;">
-										<option>TOP PERFORMING PRODUCTS</option>
-									</select> --}}
-								</div>
-								
-								<div class="col-md-3 float-right" style="padding-left: 52px;left: 15px;">
-									<div class="input-group">
+
+									</div>
+
+									<div class="col-md-3 float-right" style="padding-left: 52px;">
+										{{!-- <div class="input-group">
 										<input type="text" class="vend_edit_lists_searchstyle" placeholder="Search History">
 										<span class="promo_code_text_span">
 											<i class="fas fa-search"></i>
 										</span>
-									</div>
-									<!--<input type="text" placeholder="Search History" class="vend_edit_lists_searchstyle float-right" /> -->
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-6">
-									<p class="vend_edit_lists_pstyle">Top 25 Shown</p>
-								</div>
-								<div class="col-md-6">
-									<p class="vend_edit_lists_pstyle float-right">Entries per page:
-										<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-					                    <a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-					                    <a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-					                    <a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
-									</p>
-								</div>
-							</div>
-							<div class="row">
-								<table class="table table-hover">
-									<thead>
-										<tr>
-											<th>Product</th>
-											<th>Type</th>
-											<th>Sales</th>
-											<th>Vendor Revenue</th>
-											<th>GTC Processing Fees</th>
+									</div> --}}
+										<div class="form-group">
+											<div class="input-group gtc-rounded">
+												<input type="text" placeholder="Search Products#" class="form-control form-control-sm">
+												<button type="submit" class="btn btn-sm btn-gtc">
+													<i class="fa fa-search"></i>
+												</button>
+											</div>
+										</div>
 
-										</tr>
-									</thead>
-									<tbody>										
-										{{#each performance.lhs_result}}
-										<tr>
-											<td>
-												<img src="../..{{this.product_url}}" style="width: 15px;" />
-												<a href="#" class="text_blue_color">{{this.product_name}}</a>
-											</td>
-											<td>{{this.marketplace_name}}</td>
-											{{compareSalePerformance this @root.performance.rhs_result}}
-											<!-- <td>{{currency this.total_sales '$'}}
+									</div>
+								</div>
+								{{!-- old code second row --}}
+
+								<div class="row">
+									<div class="col-md-6">
+										<p class="vend_edit_lists_pstyle">Top 25 Shown</p>
+									</div>
+									<div class="col-md-6">
+										<p class="vend_edit_lists_pstyle float-right">Entries per page:
+											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+										</p>
+									</div>
+								</div>
+								<div class="row">
+									<table class="table table-hover">
+										<thead>
+											<tr>
+												<th>Product</th>
+												<th>Type</th>
+												<th>Sales</th>
+												<th>Vendor Revenue</th>
+												<th>GTC Processing Fees</th>
+
+											</tr>
+										</thead>
+										<tbody>
+											{{#each performance.lhs_result}}
+												<tr>
+													<td>
+														<img src="../..{{this.product_url}}" style="width: 15px;" />
+														<a href="#" class="text_blue_color">{{this.product_name}}</a>
+													</td>
+													<td>{{this.marketplace_name}}</td>
+													{{compareSalePerformance this @root.performance.rhs_result}}
+													<!-- <td>{{currency this.total_sales '$'}}
 												<span class="text_green_color">+ 100</span>
 												<span class="text_grey_color">vs $98 (+2.3 %)</span>
 											</td>
@@ -233,29 +349,29 @@
 												<span class="text_green_color">+ $11,000</span>
 												<span class="text_grey_color">vs $9,082 (+12.3 %)</span>
 											</td> -->
-										</tr>
-										{{/each}}
-									</tbody>
-								</table>
-							</div>
-							<div class="row">
-								<div class="col-md-6">
-									<p class="vend_edit_lists_pstyle">Top 25 Shown</p>
+												</tr>
+											{{/each}}
+										</tbody>
+									</table>
 								</div>
-								<div class="col-md-6">
-									<p class="vend_edit_lists_pstyle float-right">Entries per page:
-										<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-					                    <a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-					                    <a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-					                    <a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
-									</p>
+								<div class="row">
+									<div class="col-md-6">
+										<p class="vend_edit_lists_pstyle">Top 25 Shown</p>
+									</div>
+									<div class="col-md-6">
+										<p class="vend_edit_lists_pstyle float-right">Entries per page:
+											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+										</p>
+									</div>
 								</div>
-							</div>
 
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 			{{else}}
 				{{> plan-inactive}}
 			{{/if}}
