@@ -5,6 +5,7 @@ const model = require('../../sqldb/model-connect');
 const sequelize = require('sequelize');
 const service = require('../service');
 const statusCode = require('../../config/status');
+const vendorPlan = require('../../config/gtc-plan');
 const carrierCode = require('../../config/carriers');
 const orderStaus = require('../../config/order_status');
 const ReportService = require('../../utilities/reports');
@@ -13,43 +14,43 @@ var moment = require('moment');
 var async = require('async');
 
 
-export function generateReports(req, res){
+export function generateReports(req, res) {
 	var result = {};
-	var orderItemQueryObj = {};	
+	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
-	if(req.query.lhs_from && req.query.lhs_to){
+	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
 		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	if(req.query.rhs_from && req.query.rhs_to){
+	if (req.query.rhs_from && req.query.rhs_to) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
 
 	ReportService.topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
-		result.top_products = results;		
+		result.top_products = results;
 		return result;
-	}).then(function(){
+	}).then(function() {
 		return ReportService.topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 			result.top_marketplaces = results;
 			return result;
 		});
-	}).then(function(){
+	}).then(function() {
 		return ReportService.topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 			result.top_categories = results;
 			return result;
 		});
-	}).then(function(){
+	}).then(function() {
 		return ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 			result.revenue_changes = results;
 			return result;
 		});
-	}).then(function(){
+	}).then(function() {
 		return ReportService.revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 			result.revenue_counts = results;
 			return res.status(200).send(result);
@@ -60,7 +61,7 @@ export function generateReports(req, res){
 	});
 }
 
-export function topSellingCities(req, res){
+export function topSellingCities(req, res) {
 	var queryObj = {};
 	var result = {};
 	if (req.user.role == 2)
@@ -72,7 +73,9 @@ export function topSellingCities(req, res){
 			where: {},
 			attributes: ['city']
 		}],
-		attributes: [[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales']],
+		attributes: [
+			[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales']
+		],
 		group: ['Product.city'],
 		order: [
 			[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
@@ -91,11 +94,11 @@ export function topSellingCities(req, res){
 }
 
 
-export function topActiveBuyers(req, res){
+export function topActiveBuyers(req, res) {
 	var queryObj = {};
 	var result = {};
 	if (req.user.role == 2)
-		queryObj.vendor_id = req.user.Vendor.id;	
+		queryObj.vendor_id = req.user.Vendor.id;
 	model['Order'].findAll({
 		raw: true,
 		where: {},
@@ -106,7 +109,7 @@ export function topActiveBuyers(req, res){
 		include: [{
 			model: model['User'],
 			where: {},
-			attributes: ['first_name','last_name', 'user_pic_url']				
+			attributes: ['first_name', 'last_name', 'user_pic_url']
 		}],
 		/*include: [{
 			model: model['User'],
@@ -117,7 +120,7 @@ export function topActiveBuyers(req, res){
 			where: queryObj,
 			attributes:[]
 		}],*/
-		attributes: ['id', 'user_id', 'created_on'],		
+		attributes: ['id', 'user_id', 'created_on'],
 		limit: 5
 	}).then(function(results) {
 		if (results.length > 0)
@@ -131,7 +134,7 @@ export function topActiveBuyers(req, res){
 	});
 }
 
-export function latestTickets(req, res){
+export function latestTickets(req, res) {
 	var queryObj = {};
 	var result = {};
 	if (req.user.role == 2)
@@ -146,7 +149,7 @@ export function latestTickets(req, res){
 		include: [{
 			model: model['User'],
 			where: {},
-			attributes: ['first_name','last_name', 'user_pic_url']				
+			attributes: ['first_name', 'last_name', 'user_pic_url']
 		}],
 		attributes: ['id', 'user_id', 'message', 'status', 'created_on'],
 		limit: 5
@@ -162,7 +165,7 @@ export function latestTickets(req, res){
 	});
 }
 
-export function latestRefunds(req, res){
+export function latestRefunds(req, res) {
 	var queryObj = {};
 	var vendorQuery = {};
 	var result = {};
@@ -171,18 +174,18 @@ export function latestRefunds(req, res){
 	queryObj.order_item_status = 6;
 	model['User'].findAll({
 		attributes: ['id', 'first_name', 'last_name', 'status'],
-		limit:5,
-		include:[{
-			model:model['Order'],
-			attributes:['id'],
-			include:[{
-				model:model['OrderItem'],
-				attributes:['id','order_item_status'],
-				where:queryObj,
-				include:[{
-					model:model['Product'],
-					where:vendorQuery,
-					attributes:[]
+		limit: 5,
+		include: [{
+			model: model['Order'],
+			attributes: ['id'],
+			include: [{
+				model: model['OrderItem'],
+				attributes: ['id', 'order_item_status'],
+				where: queryObj,
+				include: [{
+					model: model['Product'],
+					where: vendorQuery,
+					attributes: []
 				}]
 			}]
 		}]
@@ -198,18 +201,18 @@ export function latestRefunds(req, res){
 	});
 }
 
-export function topProducts(req, res) {	
-	var orderItemQueryObj = {};	
+export function topProducts(req, res) {
+	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
-	if(req.query.lhs_from && req.query.lhs_to){
+	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
 		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	if(req.query.rhs_from && req.query.rhs_to){
+	if (req.query.rhs_from && req.query.rhs_to) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
@@ -226,15 +229,15 @@ export function topProducts(req, res) {
 export function topMarketPlace(req, res) {
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
-	var rhsBetween = [];	
+	var rhsBetween = [];
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
-	if(req.query.lhs_from && req.query.lhs_to){
+	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
 		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	if(req.query.rhs_from && req.query.rhs_to){
+	if (req.query.rhs_from && req.query.rhs_to) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
@@ -250,15 +253,15 @@ export function topMarketPlace(req, res) {
 export function topCategories(req, res) {
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
-	var rhsBetween = [];	
+	var rhsBetween = [];
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
-	if(req.query.lhs_from && req.query.lhs_to){
+	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
 		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	if(req.query.rhs_from && req.query.rhs_to){
+	if (req.query.rhs_from && req.query.rhs_to) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
@@ -274,15 +277,15 @@ export function topCategories(req, res) {
 export function recentRevenueChanges(req, res) {
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
-	var rhsBetween = [];	
+	var rhsBetween = [];
 	if (req.user.role == 2)
-		orderItemQueryObj.vendor_id = req.user.Vendor.id;	
-	if(req.query.lhs_from && req.query.lhs_to){
+		orderItemQueryObj.vendor_id = req.user.Vendor.id;
+	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
 		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	if(req.query.rhs_from && req.query.rhs_to){
+	if (req.query.rhs_from && req.query.rhs_to) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
@@ -296,18 +299,18 @@ export function recentRevenueChanges(req, res) {
 }
 
 
-export function revenueChangesCount(req, res) {	
+export function revenueChangesCount(req, res) {
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
-	var rhsBetween = [];	
+	var rhsBetween = [];
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
-	if(req.query.lhs_from && req.query.lhs_to){
+	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
 		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	if(req.query.rhs_from && req.query.rhs_to){
+	if (req.query.rhs_from && req.query.rhs_to) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
@@ -320,7 +323,7 @@ export function revenueChangesCount(req, res) {
 	});
 }
 
-export function comparePerformance(req, res){
+export function comparePerformance(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -332,15 +335,15 @@ export function comparePerformance(req, res){
 		queryObj.vendor_id = req.user.Vendor.id;
 	else
 		queryObj.vendor_id = null;
-	if(req.query.compare){
+	if (req.query.compare) {
 		queryObj.compare = req.query.compare ? req.query.compare : 'false';
 	}
-	if(req.query.lhs_from && req.query.lhs_to){
+	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
 		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	if(req.query.rhs_from && req.query.rhs_to){
+	if (req.query.rhs_from && req.query.rhs_to) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
@@ -353,11 +356,46 @@ export function comparePerformance(req, res){
 		return res.status(500).send(err);
 	});
 }
+export function vendorTrail(req, res) {
+	var queryObj = {};
+	var planQueryObj = {};
+	var offset = 0;
+	var limit = 5;
+	var order = 'asc';
+	var field = 'created_on';
+	queryObj.status = statusCode['ACTIVE'];
+	planQueryObj.plan_id = vendorPlan['STARTER_SELLER'];
+	planQueryObj.status = statusCode['ACTIVE'];
+	var includeArr = [{
+		model: model['VendorPlan'],
+		attributes: ['id', 'start_date', 'end_date', 'status'],
+		where: planQueryObj
+	}];
+	model["Vendor"].findAll({
+		include: includeArr,
+		where: queryObj,
+		attributes: ['id', 'vendor_name'],
+		offset: offset,
+		limit: limit,
+		order: [
+			[field, order]
+		]
+	}).then(function(rows) {
+		if (rows.length > 0) {
+			return res.status(200).send(rows);
+		} else {
+			return res.status(200).send(rows);
+		}
+	}).catch(function(error) {
+		console.log("error:::::::", error)
+		return res.status(500).send(error);
+	});
+}
 export function accounting(req, res) {
 	var accountingQueryParams = {};
 	if (req.query.start_date) {
-		accountingQueryParams['start_date'] = new Date(req.query.start_date);
-		accountingQueryParams['end_date'] = new Date(req.query.end_date);
+		accountingQueryParams['start_date'] = new Date(parseInt(req.query.start_date));
+		accountingQueryParams['end_date'] = new Date(parseInt(req.query.end_date));
 	} else {
 		accountingQueryParams['start_date'] = moment().subtract(30, 'days').format('YYYY-MM-DD');
 		accountingQueryParams['end_date'] = moment().subtract(1, 'days').format('YYYY-MM-DD');

@@ -28,7 +28,7 @@ export function performance(req, res) {
 	limit = req.query.limit ? parseInt(req.query.limit) : 25;
 	field = 'id';
 	order = 'asc';
-	var productModel = "MarketplaceProduct";
+	// var productModel = "MarketplaceProduct";
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -68,17 +68,17 @@ export function performance(req, res) {
 					return callback(null);
 				}
 			},
-			products: function(callback) {
-				queryObj['vendor_id'] = LoggedInUser.Vendor.id;
-				service.findRows(productModel, queryObj, offset, limit, field, order)
-					.then(function(products) {
-						return callback(null, products.rows);
+			// products: function(callback) {
+			// 	queryObj['vendor_id'] = LoggedInUser.Vendor.id;
+			// 	service.findRows(productModel, queryObj, offset, limit, field, order)
+			// 		.then(function(products) {
+			// 			return callback(null, products.rows);
 
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
-			},
+			// 		}).catch(function(error) {
+			// 			console.log('Error :::', error);
+			// 			return callback(null);
+			// 		});
+			// },
 			categories: function(callback) {
 				var includeArr = [];
 				const categoryOffset = 0;
