@@ -211,7 +211,6 @@ export function product(req, res) {
 					model: model['User'],
 					attributes: ['id', 'first_name','last_name']
 				}];
-				vendorID = LoggedInUser.Vendor.id
 				service.findIdRow('Vendor', vendorID, vendorIncludeArr)
 					.then(function(response) {
 						return callback(null, response);
