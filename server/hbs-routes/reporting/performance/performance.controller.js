@@ -1,5 +1,6 @@
 'use strict';
 
+const querystring = require('querystring');
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const statusCode = require('../../../config/status');
@@ -25,7 +26,7 @@ export function performance(req, res) {
 	var queryURI = {};
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	limit = req.query.limit ? parseInt(req.query.limit) : 25;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	field = 'id';
 	order = 'asc';
 	// var productModel = "MarketplaceProduct";
@@ -139,6 +140,7 @@ export function performance(req, res) {
 					unreadCounts: results.unreadCounts,
 					bottomCategory: bottomCategory,
 					queryURI: queryURI,
+					queryURIString: querystring.stringify(queryURI),
 					selectedPage: 'performance',
 					vendorPlan: vendorPlan,
 					dropDownUrl: dropDownUrl,
