@@ -22,6 +22,7 @@
 
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
+	var params = {{{ DisplayJSON queryURIString }}};
 	function onSearch() {
 		var from = $('#lhs_from').val();
 		var to = $('#lhs_to').val();
@@ -55,7 +56,26 @@
 			}
 		});
 	}
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+
+	function limit(size) {
+		params = replaceUrlParam(params, "limit", size);
+		params = replaceUrlParam(params, "page", 1);
+		params = replaceUrlParam(params, "offset", 0);
+		location.href = "/store/performance?" + params;
+	}
+
+	function replaceUrlParam(existingQueryParams, paramsName, paramsValue) {
+		var urlParams = new URLSearchParams(existingQueryParams);
+		if (paramsValue) {
+			urlParams.set(paramsName, paramsValue);
+		} else {
+			urlParams.delete(paramsName);
+		}
+		return urlParams;
+	}
+
+</script> 
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -305,14 +325,14 @@
 
 								<div class="row">
 									<div class="col-md-6">
-										<p class="vend_edit_lists_pstyle">Top 25 Shown</p>
+										{{!-- <p class="vend_edit_lists_pstyle">Top 25 Shown</p> --}}
 									</div>
 									<div class="col-md-6">
 										<p class="vend_edit_lists_pstyle float-right">Entries per page:
-											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+											<a {{#ifCond queryURI.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+											<a {{#ifCond queryURI.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+											<a {{#ifCond queryURI.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+											<a {{#ifCond queryURI.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
 										</p>
 									</div>
 								</div>
@@ -356,14 +376,14 @@
 								</div>
 								<div class="row">
 									<div class="col-md-6">
-										<p class="vend_edit_lists_pstyle">Top 25 Shown</p>
+										{{!-- <p class="vend_edit_lists_pstyle">Top 25 Shown</p> --}}
 									</div>
 									<div class="col-md-6">
 										<p class="vend_edit_lists_pstyle float-right">Entries per page:
-											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-											<a href="../reporting/performance?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+											<a {{#ifCond queryURI.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+											<a {{#ifCond queryURI.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+											<a {{#ifCond queryURI.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+											<a {{#ifCond queryURI.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
 										</p>
 									</div>
 								</div>

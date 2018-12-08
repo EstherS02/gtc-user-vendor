@@ -418,6 +418,45 @@ export function accounting(req, res) {
 		})
 		.catch((error) => {
 			console.log(error)
-			return res.status(200).send("internal server error");
+			return res.status(500).send("Internal server error");
 		});
+}
+
+export function memberShipFees(req,res){
+
+	var queryObj = {
+		plan_id: {
+			$ne: vendorPlan['STARTER_SELLER']
+		}
+	};
+	var field, order, offset, limit;
+	
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	order = req.query.order ? req.query.order : "desc";
+	field = req.query.field ? req.query.order : "id";
+
+	var includeArr = [
+		{ 
+			model: model['Plan']
+		},{ 
+			model: model['Vendor'] 
+		},{
+			model: model['Payment'],
+			attributes: ['id','amount','date'],
+			where: { 
+				id: {
+					$ne: null
+				}
+			}
+		}
+	]
+
+	service.findRows('VendorPlan', queryObj, offset, limit, field, order, includeArr)
+	.then(function(plans){
+		return res.status(200).send(plans)
+	}).catch(function(error){
+		console.log(error)
+		return res.status(500).send("Internal server error");
+	})
 }

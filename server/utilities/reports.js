@@ -100,7 +100,6 @@ function getAllPerformance(queryObj, limit, offset) {
 }
 
 export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween) {
-    console.log('topPerformingProducts', orderItemQueryObj);
     return new Promise((resolve, reject) => {
 		var result = {};
         const pastRange = _.assign({}, orderItemQueryObj);
@@ -111,8 +110,6 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
         currentRange.item_created_on = {
             $between: rhsBetween
         };
-        console.log('pastRange', pastRange);
-        console.log('currentRange', currentRange);
         model['OrderItemOverview'].findAll({
             raw: true,
             where: orderItemQueryObj,
@@ -153,7 +150,6 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
 }
 
 export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween) {
-    console.log('topPerformingMarketPlaces', orderItemQueryObj);
     return new Promise((resolve, reject) => {
 		var result = {};
         const pastRange = _.assign({}, orderItemQueryObj);
@@ -202,7 +198,6 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
 }
 
 export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween) {
-    console.log('topPerformingCategories', orderItemQueryObj);
     return new Promise((resolve, reject) => {
 		var result = {};
         const pastRange = _.assign({}, orderItemQueryObj);
@@ -251,7 +246,6 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
 }
 
 export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
-    console.log('revenueChanges', orderItemQueryObj);
     const pastRange = _.assign({}, orderItemQueryObj);
     pastRange.item_created_on = {
         $between: lhsBetween
@@ -446,7 +440,6 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 }
 
 export function performanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
-    console.log('performanceChanges queryObj', queryObj);
     const pastRange = _.assign({}, queryObj);
     pastRange.from = lhsBetween[0];
     pastRange.to = lhsBetween[1];
