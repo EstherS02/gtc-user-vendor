@@ -11,6 +11,7 @@ const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const populate = require('../../utilities/populate')
 const ReportService = require('../../utilities/reports');
+const reportsService = require('../../api/reports/reports.service');
 const moment = require('moment');
 const model = require('../../sqldb/model-connect');
 const async = require('async');
@@ -20,131 +21,52 @@ const orderStatus = require('../../config/order_status');
 
 // starts export csv Ad-revenue //
 exports.exportcsv = function(req, res) {
-
-	var offset, limit, field, order;
-	var queryObj = {};
-	var ids = [];
-	var type = [];
-	let includeArr;
 	var adType = {
-		"type1": "AD",
-		"type2": "Featured Listing",
+				"type1": "AD",
+		 		"type2": "Featured Listing",
 	};
-	offset = req.query.offset ? parseInt(req.query.offset) : null;
-	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : null;
-	delete req.query.limit;
-	field = req.query.field ? req.query.field : "id";
-	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
-	delete req.query.order;
-
-	if (req.query.populate)
-		includeArr = populate.populateData(req.query.populate);
-	else
-		includeArr = [];
-
-	delete req.query.populate;
-	if (queryObj.startDate && queryObj.endDate) {
-		if (queryObj.columnName) {
-			queryObj[queryObj.columnName] = {
-				'$gte': new Date(parseInt(queryObj.startDate)),
-				'$lte': new Date(parseInt(queryObj.endDate))
-			}
-			delete queryObj.columnName;
-		}
-		delete queryObj.startDate;
-		delete queryObj.endDate;
-	}
-
-	if (!queryObj.status) {
-		queryObj['status'] = {
-			'$ne': status["DELETED"]
-		}
-	} else {
-		if (queryObj.status == status["DELETED"]) {
-			queryObj['status'] = {
-				'$eq': status["DELETED"]
-			}
-		}
-	}
-	req.endpoint = "AdFeaturedproduct";
-	ids = req.query.id;
-	type = req.query.type;
-	if (ids != '') {
-		queryObj['id'] = JSON.parse("[" + ids + "]");
-		queryObj['type'] = JSON.parse("[" + type + "]");
-		service.findAllRows(req.endpoint, includeArr, queryObj, 0, null, field, order)
-			.then(function(rows) {
-				for (let value of rows.rows) {
-					if (value.type == 1) {
-						value.type = adType.type1;
-					}
-					else {
-						value.type = adType.type2;
-					}
-
-					if (value.clicks != "null" && value.impression != "null") {
-						value.CTR = ((value.clicks / value.impression) * 100).toFixed(2) + "%";
-					}
-					else {
-						value.CTR = 0 + "%";
-					}
-				}
-				var fields = [];
-				fields = _.map(rows.rows.columns, 'columnName');
-				fields.push('product_name', 'type', 'start_date', 'end_date', 'impression', 'clicks', 'CTR');
-				const opts = {
-					fields
-				};
-				const parser = new Json2csvParser(opts);
-				const csv = parser.parse(rows.rows);
-				res.write(csv);
-				res.end();
-				return;
-			}).catch(function(error) {
-				console.log('Error :::', error);
-				res.status(500).send("Internal server error");
-				return
-			});
-	}
-	else {
-		service.getAllFindRow(req.endpoint, includeArr, queryObj, field, order)
-			.then(function(rows) {
-				for (let value of rows.rows) {
-					if (value.type == 1) {
-						value.type = adType.type1;
-					}
-					else {
-						value.type = adType.type2;
-					}
-
-					if (value.clicks != null && value.impression != null) {
-						value.CTR = ((value.clicks / value.impression) * 100).toFixed(2) + "%";
-					}
-					else if ((value.clicks == null) && (value.impression == null)) {
-						value.CTR = 0 + "%";
-					}
-				}
-				var fields = [];
-				fields = _.map(rows.rows.columns, 'columnName');
-				fields.push('product_name', 'type', 'start_date', 'end_date', 'impression', 'clicks', 'CTR');
-				const opts = {
-					fields
-				};
-				const parser = new Json2csvParser(opts);
-				const csv = parser.parse(rows.rows);
-				res.write(csv);
-				res.end();
-				return;
-			}).catch(function(error) {
-				console.log('Error :::', error);
-				res.status(500).send("Internal server error");
-				return
-			});
-	}
-};
+	reportsService.adFeaturedRevenue(req, res)
+	.then((response) => {
+		for (let value of response.rows) {
+			if (value.type == 1) {
+		 		value.type = adType.type1;
+		 	}
+		 	else {
+		 		value.type = adType.type2;
+		 	}
+		 	if (value.clicks != null && value.impression != null) {
+		 		value.CTR = ((value.clicks / value.impression) * 100).toFixed(2) + "%";
+		 	}
+			else if ((value.clicks == null) && (value.impression == null)) {
+		 		value.CTR = 0;
+		 		value.impression =0;
+		 	    value.clicks =0
+			 }
+			 if(value.Payment !=null)
+			 {
+				 value.CostToVendor = value.Payment.amount;
+			 }
+			 else
+			 {
+				value.CostToVendor = 0;
+			 }
+		 }
+		var fields = [];
+		fields = _.map(response.rows.columns, 'columnName');
+		fields.push('product_name', 'type', 'start_date', 'end_date', 'impression', 'clicks', 'CTR' , 'CostToVendor' );
+		const opts = {
+		fields
+		};
+		const parser = new Json2csvParser(opts);
+		const csv = parser.parse(response.rows);
+		res.write(csv);
+		res.end();
+		return;
+		
+	})
+}
 // ends export csv Ad-revenue //
+
 
 // starts export csv order-history//
 exports.orderHistoryexportcsv = function(req, res) {
