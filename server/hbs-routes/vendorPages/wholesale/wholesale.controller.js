@@ -9,7 +9,7 @@ const productService = require('../../../api/product/product.service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
-const shopService=require('../../../api/vendor/vendor.service')
+const shopService = require('../../../api/vendor/vendor.service')
 const Plan = require('../../../config/gtc-plan');
 const marketplace_type = require('../../../config/marketplace_type');
 const moment = require('moment');
@@ -116,39 +116,39 @@ export function vendorWholesale(req, res) {
 		},
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
-					model: model['VendorPlan'],
-					attributes: ['id','plan_id'],
-					where: {
-						status: status['ACTIVE'],
-						start_date: {
-							'$lte': moment().format('YYYY-MM-DD')
-						},
-						end_date: {
-							'$gte': moment().format('YYYY-MM-DD')
-						}
+				model: model['VendorPlan'],
+				attributes: ['id', 'plan_id'],
+				where: {
+					status: status['ACTIVE'],
+					start_date: {
+						'$lte': moment().format('YYYY-MM-DD')
+					},
+					end_date: {
+						'$gte': moment().format('YYYY-MM-DD')
 					}
-				}, {
-					model: model['VendorVerification'],
-					where: {
-						vendor_verified_status: verificationStatus['APPROVED']
-					},
-					required: false
-				}, {
-					model: model['VendorFollower'],
-					where: {
-						user_id: LoggedInUser.id,
-						status: 1
-					},
-					required: false
-				}, {
-					model: model['VendorRating'],
-					attributes: [
-						[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
-						[sequelize.fn('count', sequelize.col('VendorRatings.rating')), 'count']
-					],
-					group: ['VendorRating.vendor_id'],
-					required: false,
-				}];
+				}
+			}, {
+				model: model['VendorVerification'],
+				where: {
+					vendor_verified_status: verificationStatus['APPROVED']
+				},
+				required: false
+			}, {
+				model: model['VendorFollower'],
+				where: {
+					user_id: LoggedInUser.id,
+					status: 1
+				},
+				required: false
+			}, {
+				model: model['VendorRating'],
+				attributes: [
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
+					[sequelize.fn('count', sequelize.col('VendorRatings.rating')), 'count']
+				],
+				group: ['VendorRating.vendor_id'],
+				required: false,
+			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
 					return callback(null, response);
@@ -157,18 +157,24 @@ export function vendorWholesale(req, res) {
 					return callback(null);
 				});
 		},
-		vendorPlan: function(callback){
-			var queryObj ={};
+		vendorPlan: function(callback) {
+			var queryObj = {};
 			queryObj['$or'] = [{
-					plan_id: Plan['WHOLESALER']
-				},{
-					plan_id: Plan['STARTER_SELLER']
-				}];
+				plan_id: Plan['WHOLESALER']
+			}, {
+				plan_id: Plan['STARTER_SELLER']
+			}];
+			queryObj['start_date'] = {
+					'$lte': moment().format('YYYY-MM-DD')
+				};
+			queryObj['end_date'] = {
+					'$gte': moment().format('YYYY-MM-DD')
+				};
 			queryObj['vendor_id'] = vendor_id;
 			queryObj['status'] = status['ACTIVE'];
-			var includeArr=[];
-			service.findRow('VendorPlan',queryObj, includeArr)
-			.then(function(response) {
+			var includeArr = [];
+			service.findRow('VendorPlan', queryObj, includeArr)
+				.then(function(response) {
 					return callback(null, response);
 
 				}).catch(function(error) {
@@ -270,7 +276,7 @@ export function vendorWholesale(req, res) {
 						subCatObj["count"] = o.subproductcount;
 						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 						resultObj[o.categoryname]["subCategory"].push(subCatObj)
-						count= count + o.subproductcount;
+						count = count + o.subproductcount;
 					})
 					categoryWithProductCount.count = count;
 					categoryWithProductCount.rows = resultObj;
@@ -301,10 +307,10 @@ export function vendorWholesale(req, res) {
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'wholesale',
 				Plan: Plan,
-				categoryWithProductCount:results.categoryWithProductCount
+				categoryWithProductCount: results.categoryWithProductCount
 			});
 		} else {
-			console.log("Error::::::::::::::",err)
+			console.log("Error::::::::::::::", err)
 			res.render('404');
 		}
 	});

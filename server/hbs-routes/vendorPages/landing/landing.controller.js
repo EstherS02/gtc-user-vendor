@@ -68,13 +68,19 @@ export function vendor(req, res) {
 					return callback(null);
 				});
 		},
-		vendorPlan: function(callback){
-			var queryObj ={};
+		vendorPlan: function(callback) {
+			var queryObj = {};
+			queryObj['start_date'] = {
+					'$lte': moment().format('YYYY-MM-DD')
+				};
+				queryObj['end_date'] = {
+					'$gte': moment().format('YYYY-MM-DD')
+				};
 			queryObj['status'] = status['ACTIVE'];
 			queryObj['vendor_id'] = vendor_id;
-			var includeArr=[];
-			service.findRow('VendorPlan',queryObj, includeArr)
-			.then(function(response) {
+			var includeArr = [];
+			service.findRow('VendorPlan', queryObj, includeArr)
+				.then(function(response) {
 					return callback(null, response);
 
 				}).catch(function(error) {
@@ -87,17 +93,17 @@ export function vendor(req, res) {
 			limit = 2;
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 				.then(function(results) {
-					if(results.count == 0){
+					if (results.count == 0) {
 						delete queryObj['position'];
 						delete queryObj['is_featured_product'];
-							productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
+						productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 							.then(function(results) {
 								return callback(null, results);
 							});
-					}else{
+					} else {
 
-					return callback(null, results);
-				}
+						return callback(null, results);
+					}
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -125,7 +131,7 @@ export function vendor(req, res) {
 			delete queryObj['exclusive_sale'];
 			delete queryObj['exclusive_start_date'];
 			delete queryObj['exclusive_end_date'];
-			
+
 			queryObj['vendor_id'] = vendor_id;
 			limit = 3;
 			productService.TopRated('product', queryObj, limit)
@@ -145,14 +151,14 @@ export function vendor(req, res) {
 			}, {
 				model: model['VendorPlan'],
 				where: {
-						status: status['ACTIVE'],
-						start_date: {
-							'$lte': moment().format('YYYY-MM-DD')
-						},
-						end_date: {
-							'$gte': moment().format('YYYY-MM-DD')
-						}
+					status: status['ACTIVE'],
+					start_date: {
+						'$lte': moment().format('YYYY-MM-DD')
 					},
+					end_date: {
+						'$gte': moment().format('YYYY-MM-DD')
+					}
+				},
 
 				required: false
 			}, {

@@ -151,14 +151,14 @@ export function vendorDiscussion(req, res) {
 			}, {
 				model: model['VendorPlan'],
 				where: {
-						status: status['ACTIVE'],
-						start_date: {
-							'$lte': moment().format('YYYY-MM-DD')
-						},
-						end_date: {
-							'$gte': moment().format('YYYY-MM-DD')
-						}
+					status: status['ACTIVE'],
+					start_date: {
+						'$lte': moment().format('YYYY-MM-DD')
 					},
+					end_date: {
+						'$gte': moment().format('YYYY-MM-DD')
+					}
+				},
 
 				required: false
 			}, {
@@ -192,13 +192,19 @@ export function vendorDiscussion(req, res) {
 					return callback(null);
 				});
 		},
-		vendorPlan: function(callback){
-			var queryObj ={};
+		vendorPlan: function(callback) {
+			var queryObj = {};
+			queryObj['start_date'] = {
+					'$lte': moment().format('YYYY-MM-DD')
+				};
+				queryObj['end_date'] = {
+					'$gte': moment().format('YYYY-MM-DD')
+				};
 			queryObj['vendor_id'] = vendor_id;
 			queryObj['status'] = status['ACTIVE'];
-			var includeArr=[];
-			service.findRow('VendorPlan',queryObj, includeArr)
-			.then(function(response) {
+			var includeArr = [];
+			service.findRow('VendorPlan', queryObj, includeArr)
+				.then(function(response) {
 					return callback(null, response);
 
 				}).catch(function(error) {
@@ -229,8 +235,8 @@ export function vendorDiscussion(req, res) {
 	}, function(err, results) {
 		if (!err && results.vendorPlan) {
 			// if (results.discussion) {
-				var maxSize = 5;
-				queryPaginationObj['maxSize'] = 5;
+			var maxSize = 5;
+			queryPaginationObj['maxSize'] = 5;
 			// }
 			res.render('vendorPages/vendor-discussion', {
 				title: "Global Trade Connect",

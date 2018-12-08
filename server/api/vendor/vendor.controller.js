@@ -145,6 +145,10 @@ export async function createVendor(req, res) {
 	req.checkBody('city', 'Vendor City is Missing').notEmpty();
 	req.checkBody('currency_id', 'Vendor Currency is Missing').notEmpty();
 	req.checkBody('email', 'Email is Missing').notEmpty();
+	req.checkBody('password', 'Password is Missing').notEmpty();
+
+    req.body.salt = makeSalt();
+    req.body.hashed_pwd = encryptPassword(req);
 
 	var errors = req.validationErrors();
 	if (errors) {
@@ -175,6 +179,9 @@ export async function createVendor(req, res) {
 			bodyParamsUser["role"] = roles["VENDOR"];
 			bodyParamsUser["email_verified"] = req.body.email_verified;
 			bodyParamsUser['created_on'] = new Date();
+			bodyParamsUser['password'] = req.body.password;
+			bodyParamsUser['salt'] = req.body.salt;
+			bodyParamsUser['hashed_pwd'] = req.body.hashed_pwd;
 
 			const newUser = await service.createRow(userModelName, bodyParamsUser);
 			if (newUser) {
@@ -260,6 +267,16 @@ export async function createVendor(req, res) {
 			"messageDetails": "Internal server error."
 		});
 	}
+}
+function makeSalt() {
+    return crypto.randomBytes(16).toString('base64');
+}
+
+function encryptPassword(req) {
+    if (!req.body.password || !req.body.salt)
+        return '';
+    var saltWithEmail = new Buffer(req.body.salt + req.body.email.toString('base64'), 'base64');
+    return crypto.pbkdf2Sync(req.body.password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
 }
 
 export async function edit(req, res) {
