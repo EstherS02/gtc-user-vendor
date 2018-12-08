@@ -64,11 +64,6 @@ export function topSellingCities(req, res){
 	var queryObj = {};
 	var result = {};
 
-	//var limit = 5;
-
-	// if(req.query.limit)
-	// 	limit = parseInt(req.query.limit);
-
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
 
@@ -103,6 +98,7 @@ export function topActiveBuyers(req, res){
 	var result = {};
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;	
+
 	model['Order'].findAll({
 		raw: true,
 		where: {},
@@ -207,17 +203,9 @@ export function latestRefunds(req, res){
 
 export function topProducts(req, res) {	
 
-	//var limit = 5;
-	//var offset = 0;
 	var orderItemQueryObj = {};	
 	var lhsBetween = [];
 	var rhsBetween = [];
-
-	if(req.query.limit)
-		limit = req.query.limit;
-
-	if(req.query.offset)
-		offset = req.query.offset;
 
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
@@ -242,17 +230,9 @@ export function topProducts(req, res) {
 
 export function topMarketPlace(req, res) {
 
-	//var limit = 5;
-	//var offset = 0;
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];	
-
-	if(req.query.limit)
-		limit = req.query.limit;
-
-	if(req.query.offset)
-		offset = req.query.offset;
 
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
@@ -276,17 +256,9 @@ export function topMarketPlace(req, res) {
 
 export function topCategories(req, res) {
 
-	//var limit = 5;
-	//var offset = 0;
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];	
-
-	if(req.query.limit)
-		limit = req.query.limit;
-
-	if(req.query.offset)
-		offset = req.query.offset;
 
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;

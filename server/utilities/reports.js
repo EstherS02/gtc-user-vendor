@@ -103,7 +103,6 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
     console.log('topPerformingProducts', orderItemQueryObj);
     return new Promise((resolve, reject) => {
 		var result = {};
-	//	var Limit = parseInt(limit), Offset = parseInt(offset);//added for admin perpose
         const pastRange = _.assign({}, orderItemQueryObj);
         pastRange.item_created_on = {
             $between: lhsBetween
@@ -153,11 +152,10 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
     });
 }
 
-export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween, offset, limit) {
+export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween) {
     console.log('topPerformingMarketPlaces', orderItemQueryObj);
     return new Promise((resolve, reject) => {
 		var result = {};
-	//	var Limit = parseInt(limit), Offset = parseInt(offset);//added for admin perpose
         const pastRange = _.assign({}, orderItemQueryObj);
         pastRange.item_created_on = {
             $between: lhsBetween
@@ -203,11 +201,10 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
     })
 }
 
-export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween,  offset, limit) {
+export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween) {
     console.log('topPerformingCategories', orderItemQueryObj);
     return new Promise((resolve, reject) => {
 		var result = {};
-		//var Limit = parseInt(limit), Offset = parseInt(offset);//added for admin perpose
         const pastRange = _.assign({}, orderItemQueryObj);
         pastRange.item_created_on = {
             $between: lhsBetween
