@@ -408,7 +408,7 @@ export function accounting(req, res) {
 	}
 	reportsService.AccountingReport(0, accountingQueryParams)
 		.then((response) => {
-			console.log(response)
+
 			return res.status(200).send(response);
 		})
 		.catch((error) => {
@@ -442,7 +442,8 @@ export function memberShipFees(req,res){
 			where: { 
 				id: {
 					$ne: null
-				}
+				},
+				status: statusCode['ACTIVE']
 			}
 		}
 	]
