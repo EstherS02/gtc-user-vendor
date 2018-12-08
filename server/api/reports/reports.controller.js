@@ -64,8 +64,10 @@ export function generateReports(req, res) {
 export function topSellingCities(req, res) {
 	var queryObj = {};
 	var result = {};
+
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
+
 	model['OrderItem'].findAll({
 		raw: true,
 		include: [{
@@ -205,6 +207,7 @@ export function topProducts(req, res) {
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
+
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 	if (req.query.lhs_from && req.query.lhs_to) {
@@ -229,7 +232,8 @@ export function topProducts(req, res) {
 export function topMarketPlace(req, res) {
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
-	var rhsBetween = [];
+	var rhsBetween = [];	
+
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 	if (req.query.lhs_from && req.query.lhs_to) {
@@ -253,7 +257,8 @@ export function topMarketPlace(req, res) {
 export function topCategories(req, res) {
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
-	var rhsBetween = [];
+	var rhsBetween = [];	
+
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 	if (req.query.lhs_from && req.query.lhs_to) {

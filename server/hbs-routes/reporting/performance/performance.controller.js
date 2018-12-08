@@ -68,17 +68,17 @@ export function performance(req, res) {
 					return callback(null);
 				}
 			},
-			// products: function(callback) {
-			// 	queryObj['vendor_id'] = LoggedInUser.Vendor.id;
-			// 	service.findRows(productModel, queryObj, offset, limit, field, order)
-			// 		.then(function(products) {
-			// 			return callback(null, products.rows);
+		/*products: function(callback) {
+				queryObj['vendor_id'] = LoggedInUser.Vendor.id;
+				service.findRows(productModel, queryObj, offset, limit, field, order)
+					.then(function(products) {
+						return callback(null, products.rows);
 
-			// 		}).catch(function(error) {
-			// 			console.log('Error :::', error);
-			// 			return callback(null);
-			// 		});
-			// },
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},*/
 			categories: function(callback) {
 				var includeArr = [];
 				const categoryOffset = 0;
@@ -132,7 +132,7 @@ export function performance(req, res) {
 			if (!err) {
 				res.render('vendorNav/reporting/performance', {
 					title: "Global Trade Connect",
-					products: results.products,
+					//products: results.products,
 					marketPlace: marketplace,
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,

@@ -75,13 +75,19 @@ export function vendorSupport(req, res) {
 					return callback(null);
 				});
 		},
-		vendorPlan: function(callback){
-			var queryObj ={};
+		vendorPlan: function(callback) {
+			var queryObj = {};
 			queryObj['vendor_id'] = vendor_id;
 			queryObj['status'] = status['ACTIVE'];
-			var includeArr=[];
-			service.findRow('VendorPlan',queryObj, includeArr)
-			.then(function(response) {
+			queryObj['start_date'] = {
+					'$lte': moment().format('YYYY-MM-DD')
+				};
+			queryObj['end_date'] = {
+					'$gte': moment().format('YYYY-MM-DD')
+				};
+			var includeArr = [];
+			service.findRow('VendorPlan', queryObj, includeArr)
+				.then(function(response) {
 					return callback(null, response);
 
 				}).catch(function(error) {
@@ -95,14 +101,14 @@ export function vendorSupport(req, res) {
 			}, {
 				model: model['VendorPlan'],
 				where: {
-						status: status['ACTIVE'],
-						start_date: {
-							'$lte': moment().format('YYYY-MM-DD')
-						},
-						end_date: {
-							'$gte': moment().format('YYYY-MM-DD')
-						}
+					status: status['ACTIVE'],
+					start_date: {
+						'$lte': moment().format('YYYY-MM-DD')
 					},
+					end_date: {
+						'$gte': moment().format('YYYY-MM-DD')
+					}
+				},
 				required: false
 			}, {
 				model: model['VendorVerification'],

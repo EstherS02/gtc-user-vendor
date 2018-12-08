@@ -10,7 +10,7 @@ const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const marketplace_type = require('../../../config/marketplace_type');
 const cartService = require('../../../api/cart/cart.service');
-const shopService=require('../../../api/vendor/vendor.service')
+const shopService = require('../../../api/vendor/vendor.service')
 const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
 const async = require('async');
@@ -51,7 +51,7 @@ export function vendorShop(req, res) {
 	queryURI['order'] = order;
 	delete req.query.order;
 
-	
+
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
@@ -89,14 +89,14 @@ export function vendorShop(req, res) {
 			}, {
 				model: model['VendorPlan'],
 				where: {
-						status: status['ACTIVE'],
-						start_date: {
-							'$lte': moment().format('YYYY-MM-DD')
-						},
-						end_date: {
-							'$gte': moment().format('YYYY-MM-DD')
-						}
+					status: status['ACTIVE'],
+					start_date: {
+						'$lte': moment().format('YYYY-MM-DD')
 					},
+					end_date: {
+						'$gte': moment().format('YYYY-MM-DD')
+					}
+				},
 				required: false
 			}, {
 				model: model['VendorVerification'],
@@ -130,20 +130,26 @@ export function vendorShop(req, res) {
 					return callback(null);
 				});
 		},
-		vendorPlan: function(callback){
-			var queryObj ={};
+		vendorPlan: function(callback) {
+			var queryObj = {};
 			queryObj['$or'] = [{
-					plan_id: Plan['PUBLIC_SELLER']
-				},{
-					plan_id: Plan['WHOLESALER']
-				},{
-					plan_id: Plan['STARTER_SELLER']
-				}];
+				plan_id: Plan['PUBLIC_SELLER']
+			}, {
+				plan_id: Plan['WHOLESALER']
+			}, {
+				plan_id: Plan['STARTER_SELLER']
+			}];
+			queryObj['start_date'] = {
+					'$lte': moment().format('YYYY-MM-DD')
+				};
+			queryObj['end_date'] = {
+					'$gte': moment().format('YYYY-MM-DD')
+				};
 			queryObj['vendor_id'] = vendor_id;
 			queryObj['status'] = status['ACTIVE'];
-			var includeArr=[];
-			service.findRow('VendorPlan',queryObj, includeArr)
-			.then(function(response) {
+			var includeArr = [];
+			service.findRow('VendorPlan', queryObj, includeArr)
+				.then(function(response) {
 					return callback(null, response);
 
 				}).catch(function(error) {
@@ -211,7 +217,7 @@ export function vendorShop(req, res) {
 						subCatObj["count"] = o.subproductcount;
 						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 						resultObj[o.categoryname]["subCategory"].push(subCatObj)
-						count= count + o.subproductcount;
+						count = count + o.subproductcount;
 					})
 					categoryWithProductCount.rows = resultObj;
 					categoryWithProductCount.count = count;
@@ -240,7 +246,7 @@ export function vendorShop(req, res) {
 				cart: results.cartInfo,
 				selectedPage: 'shop',
 				Plan: Plan,
-				categoryWithProductCount:results.categoryWithProductCount
+				categoryWithProductCount: results.categoryWithProductCount
 			});
 		} else {
 			res.render('404');

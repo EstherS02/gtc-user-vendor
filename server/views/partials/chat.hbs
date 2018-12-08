@@ -86,6 +86,8 @@
 	let VendorDetail = {{{ DisplayJSON VendorDetail.user_id }}};
 	let talkThreadsId = {{{ DisplayJSON talkThreads.threadId }}};
 	let vendorObject = {{{ DisplayJSON VendorDetail }}};
+	$('#messagebody').hide();
+	$("#panelOpen").hide();
 
 	$(function() {
 		function getUserName(user) {

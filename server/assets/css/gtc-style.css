@@ -5601,5 +5601,26 @@ color: #2d4373; }
 {
    margin-left:5px;	
 }
+.mr-15
+{ 
+	margin-left:15px;
+}
 /* common styles margins,padding,left,right starts */
-
+/* performance date range  starts*/
+.date_range_performance
+{
+	font-size: 12px;
+	font-family: 'heebo', sans-serif;
+	padding-top: 5px;
+} 
+.pad-3
+{
+	padding:3px;
+}
+.resize_custom
+{
+	width:89px;
+	height: 33px;
+}
+/* 
+performance date range ends */

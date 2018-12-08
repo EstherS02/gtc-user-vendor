@@ -461,52 +461,60 @@ export function resetPassword(req, res) {
 	queryObj['email'] = req.body.email;
 
 	service.findOneRow(UserModel, queryObj, []).then(function(result) {
-		var userId = result.id;
-		var saltWithEmail = new Buffer(result.salt + result.email.toString('base64'), 'base64');
-		var hashedPassword = crypto.pbkdf2Sync(req.body.new_password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
-		var bodyParams = {
-			hashed_pwd: hashedPassword,
-			forgot_password_token: null,
-			forgot_password_token_generated: null
-		};
+		if(result){
+			var userId = result.id;
+			var saltWithEmail = new Buffer(result.salt + result.email.toString('base64'), 'base64');
+			var hashedPassword = crypto.pbkdf2Sync(req.body.new_password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
+			var bodyParams = {
+				hashed_pwd: hashedPassword,
+				forgot_password_token: null,
+				forgot_password_token_generated: null
+			};
 
-		if (result.forgot_password_token != forgot_password_token) {
-			return res.status(400).send({
-				"message": "Error",
-				"messageDetails": "The forgot password link sent to your mail has been expired. Request a new password reset email."
-			})
-		}
-
-		current_time = new Date();
-		expire_time1 = result.forgot_password_token_generated;
-		expire_time2 = moment(expire_time1).add(24, 'hours');
-
-		if (current_time >= expire_time2) {
-			return res.status(400).send({
-				"message": "Error",
-				"messageDetails": "The forgot password link sent to your mail has been expired. Request a new password reset email."
-			})
-		}
-		service.updateRow(UserModel, bodyParams, userId)
-		.then(function(response) {
-			if (response) {
-				return res.status(200).send({
-					"message": "Success",
-					"messageDetails": "Password updated successfully."
-				})
-			} else {
+			if (result.forgot_password_token != forgot_password_token) {
 				return res.status(400).send({
 					"message": "Error",
-					"messageDetails": "Something went wrong, request a new password reset email."
+					"messageDetails": "The forgot password link sent to your mail has been expired. Request a new password reset email."
 				})
 			}
-		}).catch(function(error){
-			console.log("Error::", error);
-			return res.status(500).send({
-				"message": "Error",
-            	"messageDetails": "Internal Server Error."
+
+			current_time = new Date();
+			expire_time1 = result.forgot_password_token_generated;
+			expire_time2 = moment(expire_time1).add(24, 'hours');
+
+			if (current_time >= expire_time2) {
+				return res.status(400).send({
+					"message": "Error",
+					"messageDetails": "The forgot password link sent to your mail has been expired. Request a new password reset email."
+				})
+			}
+			service.updateRow(UserModel, bodyParams, userId)
+			.then(function(response) {
+				if (response) {
+					return res.status(200).send({
+						"message": "Success",
+						"messageDetails": "Password updated successfully."
+					})
+				} else {
+					return res.status(400).send({
+						"message": "Error",
+						"messageDetails": "Something went wrong, request a new password reset email."
+					})
+				}
+			}).catch(function(error){
+				console.log("Error::", error);
+				return res.status(500).send({
+					"message": "Error",
+					"messageDetails": "Internal Server Error."
+				})
 			})
-		})
+
+		}else{
+			return res.status(404).send({
+				"message": "Error",
+				"messageDetails": "User Not Found."
+			})
+		}
 	}).catch(function(error){
 		console.log("Error::", error);
 		return res.status(500).send({
