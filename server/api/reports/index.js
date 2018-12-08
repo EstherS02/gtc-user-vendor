@@ -19,5 +19,5 @@ router.get('/latest-tickets', auth.isAuthenticated(), controller.latestTickets);
 router.get('/latest-refunds', auth.isAuthenticated(), controller.latestRefunds);
 router.get('/vendor-trail', auth.isAuthenticated(), controller.vendorTrail);
 router.get('/accounting', auth.isAuthenticated(), controller.accounting);
-// 
+router.get('/membership-fee',auth.isAuthenticated(), controller.memberShipFees);
 module.exports = router;
