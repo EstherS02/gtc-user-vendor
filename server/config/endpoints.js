@@ -28,6 +28,7 @@ module.exports = {
 	"order-items": "OrderItem",
 	"order-payments": "OrderPayment",
 	"order-payment-escrows": "OrderPaymentEscrow",
+	"order-vendors":"OrderVendor",
 	"orders": "Order",
 	"payment-settings": "PaymentSetting",
 	"plans": "Plan",

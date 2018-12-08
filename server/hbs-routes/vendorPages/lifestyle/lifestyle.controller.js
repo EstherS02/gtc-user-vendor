@@ -133,22 +133,28 @@ export function vendorLifestyle(req, res) {
 					return callback(null);
 				});
 		},
-		vendorPlan: function(callback){
-			var queryObj ={};
+		vendorPlan: function(callback) {
+			var queryObj = {};
 			queryObj['$or'] = [{
-					plan_id: Plan['LIFESTYLE_PROVIDER']
-				},{
-					plan_id: Plan['STARTER_SELLER']
-				},{
-					plan_id: Plan['PUBLIC_SELLER']
-				},{
-					plan_id: Plan['WHOLESALER']
-				}];
+				plan_id: Plan['LIFESTYLE_PROVIDER']
+			}, {
+				plan_id: Plan['STARTER_SELLER']
+			}, {
+				plan_id: Plan['PUBLIC_SELLER']
+			}, {
+				plan_id: Plan['WHOLESALER']
+			}];
+			queryObj['start_date'] = {
+					'$lte': moment().format('YYYY-MM-DD')
+				};
+			queryObj['end_date'] = {
+					'$gte': moment().format('YYYY-MM-DD')
+				};
 			queryObj['vendor_id'] = vendor_id;
 			queryObj['status'] = status['ACTIVE'];
-			var includeArr=[];
-			service.findRow('VendorPlan',queryObj, includeArr)
-			.then(function(response) {
+			var includeArr = [];
+			service.findRow('VendorPlan', queryObj, includeArr)
+				.then(function(response) {
 					return callback(null, response);
 
 				}).catch(function(error) {
@@ -229,7 +235,7 @@ export function vendorLifestyle(req, res) {
 	}, function(err, results) {
 		// console.log(results);
 		queryPaginationObj['maxSize'] = 5;
-
+		console.log("====================", results.VendorDetail, results.vendorPlan)
 		if (!err && results.vendorPlan) {
 			res.render('vendorPages/vendor-lifestyle', {
 				title: "Global Trade Connect",

@@ -8,7 +8,7 @@ const service = require('../../../api/service');
 const productService = require('../../../api/product/product.service');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
-const shopService=require('../../../api/vendor/vendor.service')
+const shopService = require('../../../api/vendor/vendor.service')
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const sequelize = require('sequelize');
@@ -89,14 +89,14 @@ export function vendorServices(req, res) {
 			}, {
 				model: model['VendorPlan'],
 				where: {
-						status: status['ACTIVE'],
-						start_date: {
-							'$lte': moment().format('YYYY-MM-DD')
-						},
-						end_date: {
-							'$gte': moment().format('YYYY-MM-DD')
-						}
+					status: status['ACTIVE'],
+					start_date: {
+						'$lte': moment().format('YYYY-MM-DD')
 					},
+					end_date: {
+						'$gte': moment().format('YYYY-MM-DD')
+					}
+				},
 
 				required: false
 			}, {
@@ -132,22 +132,28 @@ export function vendorServices(req, res) {
 					return callback(null);
 				});
 		},
-		vendorPlan: function(callback){
-			var queryObj ={};
+		vendorPlan: function(callback) {
+			var queryObj = {};
 			queryObj['$or'] = [{
-					plan_id: Plan['SERVICE_PROVIDER']
-				},{
-					plan_id: Plan['STARTER_SELLER']
-				},{
-					plan_id: Plan['PUBLIC_SELLER']
-				},{
-					plan_id: Plan['WHOLESALER']
-				}];
+				plan_id: Plan['SERVICE_PROVIDER']
+			}, {
+				plan_id: Plan['STARTER_SELLER']
+			}, {
+				plan_id: Plan['PUBLIC_SELLER']
+			}, {
+				plan_id: Plan['WHOLESALER']
+			}];
+			queryObj['start_date'] = {
+					'$lte': moment().format('YYYY-MM-DD')
+				},
+				queryObj['end_date'] = {
+					'$gte': moment().format('YYYY-MM-DD')
+				}
 			queryObj['vendor_id'] = vendor_id;
 			queryObj['status'] = status['ACTIVE'];
-			var includeArr=[];
-			service.findRow('VendorPlan',queryObj, includeArr)
-			.then(function(response) {
+			var includeArr = [];
+			service.findRow('VendorPlan', queryObj, includeArr)
+				.then(function(response) {
 					return callback(null, response);
 
 				}).catch(function(error) {
@@ -214,7 +220,7 @@ export function vendorServices(req, res) {
 						subCatObj["count"] = o.subproductcount;
 						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 						resultObj[o.categoryname]["subCategory"].push(subCatObj)
-						count= count + o.subproductcount;
+						count = count + o.subproductcount;
 					})
 					categoryWithProductCount.rows = resultObj;
 					categoryWithProductCount.count = count;
@@ -244,7 +250,7 @@ export function vendorServices(req, res) {
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'services',
 				Plan: Plan,
-				categoryWithProductCount:results.categoryWithProductCount
+				categoryWithProductCount: results.categoryWithProductCount
 			});
 		} else {
 			res.render('404');

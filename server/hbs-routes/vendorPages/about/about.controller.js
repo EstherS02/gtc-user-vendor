@@ -13,7 +13,7 @@ const moment = require('moment');
 const async = require('async');
 
 export function vendorAbout(req, res) {
-	
+
 	var vendor_id;
 	if (req.params.id) {
 		vendor_id = req.params.id
@@ -42,21 +42,21 @@ export function vendorAbout(req, res) {
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
 				model: model['Country'],
-				attributes:['id','name']
+				attributes: ['id', 'name']
 			}, {
 				model: model['State'],
-				attributes:['id','name']
+				attributes: ['id', 'name']
 			}, {
 				model: model['VendorPlan'],
 				where: {
-						status: status['ACTIVE'],
-						start_date: {
-							'$lte': moment().format('YYYY-MM-DD')
-						},
-						end_date: {
-							'$gte': moment().format('YYYY-MM-DD')
-						}
+					status: status['ACTIVE'],
+					start_date: {
+						'$lte': moment().format('YYYY-MM-DD')
 					},
+					end_date: {
+						'$gte': moment().format('YYYY-MM-DD')
+					}
+				},
 				required: false
 			}, {
 				model: model['VendorVerification'],
@@ -83,9 +83,9 @@ export function vendorAbout(req, res) {
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
-					if(response){
-						var address = response.address+','+response.city+','+response.State.name+','+response.Country.name;
-						address = address.replace(/ /g,'+');
+					if (response) {
+						var address = response.address + ',' + response.city + ',' + response.State.name + ',' + response.Country.name;
+						address = address.replace(/ /g, '+');
 						response['mapAddress'] = address;
 					}
 					return callback(null, response);
@@ -116,13 +116,19 @@ export function vendorAbout(req, res) {
 					return callback(null);
 				});
 		},
-		vendorPlan: function(callback){
-			var queryObj ={};
+		vendorPlan: function(callback) {
+			var queryObj = {};
+			queryObj['start_date'] = {
+					'$lte': moment().format('YYYY-MM-DD')
+				};
+				queryObj['end_date'] = {
+					'$gte': moment().format('YYYY-MM-DD')
+				};
 			queryObj['vendor_id'] = vendor_id;
 			queryObj['status'] = status['ACTIVE'];
-			var includeArr=[];
-			service.findRow('VendorPlan',queryObj, includeArr)
-			.then(function(response) {
+			var includeArr = [];
+			service.findRow('VendorPlan', queryObj, includeArr)
+				.then(function(response) {
 					return callback(null, response);
 
 				}).catch(function(error) {
