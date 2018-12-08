@@ -376,10 +376,11 @@ export function vendorTrail(req, res) {
 		attributes: ['id', 'start_date', 'end_date', 'status'],
 		where: planQueryObj
 	}];
+	try{
 	model["Vendor"].findAll({
 		include: includeArr,
 		where: queryObj,
-		attributes: ['id', 'vendor_name'],
+		attributes: ['id', 'vendor_name','vendor_profile_pic_url','created_on'],
 		offset: offset,
 		limit: limit,
 		order: [
@@ -395,6 +396,10 @@ export function vendorTrail(req, res) {
 		console.log("error:::::::", error)
 		return res.status(500).send(error);
 	});
+}  catch (error) {
+		console.log("Add To Cart Error:::", error);
+		return res.status(500).send(error);
+	}
 }
 export function accounting(req, res) {
 	var accountingQueryParams = {};
