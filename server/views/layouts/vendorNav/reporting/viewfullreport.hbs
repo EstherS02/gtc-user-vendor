@@ -60,6 +60,9 @@
 												{{/each}}
 											{{/if}}
 										</table>
+										{{#ifCond vendorRevenue.count '==' 0 }}
+											<p style="text-align: center;">No Results!</p>
+										{{/ifCond}}
 									</div>
 								</div>
 							</div>
@@ -104,19 +107,22 @@
 													<th scope="col">GTC Fee</th>
 												</tr>
 											</thead>
-											{{#if processingFee.rows}}
-												{{#each processingFee.rows}}
-													<tbody>
+											<tbody>
+												{{#if processingFee.rows}}
+													{{#each processingFee.rows}}
 														<td>{{this.order_id}}</td>
 														<td>{{this.Vendor.vendor_name}}</td>
 														<td>{{this.total_price}}</td>
 														<td>{{this.shipping_cost}}</td>
 														<td>{{this.gtc_fees_percent}}</td>
 														<td>{{this.gtc_fees}}</td>
-													</tbody>
-												{{/each}}
-											{{/if}}
+													{{/each}}
+												{{/if}}
+											</tbody>
 										</table>
+										{{#ifCond processingFee.count '==' 0 }}
+											<p style="text-align: center;">No Results!</p>
+										{{/ifCond}}
 									</div>
 								</div>
 							</div>
@@ -172,6 +178,9 @@
 												</tbody>
 											{{/each}}
 										</table>
+										{{#ifCond subscriptionFee.count '==' 0 }}
+											<p style="text-align: center;">No Results!</p>
+										{{/ifCond}}
 									</div>
 								</div>
 							</div>
@@ -225,6 +234,9 @@
 												</tbody>
 											{{/each}}
 										</table>
+										{{#ifCond gtcPayFee.count '==' 0 }}
+											<p style="text-align: center;">No Results!</p>
+										{{/ifCond}}
 									</div>
 								</div>
 							</div>
@@ -326,6 +338,9 @@
 													{{/each}}
 												</tbody>
 											</table>
+											{{#ifCond membershipDetails.count '==' 0 }}
+											<p style="text-align: center;">No Results!</p>
+										{{/ifCond}}
 										</div>
 									</div>
 									{{!-- Pagination starts --}}
