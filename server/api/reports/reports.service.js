@@ -139,9 +139,10 @@ export async function AccountingReport(vendorID, queryParams) {
 					attributes: [[sequelize.fn('sum', sequelize.col('amount')), 'amount']]
 				}]
 			}]
-		});		
-		if(!_.isUndefined(gtcPaymentEscrow['OrderVendorPayouts.Payment.amount']))
-			accounting['gtc_pay_escrow'] = parseFloat(gtcPaymentEscrow['OrderVendorPayouts.Payment.amount']);		
+		});	
+		
+		if(!_.isUndefined(gtcPaymentEscrow[0]['OrderVendorPayouts.Payment.amount']))
+			accounting['gtc_pay_escrow'] = parseFloat(gtcPaymentEscrow[0]['OrderVendorPayouts.Payment.amount']);	
 
 		//accounting['total'] = _.sum(Object.values(accounting));
 		accounting['total'] = accounting['membership'] + accounting['featured_product'] + accounting['processing_fees'] + accounting['subscription_fees'];
