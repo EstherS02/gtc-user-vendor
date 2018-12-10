@@ -14,8 +14,7 @@
 		}
 	});
   	$("#searchForm").submit(function(e) {
-		  console.log("enter the loopss");
-  		e.preventDefault();
+		e.preventDefault();
   		let formInput = $("#searchForm :input").filter(function(index, element) {
   			return $(element).val() != '';
   		}).serialize();
