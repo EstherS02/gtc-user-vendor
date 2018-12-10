@@ -3,6 +3,9 @@
 	var counts = {{{ DisplayJSON globalProductCounts }}}
   $(document).ready(function() {
   	$("#searchSubmit").prop('disabled', true);
+	  $('#depart').val('');
+	  $('#category').val('');
+	  $('#location').val('');
 	$('#depart, #category, #location').on('change', function() {
 		if ($(this).val() == '') {
 			$('#searchSubmit').prop('disabled', true);
@@ -11,7 +14,7 @@
 		}
 	});
   	$("#searchForm").submit(function(e) {
-  		e.preventDefault();
+		e.preventDefault();
   		let formInput = $("#searchForm :input").filter(function(index, element) {
   			return $(element).val() != '';
   		}).serialize();
@@ -72,7 +75,7 @@
 							</div>
 						</div>
 						<div class="col-md-12 text-center">
-							<button type="button" class="btn btn-md btn-directory" id="searchSubmit">SEARCH PRODUCTS</button>
+							<button type="submit" class="btn btn-md btn-directory" id="searchSubmit">SEARCH PRODUCTS</button>
 						</div>
 					</div>
 				</form>
