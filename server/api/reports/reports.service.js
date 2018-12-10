@@ -165,7 +165,10 @@ export async function adFeaturedRevenue(req,res){
 	var productQuery ={};
 
 	var type = req.query.type ? parseInt(req.query.type) : 0;
-	
+	if(queryObj.vendorID){
+		queryObj1.vendor_id = queryObj.vendorID;
+		productQuery.vendor_id = queryObj.vendorID;
+	}
 	if (queryObj.fromDate && queryObj.toDate) {
 
 		if (queryObj.columnName) {
@@ -244,10 +247,7 @@ export async function adFeaturedRevenue(req,res){
 		}
 		productQuery['product_name'] = queryObj1['name'];
 	}
-	if(queryObj.vendorID){
-		queryObj1.vendor_id = queryObj.vendorID;
-		productQuery.vendor_id = queryObj.vendorID;
-	}
+
 
 	results.count = 0;
 	results.total = 0;
