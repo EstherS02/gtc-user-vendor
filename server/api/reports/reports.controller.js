@@ -86,12 +86,55 @@ export function topSellingCities(req, res) {
 			[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
 		],
 		limit: Limit
-		
+
 	}).then(function(results) {
 		if (results.length > 0)
 			result = results;
 		else
 			result = [];
+		return res.status(200).send(result);
+	}).catch(function(error) {
+		console.log('Error:::', error);
+		return res.status(200).send(error);
+	});
+}
+
+export function topSellingCountries(req, res){
+
+	var queryObj = {};
+	var result = {}, Limit = 5;
+
+	if(req.query.limit)
+		Limit = parseInt(req.query.limit);
+	
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+
+	model['OrderItem'].findAll({
+		raw: true,
+		include:[{
+			model: model['Product'],
+			where:{},
+			attributes: ['product_location'],
+			include:[{
+				model:model['Country'],
+				attributes: ['name'],
+			}]
+		}],
+		attributes: [
+			[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales']
+		],
+		group: ['Product.product_location'],
+		order: [
+			[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
+		],
+		limit: Limit
+	}).then(function(results) {
+		if (results.length > 0)
+			result = results;
+		else
+			result = [];
+			
 		return res.status(200).send(result);
 	}).catch(function(error) {
 		console.log('Error:::', error);
