@@ -63,8 +63,11 @@ export function generateReports(req, res) {
 
 export function topSellingCities(req, res) {
 	var queryObj = {};
-	var result = {};
+	var result = {}, Limit = 5;
 
+	if(req.query.limit)
+		Limit = parseInt(req.query.limit);
+	
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
 
@@ -82,7 +85,8 @@ export function topSellingCities(req, res) {
 		order: [
 			[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
 		],
-		limit: 5
+		limit: Limit
+		
 	}).then(function(results) {
 		if (results.length > 0)
 			result = results;
@@ -208,6 +212,11 @@ export function topProducts(req, res) {
 	var lhsBetween = [];
 	var rhsBetween = [];
 
+	if(req.user.role == 1){
+		orderItemQueryObj.limit = parseInt(req.query.limit);
+		orderItemQueryObj.offset = parseInt(req.query.offset);
+	}
+
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 	if (req.query.lhs_from && req.query.lhs_to) {
@@ -234,6 +243,11 @@ export function topMarketPlace(req, res) {
 	var lhsBetween = [];
 	var rhsBetween = [];	
 
+	if(req.user.role == 1){
+		orderItemQueryObj.limit = parseInt(req.query.limit);
+		orderItemQueryObj.offset = parseInt(req.query.offset);
+	}
+
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 	if (req.query.lhs_from && req.query.lhs_to) {
@@ -259,8 +273,14 @@ export function topCategories(req, res) {
 	var lhsBetween = [];
 	var rhsBetween = [];	
 
+	if(req.user.role == 1){
+		orderItemQueryObj.limit = parseInt(req.query.limit);
+		orderItemQueryObj.offset = parseInt(req.query.offset);
+	}
+
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
+
 	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
@@ -402,6 +422,7 @@ export function vendorTrail(req, res) {
 	}
 }
 export function accounting(req, res) {
+	
 	var accountingQueryParams = {};
 	if (req.query.start_date) {
 		accountingQueryParams['start_date'] = new Date(parseInt(req.query.start_date));
@@ -434,7 +455,7 @@ export function memberShipFees(req,res){
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	order = req.query.order ? req.query.order : "desc";
-	field = req.query.field ? req.query.order : "id";
+	field = req.query.field ? req.query.field : "id";
 
 	var includeArr = [
 		{ 
