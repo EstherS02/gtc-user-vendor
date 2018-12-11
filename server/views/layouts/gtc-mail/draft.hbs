@@ -69,7 +69,11 @@
 													</div>
 												</td>
 												<td class='clickable-row' scope="row" data-href='gtc-mail/drafts/{{this.Mail.id}}'>{{this.Mail.toUser.first_name}}</td>
-												<td class='clickable-row' scope="row" data-href='gtc-mail/drafts/{{this.Mail.id}}'>{{this.Mail.subject}}</td>
+												<td class='clickable-row' scope="row" data-href='gtc-mail/drafts/{{this.Mail.id}}'>
+													<span class="d-inline-block text-truncate" style="max-width: 350px;">
+														{{this.Mail.subject}}
+													</span>
+												</td>
 												<td class='clickable-row' scope="row" data-href='gtc-mail/drafts/{{this.Mail.id}}'>{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
 												<td class='clickable-row' data-href='gtc-mail/drafts/{{this.Mail.id}}'>{{sizeInKB this.Mail.message.length}} KB</td>
 											</tr>
