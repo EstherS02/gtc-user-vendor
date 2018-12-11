@@ -33,7 +33,7 @@
 										<div class="col-md-10 col-xs-10">
 											<div class="messages send msg_sent">
 												<p>{{this.message}}</p>
-												<time datetime="">{{formatTime this.created_on "LT"}}</time>
+												<time datetime="">{{FormatDate this.created_on}}</time>
 											</div>
 										</div>
 									</div>
@@ -43,7 +43,7 @@
 									<div class="col-md-10 col-xs-10">
 										<div class="messages recieve msg_receive">
 											<p>{{this.message}}</p>
-											<time datetime="">{{formatTime this.created_on "LT"}}</time>
+											<time datetime="">{{FormatDate this.created_on}}</time>
 										</div>
 									</div>
 								</div>
@@ -170,7 +170,7 @@
 			}, 'slow');
 
 			function FormatDate(testDate) {
-				return moment(testDate).format("LT")
+				return moment(moment(moment.utc(testDate).toDate()).local().format('YYYY-MM-DD HH:mm:ss')).fromNow();
 			}
 		});
 
