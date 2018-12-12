@@ -231,7 +231,10 @@
 															<td>
 																<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">
 																<img src="{{this.ProductMedia.[0].url}}" onError="imgError(this)" style="width: 30px;" />
-																{{this.product_name}}</a>
+																<span class="d-inline-block text-truncate" style="max-width: 330px;">
+																	{{this.product_name}}
+																</span>	
+																</a>
 															</td>
 															<td>{{formatTime this.publish_date "MMM DD, YYYY"}}</td>
 															<td>{{#if this.sales_count}}{{this.sales_count}}{{else}}0{{/if}}</td>

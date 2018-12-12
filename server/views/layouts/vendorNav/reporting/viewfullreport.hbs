@@ -1,0 +1,507 @@
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+{{#ifCond selectedPage "==" 'revenue'}}
+	<div class="wrapper-content bg-gray">
+		<div class="gtc-container">
+			<div class="row">
+				<div class="col-sm-2">
+					{{> vendor/vendor-side-navbar}}
+				</div>
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="content-body">
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="content-header-title">Ad & Featured Listings Revenue</h5>
+										<p class="content-txt">Here you'll be able to generate reports on the ad revenue GTC has generated for both Custom Ads and Featured Lisitings.
+											Search by ad type, date range or search by name. You can also export a CSV for your records or two import into
+											another accounting program.</p>
+										<span class="pull-right" style="font-size:12px">
+										</span>
+									</div>
+								</div>
+								{{#if vendorRevenue.count}}
+									<div class="row py-2">
+										<div class="col-md-12">
+											<small class="font-weight-light">{{vendorRevenue.count}} items total</small>
+											<div class="float-right">
+												<small class="font-weight-light">Entries per page : </small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
+												</small>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<table class="table order-table">
+												<thead>
+													<tr>
+														<th scope="col">Ad/Listing Name</th>
+														<th scope="col">type</th>
+														<th scope="col">Position</th>
+														<th scope="col">Start Date</th>
+														<th scope="col">End Date</th>
+														<th scope="col">Impressions </th>
+														<th scope="col">Clicks</th>
+														<th scope="col">CTR</th>
+														<th scope="col">Cost to Vendor</th>
+													</tr>
+												</thead>
+												{{#each vendorRevenue.rows}}
+													<tbody>
+														<td>{{this.product_name}}</td>
+														<td>{{this.type}}</td>
+														<td>{{this.position}}</td>
+														<td>{{this.start_date}}</td>
+														<td>{{this.end_date}}</td>
+														{{#if this.impression}}
+															<td>{{this.impression}}</td>
+														{{else}}
+															<td>0</td>
+														{{/if}}
+														{{#if this.clicks}}
+															<td>{{this.clicks}}</td>
+														{{else}}
+															<td>0</td>
+														{{/if}}
+														<td>-</td>
+														<td>{{this.Payment.amount}}</td>
+													</tbody>
+												{{/each}}
+											</table>
+											<div class="row">
+
+											</div>
+										</div>
+									</div>
+
+									{{!-- Pagination starts --}}
+									{{#ifCond vendorRevenue.count '>' queryPaginationObj.limit}}
+										<div class="row m-t-sm">
+											<div class="col-md-12">
+												{{#pagination vendorRevenue.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+													<nav aria-label="Page navigation example">
+														<ul class="pagination justify-content-center">
+															{{#unless startFromFirstPage}}
+																<li class="page-item-prev" style="margin-left:-391px;">
+																	<a href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">
+																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+																</li>
+															{{/unless}}
+
+															{{#each pages}}
+																<li class="page-item {{#if isCurrent}} active {{/if}}">
+																	<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																</li>
+															{{/each}}
+
+															{{#unless endAtLastPage}}
+																<li class="page-item-next" style="margin-right:-391px;">
+																	<a href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
+																		<i class="fa fa-angle-double-right"></i>
+																	</a>
+																</li>
+															{{/unless}}
+
+														</ul>
+													</nav>
+												{{/pagination}}
+											</div>
+										</div>
+									{{/ifCond}}
+									{{!-- pagination ends --}}
+
+								{{else}}
+									{{#ifCond vendorRevenue.count '==' 0 }}
+										<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+									{{/ifCond}}
+								{{/if}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{{/ifCond}}
+{{#ifCond selectedPage "==" 'processing'}}
+	<div class="wrapper-content bg-gray">
+		<div class="gtc-container">
+			<div class="row">
+				<div class="col-sm-2">
+					{{> vendor/vendor-side-navbar}}
+				</div>
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="content-body">
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="content-header-title">Processing Fees</h5>
+										<p class="content-txt">Processing Fees This is were you can see, GTC Fees for all the order placed.</p>
+										<span class="pull-right" style="font-size:12px">
+										</span>
+									</div>
+								</div>
+								{{#if processingFee.count}}
+									<div class="row py-2">
+										<div class="col-md-12">
+											<small class="font-weight-light">{{processingFee.count}} items total</small>
+											<div class="float-right">
+												<small class="font-weight-light">Entries per page : </small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
+												</small>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<table class="table order-table">
+												<thead>
+													<tr>
+														<th scope="col">Order#</th>
+														<th scope="col">Vendor Name</th>
+														<th scope="col">Order Total</th>
+														<th scope="col">Shipping Cost</th>
+														<th scope="col">GTC Fee(%)</th>
+														<th scope="col">GTC Fee</th>
+													</tr>
+												</thead>
+												{{#each processingFee.rows}}
+													<tbody>
+														<td>{{this.order_id}}</td>
+														<td>{{this.Vendor.vendor_name}}</td>
+														<td>{{this.total_price}}</td>
+														<td>{{this.shipping_cost}}</td>
+														<td>{{this.gtc_fees_percent}}</td>
+														<td>{{this.gtc_fees}}</td>
+													</tbody>
+												{{/each}}
+											</table>
+										</div>
+									</div>
+								{{else}}
+									{{#ifCond processingFee.count '==' 0 }}
+										<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+									{{/ifCond}}
+								{{/if}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+{{/ifCond}}
+{{#ifCond selectedPage "==" 'subscription'}}
+	<div class="wrapper-content bg-gray">
+		<div class="gtc-container">
+			<div class="row">
+				<div class="col-sm-2">
+					{{> vendor/vendor-side-navbar}}
+				</div>
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="content-body">
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="content-header-title">Subscription Fees</h5>
+										<p class="content-txt">This is were you can see, Plan Fees for all the order placed.</p>
+										<span class="pull-right" style="font-size:12px">
+										</span>
+									</div>
+								</div>
+								{{#if subscriptionFee.count}}
+									<div class="row py-2">
+										<div class="col-md-12">
+											<small class="font-weight-light">{{subscriptionFee.count}} items total</small>
+											<div class="float-right">
+												<small class="font-weight-light">Entries per page : </small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
+												</small>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<table class="table order-table">
+												<thead>
+													<tr>
+														<th scope="col">Order#</th>
+														<th scope="col">Vendor Name</th>
+														<th scope="col">Order Total</th>
+														<th scope="col">Shipping Cost</th>
+														<th scope="col">Plan Fee(%)</th>
+														<th scope="col">Plan Fee</th>
+													</tr>
+												</thead>
+												{{#each subscriptionFee.rows}}
+													<tbody>
+														<td>{{this.order_id}}</td>
+														<td>{{this.Vendor.vendor_name}}</td>
+														<td>{{this.total_price}}</td>
+														<td>{{this.shipping_cost}}</td>
+														<td>{{this.gtc_fees_percent}}</td>
+														<td>{{this.gtc_fees}}</td>
+													</tbody>
+												{{/each}}
+											</table>
+										</div>
+									</div>
+								{{else}}
+									{{#ifCond subscriptionFee.count '==' 0 }}
+										<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+									{{/ifCond}}
+								{{/if}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{{/ifCond}}
+{{#ifCond selectedPage "==" 'gtcpay'}}
+	<div class="wrapper-content bg-gray">
+		<div class="gtc-container">
+			<div class="row">
+				<div class="col-sm-2">
+					{{> vendor/vendor-side-navbar}}
+				</div>
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="content-body">
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="content-header-title">GTC pay Escrow Fees</h5>
+										<p class="content-txt">This is were you can see, the amount paid to vendor.</p>
+										<span class="pull-right" style="font-size:12px">
+										</span>
+									</div>
+								</div>
+								{{#if gtcPayFee.count}}
+									<div class="row py-2">
+										<div class="col-md-12">
+											<small class="font-weight-light">{{gtcPayFee.count}} items total</small>
+											<div class="float-right">
+												<small class="font-weight-light">Entries per page : </small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
+												</small>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<table class="table order-table">
+												<thead>
+													<tr>
+														<th scope="col">Order#</th>
+														<th scope="col">Vendor Name</th>
+														<th scope="col">Order Total</th>
+														<th scope="col">Shipping Cost</th>
+														<th scope="col">Paid to Vendor</th>
+													</tr>
+												</thead>
+												{{#each gtcPayFee.rows}}
+													<tbody>
+														<td>{{this.order_id}}</td>
+														<td>{{this.Vendor.vendor_name}}</td>
+														<td>{{this.total_price}}</td>
+														<td>{{this.shipping_cost}}</td>
+														<td>{{this.gtc_fees_percent}}</td>
+													</tbody>
+												{{/each}}
+											</table>
+										</div>
+									</div>
+								{{else}}
+									{{#ifCond gtcPayFee.count '==' 0 }}
+										<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+									{{/ifCond}}
+								{{/if}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{{/ifCond}}
+{{#ifCond selectedPage "==" 'membership'}}
+	<div class="wrapper-content bg-gray">
+		<div class="gtc-container">
+			<div class="row">
+				<div class="col-sm-2">
+					{{> vendor/vendor-side-navbar}}
+				</div>
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="content-body">
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="content-header-title">Membership Fees</h5>
+										<p class="content-txt">This is were you can see, membership fees for this vendor.</p>
+										<span class="pull-right" style="font-size:12px">
+										</span>
+									</div>
+								</div>
+								{{#if membershipDetails.count}}
+									<div class="row py-2">
+										<div class="col-md-12">
+											<small class="font-weight-light">{{membershipDetails.count}} items total</small>
+											<div class="float-right">
+												<small class="font-weight-light">Entries per page : </small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
+												</small>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<table class="table order-table">
+												<thead>
+													<tr>
+														{{!-- <th>
+													<div class="customCheckbox">
+														<input type="checkbox" onclick="selectAll(this);" id="inputCheckbox" class="customCheckboxInput">
+														<label class="checkbox-b" for="inputCheckbox"></label>
+													</div>
+												</th> --}}
+														<th scope="col">Plan Type</th>
+														<th scope="col">Start Date</th>
+														<th scope="col">End Date</th>
+														<th scope="col">Status </th>
+														<th scope="col">Payment Date</th>
+														<th scope="col">Cost to Vendor</th>
+													</tr>
+												</thead>
+												<tbody>
+													{{#each membershipDetails.rows}}
+														<tr>
+															{{!-- <td>
+												<div class="customCheckbox">
+													<input type="checkbox" id="inputTerms{{this.id}}" class="customCheckboxInput" name="selected" value= {{this.id}}>
+													<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
+												</div>
+											</td> --}}
+															<td>
+																{{#ifCond this.plan_id '==' 2}} Service Provider{{/ifCond}}
+																{{#ifCond this.plan_id '==' 3}} Lifestyle Provider {{/ifCond}}
+																{{#ifCond this.plan_id '==' 4}} Public Seller Pricing Guide{{/ifCond}}
+																{{#ifCond this.plan_id '==' 6}} Wholesale Pricing Guide{{/ifCond}}
+															</td>
+															<td>{{this.start_date}}</td>
+															<td>{{this.end_date}}</td>
+															<td>
+																{{#ifCond this.status '==' 1}}
+																	<div style="color:green">ACTIVE</div>
+								{{else}}
+									<div style="color:red">INACTIVE</div>
+																{{/ifCond}}
+															</td>
+															<td>{{this.Payment.created_on}}</td>
+															<td>${{this.Payment.amount}}</td>
+														</tr>
+													{{/each}}
+												</tbody>
+											</table>
+											{{#ifCond membershipDetails.count '==' 0 }}
+												<p style="text-align: center;">No Results!</p>
+											{{/ifCond}}
+										</div>
+									</div>
+									{{!-- Pagination starts --}}
+									{{#ifCond membershipDetails.count '>' queryParams.limit}}
+										<div class="row">
+											<div class="col-md-12 align-self-center">
+												{{#pagination orders.count queryParams.page queryParams.limit 2}}
+													<nav aria-label="Page navigation example">
+														<ul class="pagination justify-content-center">
+															{{#unless startFromFirstPage}}
+																<li class="justify-content-center align-self-center">
+																	<a href="../store/accounting/membership?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryParams.page 1) limit=@root.queryParams.limit)}}">
+																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+																</li>
+															{{/unless}}
+															{{#each pages}}
+																<li class="page-item {{#if isCurrent}} active {{/if}}">
+																	<a class="page-link" href="../store/accounting/membership?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryParams.limit)}}">{{page}}</a>
+																</li>
+															{{/each}}
+															{{#unless endAtLastPage}}
+																<li class="justify-content-center align-self-center">
+																	<a href="../order-store/accounting/membership?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryParams.page 1) limit=@root.queryParams.limit)}}">Next&nbsp;
+																		<i class="fa fa-angle-double-right"></i>
+																	</a>
+																</li>
+															{{/unless}}
+														</ul>
+													</nav>
+												{{/pagination}}
+											</div>
+										</div>
+									{{/ifCond}}
+									{{!-- Pagination Ends --}}
+								{{else}}
+									<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+								{{/if}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{{/ifCond}}

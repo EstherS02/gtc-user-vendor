@@ -14,6 +14,7 @@ router.get('/revenue-changes', auth.isAuthenticated(), controller.recentRevenueC
 router.get('/revenue-counts', auth.isAuthenticated(), controller.revenueChangesCount);
 router.get('/performance', auth.isAuthenticated(), controller.comparePerformance);
 router.get('/top-selling-cities', auth.isAuthenticated(), controller.topSellingCities);
+router.get('/top-selling-countries', auth.isAuthenticated(), controller.topSellingCountries);
 router.get('/active-buyers', auth.isAuthenticated(), controller.topActiveBuyers);
 router.get('/latest-tickets', auth.isAuthenticated(), controller.latestTickets);
 router.get('/latest-refunds', auth.isAuthenticated(), controller.latestRefunds);

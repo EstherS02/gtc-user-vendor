@@ -34,14 +34,15 @@ let sqlQueries = {
     ) AS distance
     FROM
         vendor
-    LEFT JOIN product ON vendor.id = product.vendor_id
-    LEFT JOIN product_media ON product.id = product_media.product_id AND product_media.base_image = 1
+    LEFT JOIN product ON vendor.id = product.vendor_id  
+	LEFT JOIN product_media ON product.id = product_media.product_id AND product_media.base_image = 1
+	LEFT JOIN vendor_plan on vendor.id = vendor_plan.vendor_id AND vendor_plan.status=1 AND vendor_plan.start_date <= '` + new Date().toISOString().slice(0, 10) + `'  AND vendor_plan.end_date >= '` + new Date().toISOString().slice(0, 10) + `' 
     LEFT JOIN country ON product.product_location = country.id
     LEFT JOIN category ON product.product_category_id = category.id
     LEFT JOIN sub_category ON product.sub_category_id = sub_category.id
     LEFT JOIN marketplace ON product.marketplace_id = marketplace.id
     LEFT JOIN marketplace_type ON product.marketplace_type_id = marketplace_type.id
-    LEFT JOIN product_ratings ON product.id = product_ratings.product_id where product.status=1
+    LEFT JOIN product_ratings ON product.id = product_ratings.product_id where product.status=1 AND vendor.status=1
     HAVING
         distance < 300
     ORDER BY

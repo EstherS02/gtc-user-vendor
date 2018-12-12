@@ -798,6 +798,8 @@ export async function edit(req, res){
 
 	delete req.body.password;
 	bodyParam = req.body;
+	bodyParam['last_updated_by'] = req.user.first_name;
+	bodyParam['last_updated_on'] = new Date();
 
 	try{
 		const existingUser = await service.findIdRow(userModel, userID);

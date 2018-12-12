@@ -221,7 +221,13 @@ var params = {{{ DisplayJSON queryParamsString }}};
 																<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
 															</div>
 														</td>
-														<td class="text_blue_color"><a href="/coupons/edit-coupons?id={{this.id}}">{{this.coupon_name}}</a></td>
+														<td class="text_blue_color">
+															<a href="/coupons/edit-coupons?id={{this.id}}">
+																<span class="d-inline-block text-truncate" style="max-width: 330px;">
+																	{{this.coupon_name}}
+																</span>
+															</a>
+														</td>
 														<td>{{this.code}}</td>
 														<td>{{formatTime this.publish_date "MMM D, YYYY"}}</td>
 														<td>{{formatTime this.expiry_date "MMM D, YYYY"}}</td>

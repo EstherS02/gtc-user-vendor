@@ -172,18 +172,14 @@
 												 onclick="onSearch()">UPDATE</button>
 
 											</div>
-
 										</form>
 										<form class="form-inline pull-right m-t-md">
-
-
 											<div class="form-group m-r">
 												<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
 												<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
 											</div>
 
 										</form>
-
 									</div>
 								</div>
 								{{!-- ended --}}
@@ -353,7 +349,11 @@
 												<tr>
 													<td>
 														<img src="../..{{this.product_url}}" style="width: 15px;" />
-														<a href="#" class="text_blue_color">{{this.product_name}}</a>
+														<a href="#" class="text_blue_color">
+															<span class="d-inline-block text-truncate" style="max-width: 330px;">
+																{{this.product_name}}
+															</span>
+														</a>
 													</td>
 													<td>{{this.marketplace_name}}</td>
 													{{compareSalePerformance this @root.performance.rhs_result}}
