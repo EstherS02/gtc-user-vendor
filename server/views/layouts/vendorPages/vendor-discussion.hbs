@@ -137,8 +137,6 @@
 					formData.comment_media_url = data.imageURL;
 					removeCommentPic(e);
 					apiCallComment(url, formData, e);
-					
-
 				},
 				error: function(error) {
 					console.log("Error", error);
@@ -179,6 +177,7 @@
 			data: data,
 			success: function(res) {
 				if(res.result){
+					location.reload();
 					var count = res.result.count;
 					var results = res.result.rows;
 					console.log(res.result)
