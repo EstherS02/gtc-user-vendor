@@ -297,7 +297,11 @@ export async function edit(req, res) {
 	}
 	
 	userBodyParam = req.body;
+	userBodyParam['last_updated_by'] = req.user.first_name;
+	userBodyParam['last_updated_on'] = new Date();
 	adminBodyParam['status'] = req.body.status; 
+	adminBodyParam['last_updated_by'] = req.user.first_name;
+	adminBodyParam['last_updated_on'] = new Date();
 
     try {
          if (req.files.admin_profile_pic) {
