@@ -6,7 +6,7 @@ const service = require('../service');
 const status = require('../../config/status');
 const populate = require('../../utilities/populate')
 const _ = require('lodash');
-
+const stripe = require('../../payment/stripe.payment');
 var featuredProductModel = 'FeaturedProduct';
 
 export function index(req, res) {
