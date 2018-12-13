@@ -5,7 +5,7 @@ var router = express.Router();
 var auth = require('../../auth/auth.service');
 var controller = require('./ticket.controller');
 
-router.post('/', auth.isAuthenticated(), controller.create);
-router.post('/:id', auth.isAuthenticated(), controller.update);
+router.post('/', auth.isAuthenticatedUser(), controller.create);
+router.post('/:id', auth.isAuthenticatedUser(), controller.update);
 
 module.exports = router;
