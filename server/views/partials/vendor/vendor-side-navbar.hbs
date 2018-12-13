@@ -226,9 +226,11 @@
 				<li class="nav-bar">
 					<a href="/login#FAQ" class="vs-link">FAQ</a>
 				</li>
+				{{#if LoggedInUser.Vendor.id}}
 				<li class="nav-bar">
 					<a href="javascript:;" class="vs-link pointer" id="supportLink" onclick="supportticket()">Ticket History</a>
 				</li>
+				{{/if}}
 				<li class="nav-bar">
 					<a href="javascript:;" class="vs-link"> Direct Support(?)</a>
 				</li>
