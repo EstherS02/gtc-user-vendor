@@ -5624,3 +5624,49 @@ color: #2d4373; }
 }
 /* 
 performance date range ends */
+
+/* tickets css  starts*/
+.ticket-widget {
+	display: inline-block;
+	width: 500px;
+}
+
+.widget-head {
+	padding: 10px;
+	height: 60px;
+}
+
+.widget-head-2 {
+	background: #91b6e4;
+}
+
+.widget-head-1 {
+	background: #fbd89b;
+}
+
+.widget-card {
+	border-top: 1px solid #cccccc;
+	border-right: 1px solid #cccccc;
+	border-left: 1px solid #cccccc;
+}
+
+.widget-card-title {
+	padding: 10px;
+	background-color: #cccccc;
+}
+
+.widget-card-body {
+	padding: 15px;
+}
+
+.widget-card-footer {
+	padding: 10px;
+	color: #fff;
+	background-color: #4178bb;
+}
+
+.pointer {
+	cursor: pointer;
+}
+/* tickets css ends */
+

@@ -1,0 +1,137 @@
+<script>
+	$(document).ready(function() {
+		$('#gtc-social-profile').css("display", "none");
+		$('#vendorUpdateBtn').prop('disabled', true);
+		$('#title').val("");
+		$('#content').val("");
+			$('#title, #title').keyup(function() {
+				if ($('#title').val() != '' && $('#title').val() != '') {
+					  $('#vendorUpdateBtn').prop('disabled', false);
+				} else {
+				     $('#vendorUpdateBtn').prop('disabled', true);
+				}
+			});
+		
+		$("#ticketdetailsform").submit(function(e) {
+			e.preventDefault();
+			if($('#title').val() != '' && $('#content').val() != ''){
+               let formInput = $("#ticketdetailsform :input").filter(function(index, element) {
+				return $(element).val() != '';
+			}).serialize();
+			if ($('#ticketdetailsform').valid()) {
+				$.ajax({
+					url: '/api/tickets/',
+					type: 'POST',
+					data: formInput,
+					success: function(updateData) {
+						$('#gtc-social-profile').removeClass('alert-danger').addClass('alert-success');
+						$('#gtc-social-profile .cart-message').text("Ticket Created Successfully");
+						$("#gtc-social-profile").fadeTo(2000, 3000).slideUp(500, function() {
+							$("#gtc-social-profile").slideUp(500);
+							location.reload(true);
+						});
+					},
+					error: function(error) {
+						$('#gtc-social-profile').removeClass('alert-success').addClass('alert-danger');
+						$('#gtc-social-profile .cart-message').text(error);
+						$("#gtc-social-profile").fadeTo(2000, 3000).slideUp(500, function() {
+							$("#gtc-social-profile").slideUp(500);
+							location.reload(true);
+						});
+					}
+				});
+			}
+			}
+			else{
+			 var message = '<p>Please enter the content.</p>';
+			$('#dialog').empty();
+			$('#dialog').append(message)
+			$(".wrapper-content").attr('style', 'opacity:.30; z-index:100;');
+			$("#dialog").dialog({
+				modal: true,
+				close: function(ev, ui) {
+					$(".wrapper-content").attr('style', 'opacity:1; z-index:100;');
+				}
+			});
+			return;
+			}
+			
+		});
+		$('#content').summernote({
+		placeholder: 'Type Message',
+		tabsize: 2,
+		height: 300,
+		toolbar: [
+           ['style', ['bold', 'italic', 'underline', 'clear']],
+           ['font', ['strikethrough', 'superscript', 'subscript']],
+           ['fontsize', ['fontsize']],
+           ['color', ['color']],
+           ['para', ['ul', 'ol', 'paragraph']],
+           ['height', ['height']]
+         ]
+ 	     });
+		 function vendorCancel()
+		 {
+			location.reload(true);
+		 }
+    	});
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Create Ticket</h2>
+						</div>
+							<div id="dialog" title="Error:"></div>
+						<div class="content-body">
+							<div class="alert" id="gtc-social-profile">
+								<button type="button" class="close" data-dismiss="alert">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<span class="cart-message"></span>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<form id="ticketdetailsform" name="ticketdetailsform">
+								<div class="row">
+									<div class="col-md-6">
+										<label class="label-control">Title
+										</label>
+										<input class="form-control-customized form-control-sm" name="title"  required id="title" type="text" maxlength=50>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<label class="label-control">Content
+										</label>
+										<textarea id="content" class="form-control-customized form-control-sm" name="content"  
+										 row=10 maxlength=100></textarea>
+									</div>
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-md-12">
+										<button class="ladda-button btn update-btn btn-small btn-muted" id="vendorUpdateBtn" type="submit" data-style="expand-left">
+											<span class="ladda-label">Create Ticket</span>
+											<span class="ladda-spinner"></span>
+										</button>
+										<button class="ladda-button btn btn-small btn-muted" onClick="window.location.href=window.location.href" type="reset" data-style="expand-left">
+											<span class="ladda-label">CANCEL</span>
+											<span class="ladda-spinner"></span>
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

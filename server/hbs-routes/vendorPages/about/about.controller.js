@@ -116,25 +116,6 @@ export function vendorAbout(req, res) {
 					return callback(null);
 				});
 		},
-		vendorPlan: function(callback) {
-			var queryObj = {};
-			queryObj['start_date'] = {
-					'$lte': moment().format('YYYY-MM-DD')
-				};
-				queryObj['end_date'] = {
-					'$gte': moment().format('YYYY-MM-DD')
-				};
-			queryObj['vendor_id'] = vendor_id;
-			queryObj['status'] = status['ACTIVE'];
-			var includeArr = [];
-			service.findRow('VendorPlan', queryObj, includeArr)
-				.then(function(response) {
-					return callback(null, response);
-
-				}).catch(function(error) {
-					return callback(null);
-				});
-		},
 		categories: function(callback) {
 			var categoryModel = "Category";
 			var includeArr = [];
@@ -159,7 +140,7 @@ export function vendorAbout(req, res) {
 				});
 		}
 	}, function(err, results) {
-		if (!err && results.vendorPlan) {
+		if (!err ) {
 			res.render('vendorPages/vendor-about', {
 				categories: results.categories,
 				bottomCategory: bottomCategory,
