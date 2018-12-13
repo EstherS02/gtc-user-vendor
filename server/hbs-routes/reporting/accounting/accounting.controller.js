@@ -144,24 +144,20 @@ export function accounting(req, res) {
 
 export function revenue(req, res) {
 	var queryPaginationObj = {};
-	var offset, limit, field, order, page;
+	var offset, limit, order, page;
 	var queryURI = {};
+	var originalUrl = req.originalUrl.split('?')[0];
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
 	delete req.query.limit;
-	field = req.query.field ? req.query.field : "created_on";
-	queryURI['field'] = field;
-	queryPaginationObj['field'] = field;
-	delete req.query.field;
 	order = req.query.order ? req.query.order : "desc";
-	queryURI['order'] = order;
 	queryPaginationObj['order'] = order;
 	delete req.query.order;
-
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
@@ -171,6 +167,7 @@ export function revenue(req, res) {
 	queryPaginationObj['offset'] = offset;
 
 	var LoggedInUser = req.user;
+
 	async.series({
 		cartInfo: function(callback) {
 			cartService.cartCalculation(LoggedInUser.id, req, res)
@@ -210,14 +207,41 @@ export function revenue(req, res) {
 				cart: results.cartInfo,
 				unreadCounts: results.unreadCounts,
 				vendorRevenue: results.vendorRevenue,
-				queryPaginationObj: queryPaginationObj
+				queryPaginationObj: queryPaginationObj,
+				queryURI: queryURI,
+				queryParamsString: querystring.stringify(queryURI),
+				originalUrl:originalUrl
 			});
 		}
 	})
 }
 
 export function processing(req, res) {
+	var queryPaginationObj = {};
+	var offset, limit, order, page;
+	var queryURI = {};
+	var originalUrl = req.originalUrl.split('?')[0];
+
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	queryPaginationObj['offset'] = offset;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
+	delete req.query.limit;
+	order = req.query.order ? req.query.order : "desc";
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
+	delete req.query.page;
+
+	offset = (page - 1) * limit;
+	queryPaginationObj['offset'] = offset;
+
 	var LoggedInUser = req.user;
+
 	async.series({
 		cartInfo: function(callback) {
 			cartService.cartCalculation(LoggedInUser.id, req, res)
@@ -245,10 +269,6 @@ export function processing(req, res) {
 				model: model['Vendor'],
 			}]
 
-			offset = req.query.offset ? parseInt(req.query.offset) : 0;
-			delete req.query.offset;
-			limit = req.query.limit ? parseInt(req.query.limit) : 10;
-			delete req.query.limit;
 			field = req.query.field ? req.query.field : "id";
 			delete req.query.field;
 			order = req.query.order ? req.query.order : "asc";
@@ -263,6 +283,7 @@ export function processing(req, res) {
 				});
 		},
 	}, function(error, results) {
+		queryPaginationObj['maxSize'] = 5;
 		if (!error) {
 			return res.render('vendorNav/reporting/viewfullreport', {
 				title: "Global Trade Connect",
@@ -271,14 +292,42 @@ export function processing(req, res) {
 				vendorPlan: vendorPlan,
 				cart: results.cartInfo,
 				unreadCounts: results.unreadCounts,
-				processingFee: results.processingFee
+				processingFee: results.processingFee,
+				queryPaginationObj: queryPaginationObj,
+				queryURI: queryURI,
+				queryParamsString: querystring.stringify(queryURI),
+				originalUrl:originalUrl
 			});
 		}
 	})
 }
 
 export function subscription(req, res) {
+	var queryPaginationObj = {};
+	var offset, limit, order, page;
+	var queryURI = {};
+	var originalUrl = req.originalUrl.split('?')[0];
+
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	queryPaginationObj['offset'] = offset;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
+	delete req.query.limit;
+	order = req.query.order ? req.query.order : "desc";
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
+	delete req.query.page;
+
+	offset = (page - 1) * limit;
+	queryPaginationObj['offset'] = offset;
+
 	var LoggedInUser = req.user;
+
 	async.series({
 		cartInfo: function(callback) {
 			cartService.cartCalculation(LoggedInUser.id, req, res)
@@ -306,10 +355,6 @@ export function subscription(req, res) {
 				model: model['Vendor'],
 			}]
 
-			offset = req.query.offset ? parseInt(req.query.offset) : 0;
-			delete req.query.offset;
-			limit = req.query.limit ? parseInt(req.query.limit) : 10;
-			delete req.query.limit;
 			field = req.query.field ? req.query.field : "id";
 			delete req.query.field;
 			order = req.query.order ? req.query.order : "asc";
@@ -324,6 +369,7 @@ export function subscription(req, res) {
 				});
 		}
 	}, function(error, results) {
+		queryPaginationObj['maxSize'] = 5;
 		if (!error) {
 			return res.render('vendorNav/reporting/viewfullreport', {
 				title: "Global Trade Connect",
@@ -332,14 +378,42 @@ export function subscription(req, res) {
 				vendorPlan: vendorPlan,
 				cart: results.cartInfo,
 				unreadCounts: results.unreadCounts,
-				subscriptionFee: results.subscriptionFee
+				subscriptionFee: results.subscriptionFee,
+				queryPaginationObj: queryPaginationObj,
+				queryURI: queryURI,
+				queryParamsString: querystring.stringify(queryURI),
+				originalUrl:originalUrl
 			});
 		}
 	})
 }
 
 export function gtcpay(req, res) {
+	var queryPaginationObj = {};
+	var offset, limit, order, page;
+	var queryURI = {};
+	var originalUrl = req.originalUrl.split('?')[0];
+
+offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	queryPaginationObj['offset'] = offset;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
+	delete req.query.limit;
+	order = req.query.order ? req.query.order : "desc";
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
+	delete req.query.page;
+
+	offset = (page - 1) * limit;
+	queryPaginationObj['offset'] = offset;
+
 	var LoggedInUser = req.user;
+	
 	async.series({
 		cartInfo: function(callback) {
 			cartService.cartCalculation(LoggedInUser.id, req, res)
@@ -371,10 +445,6 @@ export function gtcpay(req, res) {
 				model:model['Payment']
 			}]
 
-			offset = req.query.offset ? parseInt(req.query.offset) : 0;
-			delete req.query.offset;
-			limit = req.query.limit ? parseInt(req.query.limit) : 10;
-			delete req.query.limit;
 			field = req.query.field ? req.query.field : "id";
 			delete req.query.field;
 			order = req.query.order ? req.query.order : "asc";
@@ -389,6 +459,7 @@ export function gtcpay(req, res) {
 				});
 		}
 	}, function(error, results) {
+		queryPaginationObj['maxSize'] = 5;
 		if (!error) {
 			return res.render('vendorNav/reporting/viewfullreport', {
 				title: "Global Trade Connect",
@@ -397,14 +468,42 @@ export function gtcpay(req, res) {
 				vendorPlan: vendorPlan,
 				cart: results.cartInfo,
 				unreadCounts: results.unreadCounts,
-				gtcPayFee:results.gtcPayFee
+				gtcPayFee:results.gtcPayFee,
+				queryPaginationObj: queryPaginationObj,
+				queryURI: queryURI,
+				queryParamsString: querystring.stringify(queryURI),
+				originalUrl:originalUrl
 			});
 		}
 	})
 }
 
 export function membership(req, res) {
+	var queryPaginationObj = {};
+	var offset, limit, order, page;
+	var queryURI = {};
+	var originalUrl = req.originalUrl.split('?')[0];
+
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	queryPaginationObj['offset'] = offset;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
+	delete req.query.limit;
+	order = req.query.order ? req.query.order : "desc";
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
+	delete req.query.page;
+
+	offset = (page - 1) * limit;
+	queryPaginationObj['offset'] = offset;
+
 	var LoggedInUser = req.user;
+
 	async.series({
 		cartInfo: function(callback) {
 			cartService.cartCalculation(LoggedInUser.id, req, res)
@@ -463,6 +562,7 @@ export function membership(req, res) {
 				});
 		}
 	}, function(error, results) {
+		queryPaginationObj['maxSize'] = 5;
 		if (!error) {
 			return res.render('vendorNav/reporting/viewfullreport', {
 				title: "Global Trade Connect",
@@ -471,7 +571,11 @@ export function membership(req, res) {
 				vendorPlan: vendorPlan,
 				membershipDetails: results.membershipDetails,
 				cart: results.cartInfo,
-				unreadCounts: results.unreadCounts
+				unreadCounts: results.unreadCounts,
+				queryPaginationObj: queryPaginationObj,
+				queryURI: queryURI,
+				queryParamsString: querystring.stringify(queryURI),
+				originalUrl:originalUrl
 			});
 		}
 	})
