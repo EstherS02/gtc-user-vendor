@@ -192,25 +192,6 @@ export function vendorDiscussion(req, res) {
 					return callback(null);
 				});
 		},
-		vendorPlan: function(callback) {
-			var queryObj = {};
-			queryObj['start_date'] = {
-					'$lte': moment().format('YYYY-MM-DD')
-				};
-				queryObj['end_date'] = {
-					'$gte': moment().format('YYYY-MM-DD')
-				};
-			queryObj['vendor_id'] = vendor_id;
-			queryObj['status'] = status['ACTIVE'];
-			var includeArr = [];
-			service.findRow('VendorPlan', queryObj, includeArr)
-				.then(function(response) {
-					return callback(null, response);
-
-				}).catch(function(error) {
-					return callback(null);
-				});
-		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -233,7 +214,7 @@ export function vendorDiscussion(req, res) {
 				});
 		},
 	}, function(err, results) {
-		if (!err && results.vendorPlan) {
+		if (!err) {
 			// if (results.discussion) {
 			var maxSize = 5;
 			queryPaginationObj['maxSize'] = 5;
