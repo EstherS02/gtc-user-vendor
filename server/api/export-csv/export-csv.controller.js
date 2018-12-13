@@ -99,12 +99,22 @@ exports.orderHistoryexportcsv = function(req, res) {
 						value.Amount = ((value.total_price) > 0) ? (parseFloat(value.total_price)).toFixed(2) : 0;
 
 					}
-					if (value.order_status != '') {
-						Object.keys(orderStatus).forEach(function(key) {
-							if (value.order_status == orderStatus[key]) {
+					// if (value.order_status != '') {
+					// 	Object.keys(orderStatus).forEach(function(key) {
+					// 		if (value.order_status == orderStatus[key]) {
+					// 			var val1 = key.toLowerCase();
+					// 			var val = val1.charAt(0).toUpperCase() + val1.slice(1);
+					// 			val = val.replace("order", " "); //Order
+					// 			value.Status = val;
+					// 		}
+					// 	});
+					// }
+					if (value.status != '') {
+						Object.keys(status).forEach(function(key) {
+							if (value.status == status[key]) {
 								var val1 = key.toLowerCase();
 								var val = val1.charAt(0).toUpperCase() + val1.slice(1);
-								val = val.replace("order", " "); //Order
+								//val = val.replace("order", " "); //Order
 								value.Status = val;
 							}
 						});
@@ -168,11 +178,11 @@ exports.salesHistoryexportcsv = function(req, res) {
 
 					}
 					if (value.order_status != '') {
-						Object.keys(orderStatus).forEach(function(key) {
-							if (value.order_status == orderStatus[key]) {
+						Object.keys(status).forEach(function(key) {
+							if (value.order_status == orderStastatustus[key]) {
 								var val1 = key.toLowerCase();
 								var val = val1.charAt(0).toUpperCase() + val1.slice(1);
-								val = val.replace("order", " "); //Order
+								//val = val.replace("order", " "); //Order
 								value.Status = val;
 							}
 						});

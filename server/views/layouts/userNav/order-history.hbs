@@ -64,6 +64,8 @@
 			}
 			location.href = "/order-history?" + params;
 		});
+
+
 	});
 
 	function limit(size) {
@@ -108,6 +110,53 @@
 			}
 		}
 	}
+
+	function downloadCSV(args) {
+		var chkArray = [];
+		$(':checkbox:checked').each(function(i) {
+			if ($(this).val() != 'on') {
+				chkArray.push($(this).val())
+			}
+		});
+		if (chkArray != '') {
+			var selectedvalues = JSON.stringify(chkArray);
+			$.ajax({
+				type: 'POST',
+				url: '/api/export-csv/orderhistorycsv',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					id: selectedvalues
+				}),
+				success: function(data) {
+					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+					var csvURL = null;
+					if (navigator.msSaveBlob) {
+						csvURL = navigator.msSaveBlob(csvData, 'orderhistory.csv');
+					} else {
+						csvURL = window.URL.createObjectURL(csvData);
+					}
+					var tempLink = document.createElement('a');
+					tempLink.href = csvURL;
+					tempLink.setAttribute('download', 'orderhistory.csv');
+					tempLink.click();
+
+				},
+				error: function(request, status, error) {
+					console.log('request', request);
+					console.log('status', status);
+				}
+			});
+		}
+		else {
+			$("#gtc-form-alert").show();
+			$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+			$('#gtc-form-alert .form-message').text("Please select the orders");
+			$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
+				$("#gtc-form-alert").slideUp(500);
+			});
+		}
+	}
+
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 {{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <div class="wrapper-content bg-gray">
@@ -127,6 +176,12 @@
 							</h2>
 						</div>
 						<div class="content-body">
+							<div class="alert" id="gtc-form-alert" style="display:none">
+								<button type="button" class="close" data-dismiss="alert">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<span class="form-message"></span>
+							</div>
 							<div class="row">
 								<div class="col-md-12">
 									<form class="form-inline pull-left m-t-md" name="order_history_form" id="orderHistoryForm">
@@ -155,7 +210,9 @@
 									</form>
 									<form class="form-inline pull-right m-t-md" name="search_order_history_form" id="searchOrderHistoryForm">
 										<div class="form-group m-r">
-											<button type="button" class="btn btn-md btn-muted">EXPORT</button>
+											<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
+											<input type="hidden" name="user_id" id="loginuserid" value= {{LoggedInUser.id}}>
+
 										</div>
 										<div class="form-group">
 											<div class="input-group gtc-rounded">
@@ -169,106 +226,108 @@
 								</div>
 							</div>
 							{{#if orders.count}}
-							<div class="row py-2">
-								<div class="col-md-12">
-									<small class="font-weight-light">{{orders.count}} items total</small>
-									<div class="float-right">
-										<small class="font-weight-light">Entries per page : </small>
-										<small class="font-weight-light">
-											<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
-										</small>
-										<small class="font-weight-light">
-											<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
-										</small>
-										<small class="font-weight-light">
-											<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
-										</small>
-										<small class="font-weight-light">
-											<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
-										</small>
+								<div class="row py-2">
+									<div class="col-md-12">
+										<small class="font-weight-light">{{orders.count}} items total</small>
+										<div class="float-right">
+											<small class="font-weight-light">Entries per page : </small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+											</small>
+											<small class="font-weight-light">
+												<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
+											</small>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-12">
-									<table class="table order-table">
-										<thead>
-											<tr>
-												<th>
-													<div class="customCheckbox">
-														<input type="checkbox" onclick="selectAll(this);" id="inputCheckbox" class="customCheckboxInput">
-														<label class="checkbox-b" for="inputCheckbox"></label>
-													</div>
-												</th>
-												<th>Order#</th>
-												<th>Date</th>
-												<th>Method</th>
-												<th colspan="2">Date</th>
-												<th>Amount</th>
-											</tr>
-										</thead>
-										<tbody>
-											{{#each orders.rows}}
-												<tr>
-													<td>
-														<div class="customCheckbox">
-															<input type="checkbox" id="inputTerms{{this.id}}" value="{{this.id}}" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
-														</div>
-													</td>
-													<td><a href="../order-history/{{this.id}}">{{this.id}}</a></td>
-													<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
-													<td>Stripe</td>
-													<td>
-														{{#if this.status}} Active {{else}}Failed {{/if}}
-													</td>
-													<td>Track Order</td>
-													<td>{{currency this.total_price '$'}} CAD</td>
-												</tr>
-											{{/each}}
-											<tr>
-												<td colspan="5"></td>
-												<td class="text-right">Total Transaction : </td>
-												<td>{{currency @root.orders.total '$'}} CAD</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-							{{!-- Pagination starts --}}
-							{{#ifCond orders.count '>' queryParams.limit}}
 								<div class="row">
-									<div class="col-md-12 align-self-center">
-										{{#pagination orders.count queryParams.page queryParams.limit 2}}
-											<nav aria-label="Page navigation example">
-												<ul class="pagination justify-content-center">
-													{{#unless startFromFirstPage}}
-														<li class="justify-content-center align-self-center">
-															<a href="../order-history?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryParams.page 1) limit=@root.queryParams.limit)}}">
-																<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
-														</li>
-													{{/unless}}
-													{{#each pages}}
-														<li class="page-item {{#if isCurrent}} active {{/if}}">
-															<a class="page-link" href="../order-history?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryParams.limit)}}">{{page}}</a>
-														</li>
-													{{/each}}
-													{{#unless endAtLastPage}}
-														<li class="justify-content-center align-self-center">
-															<a href="../order-history?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryParams.page 1) limit=@root.queryParams.limit)}}">Next&nbsp;
-																<i class="fa fa-angle-double-right"></i>
-															</a>
-														</li>
-													{{/unless}}
-												</ul>
-											</nav>
-										{{/pagination}}
+									<div class="col-md-12">
+										<table class="table order-table">
+											<thead>
+												<tr>
+													<th>
+														<div class="customCheckbox">
+															<input type="checkbox" onclick="selectAll(this);" id="inputCheckbox" class="customCheckboxInput">
+															<label class="checkbox-b" for="inputCheckbox"></label>
+														</div>
+													</th>
+													<th>Order#</th>
+													<th>Date</th>
+													<th>Method</th>
+													<th colspan="2">Date</th>
+													<th>Amount</th>
+												</tr>
+											</thead>
+											<tbody>
+												{{#each orders.rows}}
+													<tr>
+														<td>
+															<div class="customCheckbox">
+																<input type="checkbox" id="inputTerms{{this.id}}" value="{{this.id}}" class="customCheckboxInput">
+																<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
+															</div>
+														</td>
+														<td>
+															<a href="../order-history/{{this.id}}">{{this.id}}</a>
+														</td>
+														<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
+														<td>Stripe</td>
+														<td>
+															{{#if this.status}} Active {{else}}Failed {{/if}}
+														</td>
+														<td>Track Order</td>
+														<td>{{currency this.total_price '$'}} CAD</td>
+													</tr>
+												{{/each}}
+												<tr>
+													<td colspan="5"></td>
+													<td class="text-right">Total Transaction : </td>
+													<td>{{currency @root.orders.total '$'}} CAD</td>
+												</tr>
+											</tbody>
+										</table>
 									</div>
 								</div>
-							{{/ifCond}}
-							{{!-- Pagination Ends --}}
+								{{!-- Pagination starts --}}
+								{{#ifCond orders.count '>' queryParams.limit}}
+									<div class="row">
+										<div class="col-md-12 align-self-center">
+											{{#pagination orders.count queryParams.page queryParams.limit 2}}
+												<nav aria-label="Page navigation example">
+													<ul class="pagination justify-content-center">
+														{{#unless startFromFirstPage}}
+															<li class="justify-content-center align-self-center">
+																<a href="../order-history?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryParams.page 1) limit=@root.queryParams.limit)}}">
+																	<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+															</li>
+														{{/unless}}
+														{{#each pages}}
+															<li class="page-item {{#if isCurrent}} active {{/if}}">
+																<a class="page-link" href="../order-history?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryParams.limit)}}">{{page}}</a>
+															</li>
+														{{/each}}
+														{{#unless endAtLastPage}}
+															<li class="justify-content-center align-self-center">
+																<a href="../order-history?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryParams.page 1) limit=@root.queryParams.limit)}}">Next&nbsp;
+																	<i class="fa fa-angle-double-right"></i>
+																</a>
+															</li>
+														{{/unless}}
+													</ul>
+												</nav>
+											{{/pagination}}
+										</div>
+									</div>
+								{{/ifCond}}
+								{{!-- Pagination Ends --}}
 							{{else}}
-							<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+								<h4 class="font-weight-light py-3 text-center">No Results!</h4>
 							{{/if}}
 						</div>
 					</div>
