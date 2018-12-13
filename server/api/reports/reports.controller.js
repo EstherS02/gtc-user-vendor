@@ -189,7 +189,7 @@ export function latestTickets(req, res) {
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
 	model['TicketThread'].findAll({
-		raw: true,
+		// raw: true,
 		where: {},
 		order: [
 			['created_on', 'DESC']
