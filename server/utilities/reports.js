@@ -113,8 +113,6 @@ function getAllVendorPerformance(queryObj, limit, offset) {
 				LEFT OUTER JOIN vendor ON orderVendor.vendor_id = vendor.id
 				LEFT OUTER JOIN users ON vendor.user_id = users.id
 				LEFT OUTER JOIN order_item ON orderVendor.order_id = order_item.order_id
-			WHERE
-				order_item.created_on between :from and :to
 			GROUP BY
 				orderVendor.vendor_id
 			ORDER BY SUM(orderVendor.total_price) DESC`, {
@@ -126,7 +124,7 @@ function getAllVendorPerformance(queryObj, limit, offset) {
             },
             type: sequelize.QueryTypes.SELECT
         }).then(data => {
-			console.log("-----------------------------------------", data)
+			console.log("data::::", data)
             resolve(data);
         }).catch(function(err) {
             console.log('getAllPerformance error ', err);
