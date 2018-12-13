@@ -96,7 +96,43 @@ function getAllPerformance(queryObj, limit, offset) {
             reject(err);
         });
     });
+}
 
+function getAllVendorPerformance(queryObj, limit, offset) {
+    return new Promise((resolve, reject) => {
+        SequelizeInstance.query(`SELECT orderVendor.vendor_id AS vendor_id,
+			vendor.vendor_name As vendor_name,
+			users.first_name As owner_name,	
+			( SELECT plan_id FROM vendor_plan WHERE status = 1 and vendor.id = vendor_plan.vendor_id
+			LIMIT 1 ) AS type,
+			SUM(order_item.quantity) AS sales,
+			SUM(orderVendor.total_price) - SUM(orderVendor.gtc_fees) AS vendor_fee,
+			SUM(orderVendor.gtc_fees) AS gtc_fees
+			FROM
+				order_vendor as orderVendor
+				LEFT OUTER JOIN vendor ON orderVendor.vendor_id = vendor.id
+				LEFT OUTER JOIN users ON vendor.user_id = users.id
+				LEFT OUTER JOIN order_item ON orderVendor.order_id = order_item.order_id
+			WHERE
+				order_item.created_on between :from and :to
+			GROUP BY
+				orderVendor.vendor_id
+			ORDER BY SUM(orderVendor.total_price) DESC`, {
+            replacements: {
+                from: moment(queryObj.from).format("YYYY-MM-DD"),
+                to: moment(queryObj.to).format("YYYY-MM-DD"),
+                limit: limit,
+            	offset: offset
+            },
+            type: sequelize.QueryTypes.SELECT
+        }).then(data => {
+			console.log("-----------------------------------------", data)
+            resolve(data);
+        }).catch(function(err) {
+            console.log('getAllPerformance error ', err);
+            reject(err);
+        });
+    });
 }
 
 export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween) {
@@ -499,6 +535,36 @@ export function performanceChanges(queryObj, lhsBetween, rhsBetween, limit, offs
         });
     });
 }
+
+export function vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
+    const pastRange = _.assign({}, queryObj);
+    pastRange.from = lhsBetween[0];
+    pastRange.to = lhsBetween[1];
+    const currentRange = _.assign({}, queryObj);
+    currentRange.from = rhsBetween[0];
+    currentRange.to = rhsBetween[1];
+
+    return new Promise((resolve, reject) => {
+        var result = {};
+        return getAllVendorPerformance(pastRange, limit, offset).then(function(lhsResult) {
+            result.lhs_result = lhsResult;
+            return result;
+        }).then(function() {
+            if (queryObj.compare == 'true') {
+                return getAllVendorPerformance(currentRange, limit, offset).then(function(rhsResult) {
+                    result.rhs_result = rhsResult;
+                    resolve(result);
+                });
+            } else {
+                resolve(result);
+            }
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });
+}
+
 // starts export performance selected values//
 export function exportperformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
     const pastRange = _.assign({}, queryObj);
