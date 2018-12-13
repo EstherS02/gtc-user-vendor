@@ -12,11 +12,14 @@ const moment = require('moment');
 const async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
 const notifictionService = require('../../../api/notification/notification.service');
+const querystring = require('querystring');
 
 export function viewTicket(req, res) {
 	var LoggedInUser = {} ,queryURI = {},queryObj ={},queryPaginationObj = {}, queryParams = {};
 	if (req.user)
 		LoggedInUser = req.user;
+
+	var originalUrl = req.originalUrl.split('?')[0];
 
 	let user_id = LoggedInUser.id;
 	if (req.query.sort == 'rating') {
@@ -38,7 +41,7 @@ export function viewTicket(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 30;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
@@ -107,6 +110,7 @@ export function viewTicket(req, res) {
 				unreadCounts: results.unreadCounts,
 				cart: results.cartInfo,
 				queryURI: queryURI,
+				queryParamsString: querystring.stringify(queryURI),
 				pageSize: limit,
 				offset: offset,
 				maxSize: 5,
@@ -114,7 +118,8 @@ export function viewTicket(req, res) {
 				vendorPlan: vendorPlan,
 				queryPaginationObj: queryPaginationObj,
 				statusCode: statusCode,
-				selectedPage: 'view-ticket'
+				selectedPage: 'view-ticket',
+				originalUrl:originalUrl
 			});
 		} else {
 			res.render('vendorNav/support/ticket/view-ticket', err);
