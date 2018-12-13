@@ -15,16 +15,13 @@ export function create(req, res) {
 	var ticketThreadBodyParams = {};
 
 	req.checkBody('title', 'Missing Query Param').notEmpty();
+	req.checkBody('content', 'Missing Query Param').notEmpty();
+
 
 	var errors = req.validationErrors();
 	if (errors) {
 		res.status(400).send('Missing Query Params');
 		return;
-	}
-
-	if (req.body.message) {
-		ticketThreadBodyParams.message = req.body.message;
-		delete req.body.message;
 	}
 
 	ticketBodyParams = req.body;
@@ -42,6 +39,7 @@ export function create(req, res) {
 			if (ticket) {
 				var ticket = plainTextResponse(ticket);
 				ticketThreadBodyParams["ticket_id"] = ticket.id;
+				ticketThreadBodyParams["message"] = ticket.content;
 				ticketThreadBodyParams["user_id"] = req.user.id;
 				ticketThreadBodyParams["status"] = status["ACTIVE"];
 				if (req.user.first_name && req.user.last_name) {

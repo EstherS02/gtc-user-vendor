@@ -1,0 +1,211 @@
+<script>
+	$(document).ready(function() {
+		$('#gtc-social-profile').css("display", "none");
+		$('#content').val("");
+		$("#ticketdetailsform").submit(function(e) {
+			e.preventDefault();
+			if ($('#content').val() != '') {
+				let formInput = $("#ticketdetailsform :input").filter(function(index, element) {
+					return $(element).val() != '';
+				}).serialize();
+				if ($('#ticketdetailsform').valid()) {
+					$.ajax({
+						url: '/api/ticket-threads/' + $('#ticket_id').val(),
+						type: 'POST',
+						data: formInput,
+						success: function(updateData) {
+							$('#gtc-social-profile').removeClass('alert-danger').addClass('alert-success');
+							$('#gtc-social-profile .cart-message').text("Ticket Updated Successfully");
+							$("#gtc-social-profile").fadeTo(2000, 3000).slideUp(500, function() {
+								$("#gtc-social-profile").slideUp(500);
+								location.reload(true);
+							});
+						},
+						error: function(error) {
+							$('#gtc-social-profile').removeClass('alert-success').addClass('alert-danger');
+							$('#gtc-social-profile .cart-message').text(error);
+							$("#gtc-social-profile").fadeTo(2000, 3000).slideUp(500, function() {
+								$("#gtc-social-profile").slideU
+								p(500);
+								location.reload(true);
+							});
+						}
+					});
+				}
+			}
+			else {
+				var message = '<p>Please enter the content.</p>';
+				$('#dialog').empty();
+				$('#dialog').append(message)
+				$(".wrapper-content").attr('style', 'opacity:.30; z-index:100;');
+				$("#dialog").dialog({
+					modal: true,
+					close: function(ev, ui) {
+						$(".wrapper-content").attr('style', 'opacity:1; z-index:100;');
+					}
+				});
+				return;
+			}
+
+		});
+		
+		$("#updateTickets").click(function(){
+			$.ajax({
+				url: '/api/tickets/' + $('#ticket_id').val(),
+				type: 'PUT',
+				data: {"status":$("#inputStatus").val()},
+				success: function(updateData) {
+					$('#gtc-social-profile').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-social-profile .cart-message').text("Ticket Status Updated");
+					$("#gtc-social-profile").fadeTo(2000, 3000).slideUp(500, function() {
+						$("#gtc-social-profile").slideUp(500);
+						location.reload(true);
+					});
+				},
+				error: function(error) {
+					$('#gtc-social-profile').removeClass('alert-success').addClass('alert-danger');
+					$('#gtc-social-profile .cart-message').text(error);
+					$("#gtc-social-profile").fadeTo(2000, 3000).slideUp(500, function() {
+						$("#gtc-social-profile").slideUp(500);
+						location.reload(true);
+					});
+				}
+			});
+           }); 
+		$('#message').summernote({
+			placeholder: 'Type Message',
+			tabsize: 2,
+			height: 300,
+			toolbar: [
+				['style', ['bold', 'italic', 'underline', 'clear']],
+				['font', ['strikethrough', 'superscript', 'subscript']],
+				['fontsize', ['fontsize']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['height', ['height']]
+			]
+		});
+		function vendorCancel() {
+			location.reload(true);
+		}
+	});
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Ticket#LIV-{{ticketdetails.rows.[0].id}} | {{ticketdetails.rows.[0].title}}</h2>
+							<input type="hidden" name="ticket_id" value= {{ticketdetails.rows.[0].id}} id="ticket_id" />
+						</div>
+						<div id="dialog" title="Error:"></div>
+						<div class="content-body">
+							<div class="alert" id="gtc-social-profile">
+								<button type="button" class="close" data-dismiss="alert">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<span class="cart-message"></span>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									{{#each ticketListing.rows}}
+										<div class="ticket-widget">
+												<div class="widget-head widget-head-{{this.User.role}}">
+													<p style="margin-bottom: 0rem;font-size:13px">{{this.User.first_name}} {{this.User.last_name}}</p>
+													<p  style="margin-bottom: 0rem;font-size:13px">{{formatTime this.created_on "MMM D, YYYY"}} at {{formatTime this.created_on "hh:mm a"}} </p>
+												</div>
+												<div class="widget-body">
+													<p style="font-size:13px">{{{this.message}}}</p>
+												</div>
+												<div class="hr-line-dashed" style="margin:0px"></div>
+											</div>
+											
+										{{/each}}
+								</div>
+								<div class="col-md-2"></div>
+								<div class="col-md-4">
+									<div class="widget-card">
+										<div class="widget-card-title">
+											<p>Ticket Info</p>
+										</div>
+										<div class="widget-card-body">
+											<div>
+												<small>Opened by {{ticketdetails.rows.[0].created_by}}</small>
+											</div>
+											<div>
+												<small>{{formatTime ticketdetails.rows.[0].created_on "MMM D, YYYY"}} at {{formatTime ticketdetails.rows.[0].created_on "hh:mm a"}}</small>
+											</div>
+											<br>
+											<div>
+												<p>Status:
+													<span class="status-4">
+														{{#ifCond ticketdetails.rows.[0].status '==' 4}} Open {{/ifCond}}
+														{{#ifCond ticketdetails.rows.[0].status '==' 5}} On Hold {{/ifCond}}
+														{{#ifCond ticketdetails.rows.[0].status '==' 6}} Closed {{/ifCond}}
+													</span>
+												</p>
+												<div class="form-group m-r-sm">
+
+													<div class="select-container">
+														<select id="inputStatus" class="form-control-customized form-control-sm custom-dropdown" name="status">
+															<option disabled="" selected="" value="0">Change Status</option>
+															<option value="4">Open</option>
+															<option value="5">On Hold</option>
+															<option value="6">Closed</option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="widget-card-footer text-right">
+											<a id="updateTickets" class="pointer">UPDATE &nbsp;
+												<i aria-hidden="true" class="fa fa-caret-right"></i>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<form id="ticketdetailsform" name="ticketdetailsform">
+								{{!-- <div class="row">
+									<div class="col-md-6">
+										<label class="label-control">Title
+										</label>
+										<input class="form-control-customized form-control-sm" name="title"  required id="title" type="text" maxlength=50>
+									</div>
+								</div> --}}
+								<div class="row">
+									<div class="col-md-6">
+										{{!-- <label class="label-control">Content
+										</label> --}}
+										{{!-- <textarea id="message" class="form-control-customized form-control-sm" name="message" row="10" maxlength=100 data-provide="markdown-editable"></textarea> --}}
+									<textarea id="message" name="message"  data-provide="markdown-editable" maxlength=100  rows="10" required="true"></textarea>
+									</div>
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-md-12">
+										<button class="ladda-button btn update-btn btn-small btn-muted" id="vendorUpdateBtn" type="submit" data-style="expand-left">
+											<span class="ladda-label">Update Ticket</span>
+											<span class="ladda-spinner"></span>
+										</button>
+										<button class="ladda-button btn btn-small btn-muted" onClick="window.location.href=window.location.href" type="reset" data-style="expand-left">
+											<span class="ladda-label">CANCEL</span>
+											<span class="ladda-spinner"></span>
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
