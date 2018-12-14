@@ -189,7 +189,7 @@ export function latestTickets(req, res) {
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
 	model['TicketThread'].findAll({
-		// raw: true,
+		raw: true,
 		where: {},
 		order: [
 			['created_on', 'DESC']
@@ -458,8 +458,30 @@ export function vendorPerformance(req, res){
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-
+	// var productQueryObj = {};
+	// model['OrderItem'].findAll({
+	// 	include:[{
+	// 		model:model['Product'],
+	// 		where :productQueryObj,
+	// 		include:[{
+	// 			model:model['Vendor'],
+	// 			include:[{
+	// 				model:model['User'],
+	// 			},{
+	// 				model:model['VendorPlan']
+	// 			}]
+	// 		}]
+	// 	}],
+	// 	group:['orderItem.Products.Vendor.id','desc']
+	// }).then((results)=>{
+	// 	return res.status(200).send(results);
+	// }).catch((err)=>{
+	// 	console.log('compareVendorPerformance err', err);
+	// 	return res.status(500).send(err);
+	// })
 	ReportService.vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+		console.log("----------------------------------------------")
+		
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('compareVendorPerformance err', err);
