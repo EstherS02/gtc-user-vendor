@@ -118,6 +118,7 @@ export function salesHistory(req, res) {
 				});
 		},
 		vendorOrderHistory: function(callback) {
+			console.log("enter the loops orderHistory::::++++++");
 			var offset = 0;
 			var order = "DESC";
 			var includeArray = [];

@@ -108,6 +108,51 @@
 			}
 		}
 	}
+	function downloadCSV(args) {
+		var chkArray = [];
+		$(':checkbox:checked').each(function(i) {
+			if ($(this).val() != 'on') {
+				chkArray.push($(this).val())
+			}
+		});
+		if (chkArray != '') {
+			var selectedvalues = JSON.stringify(chkArray);
+			$.ajax({
+				type: 'POST',
+				url: '/api/export-csv/myordercsv',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					id: selectedvalues
+				}),
+				success: function(data) {
+					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+					var csvURL = null;
+					if (navigator.msSaveBlob) {
+						csvURL = navigator.msSaveBlob(csvData, 'orderhistory.csv');
+					} else {
+						csvURL = window.URL.createObjectURL(csvData);
+					}
+					var tempLink = document.createElement('a');
+					tempLink.href = csvURL;
+					tempLink.setAttribute('download', 'orderhistory.csv');
+					tempLink.click();
+
+				},
+				error: function(request, status, error) {
+					console.log('request', request);
+					console.log('status', status);
+				}
+			});
+		}
+		else {
+			$("#gtc-form-alert").show();
+			$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+			$('#gtc-form-alert .form-message').text("Please select the orders");
+			$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
+				$("#gtc-form-alert").slideUp(500);
+			});
+		}
+	}
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
@@ -126,6 +171,12 @@
 								</h2>
 							</div>
 							<div class="content-body">
+								<div class="alert" id="gtc-form-alert" style="display:none">
+								<button type="button" class="close" data-dismiss="alert">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<span class="form-message"></span>
+							</div>
 								<div class="row">
 									<div class="col-md-12">
 										<form class="form-inline pull-left m-t-md" name="order_history_form" id="orderHistoryForm">
@@ -154,7 +205,7 @@
 										</form>
 										<form class="form-inline pull-right m-t-md" name="search_order_history_form" id="searchOrderHistoryForm">
 											<div class="form-group m-r">
-												<button type="button" class="btn btn-md btn-muted">EXPORT</button>
+												<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
 											</div>
 											<div class="form-group">
 												<div class="input-group gtc-rounded">
