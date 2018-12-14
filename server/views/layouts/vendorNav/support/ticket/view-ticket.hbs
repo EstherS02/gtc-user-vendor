@@ -2,16 +2,34 @@
 	function createTicket() {
 		window.location.href = 'support/ticket/create-Ticket';
 	}
-	 $("#searchTickets").submit(function(e) {
-            e.preventDefault();
-            let formInput = $("#searchTickets :input").filter(function(index, element) {
-                return $(element).val() != '';
-            }).serialize();
-           if(formInput!='')
-            {
-              window.location.href = 'ticket?' + formInput;
-             }
-          });
+	$("#searchTickets").submit(function(e) {
+		e.preventDefault();
+		let formInput = $("#searchTickets :input").filter(function(index, element) {
+			return $(element).val() != '';
+		}).serialize();
+		if (formInput != '') {
+			window.location.href = 'ticket?' + formInput;
+		}
+	});
+
+	var params = {{{ DisplayJSON queryParamsString }}};
+	function limit(type, size) {
+		console.log(type);
+		console.log(size);
+		params = replaceUrlParam(params, "limit", size);
+		params = replaceUrlParam(params, "page", 1);
+		params = replaceUrlParam(params, "offset", 0);
+		location.href = type + '?' + params;
+	}
+	function replaceUrlParam(existingQueryParams, paramsName, paramsValue) {
+		var urlParams = new URLSearchParams(existingQueryParams);
+		if (paramsValue) {
+			urlParams.set(paramsName, paramsValue);
+		} else {
+			urlParams.delete(paramsName);
+		}
+		return urlParams;
+	}
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -23,11 +41,18 @@
 				<div class="col-sm-10">
 					<div class="ibox">
 						<div class="ibox-content">
+							<div class="ibox-title">
+							<h2> Ticket History
+								<span class="pull-right" style="font-size:12px">
+									<a href="/order-history">Clear All</a>
+								</span>
+							</h2>
+					    	</div>
 							<div class="content-body">
 								<div class="row">
 									<div class="col-md-12">
-										<p class="content-txt">There is your ticket support system for users looking for tech and/or transaction support. click on ticket number
-											to respond or view the ticket.</p>
+										{{!-- <p class="content-txt">There is your ticket support system for users looking for tech and/or transaction support. click on ticket number
+											to respond or view the ticket.</p> --}}
 										{{!-- <span class="pull-right" style="font-size:12px"><a href="listings/{{this.type}}">Clear All</a></span> --}}
 									</div>
 								</div>
@@ -35,7 +60,7 @@
 									<div class="col-md-12">
 										<div class="form-inline pull-left m-t-md">
 											<div class="form-group m-r">
-												<button type="submit" class="btn btn-md btn-muted" name="{{this.type}}" onclick="createTicket();">Create Ticket</button>
+												<button type="submit" class="btn btn-md btn-muted" name="{{this.type}}" onclick="createTicket();">CREATE TICKET</button>
 											</div>
 											{{!-- <div class="form-group m-r">
 												<div class="select-container">
@@ -55,7 +80,7 @@
 											</div> --}}
 										</div>
 										<form id="searchTickets" name="searchTickets">
-										{{!-- <div class="form-inline pull-right m-t-md">
+											{{!-- <div class="form-inline pull-right m-t-md">
 											
 											<div class="form-group">
 												<div class="input-group gtc-rounded">
@@ -77,17 +102,16 @@
 											<div class="float-right">
 												<small class="font-weight-light">Entries per page : </small>
 												<small class="font-weight-light">
-													<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+													<a {{#ifCond queryPaginationObj.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,10)" href="javascript:;">10</a>
 												</small>
 												<small class="font-weight-light">
-													<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+													<a {{#ifCond queryPaginationObj.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,25)" href="javascript:;">25</a>
 												</small>
 												<small class="font-weight-light">
-													<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+													<a {{#ifCond queryPaginationObj.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,100)" href="javascript:;">100</a>
 												</small>
 												<small class="font-weight-light">
-													<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)"
-													 href="javascript:;">All</a>
+													<a {{#ifCond queryPaginationObj.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,10000000000000)" href="javascript:;">All</a>
 												</small>
 											</div>
 										</div>
@@ -133,27 +157,30 @@
 											</table>
 										</div>
 									</div>
-									{{!-- Pagination starts  --}}
-									{{#ifCond ticketListing.count '>' queryURI.limit}}
-										<div class="row">
-											<div class="col-md-12 align-self-center">
-												{{#pagination ticketListing.count queryURI.page queryURI.limit 2}}
+								
+									{{!-- Pagination starts --}}
+									{{#ifCond ticketListing.count '>' queryPaginationObj.limit}}
+										<div class="row m-t-sm">
+											<div class="col-md-12">
+												{{#pagination ticketListing.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
-																<li class="justify-content-center align-self-center">
-																	<a href="../../ticket?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">
+																<li class="page-item-prev" style="margin-left:-391px;">
+																	<a href="{{../../originalUrl}}/{{QueryParams ../../queryURI (FrameObject page=(DiffFloat ../../queryPaginationObj.page 1) limit=../../queryPaginationObj.limit) 'null'}}">
 																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 																</li>
 															{{/unless}}
+
 															{{#each pages}}
 																<li class="page-item {{#if isCurrent}} active {{/if}}">
-																	<a class="page-link" href="../../ticket?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryURI.limit)}}">{{page}}</a>
+																	<a class="page-link" href="{{../../originalUrl}}/{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 																</li>
 															{{/each}}
+
 															{{#unless endAtLastPage}}
-																<li class="justify-content-center align-self-center">
-																	<a href="../../ticket?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">Next&nbsp;
+																<li class="page-item-next" style="margin-right:-391px;">
+																	<a href="{{../originalUrl}}/{{QueryParams ../../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
 																		<i class="fa fa-angle-double-right"></i>
 																	</a>
 																</li>
@@ -164,7 +191,9 @@
 											</div>
 										</div>
 									{{/ifCond}}
-									{{!-- Pagination Ends --}}
+									{{!-- pagination ends --}}
+
+
 								{{else}}
 									<h4 class="font-weight-light py-3 text-center">No Results!</h4>
 								{{/if}}

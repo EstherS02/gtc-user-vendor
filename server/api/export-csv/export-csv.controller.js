@@ -12,6 +12,7 @@ const marketplace = require('../../config/marketplace');
 const populate = require('../../utilities/populate')
 const ReportService = require('../../utilities/reports');
 const reportsService = require('../../api/reports/reports.service');
+const orderService = require('../../api/order/order.service');
 const moment = require('moment');
 const model = require('../../sqldb/model-connect');
 const async = require('async');
@@ -22,53 +23,51 @@ const orderStatus = require('../../config/order_status');
 // starts export csv Ad-revenue //
 exports.exportcsv = function(req, res) {
 	var adType = {
-				"type1": "AD",
-		 		"type2": "Featured Listing",
+		"type1": "AD",
+		"type2": "Featured Listing",
 	};
 	reportsService.adFeaturedRevenue(req, res)
-	.then((response) => {
-		for (let value of response.rows) {
-			if (value.type == 1) {
-		 		value.type = adType.type1;
-		 	}
-		 	else {
-		 		value.type = adType.type2;
-		 	}
-		 	if (value.clicks != null && value.impression != null) {
-		 		value.CTR = ((value.clicks / value.impression) * 100).toFixed(2) + "%";
-		 	}
-			else if ((value.clicks == null) && (value.impression == null)) {
-		 		value.CTR = 0;
-		 		value.impression =0;
-		 	    value.clicks =0
-			 }
-			 if(value.Payment !=null)
-			 {
-				 value.CostToVendor = value.Payment.amount;
-			 }
-			 else
-			 {
-				value.CostToVendor = 0;
-			 }
-		 }
-		var fields = [];
-		fields = _.map(response.rows.columns, 'columnName');
-		fields.push('product_name', 'type', 'start_date', 'end_date', 'impression', 'clicks', 'CTR' , 'CostToVendor' );
-		const opts = {
-		fields
-		};
-		const parser = new Json2csvParser(opts);
-		const csv = parser.parse(response.rows);
-		res.write(csv);
-		res.end();
-		return;
-		
-	})
+		.then((response) => {
+			for (let value of response.rows) {
+				if (value.type == 1) {
+					value.type = adType.type1;
+				}
+				else {
+					value.type = adType.type2;
+				}
+				if (value.clicks != null && value.impression != null) {
+					value.CTR = ((value.clicks / value.impression) * 100).toFixed(2) + "%";
+				}
+				else if ((value.clicks == null) && (value.impression == null)) {
+					value.CTR = 0;
+					value.impression = 0;
+					value.clicks = 0
+				}
+				if (value.Payment != null) {
+					value.CostToVendor = value.Payment.amount;
+				}
+				else {
+					value.CostToVendor = 0;
+				}
+			}
+			var fields = [];
+			fields = _.map(response.rows.columns, 'columnName');
+			fields.push('product_name', 'type', 'start_date', 'end_date', 'impression', 'clicks', 'CTR', 'CostToVendor');
+			const opts = {
+				fields
+			};
+			const parser = new Json2csvParser(opts);
+			const csv = parser.parse(response.rows);
+			res.write(csv);
+			res.end();
+			return;
+
+		})
 }
 // ends export csv Ad-revenue //
 
 
-// starts export csv order-history//
+// starts export csv personal-order-history//
 exports.orderHistoryexportcsv = function(req, res) {
 
 	if (req.body.id != 0) {
@@ -99,12 +98,22 @@ exports.orderHistoryexportcsv = function(req, res) {
 						value.Amount = ((value.total_price) > 0) ? (parseFloat(value.total_price)).toFixed(2) : 0;
 
 					}
-					if (value.order_status != '') {
-						Object.keys(orderStatus).forEach(function(key) {
-							if (value.order_status == orderStatus[key]) {
+					// if (value.order_status != '') {
+					// 	Object.keys(orderStatus).forEach(function(key) {
+					// 		if (value.order_status == orderStatus[key]) {
+					// 			var val1 = key.toLowerCase();
+					// 			var val = val1.charAt(0).toUpperCase() + val1.slice(1);
+					// 			val = val.replace("order", " "); //Order
+					// 			value.Status = val;
+					// 		}
+					// 	});
+					// }
+					if (value.status != '') {
+						Object.keys(status).forEach(function(key) {
+							if (value.status == status[key]) {
 								var val1 = key.toLowerCase();
 								var val = val1.charAt(0).toUpperCase() + val1.slice(1);
-								val = val.replace("order", " "); //Order
+								//val = val.replace("order", " "); //Order
 								value.Status = val;
 							}
 						});
@@ -133,46 +142,126 @@ exports.orderHistoryexportcsv = function(req, res) {
 	}
 
 };
-// ends export csv order-history //
+// ends export csv personal-order-history //
 
-//starts export csv sales-history//
-exports.salesHistoryexportcsv = function(req, res) {
+
+// starts export csv my-order-history//
+exports.myOrderHistoryexportcsv = function(req, res) {
 
 	if (req.body.id != 0) {
-
 		var offset, limit, field, order;
+		var offset = 0;
+		var queryParams = {};
 		var queryObj = {};
-		var ids = [];
-		var type = [];
-		let includeArr = [];
-		offset = req.query.offset ? parseInt(req.query.offset) : null;
-		delete req.query.offset;
-		limit = req.query.limit ? parseInt(req.query.limit) : null;
-		delete req.query.limit;
-		field = req.query.field ? req.query.field : "id";
-		delete req.query.field;
-		order = req.query.order ? req.query.order : "asc";
-		delete req.query.order;
+		var order = "DESC";
+		var includeArray = [];
+		var field = "created_on";
+		var orderVendorModelName = "OrderVendor";
+		var limit = req.query.limit ? parseInt(req.query.limit) : 10;
+		var offset = req.query.offset ? parseInt(req.query.offset) : 0;
+		var page = req.query.page ? parseInt(req.query.page) : 1;
+
+		queryParams['page'] = page;
+		queryParams['limit'] = limit;
+		offset = (page - 1) * limit;
+
+		includeArray = [{
+			model: model["Order"],
+			attributes: ['id', 'ordered_date', 'status']
+		}];
 
 		queryObj['id'] = JSON.parse("[" + req.body.id + "]");
 
-		service.findAllRows('Order', includeArr, queryObj, 0, null, field, order)
+		orderService.findAllOrders(orderVendorModelName, includeArray, queryObj, offset, limit, field, order)
 			.then(function(rows) {
 				for (let value of rows.rows) {
 					if (value.id != '') {
 						value.invoice = value.id;
-						value.Date = value.ordered_date;
+						value.Date = value.created_on;
 						value.Method = "Stripe";
 
 						value.Amount = ((value.total_price) > 0) ? (parseFloat(value.total_price)).toFixed(2) : 0;
 
 					}
-					if (value.order_status != '') {
-						Object.keys(orderStatus).forEach(function(key) {
-							if (value.order_status == orderStatus[key]) {
+					if (value.status != '') {
+						Object.keys(status).forEach(function(key) {
+							if (value.status == status[key]) {
 								var val1 = key.toLowerCase();
 								var val = val1.charAt(0).toUpperCase() + val1.slice(1);
-								val = val.replace("order", " "); //Order
+								//val = val.replace("order", " "); //Order
+								value.Status = val;
+							}
+						});
+					}
+
+				}
+
+				var fields = [];
+				fields = _.map(rows.rows.columns, 'columnName');
+				fields.push('invoice', 'Date', 'Method', 'Status', 'Amount');
+				const opts = {
+					fields
+				};
+				const parser = new Json2csvParser(opts);
+				const csv = parser.parse(rows.rows);
+				res.write(csv);
+				res.end();
+				return;
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				res.status(500).send("Internal server error");
+				return
+			});
+
+
+	}
+
+};
+// ends export csv my-order-history//
+//starts export csv sales-history//
+exports.salesHistoryexportcsv = function(req, res) {
+
+	if (req.body.id != 0) {
+		var offset, limit, field, order;
+		var offset = 0;
+		var queryParams = {};
+		var queryObj = {};
+		var order = "DESC";
+		var includeArray = [];
+		var field = "created_on";
+		var orderVendorModelName = "OrderVendor";
+		var limit = req.query.limit ? parseInt(req.query.limit) : 10;
+		var offset = req.query.offset ? parseInt(req.query.offset) : 0;
+		var page = req.query.page ? parseInt(req.query.page) : 1;
+
+		queryParams['page'] = page;
+		queryParams['limit'] = limit;
+		offset = (page - 1) * limit;
+
+		includeArray = [{
+			model: model["Order"],
+			attributes: ['id', 'ordered_date', 'status']
+		}];
+
+		queryObj['id'] = JSON.parse("[" + req.body.id + "]");
+
+		orderService.findAllOrders(orderVendorModelName, includeArray, queryObj, offset, limit, field, order)
+			.then(function(rows) {
+				for (let value of rows.rows) {
+					if (value.id != '') {
+						value.invoice = value.id;
+						value.Date = value.created_on;
+						value.Method = "Stripe";
+
+						value.Amount = ((value.total_price) > 0) ? (parseFloat(value.total_price)).toFixed(2) : 0;
+
+					}
+					if (value.status != '') {
+						Object.keys(status).forEach(function(key) {
+							if (value.status == status[key]) {
+								var val1 = key.toLowerCase();
+								var val = val1.charAt(0).toUpperCase() + val1.slice(1);
+								//val = val.replace("order", " "); //Order
 								value.Status = val;
 							}
 						});
@@ -274,6 +363,5 @@ exports.reportperformanceexportcsv = function(req, res) {
 	});
 
 };
-
 // ends export csv report-performance//
 

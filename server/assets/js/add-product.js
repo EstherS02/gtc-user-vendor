@@ -179,7 +179,7 @@ $(document).ready(function() {
 	$("#country").change(function() {
 		var country_id = $('#country').val();
 		$.ajax({
-			url: '/api/states?country_id=' + country_id,
+			url: '/api/states?country_id='+ country_id +'&field=name&order=asc',
 			type: 'GET',
 			success: function(result) {
 				$("#state").empty();
@@ -200,7 +200,7 @@ $(document).ready(function() {
 		var category_id = $('#category').val();
 		$('#attributePopup').empty();
 		$.ajax({
-			url: '/api/sub-categories?category_id=' + category_id,
+			url: '/api/sub-categories?category_id='+ category_id+'&field=name&order=asc',
 			type: 'GET',
 			success: function(result) {
 				$("#sub_category").empty();

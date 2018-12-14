@@ -23,7 +23,7 @@
 		}
 		if (current.indexOf("ticket") !== -1) {
 			$('#collapse4Support').addClass('show');
-			
+			$('#supportLink').addClass('active');
 		}
 		$('#StoreNavbar li a').each(function() {
 			var $this = $(this);
@@ -221,14 +221,16 @@
 			<a href="javascript:;">Feed</a>
 		</li>
 		<li>
-			<a data-toggle="collapse" href="#collapse4Support" role="button" aria-expanded="false" aria-controls="collapse4Support">Support</a>
+			<a data-toggle="collapse" href="#collapse4Support" role="button" aria-expanded="false" aria-controls="collapse4Support" onclick="supportticket()">Support</a>
 			<ul class="collapse m-l vs-nav" id="collapse4Support">
 				<li class="nav-bar">
 					<a href="/login#FAQ" class="vs-link">FAQ</a>
 				</li>
+				{{#if LoggedInUser.Vendor.id}}
 				<li class="nav-bar">
-					<a class="vs-link pointer" onclick="supportticket()">Ticket History</a>
+					<a href="javascript:;" class="vs-link pointer" id="supportLink" onclick="supportticket()">Ticket History</a>
 				</li>
+				{{/if}}
 				<li class="nav-bar">
 					<a href="javascript:;" class="vs-link"> Direct Support(?)</a>
 				</li>

@@ -260,6 +260,7 @@ export function processing(req, res) {
 				});
 		},
 		processingFee: function(callback) {
+			console.log("---------------------------------------------------processingFee----------------------------------------------------------");
 			var offset, limit, field, order;
 			var queryObj = {};
 			var OrderVendorModelName = 'OrderVendor'
@@ -346,6 +347,7 @@ export function subscription(req, res) {
 				});
 		},
 		subscriptionFee: function(callback) {
+			console.log("---------------------------------------------------subscriptionFee----------------------------------------------------------");
 			var offset, limit, field, order;
 			var queryObj = {};
 			var OrderVendorModelName = 'OrderVendor'
@@ -432,6 +434,7 @@ offset = req.query.offset ? parseInt(req.query.offset) : 0;
 				});
 		},
 		gtcPayFee: function(callback) {
+			console.log("---------------------------------------------------gtcPayFee----------------------------------------------------------");
 			var offset, limit, field, order;
 			var queryObj = {};
 			var OrderVendorModelName = 'OrderVendor'

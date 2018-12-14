@@ -101,31 +101,31 @@ export async function create(req, res) {
 		}
 	}
 
-	req.checkBody('sku', 'Missing Query Param').notEmpty();
-	req.checkBody('product_name', 'Missing Query Param').notEmpty();
-	req.checkBody('status', 'Missing Query Param').notEmpty();
-	req.checkBody('marketplace_id', 'Missing Query Param').notEmpty();
-	req.checkBody('product_category_id', 'Missing Query Param').notEmpty();
-	req.checkBody('sub_category_id', 'Missing Query Param').notEmpty();
-	req.checkBody('product_location', 'Missing Query Param').notEmpty();
-	req.checkBody('state_id', 'Missing Query Param').notEmpty();
-	req.checkBody('city', 'Missing Query Param').notEmpty();
-	req.checkBody('quantity_available', 'Missing Query Param').notEmpty();
+	req.checkBody('sku', 'Stock keeping unit required').notEmpty();
+	req.checkBody('product_name', 'Product name required').notEmpty();
+	req.checkBody('status', 'Product status required').notEmpty();
+	req.checkBody('marketplace_id', 'Product marketplace required').notEmpty();
+	req.checkBody('product_category_id', 'Product category required').notEmpty();
+	req.checkBody('sub_category_id', 'Product sub category required').notEmpty();
+	req.checkBody('product_location', 'Product country required').notEmpty();
+	req.checkBody('state_id', 'Product state required').notEmpty();
+	req.checkBody('city', 'Product city required').notEmpty();
+	req.checkBody('quantity_available', 'Product available quantity required').notEmpty();
 	// Price not required for WTB,WTT,RFQ 
 	//req.checkBody('price', 'Missing Query Param').notEmpty();
 	req.checkBody('exclusive_sale', 'Missing Query Param').notEmpty();
 
 	if (req.body.marketplace_id == marketplace['WHOLESALE']) {
-		req.checkBody('marketplace_type_id', 'Missing Query Param').notEmpty();
-		req.checkBody('moq', 'Missing Query Param').notEmpty();
+		req.checkBody('marketplace_type_id', 'Product Type required').notEmpty();
+		req.checkBody('moq', 'Minimum order quantity required').notEmpty();
 	} else {
 		delete req.body.moq;
 		delete req.body.marketplace_type_id;
 	}
 	if (req.body.exclusive_sale == 1) {
-		req.checkBody('exclusive_start_date', 'Missing Query Param').notEmpty();
-		req.checkBody('exclusive_end_date', 'Missing Query Param').notEmpty();
-		req.checkBody('exclusive_offer', 'Missing Query Param').notEmpty().isInt({
+		req.checkBody('exclusive_start_date', 'Offer start date required').notEmpty();
+		req.checkBody('exclusive_end_date', 'Offer end date required').notEmpty();
+		req.checkBody('exclusive_offer', 'Offer percentage required').notEmpty().isInt({
 			gt: 0
 		});
 
@@ -134,9 +134,9 @@ export async function create(req, res) {
 		const currentDate = new Date();
 
 		if(startDate <= currentDate){
-			return res.status(400).send("Start date must be greater than current date.");
+			return res.status(400).send("Sales start date must be greater than current date.");
 		}else if(endDate < startDate){
-			return res.status(400).send("End date must be greater than start date.");
+			return res.status(400).send("Sales end date must be greater than start date.");
 		}else{
 			req.body.exclusive_end_date = new Date(req.body.exclusive_end_date);
 			req.body.exclusive_start_date = new Date(req.body.exclusive_start_date);
@@ -145,7 +145,7 @@ export async function create(req, res) {
 
 	var errors = req.validationErrors();
 	if (errors) {
-		res.status(400).send('Missing Query Params');
+		res.status(400).send(errors[0].msg);
 		return;
 	}
 
@@ -284,9 +284,10 @@ export async function edit(req, res) {
 		const endDate = new Date(req.body.exclusive_end_date);
 		const currentDate = new Date();
 
-		if(startDate <= currentDate){
-			return res.status(400).send("Start date must be greater than current date.");
-		}else if(endDate < startDate){
+		// if(startDate <= currentDate){
+		// 	return res.status(400).send("Start date must be greater than current date.");
+		// }else 
+		if(endDate < startDate){
 			return res.status(400).send("End date must be greater than start date.");
 		}else{
 			req.body.exclusive_end_date = new Date(req.body.exclusive_end_date);
