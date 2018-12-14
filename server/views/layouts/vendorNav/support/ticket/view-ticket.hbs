@@ -41,11 +41,18 @@
 				<div class="col-sm-10">
 					<div class="ibox">
 						<div class="ibox-content">
+							<div class="ibox-title">
+							<h2> Ticket History
+								<span class="pull-right" style="font-size:12px">
+									<a href="/order-history">Clear All</a>
+								</span>
+							</h2>
+					    	</div>
 							<div class="content-body">
 								<div class="row">
 									<div class="col-md-12">
-										<p class="content-txt">There is your ticket support system for users looking for tech and/or transaction support. click on ticket number
-											to respond or view the ticket.</p>
+										{{!-- <p class="content-txt">There is your ticket support system for users looking for tech and/or transaction support. click on ticket number
+											to respond or view the ticket.</p> --}}
 										{{!-- <span class="pull-right" style="font-size:12px"><a href="listings/{{this.type}}">Clear All</a></span> --}}
 									</div>
 								</div>
@@ -53,7 +60,7 @@
 									<div class="col-md-12">
 										<div class="form-inline pull-left m-t-md">
 											<div class="form-group m-r">
-												<button type="submit" class="btn btn-md btn-muted" name="{{this.type}}" onclick="createTicket();">Create Ticket</button>
+												<button type="submit" class="btn btn-md btn-muted" name="{{this.type}}" onclick="createTicket();">CREATE TICKET</button>
 											</div>
 											{{!-- <div class="form-group m-r">
 												<div class="select-container">
