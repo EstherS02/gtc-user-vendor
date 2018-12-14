@@ -75,10 +75,8 @@ var params = {{{ DisplayJSON queryParamsString }}};
 					chkArray.push($(this).val());
 				}
 		});
-		var selected;
-		selected = chkArray.join(',');
-		if (selected.length > 0) {
-			window.location.href = '/coupons/edit-coupons?id=' + selected;
+		if (chkArray.length == 1) {
+			window.location.href = '/coupons/edit-coupons?id=' + chkArray[0];
 		} else {
 			ouputErrorPopup("Please select one coupon to edit.");
 		}
