@@ -356,9 +356,14 @@
 									</div>
 									<div class="col-lg-12">
 										<div class="form-group">
-											<label class="label-control">Would you like to put the product on sale?
-											&nbsp;&nbsp;<input type="checkbox" value="1" name="exclusive_sale" id="exclusive_sale"
-											{{#if editProduct.exclusive_sale}} checked {{/if}} >&nbsp;&nbsp;Yes</label>
+											<label class="label-control">Would you like to put the product on sale?&nbsp;&nbsp;&nbsp;
+											<div class="customCheckbox">
+												<input type="checkbox" value="1" name="exclusive_sale" id="exclusive_sale"
+													{{#if editProduct.exclusive_sale}} checked {{/if}} class="customCheckboxInput">
+												<label class="checkbox-b" for="exclusive_sale"></label>
+												</div>&nbsp;&nbsp;&nbsp;&nbsp;Yes
+											</label>
+
 										</div>
 									</div>
 								</div>
