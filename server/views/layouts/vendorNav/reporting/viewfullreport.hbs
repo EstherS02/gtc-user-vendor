@@ -1,12 +1,12 @@
 <script>
 	var params = {{{ DisplayJSON queryParamsString }}};
-	function limit(type,size) {
+	function limit(type, size) {
 		console.log(type);
 		console.log(size);
 		params = replaceUrlParam(params, "limit", size);
 		params = replaceUrlParam(params, "page", 1);
 		params = replaceUrlParam(params, "offset", 0);
-		location.href =type+'?'+params;
+		location.href = type + '?' + params;
 	}
 	function replaceUrlParam(existingQueryParams, paramsName, paramsValue) {
 		var urlParams = new URLSearchParams(existingQueryParams);
@@ -17,8 +17,7 @@
 		}
 		return urlParams;
 	}
-</script>
-{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+</script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 {{#ifCond selectedPage "==" 'revenue'}}
 	<div class="wrapper-content bg-gray">
 		<div class="gtc-container">
@@ -56,7 +55,8 @@
 													<a {{#ifCond queryPaginationObj.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,100)" href="javascript:;">100</a>
 												</small>
 												<small class="font-weight-light">
-													<a {{#ifCond queryPaginationObj.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,10000000000000)" href="javascript:;">All</a>
+													<a {{#ifCond queryPaginationObj.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,10000000000000)"
+													 href="javascript:;">All</a>
 												</small>
 											</div>
 										</div>
@@ -82,8 +82,8 @@
 														<td>{{this.product_name}}</td>
 														<td>{{this.type}}</td>
 														<td>{{this.position}}</td>
-														<td>{{this.start_date}}</td>
-														<td>{{this.end_date}}</td>
+														<td>{{formatTime this.start_date "MMM DD, YYYY"}}</td>
+														<td>{{formatTime this.end_date "MMM DD, YYYY"}}</td>
 														{{#if this.impression}}
 															<td>{{this.impression}}</td>
 														{{else}}
@@ -188,7 +188,8 @@
 													<a {{#ifCond queryPaginationObj.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,100)" href="javascript:;">100</a>
 												</small>
 												<small class="font-weight-light">
-													<a {{#ifCond queryPaginationObj.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,10000000000000)" href="javascript:;">All</a>
+													<a {{#ifCond queryPaginationObj.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,10000000000000)"
+													 href="javascript:;">All</a>
 												</small>
 											</div>
 										</div>
@@ -302,7 +303,8 @@
 													<a {{#ifCond queryPaginationObj.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,100)" href="javascript:;">100</a>
 												</small>
 												<small class="font-weight-light">
-													<a {{#ifCond queryPaginationObj.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,10000000000000)" href="javascript:;">All</a>
+													<a {{#ifCond queryPaginationObj.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,10000000000000)"
+													 href="javascript:;">All</a>
 												</small>
 											</div>
 										</div>
@@ -417,7 +419,8 @@
 													<a {{#ifCond queryPaginationObj.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,100)" href="javascript:;">100</a>
 												</small>
 												<small class="font-weight-light">
-													<a {{#ifCond queryPaginationObj.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,10000000000000)" href="javascript:;">All</a>
+													<a {{#ifCond queryPaginationObj.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(`{{originalUrl}}`,10000000000000)"
+													 href="javascript:;">All</a>
 												</small>
 											</div>
 										</div>
@@ -569,8 +572,8 @@
 																{{#ifCond this.plan_id '==' 4}} Public Seller Pricing Guide{{/ifCond}}
 																{{#ifCond this.plan_id '==' 6}} Wholesale Pricing Guide{{/ifCond}}
 															</td>
-															<td>{{this.start_date}}</td>
-															<td>{{this.end_date}}</td>
+															<td>{{formatTime this.start_date "MMM DD, YYYY"}}</td>
+															<td>{{formatTime this.end_date "MMM DD, YYYY"}}</td>
 															<td>
 																{{#ifCond this.status '==' 1}}
 																	<div style="color:green">ACTIVE</div>
@@ -578,7 +581,7 @@
 									<div style="color:red">INACTIVE</div>
 																{{/ifCond}}
 															</td>
-															<td>{{this.Payment.created_on}}</td>
+															<td>{{formatTime this.Payment.created_on "MMM DD, YYYY"}}</td>
 															<td>${{this.Payment.amount}}</td>
 														</tr>
 													{{/each}}
