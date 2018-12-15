@@ -539,13 +539,14 @@ export function membership(req, res) {
 			offset = (page - 1) * limit;
 			var includeArr = [{
 				model: model['Payment'],
+				attributes: ['id', 'amount', 'date', 'created_on'],
 				where: {
 					id: {
 						$ne: null
 
 					}
 				},
-				attributes: ['id', 'amount', 'date', 'created_on'],
+				
 			}]
 			var queryObj = {
 				vendor_id: LoggedInUser.Vendor.id,

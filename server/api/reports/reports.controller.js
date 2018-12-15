@@ -572,7 +572,7 @@ export function memberShipFees(req,res){
 			model: model['Vendor'] 
 		},{
 			model: model['Payment'],
-			attributes: ['id','amount','date'],
+			attributes: ['id','amount','date','created_on'],
 			where: { 
 				id: {
 					$ne: null
