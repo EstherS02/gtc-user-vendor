@@ -133,7 +133,7 @@ export async function create(req, res) {
 		const endDate = new Date(req.body.exclusive_end_date);
 		const currentDate = new Date();
 
-		if(startDate <= currentDate){
+		if(startDate < currentDate){
 			return res.status(400).send("Sales start date must be greater than current date.");
 		}else if(endDate < startDate){
 			return res.status(400).send("Sales end date must be greater than start date.");
