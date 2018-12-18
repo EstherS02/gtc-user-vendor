@@ -395,7 +395,6 @@ export function revenueChangesCount(req, res) {
 }
 
 export function comparePerformance(req, res) {
-	console.log("---------------------------")
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -422,6 +421,7 @@ export function comparePerformance(req, res) {
 	}
 
 	ReportService.performanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('comparePerformance err', err);
@@ -434,7 +434,6 @@ export function vendorPerformance(req, res){
 	var lhsBetween = [], rhsBetween = [];
 	var limit, offset, compare;
 
-	console.log("=========================================", req.query);
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;

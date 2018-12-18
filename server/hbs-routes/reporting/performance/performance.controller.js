@@ -112,6 +112,7 @@ export function performance(req, res) {
 				}
 
 				ReportService.performanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+					console.log("+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''",results)
 					return callback(null, results);
 				}).catch((err) => {
 					console.log('performance err', err);
