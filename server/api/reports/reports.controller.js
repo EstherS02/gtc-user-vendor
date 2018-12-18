@@ -202,7 +202,7 @@ export function latestTickets(req, res) {
 			where: {},
 			attributes: ['first_name', 'last_name', 'user_pic_url']
 		}],
-		attributes: ['id', 'user_id', 'message', 'status', 'created_on'],
+		attributes: ['id','ticket_id','user_id', 'message', 'status', 'created_on'],
 		limit: 5
 	}).then(function(results) {
 		if (results.length > 0)
