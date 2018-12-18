@@ -99,26 +99,75 @@ function getAllPerformance(queryObj, limit, offset) {
 }
 
 function getAllVendorPerformance(queryObj, limit, offset) {
+//      var queryResult = `SELECT
+//     'OrderVendor'.'id',
+//     'Vendor.id' AS 'Vendor_id',
+//     'Vendor.vendor_name' AS 'vendor_name',
+//     (SELECT 'plan_id' FROM 'vendor_plan' WHERE 'status' = 1 and 'Vendor'.'id' = 'vendor_plan.vendor_id' LIMIT 1 ) AS 'type',
+//     SUM('Order->OrderItems.quantity') AS 'sales',
+//     SUM('Order->OrderItems.final_price') AS 'vendor_fee',
+//     SUM('Order->OrderItems.gtc_fees') AS 'gtc_fees'
+// FROM
+//     order_vendor AS OrderVendor
+// LEFT OUTER JOIN(
+//         \'order\' AS \'Order\'
+//     INNER JOIN order_item AS 'Order->OrderItems'
+//     ON
+//         'Order.id' = 'Order->OrderItems.order_id'
+//     LEFT OUTER JOIN product AS Order->OrderItems->Product
+//     ON
+//         'Order->OrderItems.product_id' = 'Order->OrderItems->Product.id'
+//     )
+// ON
+//     'OrderVendor.order_id' = 'Order.id'
+// LEFT OUTER JOIN 'vendor' AS 'Vendor'
+// ON
+//     'OrderVendor.vendor_id' = 'Vendor.id'
+// WHERE
+//     'Order->OrderItems->Product.vendor_id' =  'Vendor.id'
+// GROUP BY
+//     'OrderVendor.vendor_id'`;
+    var queryResult = `SELECT orderVendor.vendor_id AS vendor_id,
+            vendor.vendor_name As vendor_name,
+            users.first_name As owner_name, 
+            ( SELECT plan_id FROM vendor_plan WHERE status = 1 and vendor.id = vendor_plan.vendor_id
+            LIMIT 1 ) AS type,
+            SUM(order_item.quantity) AS sales,
+            SUM(orderVendor.total_price) - SUM(orderVendor.gtc_fees) AS vendor_fee,
+            SUM(orderVendor.gtc_fees) AS gtc_fees
+            FROM
+                order_vendor as orderVendor
+                LEFT OUTER JOIN vendor ON orderVendor.vendor_id = vendor.id
+                LEFT OUTER JOIN users ON vendor.user_id = users.id
+                LEFT OUTER JOIN order_item ON orderVendor.order_id = order_item.order_id
+            GROUP BY
+                orderVendor.vendor_id
+            ORDER BY SUM(orderVendor.total_price) DESC`
+
+    var includeArray = [{
+            model:model['Vendor'],
+            include:[{
+                model:model['VendorPlan'],
+                attributes:['plan_id'],
+                where:{
+                    status:1
+                },
+                required:false,
+            },{
+                model:model['User'],
+                attributes:['first_name']
+            }]
+        },{
+            model:model['Order'],
+            include:[{
+                model:model['OrderItems']
+            }]
+        }];
     return new Promise((resolve, reject) => {
-        SequelizeInstance.query(`SELECT orderVendor.vendor_id AS vendor_id,
-			vendor.vendor_name As vendor_name,
-			users.first_name As owner_name,	
-			( SELECT plan_id FROM vendor_plan WHERE status = 1 and vendor.id = vendor_plan.vendor_id
-			LIMIT 1 ) AS type,
-			SUM(order_item.quantity) AS sales,
-			SUM(orderVendor.total_price) - SUM(orderVendor.gtc_fees) AS vendor_fee,
-			SUM(orderVendor.gtc_fees) AS gtc_fees
-			FROM
-				order_vendor as orderVendor
-				LEFT OUTER JOIN vendor ON orderVendor.vendor_id = vendor.id
-				LEFT OUTER JOIN users ON vendor.user_id = users.id
-				LEFT OUTER JOIN order_item ON orderVendor.order_id = order_item.order_id
-			GROUP BY
-				orderVendor.vendor_id
-			ORDER BY SUM(orderVendor.total_price) DESC`, {
+        SequelizeInstance.query(queryResult, {
             replacements: {
-                from: moment(queryObj.from).format("YYYY-MM-DD"),
-                to: moment(queryObj.to).format("YYYY-MM-DD"),
+                // from: moment(queryObj.from).format("YYYY-MM-DD"),
+                // to: moment(queryObj.to).format("YYYY-MM-DD"),
                 limit: limit,
             	offset: offset
             },
@@ -127,7 +176,7 @@ function getAllVendorPerformance(queryObj, limit, offset) {
 			console.log("data::::", data)
             resolve(data);
         }).catch(function(err) {
-            console.log('getAllPerformance error ', err);
+            console.log('getAllPerformance error==================================== ', err);
             reject(err);
         });
     });
