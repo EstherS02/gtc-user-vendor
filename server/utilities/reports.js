@@ -19,8 +19,7 @@ function sumofPrice(modelName, queryObj) {
             raw: true,
             where: queryObj,
             attributes: [
-                [sequelize.fn('sum', sequelize.col('final_price')), 'amount']
-            ]
+                [sequelize.fn('sum', sequelize.col('final_price')), 'amount']]
         }).then(function(data) {
             if (data.length > 0) {
                 total = typeof data[0].amount != 'undefined' && data[0].amount != null ? data[0].amount : "0";
@@ -59,8 +58,7 @@ function sumofCount(modelName, queryObj) {
 }
 
 function getAllPerformance(queryObj, limit, offset) {
-    return new Promise((resolve, reject) => {
-        SequelizeInstance.query(`SELECT orderVendor.order_id AS order_id,
+    let queryString=`SELECT orderVendor.order_id AS order_id,
                 order_item.product_id AS product_id,
                 ( SELECT product_name FROM product WHERE product.id = order_item.product_id
                     LIMIT 1 ) AS product_name,
@@ -75,14 +73,18 @@ function getAllPerformance(queryObj, limit, offset) {
                         order_vendor as orderVendor
                     LEFT OUTER JOIN order_item ON orderVendor.order_id = order_item.order_id
                     LEFT OUTER JOIN product ON order_item.product_id = product.id
-				WHERE
-    				product.vendor_id = :vendor_id and order_item.created_on between :from and :to
-				GROUP BY
-    				order_item.product_id
-    			ORDER BY SUM(orderVendor.total_price) DESC
-				LIMIT :limit OFFSET :offset`, {
+                WHERE
+                    order_item.created_on between :from and :to`;
+                    if(queryObj.vendor_id>0){
+                    queryString = queryString+` and product.vendor_id =`+queryObj.vendor_id;
+                }
+                queryString = queryString+` GROUP BY
+                    order_item.product_id
+                ORDER BY SUM(orderVendor.total_price) DESC
+                LIMIT :limit OFFSET :offset`;
+    return new Promise((resolve, reject) => {
+        SequelizeInstance.query(queryString, {
             replacements: {
-                vendor_id: queryObj.vendor_id,
                 from: moment(queryObj.from).format("YYYY-MM-DD"),
                 to: moment(queryObj.to).format("YYYY-MM-DD"),
                 limit: limit,
@@ -99,50 +101,50 @@ function getAllPerformance(queryObj, limit, offset) {
 }
 
 function getAllVendorPerformance(queryObj, limit, offset) {
-//      var queryResult = `SELECT
-//     'OrderVendor'.'id',
-//     'Vendor.id' AS 'Vendor_id',
-//     'Vendor.vendor_name' AS 'vendor_name',
-//     (SELECT 'plan_id' FROM 'vendor_plan' WHERE 'status' = 1 and 'Vendor'.'id' = 'vendor_plan.vendor_id' LIMIT 1 ) AS 'type',
-//     SUM('Order->OrderItems.quantity') AS 'sales',
-//     SUM('Order->OrderItems.final_price') AS 'vendor_fee',
-//     SUM('Order->OrderItems.gtc_fees') AS 'gtc_fees'
-// FROM
-//     order_vendor AS OrderVendor
-// LEFT OUTER JOIN(
-//         \'order\' AS \'Order\'
-//     INNER JOIN order_item AS 'Order->OrderItems'
-//     ON
-//         'Order.id' = 'Order->OrderItems.order_id'
-//     LEFT OUTER JOIN product AS Order->OrderItems->Product
-//     ON
-//         'Order->OrderItems.product_id' = 'Order->OrderItems->Product.id'
-//     )
-// ON
-//     'OrderVendor.order_id' = 'Order.id'
-// LEFT OUTER JOIN 'vendor' AS 'Vendor'
-// ON
-//     'OrderVendor.vendor_id' = 'Vendor.id'
-// WHERE
-//     'Order->OrderItems->Product.vendor_id' =  'Vendor.id'
-// GROUP BY
-//     'OrderVendor.vendor_id'`;
-    var queryResult = `SELECT orderVendor.vendor_id AS vendor_id,
-            vendor.vendor_name As vendor_name,
-            users.first_name As owner_name, 
-            ( SELECT plan_id FROM vendor_plan WHERE status = 1 and vendor.id = vendor_plan.vendor_id
-            LIMIT 1 ) AS type,
-            SUM(order_item.quantity) AS sales,
-            SUM(orderVendor.total_price) - SUM(orderVendor.gtc_fees) AS vendor_fee,
-            SUM(orderVendor.gtc_fees) AS gtc_fees
-            FROM
-                order_vendor as orderVendor
-                LEFT OUTER JOIN vendor ON orderVendor.vendor_id = vendor.id
-                LEFT OUTER JOIN users ON vendor.user_id = users.id
-                LEFT OUTER JOIN order_item ON orderVendor.order_id = order_item.order_id
-            GROUP BY
-                orderVendor.vendor_id
-            ORDER BY SUM(orderVendor.total_price) DESC`
+     var queryResult = `SELECT
+    'OrderVendor'.'id',
+    'Vendor.id' AS 'Vendor_id',
+    'Vendor.vendor_name' AS 'vendor_name',
+    (SELECT 'plan_id' FROM 'vendor_plan' WHERE 'status' = 1 and 'Vendor'.'id' = 'vendor_plan.vendor_id' LIMIT 1 ) AS 'type',
+    SUM('Order->OrderItems.quantity') AS 'sales',
+    SUM('Order->OrderItems.final_price') AS 'vendor_fee',
+    SUM('Order->OrderItems.gtc_fees') AS 'gtc_fees'
+FROM
+    order_vendor AS OrderVendor
+LEFT OUTER JOIN(
+        \'order\' AS \'Order\'
+    INNER JOIN order_item AS 'Order->OrderItems'
+    ON
+        'Order.id' = 'Order->OrderItems.order_id'
+    LEFT OUTER JOIN product AS Order->OrderItems->Product
+    ON
+        'Order->OrderItems.product_id' = 'Order->OrderItems->Product.id'
+    )
+ON
+    'OrderVendor.order_id' = 'Order.id'
+LEFT OUTER JOIN 'vendor' AS 'Vendor'
+ON
+    'OrderVendor.vendor_id' = 'Vendor.id'
+WHERE
+    'Order->OrderItems->Product.vendor_id' =  'Vendor.id'
+GROUP BY
+    'OrderVendor.vendor_id'`;
+    // var queryResult = `SELECT orderVendor.vendor_id AS vendor_id,
+    //         vendor.vendor_name As vendor_name,
+    //         users.first_name As owner_name, 
+    //         ( SELECT plan_id FROM vendor_plan WHERE status = 1 and vendor.id = vendor_plan.vendor_id
+    //         LIMIT 1 ) AS type,
+    //         SUM(order_item.quantity) AS sales,
+    //         SUM(orderVendor.total_price) - SUM(orderVendor.gtc_fees) AS vendor_fee,
+    //         SUM(orderVendor.gtc_fees) AS gtc_fees
+    //         FROM
+    //             order_vendor as orderVendor
+    //             LEFT OUTER JOIN vendor ON orderVendor.vendor_id = vendor.id
+    //             LEFT OUTER JOIN users ON vendor.user_id = users.id
+    //             LEFT OUTER JOIN order_item ON orderVendor.order_id = order_item.order_id
+    //         GROUP BY
+    //             orderVendor.vendor_id
+    //         ORDER BY SUM(orderVendor.total_price) DESC`
 
     var includeArray = [{
             model:model['Vendor'],
@@ -266,7 +268,9 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
         model['OrderItemOverview'].findAll({
             raw: true,
             where: orderItemQueryObj,
-            attributes: ['marketplace_name', [sequelize.fn('sum', sequelize.col('final_price')), 'amount']],
+            attributes: ['marketplace_name', [sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
+            [sequelize.fn('count', sequelize.col('quantity')), 'sales'],
+            [sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']],
             group: ['marketplace_id'],
             order: [
                 [sequelize.fn('sum', sequelize.col('final_price')), 'DESC']

@@ -288,13 +288,14 @@ export function topMarketPlace(req, res) {
 	var lhsBetween = [];
 	var rhsBetween = [];	
 
-	if(req.user.role == 1){
-		orderItemQueryObj.limit = parseInt(req.query.limit);
-		orderItemQueryObj.offset = parseInt(req.query.offset);
-	}
+	// if(req.user.role == 1){
+	// 	orderItemQueryObj.limit = parseInt(req.query.limit);
+	// 	orderItemQueryObj.offset = parseInt(req.query.offset);
+	// }
 
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
+	
 	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
@@ -394,15 +395,13 @@ export function revenueChangesCount(req, res) {
 }
 
 export function comparePerformance(req, res) {
+	console.log("---------------------------")
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
 	var limit, offset, compare;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
-
-	console.log("==========================================", req.query.lhs_from);
-	console.log("=======================================================", req.query.lhs_to);
 
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
@@ -491,6 +490,21 @@ export function vendorPerformance(req, res){
 	});
 }
 
+export function compareCategoryPerformance(req, res){
+	
+}
+export function compareMarketPlacePerformance(req, res){
+
+}
+export function compareCityPerformance(req, res){
+	
+}
+export function compareCountriesPerformance(req, res){
+
+}
+export function compareUserPerformance(req, res){
+	
+}
 export function vendorTrail(req, res) {
 	var queryObj = {};
 	var planQueryObj = {};
