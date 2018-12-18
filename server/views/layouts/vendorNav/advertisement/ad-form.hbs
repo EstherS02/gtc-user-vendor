@@ -46,6 +46,7 @@
 								return true;
 							} else {
 								$('#adImage').attr('src', " ");
+								$('#adImage').val('')
 								alert("Uploaded image has valid Height and Width.");
 								return false;
 							}
@@ -58,6 +59,7 @@
 								return true;
 							} else {
 								$('#adImage').attr('src', " ");
+								$('#adImage').val('')
 								alert("Uploaded image has valid Height and Width.");
 								return false;
 							}
@@ -141,7 +143,7 @@
 					},
 					error: function(error) {
 						$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-						$('#gtc-form-alert .form-message').text(data);
+						$('#gtc-form-alert .form-message').text(error.responseJSON.messageDetails);
 						$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
 							$("#gtc-form-alert").slideUp(500);
 						});
