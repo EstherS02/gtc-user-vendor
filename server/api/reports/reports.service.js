@@ -302,7 +302,7 @@ export async function adFeaturedRevenue(req,res){
 	var total_count = 0;
 	for (var i = 0; i < arrayEle.length; i++) {
 		if(arrayEle[i].Payment){
-			if(arrayEle[i].Payment.amount != null)
+			if((arrayEle[i].Payment.amount != null)&&(arrayEle[i].status == 1))
 			total_count = total_count + parseInt(arrayEle[i].Payment.amount);
 		}
 	}
