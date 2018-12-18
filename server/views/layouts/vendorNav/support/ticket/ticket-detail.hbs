@@ -64,7 +64,7 @@
 				},
 				error: function(error) {
 					$('#gtc-social-profile').removeClass('alert-success').addClass('alert-danger');
-					$('#gtc-social-profile .cart-message').text(error);
+					$('#gtc-social-profile .cart-message').text("Please select the status");
 					$("#gtc-social-profile").fadeTo(2000, 3000).slideUp(500, function() {
 						$("#gtc-social-profile").slideUp(500);
 						location.reload(true);
