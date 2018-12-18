@@ -24,23 +24,54 @@
 			format: 'yyyy-mm-dd',
 			autohide: true,
 		});
-		
+
 		$('#adImage').change(function(e) {
 			adImageArr.length = 0;
 			var obj = {}
 			if (adImage.files && adImage.files[0]) {
 				var reader = new FileReader();
 				reader.onload = function(e) {
-					obj.adImageUrl = e.target.result;
-					adImageArr.push(obj);
-					appendImage();
+					var image = new Image();
+					image.src = e.target.result;
+					image.onload = function() {
+						//Determine the Height and Width.
+						var height = this.height;
+						var width = this.width;
+						if (($("#position").val() == 1) || ($("#position").val() == 2) || ($("#position").val() == 6)) {
+							if ((height >= 195 && height<= 220) || (width >= 475 && width<=500)) {
+								alert("Height and Width must not exceed 100px.");
+								obj.adImageUrl = e.target.result;
+								adImageArr.push(obj);
+								appendImage();
+								return true;
+							} else {
+								$('#adImage').attr('src', " ");
+								alert("Uploaded image has valid Height and Width.");
+								return false;
+							}
+						} else if (($("#position").val() == 2) || ($("#position").val() == 4) || ($("#position").val() == 5)) {
+							if ((height >= 45 && height<= 80) || (width >= 475 && width<=500)) {
+								alert("Height and Width must not exceed 100px.");
+								obj.adImageUrl = e.target.result;
+								adImageArr.push(obj);
+								appendImage();
+								return true;
+							} else {
+								$('#adImage').attr('src', " ");
+								alert("Uploaded image has valid Height and Width.");
+								return false;
+							}
+						} else {
+								$('#adImage').value='';
+							alert("Select Position before Upload the Image .");
+						}
+					};
 				}
 				reader.readAsDataURL(adImage.files[0]);
 			}
 		})
-
 		$("#position").change(function() {
-			console.log($("#position").val(), $('option:selected', this).attr('width'), $('option:selected', this).attr('height'))
+			console.log($("#position").val(), $('option:selected', this).attr('width'), $('optionalion:selected', this).attr('height'))
 			var message = "Please select image with size: width-" + $('option:selected', this).attr('width') + ' height-' + $('option:selected', this).attr('height');
 			document.getElementById("alert-text").innerHTML = message;
 		});
@@ -193,7 +224,7 @@
 	});
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
-	<div class="gtc-container">
+	<div class="gtc-container"> 	
 		<div class="row">
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
