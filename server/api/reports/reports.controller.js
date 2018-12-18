@@ -78,8 +78,9 @@ export function topSellingCities(req, res) {
 			where: {},
 			attributes: ['city']
 		}],
-		attributes: [
-			[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales']
+		attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales'],
+			[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales'],
+			[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']
 		],
 		group: ['Product.city'],
 		order: [
@@ -121,8 +122,9 @@ export function topSellingCountries(req, res){
 				attributes: ['name'],
 			}]
 		}],
-		attributes: [
-			[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales']
+		attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales'],
+			[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales'],
+			[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']
 		],
 		group: ['Product.product_location'],
 		order: [
