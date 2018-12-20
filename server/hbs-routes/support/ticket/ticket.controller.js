@@ -56,6 +56,7 @@ export function viewTicket(req, res) {
 	var maxSize;
 
 	// End pagination
+	
 	var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 	var dropDownUrl = fullUrl.replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
 
@@ -77,6 +78,18 @@ export function viewTicket(req, res) {
 		     queryObj = {
 				user_id: user_id
 			}
+			if (req.query.status) {
+				queryURI['status'] = req.query.status;
+				queryObj['status'] = statusCode[req.query.status]
+			} else {
+				queryObj['status'] = {
+					'$ne': statusCode["DELETED"]
+				}
+			}
+			if(req.query.ticketNumber)
+			queryObj['id'] = {
+				like: '%' + req.query.ticketNumber + '%'
+			};
 			var field = "id";
 			var order = "desc";
 			var limit = null;

@@ -187,6 +187,8 @@ export function revenue(req, res) {
 		},
 		vendorRevenue: function(callback) {
 			req.query.vendorID = req.user.Vendor.id;
+			req.query.limit=limit;
+			req.query.offset=offset;
 			reportsService.adFeaturedRevenue(req, res)
 				.then((response) => {
 					return callback(null, response);
