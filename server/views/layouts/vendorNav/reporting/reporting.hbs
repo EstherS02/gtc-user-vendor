@@ -29,7 +29,8 @@
 		var to = $('#rep_to').val();
 		var Cfrom = $('#com_from').val();
 		var Cto = $('#com_to').val();
-		var Compare = $('#compare').val();
+		var Compare =$('#compare').is(":checked");
+		
 		location.href = "/store/reports?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
 	}
 
@@ -44,7 +45,7 @@
 			to = $('#rep_to').val(),
 			Cfrom = $('#com_from').val(),
 			Cto = $('#com_to').val(),
-			Compare = $('#compare').val();
+		    Compare =$('#compare').is(":checked");
 
 		var dates = [from, to, Cfrom, Cto];
 		dates.sort();
@@ -460,6 +461,7 @@
 														</p>
 													</div>
 												</div>
+												{{!-- {{{DisplayJSON topMarketPlace}}} --}}
 												<div class="col-md-6">
 													<div class="card chart_top_performing_height">
 														<div class="card-body chat_top_performing_padding">
