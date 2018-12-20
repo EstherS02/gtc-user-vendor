@@ -74,7 +74,7 @@ function getAllPerformance(queryObj, limit, offset) {
                     LEFT OUTER JOIN order_item ON orderVendor.order_id = order_item.order_id
                     LEFT OUTER JOIN product ON order_item.product_id = product.id
                 WHERE
-                    order_item.created_on between :from and :to`;
+                    order_item.created_on between :from and :to `;
                     if(queryObj.vendor_id>0){
                     queryString = queryString+` and product.vendor_id =`+queryObj.vendor_id;
                 }
@@ -99,77 +99,126 @@ function getAllPerformance(queryObj, limit, offset) {
         });
     });
 }
+//
+function getAllPerformanceApi(queryObj, limit, offset,attributes,groupBy,includeArr) {
+    let queryObject = {
+        item_created_on: {
+             $between: [queryObj.from, queryObj.to]
+        },
+        '$or': [{
+                    order_item_status: orderItemStatus['ORDER_INITIATED']
+                }, {
+                    order_item_status:orderItemStatus['CONFIRMED']
+                },{
+                    order_item_status: orderItemStatus['SHIPPED']
+                }, {
+                    order_item_status:orderItemStatus['DELIVERED']
+                },{
+                    order_item_status:orderItemStatus['COMPLETED']
+                }],
+        };
+        let includeArray = includeArr ? includeArr:[];
+    return new Promise((resolve, reject) => {
+
+    model['OrderItemOverview'].findAll({
+            raw: true,
+            where: queryObject,
+            attributes: attributes,
+            include:includeArray,
+            limit:limit,
+            offset:offset,
+            group: [groupBy],
+            order: [
+                [sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
+            ],
+        }).then(function(results) {
+            resolve(results);
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });
+}
+
+function getAllCountryPerformance(queryObj, limit, offset,attributes,groupBy,includeArr) {
+    let queryObject = {
+        created_on: {
+             $between: [queryObj.from, queryObj.to]
+        },
+        '$or': [{
+                    order_item_status: orderItemStatus['ORDER_INITIATED']
+                }, {
+                    order_item_status:orderItemStatus['CONFIRMED']
+                },{
+                    order_item_status: orderItemStatus['SHIPPED']
+                }, {
+                    order_item_status:orderItemStatus['DELIVERED']
+                },{
+                    order_item_status:orderItemStatus['COMPLETED']
+                }],
+        };
+        let includeArray = includeArr ? includeArr:[];
+    return new Promise((resolve, reject) => {
+
+    model['OrderItem'].findAll({
+            raw: true,
+            where: queryObject,
+            attributes:  ['order_item_status',[sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
+                        [sequelize.fn('sum', sequelize.col('quantity')), 'sales'],
+                        [sequelize.literal('(SUM(gtc_fees)+ SUM(plan_fees))'), 'gtc_fees']],
+            include:[{
+                model:model['Product'],
+                attributes:[],
+                include:[{
+                    model:model['Country'],
+                    attributes:['name']
+                }]
+            }],
+            limit:limit,
+            offset:offset,
+            group: ['Product.product_location'],
+            order: [
+                [sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
+            ],
+        }).then(function(results) {
+            resolve(results);
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });
+}
 
 function getAllVendorPerformance(queryObj, limit, offset) {
-     var queryResult = `SELECT
-    'OrderVendor'.'id',
-    'Vendor.id' AS 'Vendor_id',
-    'Vendor.vendor_name' AS 'vendor_name',
-    (SELECT 'plan_id' FROM 'vendor_plan' WHERE 'status' = 1 and 'Vendor'.'id' = 'vendor_plan.vendor_id' LIMIT 1 ) AS 'type',
-    SUM('Order->OrderItems.quantity') AS 'sales',
-    SUM('Order->OrderItems.final_price') AS 'vendor_fee',
-    SUM('Order->OrderItems.gtc_fees') AS 'gtc_fees'
-FROM
-    order_vendor AS OrderVendor
-LEFT OUTER JOIN(
-        \'order\' AS \'Order\'
-    INNER JOIN order_item AS 'Order->OrderItems'
-    ON
-        'Order.id' = 'Order->OrderItems.order_id'
-    LEFT OUTER JOIN product AS Order->OrderItems->Product
-    ON
-        'Order->OrderItems.product_id' = 'Order->OrderItems->Product.id'
-    )
-ON
-    'OrderVendor.order_id' = 'Order.id'
-LEFT OUTER JOIN 'vendor' AS 'Vendor'
-ON
-    'OrderVendor.vendor_id' = 'Vendor.id'
-WHERE
-    'Order->OrderItems->Product.vendor_id' =  'Vendor.id'
-GROUP BY
-    'OrderVendor.vendor_id'`;
-    // var queryResult = `SELECT orderVendor.vendor_id AS vendor_id,
-    //         vendor.vendor_name As vendor_name,
-    //         users.first_name As owner_name, 
-    //         ( SELECT plan_id FROM vendor_plan WHERE status = 1 and vendor.id = vendor_plan.vendor_id
-    //         LIMIT 1 ) AS type,
-    //         SUM(order_item.quantity) AS sales,
-    //         SUM(orderVendor.total_price) - SUM(orderVendor.gtc_fees) AS vendor_fee,
-    //         SUM(orderVendor.gtc_fees) AS gtc_fees
-    //         FROM
-    //             order_vendor as orderVendor
-    //             LEFT OUTER JOIN vendor ON orderVendor.vendor_id = vendor.id
-    //             LEFT OUTER JOIN users ON vendor.user_id = users.id
-    //             LEFT OUTER JOIN order_item ON orderVendor.order_id = order_item.order_id
-    //         GROUP BY
-    //             orderVendor.vendor_id
-    //         ORDER BY SUM(orderVendor.total_price) DESC`
 
-    var includeArray = [{
-            model:model['Vendor'],
-            include:[{
-                model:model['VendorPlan'],
-                attributes:['plan_id'],
-                where:{
-                    status:1
-                },
-                required:false,
-            },{
-                model:model['User'],
-                attributes:['first_name']
-            }]
-        },{
-            model:model['Order'],
-            include:[{
-                model:model['OrderItems']
-            }]
-        }];
+    var queryResult = `SELECT product.vendor_id AS vendor_id,
+            vendor.vendor_name As vendor_name,
+            users.first_name As owner_name, 
+            ( SELECT plan_id FROM vendor_plan WHERE status = 1 and vendor.id = vendor_plan.vendor_id
+            LIMIT 1 ) AS type,
+            SUM(order_item.quantity) AS sales,
+            SUM(order_item.final_price) AS vendor_fee,
+            SUM(order_item.gtc_fees) + SUM(order_item.plan_fees) AS gtc_fees
+            FROM
+                order_item
+                LEFT OUTER JOIN product ON order_item.product_id = product.id
+                LEFT OUTER JOIN vendor ON product.vendor_id = vendor.id
+                LEFT OUTER JOIN users ON vendor.user_id = users.id
+            WHERE
+                    order_item.created_on between :from and :to
+                    AND (order_item.order_item_status = 1 OR order_item.order_item_status = 2 OR order_item.order_item_status = 3
+                     OR order_item.order_item_status = 5 OR order_item.order_item_status = 12)
+            GROUP BY
+                product.vendor_id
+            ORDER BY SUM(order_item.final_price) DESC
+            LIMIT :limit OFFSET :offset`
+
+    
     return new Promise((resolve, reject) => {
         SequelizeInstance.query(queryResult, {
             replacements: {
-                // from: moment(queryObj.from).format("YYYY-MM-DD"),
-                // to: moment(queryObj.to).format("YYYY-MM-DD"),
+                from: moment(queryObj.from).format("YYYY-MM-DD"),
+                to: moment(queryObj.to).format("YYYY-MM-DD"),
                 limit: limit,
             	offset: offset
             },
@@ -178,12 +227,55 @@ GROUP BY
 			console.log("data::::", data)
             resolve(data);
         }).catch(function(err) {
-            console.log('getAllPerformance error==================================== ', err);
+            reject(err);
+        });
+    });
+}
+function getAllProductPerformance(queryObj, limit, offset) {
+
+    var queryResult = `SELECT product.vendor_id AS vendor_id,
+            product.product_name,
+            vendor.vendor_name As vendor_name,
+            users.first_name As owner_name, 
+            ( SELECT plan_id FROM vendor_plan WHERE status = 1 and vendor.id = vendor_plan.vendor_id
+            LIMIT 1 ) AS type,
+            SUM(order_item.quantity) AS sales,
+            SUM(order_item.final_price) AS vendor_fee,
+            SUM(order_item.gtc_fees) + SUM(order_item.plan_fees) AS gtc_fees
+            FROM
+                order_item
+                LEFT OUTER JOIN product ON order_item.product_id = product.id
+                LEFT OUTER JOIN vendor ON product.vendor_id = vendor.id
+                LEFT OUTER JOIN users ON vendor.user_id = users.id
+            WHERE
+                    order_item.created_on between :from and :to
+                    AND (order_item.order_item_status = 1 OR order_item.order_item_status = 2 OR order_item.order_item_status = 3
+                     OR order_item.order_item_status = 5 OR order_item.order_item_status = 12)
+            GROUP BY
+                product_id
+            ORDER BY SUM(order_item.final_price) DESC
+            LIMIT :limit OFFSET :offset`
+
+    
+    return new Promise((resolve, reject) => {
+        SequelizeInstance.query(queryResult, {
+            replacements: {
+                from: moment(queryObj.from).format("YYYY-MM-DD"),
+                to: moment(queryObj.to).format("YYYY-MM-DD"),
+                limit: limit,
+                offset: offset,
+            },
+            type: sequelize.QueryTypes.SELECT
+        }).then(data => {
+            console.log("data::::", data)
+            resolve(data);
+        }).catch(function(err) {
             reject(err);
         });
     });
 }
 
+//
 export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween) {
     return new Promise((resolve, reject) => {
 		var result = {}, Limit = 5, Offset = 0;
@@ -586,6 +678,131 @@ export function performanceChanges(queryObj, lhsBetween, rhsBetween, limit, offs
         });
     });
 }
+// getAllCategoryPerformance
+export function categoryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
+    const pastRange = _.assign({}, queryObj);
+    pastRange.from = lhsBetween[0];
+    pastRange.to = lhsBetween[1];
+    const currentRange = _.assign({}, queryObj);
+    currentRange.from = rhsBetween[0];
+    currentRange.to = rhsBetween[1];
+    var attribute = ['category_id','category_name','order_item_status',['marketplace_name','type'],[sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
+                        [sequelize.fn('sum', sequelize.col('quantity')), 'sales'],
+                        [sequelize.literal('(SUM(gtc_fees)+ SUM(plan_fees))'), 'gtc_fees']];
+    var groupBy = 'category_id';    
+
+    return new Promise((resolve, reject) => {
+        var result = {};
+        return getAllPerformanceApi(pastRange, limit, offset,attribute,groupBy).then(function(lhsResult) {
+
+            result.lhs_result = lhsResult;
+            return result;
+        }).then(function() {
+            if (queryObj.compare == 'true') {
+        return getAllPerformanceApi(pastRange, limit, offset,attribute,groupBy).then(function(rhsResult) {
+
+                    result.rhs_result = rhsResult;
+                    resolve(result);
+                });
+            } else {
+                resolve(result);
+            }
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });
+}
+export function marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
+    const pastRange = _.assign({}, queryObj);
+    pastRange.from = lhsBetween[0];
+    pastRange.to = lhsBetween[1];
+    const currentRange = _.assign({}, queryObj);
+    currentRange.from = rhsBetween[0];
+    currentRange.to = rhsBetween[1];
+    var attribute = ['marketplace_id',['marketplace_name','type'],'marketplace_type_id','marketplace_type_name','order_item_status',[sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
+                        [sequelize.fn('sum', sequelize.col('quantity')), 'sales'],
+                        [sequelize.literal('(SUM(gtc_fees)+ SUM(plan_fees))'), 'gtc_fees']];
+    var groupBy = 'marketplace_id';    
+
+    return new Promise((resolve, reject) => {
+        var result = {};
+        return getAllPerformanceApi(pastRange, limit, offset,attribute,groupBy).then(function(lhsResult) {
+
+            result.lhs_result = lhsResult;
+            return result;
+        }).then(function() {
+            if (queryObj.compare == 'true') {
+        return getAllPerformanceApi(pastRange, limit, offset,attribute,groupBy).then(function(rhsResult) {
+
+                    result.rhs_result = rhsResult;
+                    resolve(result);
+                });
+            } else {
+                resolve(result);
+            }
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });
+}
+export function productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
+   const pastRange = _.assign({}, queryObj);
+    pastRange.from = lhsBetween[0];
+    pastRange.to = lhsBetween[1];
+    const currentRange = _.assign({}, queryObj);
+    currentRange.from = rhsBetween[0];
+    currentRange.to = rhsBetween[1];
+    var groupBy = "product_id";
+    return new Promise((resolve, reject) => {
+        var result = {};
+        return getAllProductPerformance(pastRange, limit, offset,groupBy).then(function(lhsResult) {
+            result.lhs_result = lhsResult;
+            return result;
+        }).then(function() {
+            if (queryObj.compare == 'true') {
+                return getAllProductPerformance(currentRange, limit, offset,groupBy).then(function(rhsResult) {
+                    result.rhs_result = rhsResult;
+                    resolve(result);
+                });
+            } else {
+                resolve(result);
+            }
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });
+}
+export function countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset){
+ const pastRange = _.assign({}, queryObj);
+    pastRange.from = lhsBetween[0];
+    pastRange.to = lhsBetween[1];
+    const currentRange = _.assign({}, queryObj);
+    currentRange.from = rhsBetween[0];
+    currentRange.to = rhsBetween[1];
+
+    return new Promise((resolve, reject) => {
+        var result = {};
+        return getAllCountryPerformance(pastRange, limit, offset).then(function(lhsResult) {
+            result.lhs_result = lhsResult;
+            return result;
+        }).then(function() {
+            if (queryObj.compare == 'true') {
+        return getAllCountryPerformance(pastRange, limit, offset).then(function(rhsResult) {
+                    result.rhs_result = rhsResult;
+                    resolve(result);
+                });
+            } else {
+                resolve(result);
+            }
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });   
+}
 
 export function vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
     const pastRange = _.assign({}, queryObj);
@@ -594,7 +811,6 @@ export function vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit
     const currentRange = _.assign({}, queryObj);
     currentRange.from = rhsBetween[0];
     currentRange.to = rhsBetween[1];
-
     return new Promise((resolve, reject) => {
         var result = {};
         return getAllVendorPerformance(pastRange, limit, offset).then(function(lhsResult) {
