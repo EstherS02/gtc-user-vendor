@@ -104,15 +104,12 @@ export function topSellingCountries(req, res){
 
 	var queryObj = {};
 	var result = {}, Limit = 5;
-
 	if(req.query.limit)
 		Limit = parseInt(req.query.limit);
-	
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
-
 	model['OrderItem'].findAll({
-		raw: true,
+		// raw: true,
 		include:[{
 			model: model['Product'],
 			where:{},
@@ -288,10 +285,10 @@ export function topMarketPlace(req, res) {
 	var lhsBetween = [];
 	var rhsBetween = [];	
 
-	// if(req.user.role == 1){
-	// 	orderItemQueryObj.limit = parseInt(req.query.limit);
-	// 	orderItemQueryObj.offset = parseInt(req.query.offset);
-	// }
+	if(req.user.role == 1){
+		orderItemQueryObj.limit = parseInt(req.query.limit);
+		orderItemQueryObj.offset = parseInt(req.query.offset);
+	}
 
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
@@ -458,29 +455,7 @@ export function vendorPerformance(req, res){
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	// var productQueryObj = {};
-	// model['OrderItem'].findAll({
-	// 	include:[{
-	// 		model:model['Product'],
-	// 		where :productQueryObj,
-	// 		include:[{
-	// 			model:model['Vendor'],
-	// 			include:[{
-	// 				model:model['User'],
-	// 			},{
-	// 				model:model['VendorPlan']
-	// 			}]
-	// 		}]
-	// 	}],
-	// 	group:['orderItem.Products.Vendor.id','desc']
-	// }).then((results)=>{
-	// 	return res.status(200).send(results);
-	// }).catch((err)=>{
-	// 	console.log('compareVendorPerformance err', err);
-	// 	return res.status(500).send(err);
-	// })
-	ReportService.vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-		console.log("----------------------------------------------")
+		ReportService.vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
 		
 		return res.status(200).send(results);
 	}).catch((err) => {
@@ -488,18 +463,147 @@ export function vendorPerformance(req, res){
 		return res.status(500).send(err);
 	});
 }
+export function productPerformanceChanges(req, res){
+	var queryObj = {};
+	var lhsBetween = [];
+	var rhsBetween = [];
+	var limit, offset, compare;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	else
+		queryObj.vendor_id = null;
+	if (req.query.compare) {
+		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+	}
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+
+	ReportService.productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+
+		return res.status(200).send(results);
+	}).catch((err) => {
+		console.log('comparePerformance err', err);
+		return res.status(500).send(err);
+	});
+}
+export function topBuyers(req,res){
+	return res.status(200);
+}
 export function compareCategoryPerformance(req, res){
-	
+	var queryObj = {};
+	var lhsBetween = [];
+	var rhsBetween = [];
+	var limit, offset, compare;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	else
+		queryObj.vendor_id = null;
+	if (req.query.compare) {
+		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+	}
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+
+	ReportService.categoryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+
+		return res.status(200).send(results);
+	}).catch((err) => {
+		console.log('comparePerformance err', err);
+		return res.status(500).send(err);
+	});
 }
 export function compareMarketPlacePerformance(req, res){
+		var queryObj = {};
+	var lhsBetween = [];
+	var rhsBetween = [];
+	var limit, offset, compare;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	else
+		queryObj.vendor_id = null;
+	if (req.query.compare) {
+		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+	}
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+
+	ReportService.marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+
+		return res.status(200).send(results);
+	}).catch((err) => {
+		console.log('comparePerformance err', err);
+		return res.status(500).send(err);
+	});
 }
 export function compareCityPerformance(req, res){
 	
 }
 export function compareCountriesPerformance(req, res){
+	var queryObj = {};
+	var lhsBetween = [];
+	var rhsBetween = [];
+	var limit, offset, compare;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	else
+		queryObj.vendor_id = null;
+	if (req.query.compare) {
+		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+	}
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+
+	ReportService.countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+
+		return res.status(200).send(results);
+	}).catch((err) => {
+		console.log('comparePerformance err', err);
+		return res.status(500).send(err);
+	});
 }
 export function compareUserPerformance(req, res){
 	
