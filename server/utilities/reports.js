@@ -163,9 +163,10 @@ function getAllCountryPerformance(queryObj, limit, offset,attributes,groupBy,inc
     model['OrderItem'].findAll({
             raw: true,
             where: queryObject,
-            attributes:  ['order_item_status',[sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
+            attributes:  [[sequelize.fn('sum', sequelize.col('OrderItem.price')), 'total_fees'],
+                        [sequelize.fn('sum', sequelize.col('final_price')), 'vendor_fees'],
                         [sequelize.fn('sum', sequelize.col('quantity')), 'sales'],
-                        [sequelize.literal('(SUM(gtc_fees)+ SUM(plan_fees))'), 'gtc_fees']],
+                        [sequelize.literal('(SUM(gtc_fees)+  SUM(plan_fees))'), 'gtc_fees']],
             include:[{
                 model:model['Product'],
                 attributes:[],
@@ -188,6 +189,51 @@ function getAllCountryPerformance(queryObj, limit, offset,attributes,groupBy,inc
         });
     });
 }
+function getAllCityPerformance(queryObj, limit, offset,attributes,groupBy,includeArr) {
+    let queryObject = {
+        created_on: {
+             $between: [queryObj.from, queryObj.to]
+        },
+        '$or': [{
+                    order_item_status: orderItemStatus['ORDER_INITIATED']
+                }, {
+                    order_item_status:orderItemStatus['CONFIRMED']
+                },{
+                    order_item_status: orderItemStatus['SHIPPED']
+                }, {
+                    order_item_status:orderItemStatus['DELIVERED']
+                },{
+                    order_item_status:orderItemStatus['COMPLETED']
+                }],
+        };
+        let includeArray = includeArr ? includeArr:[];
+    return new Promise((resolve, reject) => {
+
+    model['OrderItem'].findAll({
+            raw: true,
+            where: queryObject,
+            attributes:  [[sequelize.fn('sum', sequelize.col('OrderItem.price')), 'total_fees'],
+                        [sequelize.fn('sum', sequelize.col('final_price')), 'vendor_fees'],
+                        [sequelize.fn('sum', sequelize.col('quantity')), 'sales'],
+                        [sequelize.literal('(SUM(gtc_fees)+ SUM(plan_fees))'), 'gtc_fees']],
+            include:[{
+                model:model['Product'],
+                attributes:['city']
+            }],
+            limit:limit,
+            offset:offset,
+            group: ['Product.city'],
+            order: [
+                [sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
+            ],
+        }).then(function(results) {
+            resolve(results);
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });
+}
 
 function getAllVendorPerformance(queryObj, limit, offset) {
 
@@ -197,7 +243,8 @@ function getAllVendorPerformance(queryObj, limit, offset) {
             ( SELECT plan_id FROM vendor_plan WHERE status = 1 and vendor.id = vendor_plan.vendor_id
             LIMIT 1 ) AS type,
             SUM(order_item.quantity) AS sales,
-            SUM(order_item.final_price) AS vendor_fee,
+            SUM(order_item.price) AS total_fees,
+            SUM(order_item.final_price) AS vendor_fees,
             SUM(order_item.gtc_fees) + SUM(order_item.plan_fees) AS gtc_fees
             FROM
                 order_item
@@ -235,16 +282,19 @@ function getAllProductPerformance(queryObj, limit, offset) {
 
     var queryResult = `SELECT product.vendor_id AS vendor_id,
             product.product_name,
+            marketplace.name AS marketplace_name,
             vendor.vendor_name As vendor_name,
             users.first_name As owner_name, 
             ( SELECT plan_id FROM vendor_plan WHERE status = 1 and vendor.id = vendor_plan.vendor_id
             LIMIT 1 ) AS type,
             SUM(order_item.quantity) AS sales,
-            SUM(order_item.final_price) AS vendor_fee,
+            SUM(order_item.price) AS total_fees,
+            SUM(order_item.final_price) AS vendor_fees,
             SUM(order_item.gtc_fees) + SUM(order_item.plan_fees) AS gtc_fees
             FROM
                 order_item
                 LEFT OUTER JOIN product ON order_item.product_id = product.id
+                LEFT OUTER JOIN marketplace ON product.marketplace_id = marketplace.id
                 LEFT OUTER JOIN vendor ON product.vendor_id = vendor.id
                 LEFT OUTER JOIN users ON vendor.user_id = users.id
             WHERE
@@ -686,7 +736,8 @@ export function categoryPerformanceChanges(queryObj, lhsBetween, rhsBetween, lim
     const currentRange = _.assign({}, queryObj);
     currentRange.from = rhsBetween[0];
     currentRange.to = rhsBetween[1];
-    var attribute = ['category_id','category_name','order_item_status',['marketplace_name','type'],[sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
+    var attribute = ['category_id','category_name',[sequelize.fn('sum', sequelize.col('price')), 'total_fees'],
+                        [sequelize.fn('sum', sequelize.col('final_price')), 'vendor_fees'],
                         [sequelize.fn('sum', sequelize.col('quantity')), 'sales'],
                         [sequelize.literal('(SUM(gtc_fees)+ SUM(plan_fees))'), 'gtc_fees']];
     var groupBy = 'category_id';    
@@ -720,7 +771,8 @@ export function marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, 
     const currentRange = _.assign({}, queryObj);
     currentRange.from = rhsBetween[0];
     currentRange.to = rhsBetween[1];
-    var attribute = ['marketplace_id',['marketplace_name','type'],'marketplace_type_id','marketplace_type_name','order_item_status',[sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
+    var attribute = ['marketplace_id','marketplace_name',[sequelize.fn('sum', sequelize.col('price')), 'total_fees'],
+                        [sequelize.fn('sum', sequelize.col('final_price')), 'vendor_fees'],
                         [sequelize.fn('sum', sequelize.col('quantity')), 'sales'],
                         [sequelize.literal('(SUM(gtc_fees)+ SUM(plan_fees))'), 'gtc_fees']];
     var groupBy = 'marketplace_id';    
@@ -790,7 +842,35 @@ export function countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limi
             return result;
         }).then(function() {
             if (queryObj.compare == 'true') {
-        return getAllCountryPerformance(pastRange, limit, offset).then(function(rhsResult) {
+        return getAllCountryPerformance(currentRange, limit, offset).then(function(rhsResult) {
+                    result.rhs_result = rhsResult;
+                    resolve(result);
+                });
+            } else {
+                resolve(result);
+            }
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });   
+}
+export function cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset){
+ const pastRange = _.assign({}, queryObj);
+    pastRange.from = lhsBetween[0];
+    pastRange.to = lhsBetween[1];
+    const currentRange = _.assign({}, queryObj);
+    currentRange.from = rhsBetween[0];
+    currentRange.to = rhsBetween[1];
+
+    return new Promise((resolve, reject) => {
+        var result = {};
+        return getAllCityPerformance(pastRange, limit, offset).then(function(lhsResult) {
+            result.lhs_result = lhsResult;
+            return result;
+        }).then(function() {
+            if (queryObj.compare == 'true') {
+        return getAllCityPerformance(currentRange, limit, offset).then(function(rhsResult) {
                     result.rhs_result = rhsResult;
                     resolve(result);
                 });

@@ -569,7 +569,38 @@ export function compareMarketPlacePerformance(req, res){
 	});
 }
 export function compareCityPerformance(req, res){
-	
+	var queryObj = {};
+	var lhsBetween = [];
+	var rhsBetween = [];
+	var limit, offset, compare;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	else
+		queryObj.vendor_id = null;
+	if (req.query.compare) {
+		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+	}
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+
+	ReportService.cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+
+		return res.status(200).send(results);
+	}).catch((err) => {
+		console.log('comparePerformance err', err);
+		return res.status(500).send(err);
+	});
 }
 export function compareCountriesPerformance(req, res){
 	var queryObj = {};
