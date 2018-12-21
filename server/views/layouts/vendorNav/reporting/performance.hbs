@@ -23,15 +23,7 @@
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var params = {{{ DisplayJSON queryURIString }}};
-	function onSearch() {
-		var from = $('#lhs_from').val();
-		var to = $('#lhs_to').val();
-		var Cfrom = $('#rhs_from').val();
-		var Cto = $('#rhs_to').val();
-		var Compare = $('#compare').val();
 
-		location.href = "/store/performance?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
-	}
 	function downloadCSV(args) {
 		$.ajax({
 			type: 'POST',
@@ -74,8 +66,50 @@
 		return urlParams;
 	}
 
-</script> 
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+	function onSearch() {
+		var from = $('#lhs_from').val();
+		var to = $('#lhs_to').val();
+		var Cfrom = $('#rhs_from').val();
+		var Cto = $('#rhs_to').val();
+		Compare = $('#compare').is(":checked");
+
+		location.href = "/store/performance?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
+	}
+
+	$(document).ready(function() {
+		var lhsData = [],
+			rhsData = [];
+
+		var from = $('#lhs_from').val();
+		var to = $('#lhs_to').val();
+		var Cfrom = $('#rhs_from').val();
+		var Cto = $('#rhs_to').val();
+			Compare = $('#compare').is(":checked");
+
+
+		var dates = [from, to, Cfrom, Cto];
+		dates.sort();
+
+		var start = dates[0],
+			end = new Date(dates[dates.length - 1]),
+			currentDate = new Date(start),
+			between = [];
+
+		while (currentDate <= end) {
+			between.push($.datepicker.formatDate('M dd', new Date(currentDate)));
+			currentDate.setDate(currentDate.getDate() + 1);
+		}
+
+
+		$.ajax({
+			type: "GET",
+			url: "/api/reports/performance?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare,
+			success: function(data) {
+				console.log("performance data------------------------",data)
+			}
+		});
+	});
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -133,10 +167,11 @@
 											</div>
 
 											<div class="form-group mgT-5">
-												<div class="customCheckbox">
-													<input type="checkbox" onclick="selectAll(this);" id="compare" class="customCheckboxInput" checked>
-													<label class="checkbox-b" for="inputTerms"></label>
-												</div>
+												{{!-- <div class="customCheckbox"> --}}
+													{{!-- <input type="checkbox" onclick="selectAll(this);" id="compare" class="customCheckboxInput" checked> --}}
+													<input id="compare" type="checkbox" value="true" class="check_report1" checked="checked">
+													{{!-- <label class="checkbox-b" for="inputTerms"></label> --}}
+												{{!-- </div> --}}
 
 											</div>
 											<div class="form-group">
