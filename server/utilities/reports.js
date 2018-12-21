@@ -163,9 +163,10 @@ function getAllCountryPerformance(queryObj, limit, offset,attributes,groupBy,inc
     model['OrderItem'].findAll({
             raw: true,
             where: queryObject,
-            attributes:  ['order_item_status',[sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
+            attributes:  [[sequelize.fn('sum', sequelize.col('OrderItem.price')), 'total_fees'],
+                        [sequelize.fn('sum', sequelize.col('final_price')), 'vendor_fees'],
                         [sequelize.fn('sum', sequelize.col('quantity')), 'sales'],
-                        [sequelize.literal('(SUM(gtc_fees)+ SUM(plan_fees))'), 'gtc_fees']],
+                        [sequelize.literal('(SUM(gtc_fees)+  SUM(plan_fees))'), 'gtc_fees']],
             include:[{
                 model:model['Product'],
                 attributes:[],
@@ -211,7 +212,8 @@ function getAllCityPerformance(queryObj, limit, offset,attributes,groupBy,includ
     model['OrderItem'].findAll({
             raw: true,
             where: queryObject,
-            attributes:  ['order_item_status',[sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
+            attributes:  [[sequelize.fn('sum', sequelize.col('OrderItem.price')), 'total_fees'],
+                        [sequelize.fn('sum', sequelize.col('final_price')), 'vendor_fees'],
                         [sequelize.fn('sum', sequelize.col('quantity')), 'sales'],
                         [sequelize.literal('(SUM(gtc_fees)+ SUM(plan_fees))'), 'gtc_fees']],
             include:[{
