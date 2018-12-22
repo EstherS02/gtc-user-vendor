@@ -24,6 +24,7 @@
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var params = {{{ DisplayJSON queryURIString }}};
 
+	var topCategory;
 	function downloadCSV(args) {
 		$.ajax({
 			type: 'POST',
@@ -73,42 +74,20 @@
 		var Cto = $('#rhs_to').val();
 		Compare = $('#compare').is(":checked");
 
-		location.href = "/store/performance?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
-	}
-
-	$(document).ready(function() {
-		var lhsData = [],
-			rhsData = [];
-
-		var from = $('#lhs_from').val();
-		var to = $('#lhs_to').val();
-		var Cfrom = $('#rhs_from').val();
-		var Cto = $('#rhs_to').val();
-			Compare = $('#compare').is(":checked");
-
-
-		var dates = [from, to, Cfrom, Cto];
-		dates.sort();
-
-		var start = dates[0],
-			end = new Date(dates[dates.length - 1]),
-			currentDate = new Date(start),
-			between = [];
-
-		while (currentDate <= end) {
-			between.push($.datepicker.formatDate('M dd', new Date(currentDate)));
-			currentDate.setDate(currentDate.getDate() + 1);
+		if ($("#inputTop").val() == 1) {
+			console.log("top products")
+			topCategory = "products";
+		} else if ($("#inputTop").val() == 2) {
+			console.log("top marketplace")
+			topCategory = "marketplace"
+		} else if ($("#inputTop").val() == 3) {
+			console.log("top city")
+			topCategory = "city"
 		}
 
+		location.href = "/store/performance?top=" + topCategory + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
+	}
 
-		$.ajax({
-			type: "GET",
-			url: "/api/reports/performance?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare,
-			success: function(data) {
-				console.log("performance data------------------------",data)
-			}
-		});
-	});
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -121,7 +100,7 @@
 					<div class="ibox">
 						<div class="ibox-content">
 							<div class="ibox-title">
-								<h2>Report Performance</h2>
+								<h2>Report Performance{{selectedTopCategory}}</h2>
 							</div>
 							<div class="hr-line"></div>
 							<div class="content-body">
@@ -130,11 +109,11 @@
 									<div class="col-md-12">
 										<form class="form-inline pull-left m-t-md">
 											<div class="form-group">
-												<label class="label-control">Date Range </label>
+												<label class="label-control" style="padding: 5px;">Date Range </label>
 											</div>
 											<div class="form-group">
 												<div class="input-group mgT-5">
-													<input id="lhs_from" style="width:89px;height: 33px;" type="text" class="custom-form-control date_range_picker no-padding"
+													<input id="lhs_from" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
 													 value="{{queryURI.lhs_from}}" placeholder="MM/DD/YYYY" aria-label="lhs_fromRange" aria-describedby="lhs_fromRange">
 													<div class="input-group-append cursor-pointer">
 														<span class="input-group-text pad-3" id="lhs_fromRange">
@@ -148,7 +127,7 @@
 											</div>
 											<div class="form-group">
 												<div class="input-group mgT-5">
-													<input id="lhs_to" style="width:89px;height: 33px;" type="text" class="custom-form-control date_range_picker no-padding"
+													<input id="lhs_to" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
 													 value="{{queryURI.lhs_to}}" placeholder="MM/DD/YYYY" aria-label="lhs_toRange" aria-describedby="lhs_toRange">
 													<div class="input-group-append cursor-pointer">
 														<span class="input-group-text pad-3" id="lhs_toRange">
@@ -159,7 +138,7 @@
 											</div>
 											<div class="form-group mgT-5">
 												<div class="select-container">
-													<select id="inputDateRange" style="width:100px;padding:3px;" class="form-control-customized form-control-sm custom-dropdown"
+													<select id="inputDateRange" style="width:100px;padding:3px;height: 25px;" class="form-control-customized form-control-sm custom-dropdown"
 													 name="countyr">
 														<option value="0">LAST 30 DAY</option>
 													</select>
@@ -167,11 +146,10 @@
 											</div>
 
 											<div class="form-group mgT-5">
-												{{!-- <div class="customCheckbox"> --}}
-													{{!-- <input type="checkbox" onclick="selectAll(this);" id="compare" class="customCheckboxInput" checked> --}}
-													<input id="compare" type="checkbox" value="true" class="check_report1" checked="checked">
-													{{!-- <label class="checkbox-b" for="inputTerms"></label> --}}
-												{{!-- </div> --}}
+												<div class="customCheckbox" style="margin-left: 30px;">
+													<input type="checkbox" checked='checked' id="compare" value="true" class="customCheckboxInput">
+													<label class="checkbox-b" for="compare"></label>
+												</div>
 
 											</div>
 											<div class="form-group">
@@ -179,7 +157,7 @@
 											</div>
 											<div class="form-group">
 												<div class="input-group mgT-5">
-													<input id="rhs_from" style="width:89px;height: 33px;" type="text" class="custom-form-control date_range_picker no-padding"
+													<input id="rhs_from" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
 													 value="{{queryURI.lhs_from}}" placeholder="MM/DD/YYYY" aria-label="rhs_fromRange" aria-describedby="rhs_fromRange">
 													<div class="input-group-append cursor-pointer">
 														<span class="input-group-text pad-3" id="rhs_fromRange">
@@ -193,7 +171,7 @@
 											</div>
 											<div class="form-group">
 												<div class="input-group mgT-5">
-													<input id="rhs_to" style="width:89px;height: 33px;" type="text" class="custom-form-control date_range_picker no-padding"
+													<input id="rhs_to" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
 													 value="{{queryURI.rhs_to}}" placeholder="MM/DD/YYYY" aria-label="rhs_toRange" aria-describedby="rhs_toRange">
 													<div class="input-group-append cursor-pointer">
 														<span class="input-group-text pad-3" id="rhs_toRange">
@@ -217,117 +195,21 @@
 										</form>
 									</div>
 								</div>
-								{{!-- ended --}}
-								<br>{{!-- old code --}}
-								{{!-- <div class="row">
-								<div class="col-sm-6">
-									<div class="row">
-										<div class="col-sm-0">
-											<p class="report_date-range" style="font-size: 12px;margin-left: 13px;">Date Range</p>
-										</div>
-										<div class="col-sm-3">
-											<div class="input-group" style="width:103px">
-												<input class="form-control social_input" type="text" id="lhs_from" aria-label="Username" value="{{queryURI.lhs_from}}" placeholder="MM/DD/YYYY"
-												 aria-describedby="basic-addon2" id="datepicker3" autocomplete="off">
-												<div class="input-group-prepend">
-													<span class="input-group-text calender_face_1" id="basic-addon2">
-														<img class="calendar-icon" src="../../img/calendar.png">
-													</span>
-												</div>
-											</div>
-										</div>
-										<div class="col-sm-0">
-												<p class="report_date-range" style=" font-size: 12px;margin-left: 13px;"> to</p>
-										</div>
-										<div class="col-sm-3">
-											<div class="input-group" style="width:103px">
-												<input type="text" class="form-control social_input" id="lhs_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
-												 value="{{queryURI.lhs_to}}" aria-describedby="basic-addon2" id="datepicker4" autocomplete="off">
-												<div class="input-group-prepend">
-													<span class="input-group-text calender_face_1" id="basic-addon2">
-														<img class="calendar-icon" src="../../img/calendar.png">
-													</span>
-												</div>
-											</div>
-										</div>
-										<div class="col-sm-0">
-											<div class="form-group mb-2">
-												<div class="select-container">
-													<select class="form-control-customized form-control-sm" name="dateSelect">
-														<option disabled selected>LAST 30 DAY</option>
-													</select>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							
-								<div class="col-sm-4" style="padding:0px;">
-									<div class="row">
-										<div class="col-md-0">
-											<input id="compare" type="checkbox" value="{{queryURI.compare}}" style=" font-size: 12px;margin-left: 13px;" checked>
-											<p class="report_date-range1">Compare to</p>
-										</div>
-										<div class="col-sm-3" style="padding: 2px 0px 0px 0px;">
-											<div class="input-group" style="width:103px">
-												<input type="text" class="form-control social_input" id="rhs_from" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
-												 value="{{queryURI.rhs_from}}" aria-describedby="basic-addon2" id="datepicker5" autocomplete="off">
-												<div class="input-group-prepend">
-													<span class="input-group-text calender_face_1" id="basic-addon2">
-														<img class="calendar-icon" src="../../img/calendar.png">
-													</span>
-												</div>
-											</div>
-										</div>
-									
-										<div class="col-md-1 common_padding1">
-											<p style="padding: 3px 17px; font-size: 12px;"> to</p>
-										</div>
-										<div class="col-sm-3" style="padding: 2px">
-											<div class="input-group" style="width:103px">
-												<input type="text" class="form-control social_input" id="rhs_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
-												 value="{{queryURI.rhs_to}}" aria-describedby="basic-addon2" id="datepicker6" autocomplete="off">
-												<div class="input-group-prepend">
-													<span class="input-group-text calender_face_1" id="basic-addon2">
-														<img class="calendar-icon" src="../../img/calendar.png">
-													</span>
-												</div>
-									
-									
-											</div>
-										</div>
-										<div class="col-md-1">
-											<button class="update-btn1" style="margin-left: 22px;background-color: green;
-																    color: #fff" onclick="onSearch()">UPDATE</button>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-2" style="left: 20px;">
-									
-									<div class="form-group mx-sm-3 mb-2">
-										<button class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button> 
-										<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
-										
-									</div>
-								</div>
-							</div> --}}
-								{{!-- old code --}}
-								{{!-- old code second row --}}
-								<div class="row">
+								<br>
+								<div class="row" style="padding: 5px;">
 									<div class="col-md-2">
-										<p style="font-size:13px">Select a metric</p>
+										<p style="font-size:13px;margin-top:3px">Select a metric</p>
 									</div>
 
 									<div class="col-md-7">
 
-										<div class="form-group" style="width:273px;margin-left:-63px">
+										<div class="form-group" style="width:273px;margin-left:-63px;">
 
 											<div class="select-container">
-												{{!-- <select class="form-control-customized form-control-sm" name="dateSelect">
-													<option disabled selected>TOP PERFORMING PRODUCTS</option>
-												</select> --}}
-												<select id="inputDateRange" class="form-control-customized form-control-sm custom-dropdown" name="countyr">
-													<option value="0">TOP PERFORMING PRODUCTS</option>
+												<select id="inputTop" style="height:25px;" onchange="onSearch()" class="form-control-customized form-control-sm custom-dropdown" name="countyr">
+													<option value="1" {{#ifCond queryURI.top "==" 'products'}} selected="true" {{/ifCond}}>TOP PERFORMING PRODUCTS</option>
+													<option value="2" {{#ifCond queryURI.top "==" 'marketplace'}} selected="true" {{/ifCond}}>TOP PERFORMING MARKETPLACES</option>
+													<option value="3" {{#ifCond queryURI.top "==" 'city'}} selected="true" {{/ifCond}}>TOP PERFORMING CITIES</option>
 												</select>
 											</div>
 										</div>
@@ -335,12 +217,6 @@
 									</div>
 
 									<div class="col-md-3 float-right" style="padding-left: 52px;">
-										{{!-- <div class="input-group">
-										<input type="text" class="vend_edit_lists_searchstyle" placeholder="Search History">
-										<span class="promo_code_text_span">
-											<i class="fas fa-search"></i>
-										</span>
-									</div> --}}
 										<div class="form-group">
 											<div class="input-group gtc-rounded">
 												<input type="text" placeholder="Search Products#" class="form-control form-control-sm">
@@ -352,11 +228,8 @@
 
 									</div>
 								</div>
-								{{!-- old code second row --}}
-
 								<div class="row">
 									<div class="col-md-6">
-										{{!-- <p class="vend_edit_lists_pstyle">Top 25 Shown</p> --}}
 									</div>
 									<div class="col-md-6">
 										<p class="vend_edit_lists_pstyle float-right">Entries per page:
@@ -367,6 +240,7 @@
 										</p>
 									</div>
 								</div>
+								{{#ifCond queryURI.top "==" "products"}}
 								<div class="row">
 									<table class="table table-hover">
 										<thead>
@@ -392,26 +266,72 @@
 													</td>
 													<td>{{this.marketplace_name}}</td>
 													{{compareSalePerformance this @root.performance.rhs_result}}
-													<!-- <td>{{currency this.total_sales '$'}}
-												<span class="text_green_color">+ 100</span>
-												<span class="text_grey_color">vs $98 (+2.3 %)</span>
-											</td>
-											<td>{{currency this.vendor_fee '$'}}
-												<span class="text_green_color">+ $11,000</span>
-												<span class="text_grey_color">vs $9,082 (+12.3 %)</span>
-											</td>
-											<td>{{currency this.gtc_fees '$'}}
-												<span class="text_green_color">+ $11,000</span>
-												<span class="text_grey_color">vs $9,082 (+12.3 %)</span>
-											</td> -->
 												</tr>
 											{{/each}}
 										</tbody>
 									</table>
 								</div>
+								{{/ifCond}}
+								{{#ifCond queryURI.top "==" "marketplace"}}
+								<div class="row">
+									<table class="table table-hover">
+										<thead>
+											<tr>
+												<th>Marketplace</th>
+												<th>Amount</th>
+												<th>Sales</th>
+												<th>Gtc Fees</th>
+											</tr>
+										</thead>
+										<tbody>
+											{{#each topCategory.rows}}
+												<tr>
+													<td>
+														{{this.marketplace_name}}
+													</td>
+													<td>
+														{{this.amount}}
+													</td>
+													<td>
+														{{this.sales}}
+													</td>
+													<td>
+														{{this.gtc_fees}}
+													</td>
+												</tr>
+											{{/each}}
+										</tbody>
+									</table>
+								</div>
+								{{/ifCond}}
+								{{#ifCond queryURI.top "==" "city"}}
+								<div class="row">
+									<table class="table table-hover">
+										<thead>
+											<tr>
+												<th>City</th>
+												<th>Sales</th>
+												<th>Total Sales</th>
+												<th>Gtc Fees</th>
+											</tr>
+										</thead>
+										<tbody>
+											{{#each topCategory}}
+												<tr>
+													<td>
+														{{this.[Product.city]}}
+													</td>
+													<td>{{this.sales}}</td>
+													<td>{{this.total_sales}}</td>
+													<td>{{this.gtc_fees}}</td>
+												</tr>
+											{{/each}}
+										</tbody>
+									</table>
+								</div>
+								{{/ifCond}}
 								<div class="row">
 									<div class="col-md-6">
-										{{!-- <p class="vend_edit_lists_pstyle">Top 25 Shown</p> --}}
 									</div>
 									<div class="col-md-6">
 										<p class="vend_edit_lists_pstyle float-right">Entries per page:

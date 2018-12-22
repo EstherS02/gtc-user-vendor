@@ -25,6 +25,9 @@ export function performance(req, res) {
 	var rhsBetween = [];
 	var queryURI = {};
 
+	var selectedTopCatogory;
+
+	selectedTopCatogory = req.query.top ? req.query.top : "products";
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	field = 'id';
@@ -54,21 +57,22 @@ export function performance(req, res) {
 	queryURI['rhs_from'] = rhsBetween[0];
 	queryURI['rhs_to'] = rhsBetween[1];
 	queryURI['compare'] = 'true';
+	queryURI['top'] = selectedTopCatogory;
 
 
 	async.series({
-			cartInfo: function(callback) {
-				if (LoggedInUser.id) {
-					cartService.cartCalculation(LoggedInUser.id, req, res)
-						.then((cartResult) => {
-							return callback(null, cartResult);
-						}).catch((error) => {
-							return callback(error);
-						});
-				} else {
-					return callback(null);
-				}
-			},
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req, res)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
+				return callback(null);
+			}
+		},
 		/*products: function(callback) {
 				queryObj['vendor_id'] = LoggedInUser.Vendor.id;
 				service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -80,54 +84,88 @@ export function performance(req, res) {
 						return callback(null);
 					});
 			},*/
-			categories: function(callback) {
-				var includeArr = [];
-				const categoryOffset = 0;
-				const categoryLimit = null;
-				const categoryField = "id";
-				const categoryOrder = "asc";
-				const categoryQueryObj = {};
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
-				categoryQueryObj['status'] = statusCode["ACTIVE"];
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
-				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-					.then(function(category) {
-						var categories = category.rows;
-						bottomCategory['left'] = categories.slice(0, 8);
-						bottomCategory['right'] = categories.slice(8, 16);
-						return callback(null, category.rows);
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
-			},
-			performance: function(callback) {
-				let performanceQueryObj = {};
-				if (req.user.role == 2)
-					performanceQueryObj.vendor_id = req.user.Vendor.id;
-
-				if (req.query.compare) {
-					performanceQueryObj.compare = req.query.compare;
-					queryURI['compare'] = req.query.compare;
-				}
-
-				ReportService.performanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-					console.log("+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''",results)
-					return callback(null, results);
-				}).catch((err) => {
-					console.log('performance err', err);
-					return callback(err);
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
 				});
-			},
-			unreadCounts: function(callback) {
-				notifictionService.notificationCounts(LoggedInUser.id)
-					.then(function(counts) {
-						return callback(null, counts);
+		},
+		performance: function(callback) {
+			let performanceQueryObj = {};
+			if (req.user.role == 2)
+				performanceQueryObj.vendor_id = req.user.Vendor.id;
+
+			if (req.query.compare) {
+				performanceQueryObj.compare = req.query.compare;
+				queryURI['compare'] = req.query.compare;
+			}
+
+			ReportService.performanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+				return callback(null, results);
+			}).catch((err) => {
+				console.log('performance err', err);
+				return callback(err);
+			});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		},
+		topCategory: function(callback) {
+			let performanceQueryObj = {};
+			if (req.user.role == 2)
+				performanceQueryObj.vendor_id = req.user.Vendor.id;
+
+			if (req.query.top == "products") {
+				ReportService.topPerformingProducts(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+					.then(function(results) {
+						return callback(null, results);
+					}).catch(function(error) {
+						return callback(error);
+					});
+			} else if (req.query.top == "marketplace") {
+				ReportService.topPerformingMarketPlaces(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+					.then(function(results) {
+						return callback(null, results);
+					}).catch(function(error) {
+						return callback(error);
+					});
+			} else if (req.query.top == "city") {
+				ReportService.topPerformingCities(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+					.then(function(results) {
+						return callback(null, results);
+					}).catch(function(error) {
+						return callback(error);
+					});
+			} else {
+				ReportService.topPerformingProducts(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+					.then(function(results) {
+						return callback(null, results);
 					}).catch(function(error) {
 						return callback(null);
 					});
 			}
-		},
+		}
+	},
 		function(err, results) {
 			var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 			var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
@@ -147,7 +185,9 @@ export function performance(req, res) {
 					dropDownUrl: dropDownUrl,
 					cart: results.cartInfo,
 					performance: results.performance,
-					statusCode: statusCode
+					statusCode: statusCode,
+					selectedTopCatogory: selectedTopCatogory,
+					topCategory:results.topCategory
 				});
 			} else {
 				res.render('vendorNav/reporting/performance', err);
