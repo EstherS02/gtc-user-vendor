@@ -5,79 +5,70 @@
 
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-		$(document).ready(function() {
-		  // document.getElementById("geoLocateForm").reset();
-		    $('#selected_category_id').val("");
-			$('#origin').val("");
-			$('#keyword').val("")
-			$('#Geolocatesearch').prop('disabled', true);
-			$("a[title='seller']").click(function() {
-				if (userInfo.email) { } else {
-					$('#myModal').modal('show');
-				}
-			});
-			$('#origin, #origin').keyup(function() {
-				if ($('#origin').val() != '' && $('#origin').val() != '') {
-					$('#Geolocatesearch').prop('disabled', false);
-				} else {
-					$('#Geolocatesearch').prop('disabled', true);
-				}
-			});
-			$('#keyword, #keyword').keyup(function() {
-				if ($('#keyword').val() != '' && $('#keyword').val() != '') {
-					$('#Geolocatesearch').prop('disabled', false);
-				} else {
-					$('#Geolocatesearch').prop('disabled', true);
-				}
-			});
-			$('#selected_category_id, #selected_category_id').keyup(function() {
-				if ($('#selected_category_id').val() != '' && $('#selected_category_id').val() != '') {
-					$('#Geolocatesearch').prop('disabled', false);
-				} else {
-					$('#Geolocatesearch').prop('disabled', true);
-				}
-			});
-			$("#selected_category_id").on('change', function() {
-				if ($('#selected_category_id').val() != '' && $('#selected_category_id').val() != '') {
-					$('#Geolocatesearch').prop('disabled', false);
-				} else {
-					$('#Geolocatesearch').prop('disabled', true);
-				}
-			});
+	$(document).ready(function() {
+		$('#selected_category_id').val("");
+		$('#origin').val("");
+		$('#keyword').val("")
+		$('#Geolocatesearch').prop('disabled', true);
+		$("a[title='seller']").click(function() {
+			if (userInfo.email) { } else {
+				$('#myModal').modal('show');
+			}
 		});
-		function geoformlocation() {
-			if ( $('#selected_category_id').val() != null && $('#origin').val() != '' && $('#keyword').val() != '') {
-				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&origin=' + $('#origin').val() + '&keyword=' + $('#keyword').val();
+		$('#origin, #origin').keyup(function() {
+			if ($('#origin').val() != '' && $('#origin').val() != '') {
+				$('#Geolocatesearch').prop('disabled', false);
+			} else {
+				$('#Geolocatesearch').prop('disabled', true);
 			}
-			else if( $('#selected_category_id').val()!=null && $('#origin').val() != '')
-			{
-				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&origin=' + $('#origin').val() 
+		});
+		$('#keyword, #keyword').keyup(function() {
+			if ($('#keyword').val() != '' && $('#keyword').val() != '') {
+				$('#Geolocatesearch').prop('disabled', false);
+			} else {
+				$('#Geolocatesearch').prop('disabled', true);
 			}
-			else if($('#origin').val()!='' && $('#keyword').val() != '')
-			{
-				window.location.href = 'geo-locate/search?origin=' + $('#origin').val() + '&keyword=' + $('#keyword').val() 
+		});
+		$('#selected_category_id, #selected_category_id').keyup(function() {
+			if ($('#selected_category_id').val() != '' && $('#selected_category_id').val() != '') {
+				$('#Geolocatesearch').prop('disabled', false);
+			} else {
+				$('#Geolocatesearch').prop('disabled', true);
 			}
-			else if($('#selected_category_id').val()!= null && $('#keyword').val() != '')
-			{
-				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&keyword=' + $('#keyword').val() 
+		});
+		$("#selected_category_id").on('change', function() {
+			if ($('#selected_category_id').val() != '' && $('#selected_category_id').val() != '') {
+				$('#Geolocatesearch').prop('disabled', false);
+			} else {
+				$('#Geolocatesearch').prop('disabled', true);
 			}
-			else if($('#selected_category_id').val()!= null)
-			{   
-				window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val();
-			}
-			else if($('#origin').val() != '')
-			{
-				window.location.href = 'geo-locate/search?origin=' + $('#origin').val();
-			}
-			else if($('#keyword').val() != '')
-			{
-				window.location.href = 'geo-locate/search?keyword=' + $('#keyword').val();
-			}
+		});
+	});
+
+	function geoformlocation() {
+		if ($('#selected_category_id').val() != null && $('#origin').val() != '' && $('#keyword').val() != '') {
+			window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&origin=' + $('#origin').val() + '&keyword=' + $('#keyword').val();
+		}
+		else if ($('#selected_category_id').val() != null && $('#origin').val() != '') {
+			window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&origin=' + $('#origin').val()
+		}
+		else if ($('#origin').val() != '' && $('#keyword').val() != '') {
+			window.location.href = 'geo-locate/search?origin=' + $('#origin').val() + '&keyword=' + $('#keyword').val()
+		}
+		else if ($('#selected_category_id').val() != null && $('#keyword').val() != '') {
+			window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val() + '&keyword=' + $('#keyword').val()
+		}
+		else if ($('#selected_category_id').val() != null) {
+			window.location.href = 'geo-locate/search?selected_category_id=' + $('#selected_category_id').val();
+		}
+		else if ($('#origin').val() != '') {
+			window.location.href = 'geo-locate/search?origin=' + $('#origin').val();
+		}
+		else if ($('#keyword').val() != '') {
+			window.location.href = 'geo-locate/search?keyword=' + $('#keyword').val();
+		}
 	}
-
-</script>
-
-{{> header/top-header LoggedInUser = LoggedInUser}}
+</script> {{> header/top-header LoggedInUser = LoggedInUser}}
 {{#if LoggedInUser.id}} {{else}}
 	<div class="home-banner">
 		<div class="gtc-container banner-padding">
@@ -91,8 +82,7 @@
 								<h1 class="text-marketplace-1">GIVE IT A TRY!:</h1>
 								<form id="geoLocateForm" class="geo-locate-form">
 									<div class="form-group m-b-sm">
-										<input type="text" id="origin" name="origin3" class="form-control-customized form-control-sm rounded"
-										 placeholder="Location (eg Calgary, AB)">
+										<input type="text" id="origin" name="origin3" class="form-control-customized form-control-sm rounded" placeholder="Location (eg Calgary, AB)">
 									</div>
 									<div class="form-group m-b-sm">
 										<div class="select-container">
@@ -105,11 +95,12 @@
 										</div>
 									</div>
 									<div class="form-group m-b-sm">
-										<input type="text" id="keyword" name="keyword3" class="form-control-customized form-control-sm rounded"
-										 placeholder="Keyword (eg Spoiler)" >
+										<input type="text" id="keyword" name="keyword3" class="form-control-customized form-control-sm rounded" placeholder="Keyword (eg Spoiler)">
 									</div>
 									<div class="form-group">
-										<button type="button" class="btn btn-small btn-block btn-primary" id="Geolocatesearch" onclick="geoformlocation()"><strong>SEARCH</strong></button>
+										<button type="button" class="btn btn-small btn-block btn-primary" id="Geolocatesearch" onclick="geoformlocation()">
+											<strong>SEARCH</strong>
+										</button>
 									</div>
 								</form>
 							</div>
@@ -121,9 +112,12 @@
 						<div class="row">
 							<div class="col-md-9 offset-md-0">
 								<h1>CREATE A FREE ACCOUNT!</h1>
-								<p>Start searching the global for the <a href="/products">best bulk discounts,</a> <a href="/wholesale">wholesale
-										pricing,</a> <a href="/lifestyle">subscriptions,</a> <a href="/services">services</a> everywhere! And it’s
-									FREE to join!</p>
+								<p>Start searching the global for the
+									<a href="/products">best bulk discounts,</a>
+									<a href="/wholesale">wholesale pricing,
+									</a>
+									<a href="/lifestyle">subscriptions,</a>
+									<a href="/services">services</a> everywhere! And it’s FREE to join!</p>
 							</div>
 						</div>
 						<div class="row">
@@ -134,25 +128,31 @@
 											<div class="signup-left">
 												<ul>
 													<li>
-														<a href="javascript:;" id="gtc-fb-login"><img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook"
-															 title="Login with Facebook"></a>
+														<a href="javascript:;" id="gtc-fb-login">
+															<img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook" title="Login with Facebook">
+														</a>
 													</li>
 													<li>
-														<a href="javascript:;" id="gtc-google-login"><img src="gtc-assets/img/login-google.png" alt="Login with Google"
-															 title="Login with Google"></a>
+														<a href="javascript:;" id="gtc-google-login">
+															<img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google">
+														</a>
 													</li>
 													<li>
-														<a href="javascript:;" id="gtc-twitter-login"><img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter"
-															 title="Login with Twitter"></a>
+														<a href="javascript:;" id="gtc-twitter-login">
+															<img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter">
+														</a>
 													</li>
 													<li>
-														<a href="javascript:;" id="gtc-linkedin-login"><img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn"
-															 title="Login with LinkedIn"></a>
+														<a href="javascript:;" id="gtc-linkedin-login">
+															<img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
+														</a>
 													</li>
 												</ul>
 											</div>
 										</div>
-										<h2 class="divider-line"><span>OR</span></h2>
+										<h2 class="divider-line">
+											<span>OR</span>
+										</h2>
 										<div class="col-md-6 signup-right">
 											<form id="signUpForm" class="form">
 												<div class="row">
@@ -178,7 +178,9 @@
 														</div>
 														<div class="form-group m-b-sm">
 															<button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger">
-																<strong>CREATE ACCOUNT<i id="loadingSpinnersignUp" class="fa fa fa-spinner fa-spin m-l-xs"></i></strong>
+																<strong>CREATE ACCOUNT
+																	<i id="loadingSpinnersignUp" class="fa fa fa-spinner fa-spin m-l-xs"></i>
+																</strong>
 															</button>
 														</div>
 														<small id="signUpErrorLog" style="color:red"></small>
@@ -212,10 +214,9 @@
 			<div class="col-md-3 no-padding">
 				<div class="wts-header-bg">
 					<h4 class="header-md-text">
+						<b>WTS</b> - Want To Sell
 						{{#if wantToSell}}
-						<b>WTS</b> - Want To Sell <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTS}}">SEE ALL ►</a>
-						{{else}}
-						<b>WTS</b> - Want To Sell <a class="cursor-not-allowed">SEE ALL ►</a>
+							<a href="/wholesale/search?marketplace_type={{marketPlaceType.WTS}}">SEE ALL ►</a>
 						{{/if}}
 					</h4>
 				</div>
@@ -290,17 +291,16 @@
 							</div>
 						{{/each}}
 					{{else}}
-						<p class="no-data-home">No WTS products</p>
+						<label class="empty">No Products</label>
 					{{/if}}
 				</div>
 			</div>
 			<div class="col-md-3 no-padding">
 				<div class="wtb-header-bg">
 					<h4 class="header-md-text">
+						<b>WTB</b> - Want To Buy
 						{{#if wantToBuy}}
-							<b>WTB</b> - Want To Buy <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTB}}">SEE ALL ►</a>
-						{{else}}
-							<b>WTB</b> - Want To Buy <a class="cursor-not-allowed">SEE ALL ►</a>
+							<a href="/wholesale/search?marketplace_type={{marketPlaceType.WTB}}">SEE ALL ►</a>
 						{{/if}}
 					</h4>
 				</div>
@@ -375,17 +375,16 @@
 							</div>
 						{{/each}}
 					{{else}}
-						<p class="no-data-home">No WTB products</p>
+						<label class="empty">No Products</label>
 					{{/if}}
 				</div>
 			</div>
 			<div class="col-md-3 no-padding">
 				<div class="wtt-header-bg">
 					<h4 class="header-md-text">
+						<b>WTT</b> - Want To Trade
 						{{#if wantToTrade}}
-							<b>WTT</b> - Want To Trade <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTT}}">SEE ALL ►</a>
-						{{else}}
-							<b>WTT</b> - Want To Trade <a class="cursor-not-allowed">SEE ALL ►</a>
+							<a href="/wholesale/search?marketplace_type={{marketPlaceType.WTT}}">SEE ALL ►</a>
 						{{/if}}
 					</h4>
 				</div>
@@ -456,7 +455,7 @@
 															<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
 														{{/if}}
 													</div>
-				
+
 												</td>
 											</tr>
 										</tbody>
@@ -465,17 +464,16 @@
 							</div>
 						{{/each}}
 					{{else}}
-						<p class="no-data-home">No WTT products</p>
+						<label class="empty">No Products</label>
 					{{/if}}
 				</div>
 			</div>
 			<div class="col-md-3 no-padding">
 				<div class="rfq-header-bg">
 					<h4 class="header-md-text">
+						<b>RFQ</b> - Request For Quote
 						{{#if requestForQuote}}
-							<b>RFQ</b> - Request For Quote <a href="/wholesale/search?marketplace_type={{marketPlaceType.RFQ}}">SEE ALL ►</a>
-						{{else}}
-							<b>RFQ</b> - Request For Quote <a class="cursor-not-allowed">SEE ALL ►</a>
+							<a href="/wholesale/search?marketplace_type={{marketPlaceType.RFQ}}">SEE ALL ►</a>
 						{{/if}}
 					</h4>
 				</div>
@@ -554,7 +552,7 @@
 							</div>
 						{{/each}}
 					{{else}}
-						<p class="no-data-home">No RFQ products</p>
+						<label class="empty">No Products</label>
 					{{/if}}
 				</div>
 			</div>
@@ -567,11 +565,9 @@
 		<div class="row">
 			<div class="col-md-4 no-padding">
 				<div class="header-lg bg-shop">
-					{{#if publicMarketplace}}
-						<h2 class="header-lg-text">PUBLIC MARKETPLACE <a class="see-all" href="/shop/search">SEE ALL ►</a></h2>
-					{{else}}
-						<h2 class="header-lg-text">PUBLIC MARKETPLACE <a class="see-all cursor-not-allowed">SEE ALL ►</a></h2>
-					{{/if}}
+					<h2 class="header-lg-text">PUBLIC MARKETPLACE
+						{{#if publicMarketplace}}<a class="see-all" href="/shop/search">SEE ALL ►</a>{{/if}}
+					</h2>
 				</div>
 				<div class="product-list-body">
 					{{#if publicMarketplace}}
@@ -648,17 +644,15 @@
 							</div>
 						{{/each}}
 					{{else}}
-						<p class="no-data-home">No public products</p>
+						<label class="empty">No Products</label>
 					{{/if}}
 				</div>
 			</div>
 			<div class="col-md-4 no-padding">
 				<div class="header-lg bg-service">
-					{{#if serviceMarketplace}}
-						<h2 class="header-lg-text">SERVICES MARKETPLACE <a class="see-all" href="/services/search">SEE ALL ►</a></h2>
-					{{else}}
-						<h2 class="header-lg-text">SERVICES MARKETPLACE <a class="see-all cursor-not-allowed">SEE ALL ►</a></h2>
-					{{/if}}
+					<h2 class="header-lg-text">SERVICES MARKETPLACE
+						{{#if serviceMarketplace}}<a class="see-all" href="/services/search">SEE ALL ►</a>{{/if}}
+					</h2>
 					<div class="product-list-body"></div>
 				</div>
 				<div class="product-list-body">
@@ -736,17 +730,15 @@
 							</div>
 						{{/each}}
 					{{else}}
-						<p class="no-data-home">No service products</p>
+						<label class="empty">No Products</label>
 					{{/if}}
 				</div>
 			</div>
 			<div class="col-md-4 no-padding">
 				<div class="header-lg bg-lifestyle">
-					{{#if lifestyleMarketplace}}
-						<h2 class="header-lg-text">LIFESTYLE MARKETPLACE <a class="see-all" href="/lifestyle/search">SEE ALL ►</a></h2>
-					{{else}}
-						<h2 class="header-lg-text">LIFESTYLE MARKETPLACE <a class="see-all cursor-not-allowed">SEE ALL ►</a></h2>
-					{{/if}}
+					<h2 class="header-lg-text">LIFESTYLE MARKETPLACE
+						{{#if lifestyleMarketplace}}<a class="see-all" href="/lifestyle/search">SEE ALL ►</a>{{/if}}
+					</h2>
 					<div class="product-list-body"></div>
 				</div>
 				<div class="product-list-body">
@@ -824,7 +816,7 @@
 							</div>
 						{{/each}}
 					{{else}}
-						<p class="no-data-home">No lifestyle products</p>
+						<label class="empty">No Products</label>
 					{{/if}}
 				</div>
 			</div>
@@ -863,7 +855,8 @@
 					<div class="progress-circle-value">32,871+</div>
 				</div>
 				<p class="text-white text-center progress-circle-texts mt-3">PUBLIC SALE</p>
-				<p class="text-center text-white font-weight-light font-md1">Sell your single SKU to <b>volume based</b> products & commodities to the open market!</p>
+				<p class="text-center text-white font-weight-light font-md1">Sell your single SKU to
+					<b>volume based</b> products & commodities to the open market!</p>
 			</div>
 			<div class="col">
 				<div class="progress-circle white">
@@ -876,7 +869,9 @@
 					<div class="progress-circle-value">32,871+</div>
 				</div>
 				<p class="text-white text-center progress-circle-texts mt-3">SECURED & SUPERPOWERED</p>
-				<p class="text-center text-white font-weight-light font-md1">Get your Global Trade Connect digital profile, storefront & warehouse. <b>The last profile page you will ever need.</b></p>
+				<p class="text-center text-white font-weight-light font-md1">Get your Global Trade Connect digital profile, storefront & warehouse.
+					<b>The last profile page you will ever need.</b>
+				</p>
 			</div>
 			<div class="col">
 				<div class="progress-circle green">
@@ -889,7 +884,9 @@
 					<div class="progress-circle-value">32,871+</div>
 				</div>
 				<p class="text-white text-center progress-circle-texts mt-3">SERVICE MARKET</p>
-				<p class="text-center text-white font-weight-light font-md1">List the services you provide & <strong>let people you know what and where you offer it.</strong></p>
+				<p class="text-center text-white font-weight-light font-md1">List the services you provide &
+					<strong>let people you know what and where you offer it.</strong>
+				</p>
 			</div>
 			<div class="col">
 				<div class="progress-circle red">
@@ -902,23 +899,21 @@
 					<div class="progress-circle-value">32,871+</div>
 				</div>
 				<p class="text-white text-center progress-circle-texts mt-3">LIFESTYLE SUBSCRIPTIONS</p>
-				<p class="text-center text-white font-weight-light font-md1">Selling items on a <strong>monthly basis is fun</strong>, now you have a place to share it.</p>
+				<p class="text-center text-white font-weight-light font-md1">Selling items on a
+					<strong>monthly basis is fun</strong>, now you have a place to share it.</p>
 			</div>
 		</div>
 	</div>
 </div>
-
 <div class="other-marketplace-bg"></div>
 <div class="gtc-container">
 	<div class="other-marketplace-headers">
 		<div class="row">
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-topseller">
-					{{#if topSellers.rows}}
-						<h2 class="header-lg-text">TOP SELLERS <a class="see-all" href="/sellers/search">SEE ALL ►</a></h2>
-					{{else}}
-                   		<h2 class="header-lg-text">TOP SELLERS <a class="see-all cursor-not-allowed">SEE ALL ►</a></h2>
-					{{/if}}
+					<h2 class="header-lg-text">TOP SELLERS
+						{{#if topSellers.rows}}<a class="see-all" href="/sellers/search">SEE ALL ►</a>{{/if}}
+					</h2>					
 				</div>
 				<div class="product-list-body">
 					<div class="row">
@@ -983,18 +978,18 @@
 								</div>
 							{{/each}}
 						{{else}}
-							<p class="no-data-home">No topSellers</p>
+							<div class="col">
+								<label class="empty">No Sellers</label>
+							</div>
 						{{/if}}
 					</div>
 				</div>
 			</div>
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-featured-product">
-					{{#if featuredProducts.rows}}
-					<h2 class="header-lg-text">FEATURED PRODUCTS <a class="see-all" href="/products/search?is_featured_product=1">SEE ALL ►</a></h2>
-					{{else}}
-					<h2 class="header-lg-text">FEATURED PRODUCTS <a class="see-all cursor-not-allowed">SEE ALL ►</a></h2>
-					{{/if}}
+					<h2 class="header-lg-text">FEATURED PRODUCTS
+						{{#if featuredProducts.rows}}<a class="see-all" href="/products/search?is_featured_product=1">SEE ALL ►</a>{{/if}}
+					</h2>
 				</div>
 				<div class="product-list-body">
 					<div class="row">
@@ -1028,10 +1023,9 @@
 																				</small>
 																			{{else}}
 																				<h2 class="price">{{currency this.price '$'}}</h2>
-																		{{/if}}
-																		{{else}}
-																			<h2 class="price">
-																				<small>MOQ:</small>{{this.moq}}</h2>
+																			{{/if}}
+																			{{!-- <h2 class="price">
+																				<small>MOQ:</small>{{this.moq}}</h2> --}}
 																		{{/ifCond}}
 																	</div>
 																	<div class="col-md-4 col-4 no-padding">
@@ -1068,7 +1062,9 @@
 								</div>
 							{{/each}}
 						{{else}}
-							<p class="no-data">No featuredProducts</p>
+							<div class="col">
+								<label class="empty">No Products</label>
+							</div>
 						{{/if}}
 					</div>
 				</div>
@@ -1083,7 +1079,8 @@
 		</div>
 		<div class="col-md-5 col-lg-5 col-xl-5 left1 no-padding">
 			<div class="content">
-				<h1>The #1 <strong>marketing platform®</strong> for generating more sales.</h1>
+				<h1>The #1
+					<strong>marketing platform®</strong> for generating more sales.</h1>
 				<p class="m-b-xs">The hit marketing software that will run your ads on</p>
 				<img class="img-fluid" src="img/logos.png">
 				<p class="m-t-xs">... from a single platform!</p>
@@ -1114,121 +1111,4 @@
 		</div>
 	</div>
 </div>
-{{!-- <section class="get-started">
-	<div class="content">
-		<h2>
-			<span class="small">Get your</span>
-			<span style="font-family: 'Oswald', sans-serif;">Global Trade Connect</span> Profile Page
-			<span class="large">By March 31st 2017</span>
-		</h2>
-		<p>and
-			<strong class="save">SAVE 25%</strong>
-			<strong>OFF
-				<span style="font-family: 'Oswald', sans-serif;font-weight: normal;font-size: 25px;">YOUR</span> FIRST 3 MONTHS!</strong>
-		</p>
-		<a href="javascript:;" class="button-cta">Get started!</a>
-	</div>
-</section> --}}
-{{!-- Model Pop up For Product Force signup --}}
-{{!-- <div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content" align="center">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="row geo_bgimg1">
-						<div class="row">
-							<div class="col-md-12 offset-md-0">
-								<h1>LIKE WHAT YOU SEE?</h1>
-								<p class="modal_sign text-center">Sign Up &amp; Access Your Wholesale Marketplace.</p>
-								<p class="modal_why_geo_p">If you' d like uniterupted access to our wholesale marketplace, we need you to
-									create an
-									account with Global Trade Connect
-								</p>
-							</div>
-						</div>
-						<div class="gtc-container banner-padding">
-							<div class="home-banner-right">
-								<div class="row">
-									<div class="col-md-12 offset-md-0">
-										<div class="signup-box">
-											<div class="col-md-6 offset-md-6">
-												<small id="modelSignUpErrorLog" class="error"></small>
-											</div>
-											<div class="row">
-												<div class="col-md-6">
-													<div class="signup-left">
-														<ul>
-															<li>
-																<a id="modal-gtc-fb-login">
-																	<img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook" title="Login with Facebook">
-																</a>
-															</li>
-															<li>
-																<a id="modal-gtc-google-login">
-																	<img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google">
-																</a>
-															</li>
-															<li>
-																<a id="modal-gtc-twitter-login">
-																	<img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter">
-																</a>
-															</li>
-															<li>
-																<a id="modal-gtc-linkedin-login">
-																	<img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
-																</a>
-															</li>
-															<li>
-																<div class="form-group" style="padding:4px">
-																	<p class="modal_sign">Already have a Account?</p>
-																	<button type="submit" onclick="window.location.href='/login'" id="modelBtnLogin" class="btn btn-small btn-success">
-																		<strong>LOGIN</strong>
-																	</button>
-																</div>
-															</li>
-														</ul>
-													</div>
-												</div>
-												<h2 class="divider-line" style="z-index:1"><span class="text-black">OR</span></h2>
-												<div class="col-md-6 signup-right">
-													<form id="modelSignUpForm" class="form">
-														<div class="row">
-															<div class="col">
-																<div class="form-group m-b-xs">
-																	<input type="email" id="modelInputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border"
-																	 placeholder="Email" required="true">
-																</div>
-																<div class="form-group m-b-xs">
-																	<input type="text" id="modelInputFirstname" name="first_name" class="form-control-customized form-control-sm rounded form-control-border"
-																	 placeholder="First Name" required="true">
-																</div>
-																<div class="form-group m-b-xs">
-																	<input type="password" id="modelInputPassword" name="password" class="form-control-customized form-control-sm rounded form-control-border"
-																	 placeholder="Password" required="true">
-																</div>
-																<div class="form-group">
-																	<input type="checkbox" id="modelInputTerms" name="input_terms" required="true">
-																	<small>Accept terms and conditions</small>
-																</div>
-																<div class="form-group">
-																	<button type="submit" id="modelBtnSignup" class="btn btn-small btn-block btn-danger">
-																		<strong>CREATE ACCOUNT</strong>
-																	</button>
-																</div>
-															</div>
-														</div>
-													</form>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div> --}}
 {{> footer/bottom-footer}}
