@@ -369,7 +369,7 @@
 										<section class="reporting_date_range">
 											<div class="row">
 												<div class="col-md-6 no-padding" style="display:inline-flex">
-													<div class="form-inline">
+													<div class="form-inline" style="margin-left: 15px;">
 														<p class="report_date_range_title">Date Range</p>
 														<div class="input-group mb-3 date_range_group">
 															<input id="rep_from" type="text" class="form-control date_range_picker" placeholder="MM/DD/YYYY" value="{{queryURI.rep_from}}"
@@ -398,7 +398,13 @@
 													</div>
 												</div>
 												<div class="col-md-6 no-padding" style="display: inline-flex;">
-													<input id="compare" type="checkbox" value="true" class="check_report1" checked="checked">
+													{{!-- <input id="compare" type="checkbox" value="true" class="check_report1" checked="checked"> --}}
+
+													<div class="customCheckbox" style="margin-left: 30px;">
+														<input type="checkbox" checked='checked' id="compare" value="true" class="customCheckboxInput">
+														<label class="checkbox-b" for="compare"></label>
+													</div>
+
 													<div class="form-inline">
 														<p class="report_date_range_title">Compare to</p>
 														<div class="input-group mb-3 date_range_group">

@@ -447,6 +447,61 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
     })
 }
 
+
+export function topPerformingCities(orderItemQueryObj, lhsBetween, rhsBetween){
+
+
+	return new Promise((resolve, reject) => {
+		var result = {},Limit = 5, Offset = 0;
+
+		if(orderItemQueryObj.limit)
+			Limit = orderItemQueryObj.limit;
+
+		if(orderItemQueryObj.offset)
+			Offset = orderItemQueryObj.offset
+
+		delete orderItemQueryObj.limit;
+		delete orderItemQueryObj.offset;
+
+        const pastRange = _.assign({}, orderItemQueryObj);
+        pastRange.item_created_on = {
+            $between: lhsBetween
+        };
+        const currentRange = _.assign({}, orderItemQueryObj);
+        currentRange.item_created_on = {
+            $between: rhsBetween
+		};
+		
+		model['OrderItem'].findAll({
+			raw: true,
+			include: [{
+				model: model['Product'],
+				where: orderItemQueryObj,
+				attributes: ['city']
+			}],
+			attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales'],
+				[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales'],
+				[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']
+			],
+			group: ['Product.city'],
+			order: [
+				[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
+			],
+			limit: Limit
+	
+		}).then(function(results) {
+			if (results.length > 0)
+				result = results;
+			else
+				result = [];
+			return resolve(result);
+		}).catch(function(error) {
+			console.log('Error:::', error);
+			reject(error);
+		});
+	})
+}
+
 export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween) {
     return new Promise((resolve, reject) => {
 		var result = {},Limit = 5, Offset = 0;
