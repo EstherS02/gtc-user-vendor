@@ -723,4 +723,50 @@ function encryptPassword(req) {
 	return crypto.pbkdf2Sync(req.body.password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
 }
 
+export function viewStarterSeller(req,res){
+
+	var offset, limit, field, order;
+	var queryObj = {};
+	var includeArr = [];
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+    delete req.query.offset;
+    limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    delete req.query.limit;
+    field = req.query.field ? req.query.field : "id";
+    delete req.query.field;
+    order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
+
+	queryObj['status'] = {
+		'$ne': status["DELETED"]
+	}
+
+	includeArr = [
+		{ 
+			model:model['VendorPlan'],
+			where: {
+				plan_id : plans['STARTER_SELLER'],	 
+			}, 
+			attributes:['id', 'plan_id', 'end_date']
+		},
+		{
+			model:model['User'],
+			attributes:['id', 'first_name', 'last_name']
+		}]
+
+	service.findRows('Vendor', queryObj, offset, limit, field, order, includeArr)
+	.then(function(starterSellers){
+		return res.status(200).send(starterSellers);
+	}).catch(function(error){
+		console.log("Error:::", error);
+		return res.status(500).send({
+			"message": "ERROR",
+			"messageDetails": "Unable to display featured products.",
+			"errorDescription": error
+		});
+	})
+}
+
+
+
 exports.authenticate = authenticate;
