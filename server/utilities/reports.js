@@ -280,7 +280,7 @@ function getAllVendorPerformance(queryObj, limit, offset) {
 }
 function getAllProductPerformance(queryObj, limit, offset) {
 
-    var queryResult = `SELECT product.vendor_id AS vendor_id,
+    var queryResult = `SELECT product.id AS product_id,
             product.product_name,
             marketplace.name AS marketplace_name,
             vendor.vendor_name As vendor_name,
@@ -317,7 +317,7 @@ function getAllProductPerformance(queryObj, limit, offset) {
             },
             type: sequelize.QueryTypes.SELECT
         }).then(data => {
-            console.log("data::::", data)
+            // console.log("data::::", data)
             resolve(data);
         }).catch(function(err) {
             reject(err);
@@ -410,7 +410,7 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
         model['OrderItemOverview'].findAll({
             raw: true,
             where: orderItemQueryObj,
-            attributes: ['marketplace_name', [sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
+            attributes: ['marketplace_id','marketplace_name', [sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
             [sequelize.fn('count', sequelize.col('quantity')), 'sales'],
             [sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']],
             group: ['marketplace_id'],
