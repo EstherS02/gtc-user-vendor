@@ -280,7 +280,7 @@ function getAllVendorPerformance(queryObj, limit, offset) {
 }
 function getAllProductPerformance(queryObj, limit, offset) {
 
-    var queryResult = `SELECT product.vendor_id AS vendor_id,
+    var queryResult = `SELECT product.id AS product_id,
             product.product_name,
             marketplace.name AS marketplace_name,
             vendor.vendor_name As vendor_name,
@@ -317,7 +317,7 @@ function getAllProductPerformance(queryObj, limit, offset) {
             },
             type: sequelize.QueryTypes.SELECT
         }).then(data => {
-            console.log("data::::", data)
+            // console.log("data::::", data)
             resolve(data);
         }).catch(function(err) {
             reject(err);
