@@ -410,7 +410,7 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
         model['OrderItemOverview'].findAll({
             raw: true,
             where: orderItemQueryObj,
-            attributes: ['marketplace_name', [sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
+            attributes: ['marketplace_id','marketplace_name', [sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
             [sequelize.fn('count', sequelize.col('quantity')), 'sales'],
             [sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']],
             group: ['marketplace_id'],
