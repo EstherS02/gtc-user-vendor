@@ -726,7 +726,7 @@ function encryptPassword(req) {
 export function viewStarterSeller(req,res){
 
 	var offset, limit, field, order;
-	var queryObj = {};
+	var queryObj = {}, queryObj1 = {}, planQueryObj = {}, result = {};
 	var includeArr = [];
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
     delete req.query.offset;
@@ -737,36 +737,88 @@ export function viewStarterSeller(req,res){
     order = req.query.order ? req.query.order : "asc";
 	delete req.query.order;
 
-	queryObj['status'] = {
+	queryObj['status'] = queryObj1['status'] ={
 		'$ne': status["DELETED"]
+	}
+
+	planQueryObj['plan_id']= plans['STARTER_SELLER'];
+
+	if(req.query.status){
+        planQueryObj['status']= req.query.status;
+	}
+	
+	if(req.query.text){
+        queryObj['$or'] = [
+			sequelize.where(sequelize.fn('concat_ws', sequelize.col('User.first_name'), ' ', sequelize.col('User.last_name'), ' ', sequelize.col('vendor_name')), {		
+				$like: '%' + req.query.text + '%'
+			})
+		];
 	}
 
 	includeArr = [
 		{ 
 			model:model['VendorPlan'],
-			where: {
-				plan_id : plans['STARTER_SELLER'],	 
-			}, 
-			attributes:['id', 'plan_id', 'end_date']
+			where: planQueryObj,
+			attributes:['id', 'plan_id', 'end_date', 'status']
 		},
 		{
 			model:model['User'],
-			attributes:['id', 'first_name', 'last_name']
-		}]
+			attributes:['id', 'first_name', 'last_name'],
+			required: false
+		},
+		{
+			model: model['Product'],
+			attributes: [],
+			required: false
+		}
+	]
 
-	service.findRows('Vendor', queryObj, offset, limit, field, order, includeArr)
-	.then(function(starterSellers){
-		return res.status(200).send(starterSellers);
+	model['Vendor'].findAll({
+		include: includeArr,
+		where: queryObj,
+		subQuery: false,
+		attributes: ['id', 'vendor_profile_pic_url', 'vendor_name', 'user_id', 'status', 'created_on',[sequelize.literal('COUNT(Products.id)'), 'product_count']],
+		offset: offset,
+		limit: limit,
+		group: ['id'],
+		order: [
+			[field, order]
+		]
+	}).then(function(rows){
+		var convertRowsJSON = [];
+			if (rows.length > 0) {
+				convertRowsJSON = JSON.parse(JSON.stringify(rows));
+				model['Vendor'].count({
+					where: queryObj1,
+					include: [{
+						model:model['VendorPlan'],
+						where: {
+							plan_id : plans['STARTER_SELLER'],	 
+						}, 
+					}]
+				}).then(function(count) {
+					result.count = count;
+					result.rows = convertRowsJSON;
+					return res.status(200).send(result);
+				}).catch(function(error) {
+					console.log("Error:::", error);
+					return res.status(500).send({
+						"message": "error",
+						"errorDescription": error
+					});
+				});
+			} else {
+				result.count = 0;
+				result.rows = convertRowsJSON;
+				return res.status(200).send(result);
+			}
 	}).catch(function(error){
 		console.log("Error:::", error);
 		return res.status(500).send({
 			"message": "ERROR",
-			"messageDetails": "Unable to display featured products.",
 			"errorDescription": error
 		});
 	})
 }
-
-
 
 exports.authenticate = authenticate;
