@@ -738,7 +738,7 @@ export function viewStarterSeller(req,res){
 	delete req.query.order;
 
 	queryObj['status'] = queryObj1['status'] ={
-		'$ne': status["DELETED"]
+		'$eq': status["ACTIVE"]
 	}
 
 	planQueryObj['plan_id']= plans['STARTER_SELLER'];

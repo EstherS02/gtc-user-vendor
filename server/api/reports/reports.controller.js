@@ -331,19 +331,27 @@ console.log("====================================================")
             	model:model['Product'],
             	attributes:[],
 	            }],
-    	        attributes: [[sequelize.fn('count', sequelize.col('OrderItem.quantity')), 'sales']],
+    	        attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
 
+            },{
+            	model:model['User'],
+            	where:{status:statusCode['ACTIVE']},
+            	attributes:['id','first_name','user_pic_url']
             }],
+           	attributes:[],
             group: ['user_id'],
-            // order: [
-            //     [sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
-            // ]
+
+            order: [
+                [sequelize.fn('sum', sequelize.col('OrderItems.quantity')), 'DESC']
+            ],
+            // offset:Offset,
+            // limit:Limit,
 			
         }).then(function(results) {
-           return res.send(200).send(results);
+           return res.status(200).send(results);
         }).catch(function(error) {
             console.log('Error:::', error);
-             return res.send(500).send(error)
+             return res.status(500).send(error)
         });	
 
 
@@ -355,30 +363,30 @@ export function topVendors(req,res){
 			Limit = req.query.limit;
 		if(req.query.offset)
 			Offset = req.query.offset
-		// delete req.query.limit;
-		// delete req.query.offset;
+		delete req.query.limit;
+		delete req.query.offset;
         model['OrderItem'].findAll({
             raw: true,
-            // where: req.query,
+            where: req.query,
             include:[{
             	model:model['Product'],
             	attributes:[],
             	include:[{
             		model:model['Vendor'],
-            		attributes:['id','vendor_name']
+            		attributes:['id','vendor_name','vendor_profile_pic_url']
             	}]
             }],
-            // attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
-            // group: ['Product.Vendor.vendor_id'],
+            attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
+            group: ['Product.vendor_id'],
             order: [
                 [sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
             ]
 			
         }).then(function(results) {
-           return res.send(200).send(results);
+           return res.status(200).send(results);
         }).catch(function(error) {
             console.log('Error:::', error);
-             return res.send(500).send(error)
+             return res.status(500).send(error)
         });
 
 }
