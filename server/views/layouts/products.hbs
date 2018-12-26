@@ -1,26 +1,26 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <script>
 	var counts = {{{ DisplayJSON globalProductCounts }}}
-  $(document).ready(function() {
-  	$("#searchSubmit").prop('disabled', true);
-	  $('#depart').val('');
-	  $('#category').val('');
-	  $('#location').val('');
-	$('#depart, #category, #location').on('change', function() {
-		if ($(this).val() == '') {
-			$('#searchSubmit').prop('disabled', true);
-		} else {
-			$('#searchSubmit').prop('disabled', false);
-		}
+	$(document).ready(function() {
+		$("#searchSubmit").prop('disabled', true);
+		$('#depart').val('');
+		$('#category').val('');
+		$('#location').val('');
+		$('#depart, #category, #location').on('change', function() {
+			if ($(this).val() == '') {
+				$('#searchSubmit').prop('disabled', true);
+			} else {
+				$('#searchSubmit').prop('disabled', false);
+			}
+		});
+		$("#searchForm").submit(function(e) {
+			e.preventDefault();
+			let formInput = $("#searchForm :input").filter(function(index, element) {
+				return $(element).val() != '';
+			}).serialize();
+			window.location.href = '/products/search?' + formInput;
+		});
 	});
-  	$("#searchForm").submit(function(e) {
-		e.preventDefault();
-  		let formInput = $("#searchForm :input").filter(function(index, element) {
-  			return $(element).val() != '';
-  		}).serialize();
-  		window.location.href = '/products/search?' + formInput;
-  	});
-  });
 </script>
 <div class="marketplace-banner products">
 	<div class="gtc-container">
@@ -34,7 +34,6 @@
 				<h2>Search Our Global Inventory of an incredible</h2>
 				<h1>
 					{{#each globalProductCounts}}{{CommaSeparate this.productCount }} {{/each}} Products, Services & Subscriptions!</h1>
-
 				<small class="text-center text-white py-xl-3 d-block">Advanced Search</small>
 				<form id="searchForm">
 					<div class="row">
@@ -89,155 +88,128 @@
 		<div class="row">
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-wholesale">
-					{{#if wholesalerProducts}}
 					<h2 class="header-lg-text">TOP SELLING WHOLESALER PRODUCTS
-						<a class="see-all" href="/wholesale/search">SEE ALL ►</a>
+						{{#if wholesalerProducts}}
+							<a class="see-all" href="/wholesale/search">SEE ALL ►</a>
+						{{/if}}
 					</h2>
-					{{else}}
-					<h2 class="header-lg-text">TOP SELLING WHOLESALER PRODUCTS
-						<a class="see-all cursor-not-allowed">SEE ALL ►</a>
-					</h2>
-					{{/if}}
 				</div>
 				<div class="product-list-body">
 					<div class="row">
 						{{#if wholesalerProducts}}
-						{{#each wholesalerProducts}}
-							<div class="col-md-6">
-								<div class="product-body">
-									<div class="table-responsive">
-										<table class="table shoping-cart-table">
-											<tbody>
-												<tr class="d-flex">
-													<td class="col-3">
-														<div class="product-left-col">
-															<a href="/wholesale/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">
-																<img class="object-fit" src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" alt="{{this.Product.product_name}}"
-																 title="{{this.Product.product_name}}">
-															</a>
-														</div>
-													</td>
-													<td class="col-9">
-														<div class="product-middle-col">
-															<h3>
-																<a href="/wholesale/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
-																 class="text-blue">{{this.Product.product_name}}</a>
-															</h3>
-															<div class="row no-margins">
-																<div class="col-md-12 col-12 no-padding">
-																	<h2 class="text-red price">{{currency this.Product.price '$'}}</h2>
-																</div>
-																<div class="col-md-4 col-4 no-padding">
-																	<span>Origin</span>
-																</div>
-																<div class="col-md-8 col-8 no-padding overflow-txt">
-																	<span class="text-500">{{this.Product.Country.name}}</span>
-																</div>
-																<div class="col-md-4 col-4 no-padding">
-																	<span>Category</span>
-																</div>
-																<div class="col-md-8 col-8 no-padding overflow-txt">
-																	<a class="text-500" href="/wholesale/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}</a>
-																</div>
-																{{!-- <div class="col-md-4 col-4 no-padding">
-                              <span>Seller Rating</span>
-                            </div>
-                            <div class="col-md-8 col-8 no-padding">
-                              <div class="v-rating">
-                                <a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-                                  {{starCount product_rating}}
-                                </a>
-                              </div>
-                            </div> --}}
+							{{#each wholesalerProducts}}
+								<div class="col-md-6">
+									<div class="product-body">
+										<div class="table-responsive">
+											<table class="table shoping-cart-table">
+												<tbody>
+													<tr class="d-flex">
+														<td class="col-3">
+															<div class="product-left-col">
+																<a href="/wholesale/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">
+																	<img class="object-fit" src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" alt="{{this.Product.product_name}}"
+																	 title="{{this.Product.product_name}}">
+																</a>
 															</div>
-														</div>
-													</td>
-												</tr>
-											</tbody>
-										</table>
+														</td>
+														<td class="col-9">
+															<div class="product-middle-col">
+																<h3>
+																	<a href="/wholesale/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">{{this.Product.product_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-12 col-12 no-padding">
+																		<h2 class="text-red price">{{currency this.Product.price '$'}}</h2>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<span class="text-500">{{this.Product.Country.name}}</span>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Category</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<a class="text-500" href="/wholesale/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}</a>
+																	</div>
+																</div>
+															</div>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
-							</div>
-						{{/each}}
+							{{/each}}
 						{{else}}
-							<p class="no-data">No top selling wholesaler products</p>
+							<div class="col">
+								<label class="empty">No Products</label>
+							</div>
 						{{/if}}
 					</div>
 				</div>
 			</div>
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-shop">
-					{{#if retailProducts}}
 					<h2 class="header-lg-text">TOP SELLING RETAIL PRODUCTS
-						<a class="see-all" href="/shop/search">SEE ALL ►</a>
+						{{#if retailProducts}}<a class="see-all" href="/shop/search">SEE ALL ►</a>{{/if}}
 					</h2>
-					{{else}}
-					<h2 class="header-lg-text">TOP SELLING RETAIL PRODUCTS
-						<a class="see-all cursor-not-allowed">SEE ALL ►</a>
-					</h2>
-					{{/if}}
 				</div>
 				<div class="product-list-body">
 					<div class="row">
 						{{#if retailProducts}}
-						{{#each retailProducts}}
-							<div class="col-md-6">
-								<div class="product-body">
-									<div class="table-responsive">
-										<table class="table shoping-cart-table">
-											<tbody>
-												<tr class="d-flex">
-													<td class="col-3">
-														<div class="product-left-col">
-															<a href="/shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">
-																<img class="object-fit" src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" alt="{{this.Product.product_name}}"
-																 title="{{this.Product.product_name}}">
-															</a>
-														</div>
-													</td>
-													<td class="col-9">
-														<div class="product-middle-col">
-															<h3>
-																<a href="/shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">{{this.Product.product_name}}</a>
-															</h3>
-															<div class="row no-margins">
-																<div class="col-md-12 col-12 no-padding">
-																	<h2 class="text-red price">{{currency this.Product.price '$'}}</h2>
-																</div>
-																<div class="col-md-4 col-4 no-padding">
-																	<span>Origin</span>
-																</div>
-																<div class="col-md-8 col-8 no-padding overflow-txt">
-																	<span class="text-500">{{this.Product.Country.name}}</span>
-																</div>
-																<div class="col-md-4 col-4 no-padding">
-																	<span>Category</span>
-																</div>
-																<div class="col-md-8 col-8 no-padding overflow-txt">
-																	<a class="text-500" href="/shop/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}</a>
-																</div>
-																{{!-- <div class="col-md-4 col-4 no-padding">
-                              <span>Seller Rating</span>
-                            </div>
-                            <div class="col-md-8 col-8 no-padding">
-                              <div class="v-rating">
-                                <a href="shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-                                  {{starCount product_rating}}
-                                </a>
-                              </div>
-                            </div> --}}
+							{{#each retailProducts}}
+								<div class="col-md-6">
+									<div class="product-body">
+										<div class="table-responsive">
+											<table class="table shoping-cart-table">
+												<tbody>
+													<tr class="d-flex">
+														<td class="col-3">
+															<div class="product-left-col">
+																<a href="/shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">
+																	<img class="object-fit" src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" alt="{{this.Product.product_name}}"
+																	 title="{{this.Product.product_name}}">
+																</a>
 															</div>
-														</div>
-													</td>
-												</tr>
-											</tbody>
-										</table>
+														</td>
+														<td class="col-9">
+															<div class="product-middle-col">
+																<h3>
+																	<a href="/shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">{{this.Product.product_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-12 col-12 no-padding">
+																		<h2 class="text-red price">{{currency this.Product.price '$'}}</h2>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<span class="text-500">{{this.Product.Country.name}}</span>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Category</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<a class="text-500" href="/shop/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}</a>
+																	</div>
+																</div>
+															</div>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
-							</div>
-						{{/each}}
+							{{/each}}
 						{{else}}
-							<p class="no-data">No top selling retail products</p>
+							<div class="col">
+								<label class="empty">No Products</label>
+							</div>
 						{{/if}}
 					</div>
 				</div>
@@ -252,156 +224,126 @@
 		<div class="row">
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-service">
-					{{#if services}}
 					<h2 class="header-lg-text">TOP SELLING SERVICES
-						<a class="see-all" href="/services/search">SEE ALL ►</a>
+						{{#if services}}<a class="see-all" href="/services/search">SEE ALL ►</a>{{/if}}
 					</h2>
-					{{else}}
-					<h2 class="header-lg-text">TOP SELLING SERVICES
-						<a class="see-all cursor-not-allowed">SEE ALL ►</a>
-					</h2>
-					{{/if}}
 				</div>
 				<div class="product-list-body">
 					<div class="row">
 						{{#if services}}
-						{{#each services}}
-							<div class="col-md-6">
-								<div class="product-body">
-									<div class="table-responsive">
-										<table class="table shoping-cart-table">
-											<tbody>
-												<tr class="d-flex">
-													<td class="col-3">
-														<div class="product-left-col">
-															<a href="/services/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">
-																<img class="object-fit" src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" alt="{{this.Product.product_name}}"
-																 title="{{this.Product.product_name}}">
-															</a>
-														</div>
-													</td>
-													<td class="col-9">
-														<div class="product-middle-col">
-															<h3>
-																<a href="/services/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
-																 class="text-blue">{{this.Product.product_name}}</a>
-															</h3>
-															<div class="row no-margins">
-																<div class="col-md-12 col-12 no-padding">
-																	<h2 class="text-red price">${{this.Product.price}}</h2>
-																</div>
-																<div class="col-md-4 col-4 no-padding">
-																	<span>Origin</span>
-																</div>
-																<div class="col-md-8 col-8 no-padding overflow-txt">
-																	<span class="text-500">{{this.Product.Country.name}}</span>
-																</div>
-																<div class="col-md-4 col-4 no-padding">
-																	<span>Category</span>
-																</div>
-																<div class="col-md-8 col-8 no-padding overflow-txt">
-																	<a class="text-500" href="/services/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}</a>
-																</div>
-																{{!-- <div class="col-md-4 col-4 no-padding">
-                                <span>Seller Rating</span>
-                              </div>
-                              <div class="col-md-8 col-8 no-padding">
-                                <div class="v-rating">
-                                  <a href="services/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-                                    {{starCount product_rating}}
-                                  </a>
-                                </div>
-                              </div> --}}
+							{{#each services}}
+								<div class="col-md-6">
+									<div class="product-body">
+										<div class="table-responsive">
+											<table class="table shoping-cart-table">
+												<tbody>
+													<tr class="d-flex">
+														<td class="col-3">
+															<div class="product-left-col">
+																<a href="/services/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">
+																	<img class="object-fit" src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" alt="{{this.Product.product_name}}"
+																	 title="{{this.Product.product_name}}">
+																</a>
 															</div>
-														</div>
-													</td>
-												</tr>
-											</tbody>
-										</table>
+														</td>
+														<td class="col-9">
+															<div class="product-middle-col">
+																<h3>
+																	<a href="/services/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">{{this.Product.product_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-12 col-12 no-padding">
+																		<h2 class="text-red price">${{this.Product.price}}</h2>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<span class="text-500">{{this.Product.Country.name}}</span>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Category</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<a class="text-500" href="/services/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}</a>
+																	</div>
+																</div>
+															</div>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
-							</div>
-						{{/each}}
+							{{/each}}
 						{{else}}
-							<p class="no-data">No top selling service products</p>
+							<div class="col">
+								<label class="empty">No Products</label>
+							</div>
 						{{/if}}
 					</div>
 				</div>
 			</div>
 			<div class="col-md-6 no-padding">
 				<div class="header-lg bg-lifestyle">
-					{{#if subscriptions}}
 					<h2 class="header-lg-text">TOP SELLING LIFESTYLE SUBSCRIPTIONS
-						<a class="see-all" href="/lifestyle/search">SEE ALL ►</a>
+						{{#if subscriptions}}<a class="see-all" href="/lifestyle/search">SEE ALL ►</a>{{/if}}
 					</h2>
-					{{else}}
-					<h2 class="header-lg-text">TOP SELLING LIFESTYLE SUBSCRIPTIONS
-						<a class="see-all cursor-not-allowed">SEE ALL ►</a>
-					</h2>
-					{{/if}}
 				</div>
 				<div class="product-list-body">
 					<div class="row">
 						{{#if subscriptions}}
-						{{#each subscriptions}}
-							<div class="col-md-6">
-								<div class="product-body">
-									<div class="table-responsive">
-										<table class="table shoping-cart-table">
-											<tbody>
-												<tr class="d-flex">
-													<td class="col-3">
-														<div class="product-left-col">
-															<a href="/lifestyle/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">
-																<img class="object-fit" src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" alt="{{this.Product.product_name}}"
-																 title="{{this.Product.product_name}}">
-															</a>
-														</div>
-													</td>
-													<td class="col-9">
-														<div class="product-middle-col">
-															<h3>
-																<a href="/lifestyle/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
-																 class="text-blue">{{this.Product.product_name}}</a>
-															</h3>
-															<div class="row no-margins">
-																<div class="col-md-12 col-12 no-padding">
-																	<h2 class="text-red price">${{this.Product.price}}</h2>
-																</div>
-																<div class="col-md-4 col-4 no-padding">
-																	<span>Origin</span>
-																</div>
-																<div class="col-md-8 col-8 no-padding overflow-txt">
-																	<span class="text-500">{{this.Product.Country.name}}</span>
-																</div>
-																<div class="col-md-4 col-4 no-padding">
-																	<span>Category</span>
-																</div>
-																<div class="col-md-8 col-8 no-padding overflow-txt">
-																	<a class="text-500" href="/lifestyle/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}</a>
-																</div>
-																{{!-- <div class="col-md-4 col-4 no-padding">
-                                <span>Seller Rating</span>
-                              </div>
-                              <div class="col-md-8 col-8 no-padding">
-                                <div class="v-rating">
-                                  <a href="lifestyle/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-                                    {{starCount product_rating}}
-                                  </a>
-                                </div>
-                              </div> --}}
+							{{#each subscriptions}}
+								<div class="col-md-6">
+									<div class="product-body">
+										<div class="table-responsive">
+											<table class="table shoping-cart-table">
+												<tbody>
+													<tr class="d-flex">
+														<td class="col-3">
+															<div class="product-left-col">
+																<a href="/lifestyle/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">
+																	<img class="object-fit" src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" alt="{{this.Product.product_name}}"
+																	 title="{{this.Product.product_name}}">
+																</a>
 															</div>
-														</div>
-													</td>
-												</tr>
-											</tbody>
-										</table>
+														</td>
+														<td class="col-9">
+															<div class="product-middle-col">
+																<h3>
+																	<a href="/lifestyle/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}" class="text-blue">{{this.Product.product_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-12 col-12 no-padding">
+																		<h2 class="text-red price">${{this.Product.price}}</h2>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<span class="text-500">{{this.Product.Country.name}}</span>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Category</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<a class="text-500" href="/lifestyle/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}</a>
+																	</div>
+																</div>
+															</div>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
-							</div>
-						{{/each}}
+							{{/each}}
 						{{else}}
-							<p class="no-data">No top selling lifestyle products</p>
+							<div class="col">
+								<label class="empty">No Products</label>
+							</div>
 						{{/if}}
 					</div>
 				</div>

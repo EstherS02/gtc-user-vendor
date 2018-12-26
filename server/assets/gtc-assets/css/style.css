@@ -3123,6 +3123,12 @@ p.progress-circle-texts {
 	height: 387px;
 	width: 100%;
 }
+label.empty {
+	color: #212529;
+	font-weight: 400;
+	line-height: 3;
+	font-size: 0.813rem;
+}
 .jssocials-shares {
 	margin: 0.2em 0;
 }

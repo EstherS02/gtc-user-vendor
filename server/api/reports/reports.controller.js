@@ -310,6 +310,42 @@ export function topMarketPlace(req, res) {
 		return res.status(500).send(err);
 	});
 }
+export function topVendors(req,res){
+// 	var result = {},Limit = 5, Offset = 0;
+// console.log("====================================================")
+// 		if(req.query.limit)
+// 			Limit = req.query.limit;
+
+// 		if(req.query.offset)
+// 			Offset = req.query.offset
+
+// 		delete req.query.limit;
+// 		delete req.query.offset;
+//         model['OrderItem'].findAll({
+//             raw: true,
+//             // where: req.query,
+//             include:[{
+//             	model:model['Product'],
+//             	attributes:[],
+//             	include:[{
+//             		model:model['Vendor'],
+//             		attributes:['id','vendor_name']
+//             	}]
+//             }],
+//             attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
+//             group: ['Product.vendor_id'],
+//             order: [
+//                 [sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
+//             ]
+			
+//         }).then(function(results) {
+//            return res.send(200).send(results);
+//         }).catch(function(error) {
+//             console.log('Error:::', error);
+//              return res.send(500).send(error)
+//         });
+
+}
 
 export function topCategories(req, res) {
 	var orderItemQueryObj = {};
