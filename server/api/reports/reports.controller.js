@@ -467,9 +467,17 @@ export function vendorPerformance(req, res){
 	var lhsBetween = [], rhsBetween = [];
 	var limit, offset, compare;
 
-
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
 
 	if(req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
@@ -506,6 +514,15 @@ export function productPerformanceChanges(req, res){
 	var limit, offset, compare;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
 
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
@@ -544,6 +561,15 @@ export function compareCategoryPerformance(req, res){
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
+
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
 	else
@@ -577,6 +603,15 @@ export function compareMarketPlacePerformance(req, res){
 	var limit, offset, compare;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
 
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
@@ -612,6 +647,15 @@ export function compareCityPerformance(req, res){
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
+
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
 	else
@@ -645,6 +689,15 @@ export function compareCountriesPerformance(req, res){
 	var limit, offset, compare;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
 
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
