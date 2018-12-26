@@ -74,7 +74,7 @@
 		})
 		$("#position").change(function() {
 			console.log($("#position").val(), $('option:selected', this).attr('width'), $('optionalion:selected', this).attr('height'))
-			var message = "Please select image with size: width-" + $('option:selected', this).attr('width') + ' height-' + $('option:selected', this).attr('height');
+			var message = "Artwork should be" + $('option:selected', this).attr('width') + 'x' + $('option:selected', this).attr('height')+'to fit the above placement';
 			document.getElementById("alert-text").innerHTML = message;
 		});
 

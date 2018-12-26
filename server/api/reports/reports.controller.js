@@ -84,7 +84,7 @@ export function topSellingCities(req, res) {
 		],
 		group: ['Product.city'],
 		order: [
-			[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
+			[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
 		],
 		limit: Limit
 
@@ -109,7 +109,7 @@ export function topSellingCountries(req, res){
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
 	model['OrderItem'].findAll({
-		// raw: true,
+		raw: true,
 		include:[{
 			model: model['Product'],
 			where:{},
@@ -125,7 +125,7 @@ export function topSellingCountries(req, res){
 		],
 		group: ['Product.product_location'],
 		order: [
-			[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
+			[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
 		],
 		limit: Limit
 	}).then(function(results) {
@@ -310,40 +310,76 @@ export function topMarketPlace(req, res) {
 		return res.status(500).send(err);
 	});
 }
-export function topVendors(req,res){
-// 	var result = {},Limit = 5, Offset = 0;
-// console.log("====================================================")
-// 		if(req.query.limit)
-// 			Limit = req.query.limit;
+export function topBuyers(req,res){
+	var result = {},Limit = 5, Offset = 0;
+console.log("====================================================")
+		if(req.query.limit)
+			Limit = req.query.limit;
 
-// 		if(req.query.offset)
-// 			Offset = req.query.offset
+		if(req.query.offset)
+			Offset = req.query.offset
 
-// 		delete req.query.limit;
-// 		delete req.query.offset;
-//         model['OrderItem'].findAll({
-//             raw: true,
-//             // where: req.query,
-//             include:[{
-//             	model:model['Product'],
-//             	attributes:[],
-//             	include:[{
-//             		model:model['Vendor'],
-//             		attributes:['id','vendor_name']
-//             	}]
-//             }],
-//             attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
-//             group: ['Product.vendor_id'],
-//             order: [
-//                 [sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
-//             ]
+		delete req.query.limit;
+		delete req.query.offset;
+        model['Order'].findAll({
+            raw: true,
+            // where: req.query,
+            include:[{
+            	model:model['OrderItem'],
+            	// where:
+            	include:[{
+            	model:model['Product'],
+            	attributes:[],
+	            }],
+    	        attributes: [[sequelize.fn('count', sequelize.col('OrderItem.quantity')), 'sales']],
+
+            }],
+            group: ['user_id'],
+            // order: [
+            //     [sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
+            // ]
 			
-//         }).then(function(results) {
-//            return res.send(200).send(results);
-//         }).catch(function(error) {
-//             console.log('Error:::', error);
-//              return res.send(500).send(error)
-//         });
+        }).then(function(results) {
+           return res.send(200).send(results);
+        }).catch(function(error) {
+            console.log('Error:::', error);
+             return res.send(500).send(error)
+        });	
+
+
+	
+}
+export function topVendors(req,res){
+	var result = {},Limit = 5, Offset = 0;
+		if(req.query.limit)
+			Limit = req.query.limit;
+		if(req.query.offset)
+			Offset = req.query.offset
+		// delete req.query.limit;
+		// delete req.query.offset;
+        model['OrderItem'].findAll({
+            raw: true,
+            // where: req.query,
+            include:[{
+            	model:model['Product'],
+            	attributes:[],
+            	include:[{
+            		model:model['Vendor'],
+            		attributes:['id','vendor_name']
+            	}]
+            }],
+            // attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
+            // group: ['Product.Vendor.vendor_id'],
+            order: [
+                [sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
+            ]
+			
+        }).then(function(results) {
+           return res.send(200).send(results);
+        }).catch(function(error) {
+            console.log('Error:::', error);
+             return res.send(500).send(error)
+        });
 
 }
 
@@ -533,9 +569,7 @@ export function productPerformanceChanges(req, res){
 		return res.status(500).send(err);
 	});
 }
-export function topBuyers(req,res){
-	return res.status(200);
-}
+
 export function compareCategoryPerformance(req, res){
 	var queryObj = {};
 	var lhsBetween = [];
