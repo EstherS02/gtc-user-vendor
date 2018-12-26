@@ -723,4 +723,102 @@ function encryptPassword(req) {
 	return crypto.pbkdf2Sync(req.body.password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
 }
 
+export function viewStarterSeller(req,res){
+
+	var offset, limit, field, order;
+	var queryObj = {}, queryObj1 = {}, planQueryObj = {}, result = {};
+	var includeArr = [];
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+    delete req.query.offset;
+    limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    delete req.query.limit;
+    field = req.query.field ? req.query.field : "id";
+    delete req.query.field;
+    order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
+
+	queryObj['status'] = queryObj1['status'] ={
+		'$ne': status["DELETED"]
+	}
+
+	planQueryObj['plan_id']= plans['STARTER_SELLER'];
+
+	if(req.query.status){
+        planQueryObj['status']= req.query.status;
+	}
+	
+	if(req.query.text){
+        queryObj['$or'] = [
+			sequelize.where(sequelize.fn('concat_ws', sequelize.col('User.first_name'), ' ', sequelize.col('User.last_name'), ' ', sequelize.col('vendor_name')), {		
+				$like: '%' + req.query.text + '%'
+			})
+		];
+	}
+
+	includeArr = [
+		{ 
+			model:model['VendorPlan'],
+			where: planQueryObj,
+			attributes:['id', 'plan_id', 'end_date', 'status']
+		},
+		{
+			model:model['User'],
+			attributes:['id', 'first_name', 'last_name'],
+			required: false
+		},
+		{
+			model: model['Product'],
+			attributes: [],
+			required: false
+		}
+	]
+
+	model['Vendor'].findAll({
+		include: includeArr,
+		where: queryObj,
+		subQuery: false,
+		attributes: ['id', 'vendor_profile_pic_url', 'vendor_name', 'user_id', 'status', 'created_on',[sequelize.literal('COUNT(Products.id)'), 'product_count']],
+		offset: offset,
+		limit: limit,
+		group: ['id'],
+		order: [
+			[field, order]
+		]
+	}).then(function(rows){
+		var convertRowsJSON = [];
+			if (rows.length > 0) {
+				convertRowsJSON = JSON.parse(JSON.stringify(rows));
+				model['Vendor'].count({
+					where: queryObj1,
+					include: [{
+						model:model['VendorPlan'],
+						where: {
+							plan_id : plans['STARTER_SELLER'],	 
+						}, 
+					}]
+				}).then(function(count) {
+					result.count = count;
+					result.rows = convertRowsJSON;
+					return res.status(200).send(result);
+				}).catch(function(error) {
+					console.log("Error:::", error);
+					return res.status(500).send({
+						"message": "error",
+						"errorDescription": error
+					});
+				});
+			} else {
+				result.count = 0;
+				result.rows = convertRowsJSON;
+				return res.status(200).send(result);
+			}
+	}).catch(function(error){
+		console.log("Error:::", error);
+		return res.status(500).send({
+			"message": "ERROR",
+			"errorDescription": error
+		});
+	})
+}
+
 exports.authenticate = authenticate;
