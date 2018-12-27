@@ -1,0 +1,201 @@
+<script>
+	var params = {{{ DisplayJSON queryParamsString }}};
+	function selectAll(ele) {
+		var checkboxes = document.getElementsByTagName('input');
+		if (ele.checked) {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = true;
+				}
+			}
+		} else {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = false;
+				}
+			}
+		}
+	}
+	function limit(size) {
+		params = replaceUrlParam(params, "limit", size);
+		params = replaceUrlParam(params, "page", 1);
+		params = replaceUrlParam(params, "offset", 0);
+		location.href = 'refund?'+ params;
+	}
+
+	function replaceUrlParam(existingQueryParams, paramsName, paramsValue) {
+		var urlParams = new URLSearchParams(existingQueryParams);
+		if (paramsValue) {
+			urlParams.set(paramsName, paramsValue);
+		} else {
+			urlParams.delete(paramsName);
+		}
+		return urlParams;
+	}
+
+	function search(e) {
+		window.location.href = '/refund?keyword=' + e.value;
+	}
+
+	function changeStatus(e) {
+		window.location.href = '/refund?status=' + e.value;
+	}
+</script>
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			{{#if LoggedInUser.Vendor.VendorPlans}}
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="content-body">
+								<div class="row">
+									<div class="col-md-12">
+										<p class="content-txt">This is where you can see all your refunds on the Global Trade Connect.</p>
+										<span class="pull-right" style="font-size:12px"><a href="refund">Clear All</a></span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-inline pull-left m-t-md">
+											<div class="form-group m-r">
+												<div class="select-container">
+													<select id="inputStatus" class="form-control-customized form-control-sm custom-dropdown" onChange="changeStatus(this);">
+														{{#select queryURI.status}}
+															<option disabled selected>CHANGE STATUS</option>
+															<option value="REQUEST_FOR_RETURN">Return Requested</option>
+															<option value="APPROVED_REQUEST_FOR_RETURN">Return Approved</option>
+															<option value="RETURN_RECIVED">Return Initiated</option>
+															<option value="REFUND">Refund Initiated</option>
+														{{/select}}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="form-inline pull-right m-t-md">
+											<div class="form-group">
+												<div class="input-group gtc-rounded">
+													<input type="text" placeholder="Search Order#" class="form-control form-control-sm" onChange="search(this);" {{#if queryURI.keyword}} value={{queryURI.keyword}}{{/if}}>
+													<button type="submit" class="btn btn-sm btn-gtc">
+														<i class="fa fa-search"></i>
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								{{#if refunds.count}}
+									<div class="row py-2">
+										<div class="col-md-12">
+											<small class="font-weight-light">{{refunds.count}} items total</small>
+											<div class="float-right">
+												<small class="font-weight-light">Entries per page : </small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
+												</small>
+												<small class="font-weight-light">
+													<a {{#ifCond queryParams.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
+												</small>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<table class="table order-table">
+												<thead>
+													<tr>
+														<th>
+															<div class="customCheckbox">
+																<input type="checkbox" onclick="selectAll(this);" id="inputCheckbox" class="customCheckboxInput">
+																<label class="checkbox-b" for="inputCheckbox"></label>
+															</div>
+														</th>
+														<th>Order#</th>
+														<th>Buyer Name</th>
+														<th>Product Name</th>
+														<th>Status</th>
+														<th>Reason for return</th>
+													</tr>
+												</thead>
+												<tbody>
+													{{#each refunds.rows}}
+														<tr>
+															<td>
+																<div class="customCheckbox">
+																	<input type="checkbox" id="inputTerms{{this.id}}" class="customCheckboxInput" name="selected" value={{this.id}}>
+																	<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
+																</div>
+															</td>
+															<td>{{this.order_id}}</td>
+															<td>{{this.Order.User.first_name}} {{this.Order.User.last_name}}</td>
+															<td>
+																<span class="d-inline-block text-truncate" style="max-width: 300px;" title="{{this.Product.product_name}}">
+																	{{this.Product.product_name}}
+																</span>	
+															</td>
+															<td>
+																{{#ifCond this.order_item_status '==' ../orderItemStatusCode.REQUEST_FOR_RETURN}}Return Requested
+																{{else ifCond this.order_item_status '==' ../orderItemStatusCode.APPROVED_REQUEST_FOR_RETURN}}Return Approved
+																{{else ifCond this.order_item_status '==' ../orderItemStatusCode.RETURN_RECIVED}}Return Initiated
+																{{else ifCond this.order_item_status '==' ../orderItemStatusCode.REFUND}}Refund Initiated
+																{{/ifCond}} 
+															</td>
+															<td>{{this.reason_for_return}}</td>
+														</tr>
+													{{/each}}
+												</tbody>
+											</table>
+										</div>
+									</div>
+									{{#ifCond refunds.count '>' queryURI.limit}}
+										<div class="row">
+											<div class="col-md-12 align-self-center">
+												{{#pagination products.count queryURI.page queryURI.limit 2}}
+													<nav aria-label="Page navigation example">
+														<ul class="pagination justify-content-center">
+															{{#unless startFromFirstPage}}
+																<li class="justify-content-center align-self-center">
+																	<a href="../refund?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">
+																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+																</li>
+															{{/unless}}
+															{{#each pages}}
+																<li class="page-item {{#if isCurrent}} active {{/if}}">
+																	<a class="page-link" href="../refund?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryURI.limit)}}">{{page}}</a>
+																</li>
+															{{/each}}
+															{{#unless endAtLastPage}}
+																<li class="justify-content-center align-self-center">
+																	<a href="../refund?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">Next&nbsp;
+																		<i class="fa fa-angle-double-right"></i>
+																	</a>
+																</li>
+															{{/unless}}
+														</ul>
+													</nav>
+												{{/pagination}}
+											</div>
+										</div>
+									{{/ifCond}}
+								{{else}}
+									<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+								{{/if}}
+							</div>
+						</div>
+					</div>
+				</div>
+			{{/if}}
+		</div>
+	</div>
+</div>
+{{> footer/bottom-footer}}
