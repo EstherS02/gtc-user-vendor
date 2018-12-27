@@ -5,9 +5,7 @@ const service = require('../../api/service');
 const statusCode = require('../../config/status');
 const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
-const orderItemStatus = require('../../config/order-item-status');
 const cartService = require('../../api/cart/cart.service');
-const marketplace = require('../../config/marketplace');
 const notifictionService = require('../../api/notification/notification.service');
 const orderItemStatusCode = require('../../config/order-item-new-status');
 const querystring = require('querystring');
@@ -171,7 +169,8 @@ export function refund(req, res) {
 				orderItemStatusCode: orderItemStatusCode,
 				queryURI: queryURI,
 				queryParamsString: querystring.stringify(queryURI),
-				queryPaginationObj: queryPaginationObj
+				queryPaginationObj: queryPaginationObj,
+				vendorPlan: vendorPlan
 			});
 		} else {
 			res.render('vendorNav/refundView', err);
