@@ -468,7 +468,23 @@ export function refundOrder(req, res){
 	includeArr = [
 		{ 
 			model:model['Product'],
-			attributes:['id', 'product_name']
+			attributes:['id', 'product_name', 'vendor_id'],
+			include: [
+				{
+					model: model['Vendor'],
+					attributes: ['id', 'vendor_name']
+				}
+			]
+		},
+		{ 
+			model:model['Order'],
+			include: [
+				{ 
+					model: model['User'],
+					attributes:['id', 'first_name', 'last_name']
+				}
+			], 
+			attributes:['id', 'user_id']
 		}
 	]
 
