@@ -7,9 +7,16 @@ var controller = require('./export-csv.controller');
 
 
 router.get('/',auth.isAuthenticated(), controller.exportcsv);
-router.post('/orderhistorycsv', controller.orderHistoryexportcsv);
-router.post('/saleshistorycsv', controller.salesHistoryexportcsv);
-router.post('/myordercsv', controller.myOrderHistoryexportcsv);
-router.post('/reportperformancecsv', controller.reportperformanceexportcsv);
+router.post('/orderhistorycsv',auth.isAuthenticated(), controller.orderHistoryexportcsv);
+router.post('/saleshistorycsv',auth.isAuthenticated(), controller.salesHistoryexportcsv);
+router.post('/myordercsv', auth.isAuthenticated(),controller.myOrderHistoryexportcsv);
+router.post('/reportperformancecsv',auth.isAuthenticated(), controller.reportperformanceexportcsv);
+router.get('/export-vendors-performance',auth.isAuthenticated(), controller.vendorPerformancecsv);
+router.get('/export-product-performance',auth.isAuthenticated(), controller.productPerformanceChangescsv);
+router.get('/export-category-performance',auth.isAuthenticated(), controller.compareCategoryPerformancecsv);
+router.get('/export-marketplace-performance',auth.isAuthenticated(), controller.compareMarketPlacePerformancecsv);
+router.get('/export-city-performance',auth.isAuthenticated(), controller.compareCityPerformancecsv);
+router.get('/export-country-performance',auth.isAuthenticated(), controller.compareCountriesPerformancecsv);
+router.get('/export-user-performance',auth.isAuthenticated(), controller.compareUserPerformancecsv);
 
 module.exports = router;

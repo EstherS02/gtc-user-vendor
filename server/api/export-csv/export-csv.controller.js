@@ -365,3 +365,453 @@ exports.reportperformanceexportcsv = function(req, res) {
 };
 // ends export csv report-performance//
 
+
+//starts export csv top vendors
+export function vendorPerformancecsv(req, res){
+	var queryObj = {};
+	var lhsBetween = [], rhsBetween = [];
+	var limit, offset, compare;
+
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
+
+	if(req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	else
+		queryObj.vendor_id = null;
+
+	if(req.query.compare){
+		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+	}
+
+	if(req.query.lhs_from && req.query.lhs_to){
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	}else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+		ReportService.vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+			var finalresults = [];
+			for (let value of results.lhs_result) {
+				value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+				value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+				value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+				finalresults.push(value);
+			}
+		var fields = [];
+		fields = _.map(finalresults, 'columnName');
+		fields.push('vendor_id','vendor_name', 'owner_name', 'type', 'sales', 'total_fees','vendor_fees','gtc_fees');
+		const opts = {
+			fields
+		};
+		const parser = new Json2csvParser(finalresults);
+		const csv = parser.parse(finalresults);
+		res.write(csv);
+		res.end();
+		return;
+		}).catch((err) => {
+		console.log('compareVendorPerformance err', err);
+		return res.status(500).send(err);
+	});
+}
+//ends export csv top vendors
+
+//starts export csv top products
+export function productPerformanceChangescsv(req, res){
+	var queryObj = {};
+	var lhsBetween = [];
+	var rhsBetween = [];
+	var limit, offset, compare;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
+
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	else
+		queryObj.vendor_id = null;
+	if (req.query.compare) {
+		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+	}
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+
+	ReportService.productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+	var finalresults = [];
+		for (let value of results.lhs_result) {
+			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			finalresults.push(value);
+		}
+	var fields = [];
+	fields = _.map(finalresults, 'columnName');
+	fields.push('product_name','marketplace_name', 'vendor_name','owner_name','type', 'sales', 'total_fees','vendor_fees','gtc_fees');
+	const opts = {
+		fields
+	};
+	const parser = new Json2csvParser(finalresults);
+	const csv = parser.parse(finalresults);
+	res.write(csv);
+	res.end();
+	return;
+	}).catch((err) => {
+		console.log('comparePerformance err', err);
+		return res.status(500).send(err);
+	});
+}
+//ends export csv top products
+
+//starts export csv top selling categories
+export function compareCategoryPerformancecsv(req, res){
+	var queryObj = {};
+	var lhsBetween = [];
+	var rhsBetween = [];
+	var limit, offset, compare;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
+
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	else
+		queryObj.vendor_id = null;
+	if (req.query.compare) {
+		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+	}
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+
+	ReportService.categoryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+		var finalresults = [];
+		for (let value of results.lhs_result) {
+			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			finalresults.push(value);
+		}
+	var fields = [];
+	fields = _.map(finalresults, 'columnName');
+	fields.push('category_name', 'sales','total_fees','vendor_fees','gtc_fees');
+	const opts = {
+		fields
+	};
+	const parser = new Json2csvParser(finalresults);
+	const csv = parser.parse(finalresults);
+	res.write(csv);
+	res.end();
+	return;
+		//return res.status(200).send(results);
+	}).catch((err) => {
+		console.log('comparePerformance err', err);
+		return res.status(500).send(err);
+	});
+}
+//ends export csv top selling categories
+
+//starts export top selling marketplace
+export function compareMarketPlacePerformancecsv(req, res){
+	var queryObj = {};
+var lhsBetween = [];
+var rhsBetween = [];
+var limit, offset, compare;
+offset = req.query.offset ? parseInt(req.query.offset) : 0;
+limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+if(req.user.role == 1){
+	if(req.query.compare){
+		req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+		req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+		req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+		req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+	}		
+}
+
+if (req.user.role == 2)
+	queryObj.vendor_id = req.user.Vendor.id;
+else
+	queryObj.vendor_id = null;
+if (req.query.compare) {
+	queryObj.compare = req.query.compare ? req.query.compare : 'false';
+}
+if (req.query.lhs_from && req.query.lhs_to) {
+	lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+} else {
+	lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+}
+if (req.query.rhs_from && req.query.rhs_to) {
+	rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+} else {
+	rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+}
+
+ReportService.marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+
+	//return res.status(200).send(results);
+	console.log("results:::"+JSON.stringify(results));
+	var finalresults = [];
+		for (let value of results.lhs_result) {
+			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			finalresults.push(value);
+		}
+	var fields = [];
+	fields = _.map(finalresults, 'columnName');
+	fields.push('marketplace_name', 'sales','total_fees','vendor_fees','gtc_fees');
+	const opts = {
+		fields
+	};
+	const parser = new Json2csvParser(finalresults);
+	const csv = parser.parse(finalresults);
+	res.write(csv);
+	res.end();
+	return;
+}).catch((err) => {
+	console.log('comparePerformance err', err);
+	return res.status(500).send(err);
+});
+}
+//ends export top selling marketplace
+
+//starts export top selling city 
+export function compareCityPerformancecsv(req, res){
+	var queryObj = {};
+	var lhsBetween = [];
+	var rhsBetween = [];
+	var limit, offset, compare;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
+
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	else
+		queryObj.vendor_id = null;
+	if (req.query.compare) {
+		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+	}
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+
+	ReportService.cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+
+		//return res.status(200).send(results);
+		console.log("results:::"+JSON.stringify(results));
+		var finalresults = [];
+		for (let value of results.lhs_result) {
+			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			finalresults.push(value);
+		}
+	   var fields = [];
+	fields = _.map(finalresults, 'columnName');
+	fields.push('total_fees', 'vendor_fees','sales','gtc_fees','Product.city');
+	const opts = {
+		fields
+	};
+	const parser = new Json2csvParser(finalresults);
+	const csv = parser.parse(finalresults);
+	res.write(csv);
+	res.end();
+	return;
+	}).catch((err) => {
+		console.log('comparePerformance err', err);
+		return res.status(500).send(err);
+	});
+}
+//ends export top selling city
+
+//starts export top selling countries
+export function compareCountriesPerformancecsv(req, res){
+	var queryObj = {};
+	var lhsBetween = [];
+	var rhsBetween = [];
+	var limit, offset, compare;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
+
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	else
+		queryObj.vendor_id = null;
+	if (req.query.compare) {
+		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+	}
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+
+	ReportService.countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+	   var finalresults = [];
+		for (let value of results.lhs_result) {
+			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			finalresults.push(value);
+		}
+	   var fields = [];
+	fields = _.map(finalresults, 'columnName');
+	fields.push('total_fees', 'vendor_fees','sales','gtc_fees','Product.Country.name');
+	const opts = {
+		fields
+	};
+	const parser = new Json2csvParser(finalresults);
+	const csv = parser.parse(finalresults);
+	res.write(csv);
+	res.end();
+	return;
+		//return res.status(200).send(results);
+	}).catch((err) => {
+		console.log('comparePerformance err', err);
+		return res.status(500).send(err);
+	});
+}
+//ends export top selling countries
+
+//starts export top top buyers
+export function compareUserPerformancecsv(req, res){
+
+	var queryObj = {};
+	var lhsBetween = [];
+	var rhsBetween = [];
+	var limit, offset, compare;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
+
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	else
+		queryObj.vendor_id = null;
+
+	if (req.query.compare) {
+		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+	}
+
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+
+	ReportService.userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+		console.log("resultss:::"+JSON.stringify(results));
+        var finalresults = [];
+		for (let value of results.lhs_result) {
+			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			finalresults.push(value);
+		}
+	   var fields = [];
+	fields = _.map(finalresults, 'columnName');
+	fields.push('total_fees', 'vendor_fees','sales','gtc_fees','Product.Country.name');
+	const opts = {
+		fields
+	};
+	const parser = new Json2csvParser(finalresults);
+	const csv = parser.parse(finalresults);
+	res.write(csv);
+	res.end();
+	return;
+		
+	}).catch((err) => {
+		console.log('comparePerformance err', err);
+		return res.status(500).send(err);
+	});	
+}
+//ends export top buyers
