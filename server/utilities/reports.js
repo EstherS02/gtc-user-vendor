@@ -189,6 +189,58 @@ function getAllCountryPerformance(queryObj, limit, offset,attributes,groupBy,inc
         });
     });
 }
+
+function getAllUserPerformance(queryObj, limit, offset,attributes,groupBy,includeArr) {
+    let queryObject = {
+        created_on: {
+             $between: [queryObj.from, queryObj.to]
+        },
+        '$or': [{
+                    order_item_status: orderItemStatus['ORDER_INITIATED']
+                }, {
+                    order_item_status:orderItemStatus['CONFIRMED']
+                },{
+                    order_item_status: orderItemStatus['SHIPPED']
+                }, {
+                    order_item_status:orderItemStatus['DELIVERED']
+                },{
+                    order_item_status:orderItemStatus['COMPLETED']
+                }],
+		};
+		
+    let includeArray = includeArr ? includeArr:[];
+    return new Promise((resolve, reject) => {
+
+    model['OrderItem'].findAll({
+            raw: true,
+            where: queryObject,
+            attributes:  [[sequelize.fn('sum', sequelize.col('OrderItem.price')), 'total_fees'],
+                        [sequelize.fn('sum', sequelize.col('final_price')), 'vendor_fees'],
+                        [sequelize.fn('sum', sequelize.col('quantity')), 'sales'],
+                        [sequelize.literal('(SUM(gtc_fees)+  SUM(plan_fees))'), 'gtc_fees']],
+            include:[{
+                model:model['Order'],
+				attributes:['id','user_id'],
+				include:[{
+                    model:model['User'],
+                    attributes:['id','first_name','last_name']
+                }]
+            }],
+            limit:limit,
+            offset:offset,
+            group: ['Order.user_id'],
+            order: [
+                [sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
+            ],
+        }).then(function(results) {
+            resolve(results);
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });
+}
+
 function getAllCityPerformance(queryObj, limit, offset,attributes,groupBy,includeArr) {
     let queryObject = {
         created_on: {
@@ -317,7 +369,6 @@ function getAllProductPerformance(queryObj, limit, offset) {
             },
             type: sequelize.QueryTypes.SELECT
         }).then(data => {
-            // console.log("data::::", data)
             resolve(data);
         }).catch(function(err) {
             reject(err);
@@ -325,7 +376,7 @@ function getAllProductPerformance(queryObj, limit, offset) {
     });
 }
 
-//
+
 export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween) {
     return new Promise((resolve, reject) => {
 		var result = {}, Limit = 5, Offset = 0;
@@ -910,6 +961,36 @@ export function countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limi
         });
     });   
 }
+
+export function userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset){
+	const pastRange = _.assign({}, queryObj);
+	pastRange.from = lhsBetween[0];
+	pastRange.to = lhsBetween[1];
+	const currentRange = _.assign({}, queryObj);
+	currentRange.from = rhsBetween[0];
+	currentRange.to = rhsBetween[1];
+
+	return new Promise((resolve, reject) => {
+		var result = {};
+		return getAllUserPerformance(pastRange, limit, offset).then(function(lhsResult) {
+			result.lhs_result = lhsResult;
+			return result;
+		}).then(function() {
+			if (queryObj.compare == 'true') {
+		return getAllUserPerformance(currentRange, limit, offset).then(function(rhsResult) {
+					result.rhs_result = rhsResult;
+					resolve(result);
+				});
+			} else {
+				resolve(result);
+			}
+		}).catch(function(error) {
+			console.log('Error:::', error);
+			reject(error);
+		});
+	});   
+}
+
 export function cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset){
  const pastRange = _.assign({}, queryObj);
     pastRange.from = lhsBetween[0];

@@ -319,52 +319,52 @@ export function topMarketPlace(req, res) {
 		return res.status(500).send(err);
 	});
 }
+
 export function topBuyers(req,res){
 	var result = {},Limit = 5, Offset = 0;
-console.log("====================================================")
-		if(req.query.limit)
-			Limit = req.query.limit;
+	if(req.query.limit)
+		Limit = req.query.limit;
 
-		if(req.query.offset)
-			Offset = req.query.offset
+	if(req.query.offset)
+		Offset = req.query.offset
 
-		delete req.query.limit;
-		delete req.query.offset;
-        model['Order'].findAll({
-            raw: true,
-            // where: req.query,
-            include:[{
-            	model:model['OrderItem'],
-            	// where:
-            	include:[{
-            	model:model['Product'],
-            	attributes:[],
-	            }],
-    	        attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
+	delete req.query.limit;
+	delete req.query.offset;
+	model['Order'].findAll({
+		raw: true,
+		// where: req.query,
+		include:[{
+			model:model['OrderItem'],
+			// where:
+			include:[{
+			model:model['Product'],
+			attributes:[],
+			}],
+			attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
 
-            },{
-            	model:model['User'],
-            	where:{status:statusCode['ACTIVE']},
-            	attributes:['id','first_name','user_pic_url']
-            }],
-           	attributes:[['id','order_id']],
-            group: ['user_id'],
-            order: [
-                [sequelize.fn('sum', sequelize.col('OrderItems.quantity')), 'DESC']
-            ],
-        }).then(function(results) {
-        	if(results.length>0){
+		},{
+			model:model['User'],
+			where:{status:statusCode['ACTIVE']},
+			attributes:['id','first_name','user_pic_url']
+		}],
+		attributes:[],
+		group: ['user_id'],
+
+		order: [
+			[sequelize.fn('sum', sequelize.col('OrderItems.quantity')), 'DESC']
+		],
+		
+	}).then(function(results) {
+		if(results.length>0){
         		results = results.slice(Offset, Offset + Limit);
         	}
-           return res.status(200).send(results);
-        }).catch(function(error) {
-            console.log('Error:::', error);
-             return res.status(500).send(error)
-        });	
-
-
-	
+		return res.status(200).send(results);
+	}).catch(function(error) {
+		console.log('Error:::', error);
+			return res.status(500).send(error)
+	});		
 }
+
 export function topVendors(req,res){
 	var result = {},Limit = 5, Offset = 0;
 		if(req.query.limit)
@@ -778,7 +778,51 @@ export function compareCountriesPerformance(req, res){
 	});
 }
 export function compareUserPerformance(req, res){
+
+	var queryObj = {};
+	var lhsBetween = [];
+	var rhsBetween = [];
+	var limit, offset, compare;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+	if(req.user.role == 1){
+		if(req.query.compare){
+			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
+		}		
+	}
+
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	else
+		queryObj.vendor_id = null;
+
+	if (req.query.compare) {
+		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+	}
+
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
 	
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+
+	ReportService.userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+
+		return res.status(200).send(results);
+	}).catch((err) => {
+		console.log('comparePerformance err', err);
+		return res.status(500).send(err);
+	});	
 }
 export function vendorTrail(req, res) {
 	var queryObj = {};
