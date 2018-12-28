@@ -127,11 +127,11 @@ export async function AccountingReport(vendorID, queryParams) {
 
 		const gtcPaymentEscrow = await model['OrderVendor'].findAll({
 			raw: true,
-			where: adminQueryObj,
+			//where: adminQueryObj,
 			attributes: [],
 			include: [{
 				model: model['OrderVendorPayout'],
-				where: {},
+				where: adminQueryObj,
 				attributes: [],
 				include: [{
 					model: model['Payment'],
@@ -142,7 +142,7 @@ export async function AccountingReport(vendorID, queryParams) {
 		});	
 		
 		if(!_.isUndefined(gtcPaymentEscrow[0]['OrderVendorPayouts.Payment.amount']))
-			accounting['gtc_pay_escrow'] = parseFloat(gtcPaymentEscrow[0]['OrderVendorPayouts.Payment.amount']);	
+			accounting['gtc_pay_escrow'] = parseFloat(gtcPaymentEscrow[0]['OrderVendorPayouts.Payment.amount'])?parseFloat(gtcPaymentEscrow[0]['OrderVendorPayouts.Payment.amount']):0;	
 
 		//accounting['total'] = _.sum(Object.values(accounting));
 		accounting['total'] = accounting['membership'] + accounting['featured_product'] + accounting['processing_fees'] + accounting['subscription_fees'];
