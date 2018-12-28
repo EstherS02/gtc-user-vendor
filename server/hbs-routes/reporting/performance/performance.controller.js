@@ -105,23 +105,23 @@ export function performance(req, res) {
 					return callback(null);
 				});
 		},
-		performance: function(callback) {
-			let performanceQueryObj = {};
-			if (req.user.role == 2)
-				performanceQueryObj.vendor_id = req.user.Vendor.id;
+		// performance: function(callback) {
+		// 	let performanceQueryObj = {};
+		// 	if (req.user.role == 2)
+		// 		performanceQueryObj.vendor_id = req.user.Vendor.id;
 
-			if (req.query.compare) {
-				performanceQueryObj.compare = req.query.compare;
-				queryURI['compare'] = req.query.compare;
-			}
+		// 	if (req.query.compare) {
+		// 		performanceQueryObj.compare = req.query.compare;
+		// 		queryURI['compare'] = req.query.compare;
+		// 	}
 
-			ReportService.performanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-				return callback(null, results);
-			}).catch((err) => {
-				console.log('performance err', err);
-				return callback(err);
-			});
-		},
+		// 	ReportService.performanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+		// 		return callback(null, results);
+		// 	}).catch((err) => {
+		// 		console.log('performance err', err);
+		// 		return callback(err);
+		// 	});
+		// },
 		unreadCounts: function(callback) {
 			notifictionService.notificationCounts(LoggedInUser.id)
 				.then(function(counts) {
@@ -136,28 +136,28 @@ export function performance(req, res) {
 				performanceQueryObj.vendor_id = req.user.Vendor.id;
 
 			if (req.query.top == "products") {
-				ReportService.topPerformingProducts(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+				ReportService.performanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
 					.then(function(results) {
 						return callback(null, results);
 					}).catch(function(error) {
 						return callback(error);
 					});
 			} else if (req.query.top == "marketplace") {
-				ReportService.topPerformingMarketPlaces(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+				ReportService.marketplacePerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
 					.then(function(results) {
 						return callback(null, results);
 					}).catch(function(error) {
 						return callback(error);
 					});
 			} else if (req.query.top == "city") {
-				ReportService.topPerformingCities(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+				ReportService.cityPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
 					.then(function(results) {
 						return callback(null, results);
 					}).catch(function(error) {
 						return callback(error);
 					});
 			} else {
-				ReportService.topPerformingProducts(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+				ReportService.performanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
 					.then(function(results) {
 						return callback(null, results);
 					}).catch(function(error) {
