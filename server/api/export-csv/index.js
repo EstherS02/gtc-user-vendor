@@ -11,6 +11,8 @@ router.post('/orderhistorycsv',auth.isAuthenticated(), controller.orderHistoryex
 router.post('/saleshistorycsv',auth.isAuthenticated(), controller.salesHistoryexportcsv);
 router.post('/myordercsv', auth.isAuthenticated(),controller.myOrderHistoryexportcsv);
 router.post('/reportperformancecsv',auth.isAuthenticated(), controller.reportperformanceexportcsv);
+router.post('/reportmarketplacecsv',auth.isAuthenticated(), controller.reportmarketplaceexportcsv);
+router.post('/reportcitycsv',auth.isAuthenticated(), controller.reportcityexportcsv);
 router.get('/export-vendors-performance',auth.isAuthenticated(), controller.vendorPerformancecsv);
 router.get('/export-product-performance',auth.isAuthenticated(), controller.productPerformanceChangescsv);
 router.get('/export-category-performance',auth.isAuthenticated(), controller.compareCategoryPerformancecsv);

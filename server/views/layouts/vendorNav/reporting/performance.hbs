@@ -23,31 +23,78 @@
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var params = {{{ DisplayJSON queryURIString }}};
-
-	var topCategory;
+	var category = {{{ DisplayJSON selectedTopCatogory }}};
 	function downloadCSV(args) {
-		$.ajax({
-			type: 'POST',
-			url: '/api/export-csv/reportperformancecsv',
-			data: { "vendor_id": $('#login_vendoruserid').val() },
-			success: function(data) {
-				var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
-				var csvURL = null;
-				if (navigator.msSaveBlob) {
-					csvURL = navigator.msSaveBlob(csvData, 'Report.csv');
-				} else {
-					csvURL = window.URL.createObjectURL(csvData);
+		if (category == 'products') {
+			$.ajax({
+				type: 'POST',
+				url: '/api/export-csv/reportperformancecsv',
+				data: { "vendor_id": $('#login_vendoruserid').val() },
+				success: function(data) {
+					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+					var csvURL = null;
+					if (navigator.msSaveBlob) {
+						csvURL = navigator.msSaveBlob(csvData, 'Report.csv');
+					} else {
+						csvURL = window.URL.createObjectURL(csvData);
+					}
+					var tempLink = document.createElement('a');
+					tempLink.href = csvURL;
+					tempLink.setAttribute('download', 'Report.csv');
+					tempLink.click();
+				},
+				error: function(request, status, error) {
+					console.log('request', request);
+					console.log('status', status);
 				}
-				var tempLink = document.createElement('a');
-				tempLink.href = csvURL;
-				tempLink.setAttribute('download', 'Report.csv');
-				tempLink.click();
-			},
-			error: function(request, status, error) {
-				console.log('request', request);
-				console.log('status', status);
-			}
-		});
+			});
+		} else if (category == 'marketplace') {
+			$.ajax({
+				type: 'POST',
+				url: '/api/export-csv/reportmarketplacecsv',
+				data: { "vendor_id": $('#login_vendoruserid').val() },
+				success: function(data) {
+					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+					var csvURL = null;
+					if (navigator.msSaveBlob) {
+						csvURL = navigator.msSaveBlob(csvData, 'Report.csv');
+					} else {
+						csvURL = window.URL.createObjectURL(csvData);
+					}
+					var tempLink = document.createElement('a');
+					tempLink.href = csvURL;
+					tempLink.setAttribute('download', 'Report.csv');
+					tempLink.click();
+				},
+				error: function(request, status, error) {
+					console.log('request', request);
+					console.log('status', status);
+				}
+			});
+		} else if (category == 'city') {
+			$.ajax({
+				type: 'POST',
+				url: '/api/export-csv/reportcitycsv',
+				data: { "vendor_id": $('#login_vendoruserid').val() },
+				success: function(data) {
+					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+					var csvURL = null;
+					if (navigator.msSaveBlob) {
+						csvURL = navigator.msSaveBlob(csvData, 'Report.csv');
+					} else {
+						csvURL = window.URL.createObjectURL(csvData);
+					}
+					var tempLink = document.createElement('a');
+					tempLink.href = csvURL;
+					tempLink.setAttribute('download', 'Report.csv');
+					tempLink.click();
+				},
+				error: function(request, status, error) {
+					console.log('request', request);
+					console.log('status', status);
+				}
+			});
+		}
 	}
 
 	function limit(size) {
@@ -188,8 +235,13 @@
 										</form>
 										<form class="form-inline pull-right m-t-md">
 											<div class="form-group m-r">
-												<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
-												<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
+												{{#if topCategory.lhs_result}}
+													<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
+													<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
+												{{else}}
+													<button type="button" class="btn btn-md btn-muted" disabled='disabled' onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
+													<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
+												{{/if}}
 											</div>
 
 										</form>
@@ -206,7 +258,8 @@
 										<div class="form-group" style="width:273px;margin-left:-63px;">
 
 											<div class="select-container">
-												<select id="inputTop" style="height:25px;" onchange="onSearch()" class="form-control-customized form-control-sm custom-dropdown" name="countyr">
+												<select id="inputTop" style="height:25px;" onchange="onSearch()" class="form-control-customized form-control-sm custom-dropdown"
+												 name="countyr">
 													<option value="1" {{#ifCond queryURI.top "==" 'products'}} selected="true" {{/ifCond}}>TOP PERFORMING PRODUCTS</option>
 													<option value="2" {{#ifCond queryURI.top "==" 'marketplace'}} selected="true" {{/ifCond}}>TOP PERFORMING MARKETPLACES</option>
 													<option value="3" {{#ifCond queryURI.top "==" 'city'}} selected="true" {{/ifCond}}>TOP PERFORMING CITIES</option>
@@ -241,98 +294,98 @@
 									</div>
 								</div>
 								{{#ifCond queryURI.top "==" "products"}}
-								<div class="row">
-									<table class="table table-hover">
-										<thead>
-											<tr>
-												<th>Product</th>
-												<th>Type</th>
-												<th>Sales</th>
-												<th>Vendor Revenue</th>
-												<th>GTC Processing Fees</th>
-
-											</tr>
-										</thead>
-										<tbody>
-											{{#each topCategory.lhs_result}}
+									<div class="row">
+										<table class="table table-hover">
+											<thead>
 												<tr>
-													<td>
-														<img src="../..{{this.product_url}}" style="width: 15px;" />
-														<a href="javascript:;" class="text_blue_color">
-															<span class="d-inline-block text-truncate" style="max-width: 330px;">
-																{{this.product_name}}
-															</span>
-														</a>
-													</td>
-													<td>{{this.marketplace_name}}</td>
-													{{compareSalePerformance this @root.performance.rhs_result}}
+													<th>Product</th>
+													<th>Type</th>
+													<th>Sales</th>
+													<th>Vendor Revenue</th>
+													<th>GTC Processing Fees</th>
+
 												</tr>
-											{{/each}}
-										</tbody>
-									</table>
-								</div>
+											</thead>
+											<tbody>
+												{{#each topCategory.lhs_result}}
+													<tr>
+														<td>
+															<img src="../..{{this.product_url}}" style="width: 15px;" />
+															<a href="javascript:;" class="text_blue_color">
+																<span class="d-inline-block text-truncate" style="max-width: 330px;">
+																	{{this.product_name}}
+																</span>
+															</a>
+														</td>
+														<td>{{this.marketplace_name}}</td>
+														{{compareSalePerformance this @root.performance.rhs_result}}
+													</tr>
+												{{/each}}
+											</tbody>
+										</table>
+									</div>
 								{{/ifCond}}
 								{{#ifCond queryURI.top "==" "marketplace"}}
-								<div class="row">
-									<table class="table table-hover">
-										<thead>
-											<tr>
-												<th>Marketplace Name</th>
-												<th>Sales</th>
-												<th>Revenue</th>
-												<th>Gtc Fees</th>
-												<th>Vendor Revenue</th>
-											</tr>
-										</thead>
-										<tbody>
-											{{#each topCategory.lhs_result}}
+									<div class="row">
+										<table class="table table-hover">
+											<thead>
 												<tr>
-													<td>
-														<img src="../..{{this.product_url}}" style="width: 15px;" />
-														<a href="javascript:;" class="text_blue_color">
-															<span class="d-inline-block text-truncate" style="max-width: 330px;">
-																{{this.product_name}}
-															</span>
-														</a>
-													</td>
-													<td>{{this.marketplace_name}}</td>
-													{{compareSalePerformance this @root.performance.rhs_result}}
+													<th>Marketplace Name</th>
+													<th>Sales</th>
+													<th>Revenue</th>
+													<th>Gtc Fees</th>
+													<th>Vendor Revenue</th>
 												</tr>
-											{{/each}}
-										</tbody>
-									</table>
-								</div>
+											</thead>
+											<tbody>
+												{{#each topCategory.lhs_result}}
+													<tr>
+														<td>
+															<img src="../..{{this.product_url}}" style="width: 15px;" />
+															<a href="javascript:;" class="text_blue_color">
+																<span class="d-inline-block text-truncate" style="max-width: 330px;">
+																	{{this.product_name}}
+																</span>
+															</a>
+														</td>
+														<td>{{this.marketplace_name}}</td>
+														{{compareSalePerformance this @root.performance.rhs_result}}
+													</tr>
+												{{/each}}
+											</tbody>
+										</table>
+									</div>
 								{{/ifCond}}
 								{{#ifCond queryURI.top "==" "city"}}
-								<div class="row">
-									<table class="table table-hover">
-										<thead>
-											<tr>
-												<th>City Name</th>
-												<th>Sales</th>
-												<th>Revenue</th>
-												<th>Gtc Fees</th>
-												<th>Vendor Revenue</th>
-											</tr>
-										</thead>
-										<tbody>
-											{{#each topCategory.lhs_result}}
+									<div class="row">
+										<table class="table table-hover">
+											<thead>
 												<tr>
-													<td>
-														<img src="../..{{this.product_url}}" style="width: 15px;" />
-														<a href="javascript:;" class="text_blue_color">
-															<span class="d-inline-block text-truncate" style="max-width: 330px;">
-																{{this.product_name}}
-															</span>
-														</a>
-													</td>
-													<td>{{this.marketplace_name}}</td>
-													{{compareSalePerformance this @root.performance.rhs_result}}
+													<th>City Name</th>
+													<th>Sales</th>
+													<th>Revenue</th>
+													<th>Gtc Fees</th>
+													<th>Vendor Revenue</th>
 												</tr>
-											{{/each}}
-										</tbody>
-									</table>
-								</div>
+											</thead>
+											<tbody>
+												{{#each topCategory.lhs_result}}
+													<tr>
+														<td>
+															<img src="../..{{this.product_url}}" style="width: 15px;" />
+															<a href="javascript:;" class="text_blue_color">
+																<span class="d-inline-block text-truncate" style="max-width: 330px;">
+																	{{this.product_name}}
+																</span>
+															</a>
+														</td>
+														<td>{{this.marketplace_name}}</td>
+														{{compareSalePerformance this @root.performance.rhs_result}}
+													</tr>
+												{{/each}}
+											</tbody>
+										</table>
+									</div>
 								{{/ifCond}}
 								<div class="row">
 									<div class="col-md-6">
