@@ -4,6 +4,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const sequelize = require('sequelize');
 const service = require('../service');
+const orderItemStatus = require('../../config/order-item-new-status');
 const statusCode = require('../../config/status');
 const vendorPlan = require('../../config/gtc-plan');
 const carrierCode = require('../../config/carriers');
@@ -214,12 +215,20 @@ export function latestTickets(req, res) {
 }
 
 export function latestRefunds(req, res) {
-	var queryObj = {};
+	var queryObj = {};  
 	var vendorQuery = {};
 	var result = {};
 	if (req.user.role == 2)
 		vendorQuery.vendor_id = req.user.Vendor.id;
-	queryObj.order_item_status = 6;
+	queryObj['$or']= [{
+                    order_item_status: orderItemStatus['REQUEST_FOR_RETURN']
+                }, {
+                    order_item_status:orderItemStatus['APPROVED_REQUEST_FOR_RETURN']
+                },{
+                    order_item_status: orderItemStatus['RETURN_RECIVED']
+                }, {
+                    order_item_status:orderItemStatus['REFUND']
+                }],
 	model['User'].findAll({
 		attributes: ['id', 'first_name', 'last_name', 'status'],
 		limit: 5,
@@ -344,10 +353,11 @@ export function topBuyers(req,res){
 		order: [
 			[sequelize.fn('sum', sequelize.col('OrderItems.quantity')), 'DESC']
 		],
-		// offset:Offset,
-		// limit:Limit,
 		
 	}).then(function(results) {
+		if(results.length>0){
+        		results = results.slice(Offset, Offset + Limit);
+        	}
 		return res.status(200).send(results);
 	}).catch(function(error) {
 		console.log('Error:::', error);
@@ -378,7 +388,9 @@ export function topVendors(req,res){
             group: ['Product.vendor_id'],
             order: [
                 [sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
-            ]
+            ],
+            offset:0,
+            limit:5
 			
         }).then(function(results) {
            return res.status(200).send(results);
