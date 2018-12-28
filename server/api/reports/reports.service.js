@@ -4,6 +4,8 @@ const moment = require('moment');
 var _ = require('lodash');
 const service = require('../service');
 const status = require('../../config/status');
+const SequelizeInstance = require('../../sqldb/index');
+
 const model = require('../../sqldb/model-connect');
 const sequelize = require('sequelize');
 
@@ -102,17 +104,29 @@ export async function AccountingReport(vendorID, queryParams) {
 		if (subscriptionFees.length > 0) 
 			accounting['subscription_fees'] = subscriptionFees[0].amount != null ? parseFloat(subscriptionFees[0].amount) : 0;
 
-		
-		const paymentInEscrow = await model['OrderVendor'].findAll({
-			raw: true,
-			where: queryObj,
-			attributes: [
-				[sequelize.fn('sum', sequelize.col('final_price')), 'amount']
-			]
-		});
-		if (subscriptionFees.length > 0)
-			accounting['payment_in_escrow'] = paymentInEscrow[0].amount != null ? parseFloat(paymentInEscrow[0].amount) : 0;
+		const paymentInEscrow = await paymentInEscrowApi(vendorID,queryParams);
+		console.log("===============================",paymentInEscrow)
 
+		// model['OrderVendor'].findAll({
+		// 	raw: true,
+		// 	where: queryObj,
+		// 	include:[{
+		// 		model:model['OrderVendorPayout'],
+		// 		where:{
+		// 			order_vendor_id:{
+		// 				$eq:null
+		// 			}
+		// 		},
+		// 		required:false
+		// 	}],
+		// 	attributes: [
+		// 		[sequelize.fn('sum', sequelize.col('final_price')), 'amount']
+		// 	],
+		// 	required:false
+		// });
+		if (paymentInEscrow.length > 0)
+			accounting['payment_in_escrow'] = paymentInEscrow[0].amount != null ? parseFloat(paymentInEscrow[0].amount) : 0;
+// SELECT order_vendor.id,order_vendor_payout.id AS payout_id FROM order_vendor LEFT OUTER JOIN order_vendor_payout ON order_vendor.id=order_vendor_payout.order_vendor_id WHERE order_vendor_payout.order_vendor_id IS NULL
 
 		/*const gtcPaymentEscrow = await model['OrderVendor'].findAll({
 			raw: true,
@@ -313,4 +327,30 @@ export async function adFeaturedRevenue(req,res){
 		console.log("Error::::::::::::::",error)
 		done(error);
 	}
+}
+function paymentInEscrowApi(vendorID,queryObj){
+		console.log("===========================",queryObj.start_date)
+	var queryResult = `SELECT SUM(order_vendor.final_price) AS amount
+					   FROM order_vendor LEFT OUTER JOIN order_vendor_payout 
+					   ON order_vendor.id=order_vendor_payout.order_vendor_id 
+					   WHERE order_vendor_payout.order_vendor_id IS NULL`;
+	if(queryObj.start_date &&queryObj.end_date){
+		queryResult = queryResult+` AND order_vendor.created_on between '`+moment(queryObj.start_date).format('YYYY-MM-DD')+`' and '`+moment(queryObj.end_date).format('YYYY-MM-DD')+`'`;
+	}
+	if(vendorID){
+		queryResult = queryResult+` AND order_vendor.vendor_id =`+ vendorID;	
+	}
+// sum('final_price') AS amount
+    
+    return new Promise((resolve, reject) => {
+        SequelizeInstance.query(queryResult, {
+            type: sequelize.QueryTypes.SELECT
+        }).then(data => {
+        	console.log("------------------------------adsadf",data)
+            resolve(data);
+        }).catch(function(err) {
+        	console.log("------------------------------error",err)
+            reject(err);
+        });
+    });
 }
