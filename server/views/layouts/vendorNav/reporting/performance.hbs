@@ -254,11 +254,11 @@
 											</tr>
 										</thead>
 										<tbody>
-											{{#each performance.lhs_result}}
+											{{#each topCategory.lhs_result}}
 												<tr>
 													<td>
 														<img src="../..{{this.product_url}}" style="width: 15px;" />
-														<a href="#" class="text_blue_color">
+														<a href="javascript:;" class="text_blue_color">
 															<span class="d-inline-block text-truncate" style="max-width: 330px;">
 																{{this.product_name}}
 															</span>
@@ -277,27 +277,26 @@
 									<table class="table table-hover">
 										<thead>
 											<tr>
-												<th>Marketplace</th>
-												<th>Amount</th>
+												<th>Marketplace Name</th>
 												<th>Sales</th>
+												<th>Revenue</th>
 												<th>Gtc Fees</th>
+												<th>Vendor Revenue</th>
 											</tr>
 										</thead>
 										<tbody>
-											{{#each topCategory.rows}}
+											{{#each topCategory.lhs_result}}
 												<tr>
 													<td>
-														{{this.marketplace_name}}
+														<img src="../..{{this.product_url}}" style="width: 15px;" />
+														<a href="javascript:;" class="text_blue_color">
+															<span class="d-inline-block text-truncate" style="max-width: 330px;">
+																{{this.product_name}}
+															</span>
+														</a>
 													</td>
-													<td>
-														{{this.amount}}
-													</td>
-													<td>
-														{{this.sales}}
-													</td>
-													<td>
-														{{this.gtc_fees}}
-													</td>
+													<td>{{this.marketplace_name}}</td>
+													{{compareSalePerformance this @root.performance.rhs_result}}
 												</tr>
 											{{/each}}
 										</tbody>
@@ -309,21 +308,26 @@
 									<table class="table table-hover">
 										<thead>
 											<tr>
-												<th>City</th>
+												<th>City Name</th>
 												<th>Sales</th>
-												<th>Total Sales</th>
+												<th>Revenue</th>
 												<th>Gtc Fees</th>
+												<th>Vendor Revenue</th>
 											</tr>
 										</thead>
 										<tbody>
-											{{#each topCategory}}
+											{{#each topCategory.lhs_result}}
 												<tr>
 													<td>
-														{{this.[Product.city]}}
+														<img src="../..{{this.product_url}}" style="width: 15px;" />
+														<a href="javascript:;" class="text_blue_color">
+															<span class="d-inline-block text-truncate" style="max-width: 330px;">
+																{{this.product_name}}
+															</span>
+														</a>
 													</td>
-													<td>{{this.sales}}</td>
-													<td>{{this.total_sales}}</td>
-													<td>{{this.gtc_fees}}</td>
+													<td>{{this.marketplace_name}}</td>
+													{{compareSalePerformance this @root.performance.rhs_result}}
 												</tr>
 											{{/each}}
 										</tbody>
