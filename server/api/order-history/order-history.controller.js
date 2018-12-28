@@ -12,6 +12,7 @@ const sendEmail = require('../../agenda/send-email');
 const async = require('async');
 const populate = require('../../utilities/populate');
 const orderItemStatus = require('../../config/order-item-status');
+const orderItemStatusCode = require('../../config/order-item-new-status');
 const moment = require('moment');
 const numeral = require('numeral');
 const Handlebars = require('handlebars');
@@ -448,4 +449,73 @@ function returnRequestnotification(refundOrderitemsID, user) {
 		return;
 	}
 })
+}
+
+export function refundOrder(req, res){
+
+	var offset, limit, field, order;
+	var queryObj = {};
+	var includeArr = [];
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+    delete req.query.offset;
+    limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    delete req.query.limit;
+    field = req.query.field ? req.query.field : "id";
+    delete req.query.field;
+    order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
+
+	includeArr = [
+		{ 
+			model:model['Product'],
+			attributes:['id', 'product_name', 'vendor_id'],
+			include: [
+				{
+					model: model['Vendor'],
+					attributes: ['id', 'vendor_name']
+				}
+			]
+		},
+		{ 
+			model:model['Order'],
+			include: [
+				{ 
+					model: model['User'],
+					attributes:['id', 'first_name', 'last_name']
+				}
+			], 
+			attributes:['id', 'user_id']
+		}
+	]
+
+	if(req.query.text){
+        queryObj['order_id'] = req.query.text;
+	}
+
+	if(req.query.order_item_status){
+		queryObj['order_item_status'] = req.query.order_item_status;
+
+	}else{
+
+		queryObj['$or'] = [{
+			order_item_status: orderItemStatusCode['REQUEST_FOR_RETURN']
+		}, {
+			order_item_status: orderItemStatusCode['APPROVED_REQUEST_FOR_RETURN']
+		},{
+			order_item_status: orderItemStatusCode['RETURN_RECIVED']
+		},{
+			order_item_status: orderItemStatusCode['REFUND']
+		}];	
+	}
+
+	service.findRows('OrderItem', queryObj, offset, limit, field, order, includeArr)
+	.then(function(rows){
+		return res.status(200).send(rows);
+	}).catch(function(error){
+		console.log("Error:::", error);
+		return res.status(500).send({
+			"message": "error",
+			"errorDescription": error
+		});
+	})
 }

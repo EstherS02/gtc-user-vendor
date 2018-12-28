@@ -58,7 +58,7 @@ export default function(app) {
     app.use('/services', require('./hbs-routes/services'));
     app.use('/lifestyle', require('./hbs-routes/lifestyle'));
     app.use('/products', require('./hbs-routes/products'));
-    app.use('/refund', require('./hbs-routes/refund'));
+    app.use('/refund', require('./hbs-routes/refundView'));
     app.use('/geo-locate', require('./hbs-routes/geo-locate'));
     app.use('/vendor', require('./hbs-routes/vendorPages'));
     app.use('/vendor-form', require('./hbs-routes/vendor-form'));

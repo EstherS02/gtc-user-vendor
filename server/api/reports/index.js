@@ -24,7 +24,7 @@ router.get('/latest-refunds', auth.isAuthenticated(), controller.latestRefunds);
 router.get('/vendor-trail', auth.isAuthenticated(), controller.vendorTrail);
 router.get('/accounting', auth.isAuthenticated(), controller.accounting);
 router.get('/membership-fee',auth.isAuthenticated(), controller.memberShipFees);
-router.get('/product-performance', auth.isAuthenticated(), controller.productPerformanceChanges);//productPerformanceChanges);//
+router.get('/product-performance', auth.isAuthenticated(), controller.productPerformanceChanges);
 router.get('/category-performance', auth.isAuthenticated(), controller.compareCategoryPerformance);
 router.get('/marketplace-performance', auth.isAuthenticated(), controller.compareMarketPlacePerformance);
 router.get('/city-performance', auth.isAuthenticated(), controller.compareCityPerformance);

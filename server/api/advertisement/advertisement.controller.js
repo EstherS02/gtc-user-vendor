@@ -30,11 +30,12 @@ export async function createAd(req, res) {
 		});
 	}
 
-	req.checkBody('name', 'Missing Query Param').notEmpty();
-	req.checkBody('position', 'Missing Query Param').notEmpty();
+	req.checkBody('name', 'Missing Name').notEmpty();
+	req.checkBody('position', 'Missing Position').notEmpty();
 	req.checkBody('target_url', 'Missing Query Param').notEmpty();
-	req.checkBody('start_date', 'Missing Query Param').notEmpty();
-	req.checkBody('end_date', 'Missing Query Param').notEmpty();
+	req.checkBody('start_date', 'Missing Start Date').notEmpty();
+	req.checkBody('end_date', 'Missing End Date').notEmpty();
+	req.checkBody('file', 'Missing Image').notEmpty();
 
 	const startDate = new Date(req.body.start_date);
 	const endDate = new Date(req.body.end_date);
@@ -59,7 +60,7 @@ export async function createAd(req, res) {
 	if (errors) {
 		return res.status(400).send({
 			"message": "Error",
-			"messageDetails": "Missing Query Params."
+			"messageDetails": errors[0].msg
 		});
 	}
 
