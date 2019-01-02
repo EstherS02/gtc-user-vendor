@@ -299,9 +299,9 @@ export function topMarketPlace(req, res) {
 		orderItemQueryObj.offset = parseInt(req.query.offset);
 	}
 
-	if (req.user.role == 2)
+	if (req.user.role == 2){
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
-	
+
 	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
@@ -311,6 +311,20 @@ export function topMarketPlace(req, res) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	}
+	
+	if(req.user.role != 2){
+		if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
 	}
 	ReportService.topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
@@ -411,7 +425,7 @@ export function topCategories(req, res) {
 		orderItemQueryObj.offset = parseInt(req.query.offset);
 	}
 
-	if (req.user.role == 2)
+	if (req.user.role == 2){
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
 	if (req.query.lhs_from && req.query.lhs_to) {
@@ -424,6 +438,21 @@ export function topCategories(req, res) {
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
+	}
+	
+	if(req.user.role != 2){
+		if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	}
+
 	ReportService.topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
@@ -436,8 +465,11 @@ export function recentRevenueChanges(req, res) {
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
-	if (req.user.role == 2)
+	// if (req.user.role == 2)
+	// 	orderItemQueryObj.vendor_id = req.user.Vendor.id;
+	if (req.user.role == 2){
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
+
 	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
@@ -448,6 +480,21 @@ export function recentRevenueChanges(req, res) {
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
+	}
+	
+	if(req.user.role != 2){
+		if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	}
+
 	ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
