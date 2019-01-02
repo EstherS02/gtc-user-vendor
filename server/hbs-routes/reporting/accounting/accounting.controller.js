@@ -220,7 +220,7 @@ export function revenue(req, res) {
 
 export function processing(req, res) {
 	var queryPaginationObj = {};
-	var offset, limit, order, page;
+	var offset, limit, order, page,field;
 	var queryURI = {};
 	var originalUrl = req.originalUrl.split('?')[0];
 
@@ -238,6 +238,8 @@ export function processing(req, res) {
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
 	delete req.query.page;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
 
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
@@ -250,7 +252,7 @@ export function processing(req, res) {
 				.then((cartResult) => {
 					return callback(null, cartResult);
 				}).catch((error) => {
-					return callback(error);
+					return callback(null);
 				});
 		},
 		unreadCounts: function(callback) {
@@ -258,12 +260,11 @@ export function processing(req, res) {
 				.then(function(counts) {
 					return callback(null, counts);
 				}).catch(function(error) {
-					return callback(error);
+					return callback(null);
 				});
 		},
 		processingFee: function(callback) {
-			console.log("---------------------------------------------------processingFee----------------------------------------------------------");
-			var offset, limit, field, order;
+			console.log("---------------------------------------------------processingFee----------------------------------------------------------",limit,page);
 			var queryObj = {};
 			var OrderVendorModelName = 'OrderVendor'
 			queryObj['vendor_id'] = req.user.Vendor.id;
@@ -271,11 +272,6 @@ export function processing(req, res) {
 			let includeArr = [{
 				model: model['Vendor'],
 			}]
-
-			field = req.query.field ? req.query.field : "id";
-			delete req.query.field;
-			order = req.query.order ? req.query.order : "asc";
-			delete req.query.order;
 
 			service.findRows(OrderVendorModelName, queryObj, offset, limit, field, order, includeArr)
 				.then(function(rows) {
@@ -307,7 +303,7 @@ export function processing(req, res) {
 
 export function subscription(req, res) {
 	var queryPaginationObj = {};
-	var offset, limit, order, page;
+	var offset, limit, order, page,field;
 	var queryURI = {};
 	var originalUrl = req.originalUrl.split('?')[0];
 
@@ -325,6 +321,9 @@ export function subscription(req, res) {
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
 	delete req.query.page;
+
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
 
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
@@ -350,7 +349,6 @@ export function subscription(req, res) {
 		},
 		subscriptionFee: function(callback) {
 			console.log("---------------------------------------------------subscriptionFee----------------------------------------------------------");
-			var offset, limit, field, order;
 			var queryObj = {};
 			var OrderVendorModelName = 'OrderVendor'
 			queryObj['vendor_id'] = req.user.Vendor.id;
@@ -358,11 +356,6 @@ export function subscription(req, res) {
 			let includeArr = [{
 				model: model['Vendor'],
 			}]
-
-			field = req.query.field ? req.query.field : "id";
-			delete req.query.field;
-			order = req.query.order ? req.query.order : "asc";
-			delete req.query.order;
 
 			service.findRows(OrderVendorModelName, queryObj, offset, limit, field, order, includeArr)
 				.then(function(rows) {
@@ -394,7 +387,7 @@ export function subscription(req, res) {
 
 export function gtcpay(req, res) {
 	var queryPaginationObj = {};
-	var offset, limit, order, page;
+	var offset, limit, order, page,field;
 	var queryURI = {};
 	var originalUrl = req.originalUrl.split('?')[0];
 
@@ -412,7 +405,9 @@ offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
 	delete req.query.page;
-
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+			
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
 
@@ -437,7 +432,6 @@ offset = req.query.offset ? parseInt(req.query.offset) : 0;
 		},
 		gtcPayFee: function(callback) {
 			console.log("---------------------------------------------------gtcPayFee----------------------------------------------------------");
-			var offset, limit, field, order;
 			var queryObj = {};
 			var OrderVendorModelName = 'OrderVendor'
 			queryObj['vendor_id'] = req.user.Vendor.id;
@@ -450,10 +444,6 @@ offset = req.query.offset ? parseInt(req.query.offset) : 0;
 				model:model['Payment']
 			}]
 
-			field = req.query.field ? req.query.field : "id";
-			delete req.query.field;
-			order = req.query.order ? req.query.order : "asc";
-			delete req.query.order;
 
 			service.findRows(OrderVendorModelName, queryObj, offset, limit, field, order, includeArr)
 				.then(function(rows) {
@@ -485,7 +475,7 @@ offset = req.query.offset ? parseInt(req.query.offset) : 0;
 
 export function membership(req, res) {
 	var queryPaginationObj = {};
-	var offset, limit, order, page;
+	var offset, limit, order, page,field;
 	var queryURI = {};
 	var originalUrl = req.originalUrl.split('?')[0];
 
