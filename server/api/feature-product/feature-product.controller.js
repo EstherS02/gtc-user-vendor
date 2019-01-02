@@ -44,6 +44,9 @@ export function index(req, res) {
 	includeArr = [{model:model['Product'],
 				where: productQueryObj }]
 
+
+	console.log("------------------------------------",queryObj, offset, limit, field, order, )
+
 	service.findRows(featuredProductModel, queryObj, offset, limit, field, order, includeArr)
 	.then(function(products){
 		return res.status(200).send(products);
@@ -152,9 +155,6 @@ export function featureProductWithPayment(req, res) {
 
 export function featureProductWithoutPayment(req, res){
 
-
-	console.log("---------------------------", req.body);
-
 	if (req.body.product_id) {
 		var featureQueryObj = {
 			product_id: req.body.product_id
@@ -164,6 +164,8 @@ export function featureProductWithoutPayment(req, res){
 				if (!row) {
 					var featuredProductBodyParam = req.body;
 					featuredProductBodyParam['status'] =status.ACTIVE;
+					featuredProductBodyParam['created_by'] = req.user.first_name;
+					featuredProductBodyParam['created_on'] = new Date();
 					service.createRow(featuredProductModel, featuredProductBodyParam)
 						.then(function(featuredRow) {
 							return res.status(200).send({
