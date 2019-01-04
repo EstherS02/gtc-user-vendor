@@ -80,12 +80,12 @@ export function topSellingCities(req, res) {
 			attributes: ['city']
 		}],
 		attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales'],
-			[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales'],
-			[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']
+		[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales'],
+		[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']
 		],
 		group: ['Product.city'],
 		order: [
-			[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
+		[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
 		],
 		limit: Limit
 
@@ -121,12 +121,12 @@ export function topSellingCountries(req, res){
 			}]
 		}],
 		attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales'],
-			[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales'],
-			[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']
+		[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales'],
+		[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']
 		],
 		group: ['Product.product_location'],
 		order: [
-			[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
+		[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
 		],
 		limit: Limit
 	}).then(function(results) {
@@ -134,7 +134,7 @@ export function topSellingCountries(req, res){
 			result = results;
 		else
 			result = [];
-			
+		
 		return res.status(200).send(result);
 	}).catch(function(error) {
 		console.log('Error:::', error);
@@ -152,7 +152,7 @@ export function topActiveBuyers(req, res) {
 		raw: true,
 		where: {},
 		order: [
-			['created_on', 'DESC']
+		['created_on', 'DESC']
 		],
 		group: 'user_id',
 		include: [{
@@ -192,7 +192,7 @@ export function latestTickets(req, res) {
 		raw: true,
 		where: {},
 		order: [
-			['created_on', 'DESC']
+		['created_on', 'DESC']
 		],
 		group: 'user_id',
 		include: [{
@@ -221,14 +221,14 @@ export function latestRefunds(req, res) {
 	if (req.user.role == 2)
 		vendorQuery.vendor_id = req.user.Vendor.id;
 	queryObj['$or']= [{
-                    order_item_status: orderItemStatus['REQUEST_FOR_RETURN']
-                }, {
-                    order_item_status:orderItemStatus['APPROVED_REQUEST_FOR_RETURN']
-                },{
-                    order_item_status: orderItemStatus['RETURN_RECIVED']
-                }, {
-                    order_item_status:orderItemStatus['REFUND']
-                }],
+		order_item_status: orderItemStatus['REQUEST_FOR_RETURN']
+	}, {
+		order_item_status:orderItemStatus['APPROVED_REQUEST_FOR_RETURN']
+	},{
+		order_item_status: orderItemStatus['RETURN_RECIVED']
+	}, {
+		order_item_status:orderItemStatus['REFUND']
+	}],
 	model['User'].findAll({
 		attributes: ['id', 'first_name', 'last_name', 'status'],
 		limit: 5,
@@ -302,29 +302,29 @@ export function topMarketPlace(req, res) {
 	if (req.user.role == 2){
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
-	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
+		if (req.query.lhs_from && req.query.lhs_to) {
+			lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+		} else {
+			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		}
+		if (req.query.rhs_from && req.query.rhs_to) {
+			rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+		} else {
+			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		}
 	}
 	
 	if(req.user.role != 2){
 		if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
+			lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
+		} else {
+			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		}
+		if (req.query.rhs_from && req.query.rhs_to) {
+			rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD"));
+		} else {
+			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		}
 	}
 	ReportService.topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
@@ -351,8 +351,8 @@ export function topBuyers(req,res){
 			model:model['OrderItem'],
 			// where:
 			include:[{
-			model:model['Product'],
-			attributes:[],
+				model:model['Product'],
+				attributes:[],
 			}],
 			attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
 
@@ -365,53 +365,53 @@ export function topBuyers(req,res){
 		group: ['user_id'],
 
 		order: [
-			[sequelize.fn('sum', sequelize.col('OrderItems.quantity')), 'DESC']
+		[sequelize.fn('sum', sequelize.col('OrderItems.quantity')), 'DESC']
 		],
 		
 	}).then(function(results) {
 		if(results.length>0){
-        		results = results.slice(Offset, Offset + Limit);
-        	}
+			results = results.slice(Offset, Offset + Limit);
+		}
 		return res.status(200).send(results);
 	}).catch(function(error) {
 		console.log('Error:::', error);
-			return res.status(500).send(error)
+		return res.status(500).send(error)
 	});		
 }
 
 export function topVendors(req,res){
 	var result = {},Limit = 5, Offset = 0;
-		if(req.query.limit)
-			Limit = req.query.limit;
-		if(req.query.offset)
-			Offset = req.query.offset
-		delete req.query.limit;
-		delete req.query.offset;
-        model['OrderItem'].findAll({
-            raw: true,
-            where: req.query,
-            include:[{
-            	model:model['Product'],
-            	attributes:[],
-            	include:[{
-            		model:model['Vendor'],
-            		attributes:['id','vendor_name','vendor_profile_pic_url']
-            	}]
-            }],
-            attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
-            group: ['Product.vendor_id'],
-            order: [
-                [sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
-            ],
-            offset:0,
-            limit:5
-			
-        }).then(function(results) {
-           return res.status(200).send(results);
-        }).catch(function(error) {
-            console.log('Error:::', error);
-             return res.status(500).send(error)
-        });
+	if(req.query.limit)
+		Limit = req.query.limit;
+	if(req.query.offset)
+		Offset = req.query.offset
+	delete req.query.limit;
+	delete req.query.offset;
+	model['OrderItem'].findAll({
+		raw: true,
+		where: req.query,
+		include:[{
+			model:model['Product'],
+			attributes:[],
+			include:[{
+				model:model['Vendor'],
+				attributes:['id','vendor_name','vendor_profile_pic_url']
+			}]
+		}],
+		attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
+		group: ['Product.vendor_id'],
+		order: [
+		[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
+		],
+		offset:0,
+		limit:5
+		
+	}).then(function(results) {
+		return res.status(200).send(results);
+	}).catch(function(error) {
+		console.log('Error:::', error);
+		return res.status(500).send(error)
+	});
 
 }
 
@@ -428,29 +428,29 @@ export function topCategories(req, res) {
 	if (req.user.role == 2){
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
-	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
+		if (req.query.lhs_from && req.query.lhs_to) {
+			lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+		} else {
+			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		}
+		if (req.query.rhs_from && req.query.rhs_to) {
+			rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+		} else {
+			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		}
 	}
 	
 	if(req.user.role != 2){
 		if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
+			lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
+		} else {
+			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		}
+		if (req.query.rhs_from && req.query.rhs_to) {
+			rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD"));
+		} else {
+			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		}
 	}
 
 	ReportService.topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
@@ -465,40 +465,37 @@ export function recentRevenueChanges(req, res) {
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
-	// if (req.user.role == 2)
-	// 	orderItemQueryObj.vendor_id = req.user.Vendor.id;
+	
 	if (req.user.role == 2){
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
-	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
+		if (req.query.lhs_from && req.query.lhs_to) {
+			lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+		} else {
+			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		}
+		if (req.query.rhs_from && req.query.rhs_to) {
+			rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+		} else {
+			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		}
 	}
 	
 	if(req.user.role != 2){
 		if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+			lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
+		} else {
+			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		}
+		if (req.query.rhs_from && req.query.rhs_to) {
+			rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD"));
+		} else {
+			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		}
 	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-	}
-
 	ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
-		console.log('recentRevenueChanges err', err);
 		return res.status(500).send(err);
 	});
 }
@@ -600,7 +597,7 @@ export function vendorPerformance(req, res){
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-		ReportService.vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+	ReportService.vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
 		
 		return res.status(200).send(results);
 	}).catch((err) => {
@@ -696,7 +693,7 @@ export function compareCategoryPerformance(req, res){
 	});
 }
 export function compareMarketPlacePerformance(req, res){
-		var queryObj = {};
+	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
 	var limit, offset, compare;
@@ -887,26 +884,26 @@ export function vendorTrail(req, res) {
 		where: planQueryObj
 	}];
 	try{
-	model["Vendor"].findAll({
-		include: includeArr,
-		where: queryObj,
-		attributes: ['id', 'vendor_name','vendor_profile_pic_url','created_on'],
-		offset: offset,
-		limit: limit,
-		order: [
+		model["Vendor"].findAll({
+			include: includeArr,
+			where: queryObj,
+			attributes: ['id', 'vendor_name','vendor_profile_pic_url','created_on'],
+			offset: offset,
+			limit: limit,
+			order: [
 			[field, order]
-		]
-	}).then(function(rows) {
-		if (rows.length > 0) {
-			return res.status(200).send(rows);
-		} else {
-			return res.status(200).send(rows);
-		}
-	}).catch(function(error) {
-		console.log("error:::::::", error)
-		return res.status(500).send(error);
-	});
-}  catch (error) {
+			]
+		}).then(function(rows) {
+			if (rows.length > 0) {
+				return res.status(200).send(rows);
+			} else {
+				return res.status(200).send(rows);
+			}
+		}).catch(function(error) {
+			console.log("error:::::::", error)
+			return res.status(500).send(error);
+		});
+	}  catch (error) {
 		console.log("Add To Cart Error:::", error);
 		return res.status(500).send(error);
 	}
@@ -923,14 +920,14 @@ export function accounting(req, res) {
 
 	}
 	reportsService.AccountingReport(0, accountingQueryParams)
-		.then((response) => {
+	.then((response) => {
 
-			return res.status(200).send(response);
-		})
-		.catch((error) => {
-			console.log(error)
-			return res.status(500).send("Internal server error");
-		});
+		return res.status(200).send(response);
+	})
+	.catch((error) => {
+		console.log(error)
+		return res.status(500).send("Internal server error");
+	});
 }
 
 export function memberShipFees(req,res){
@@ -948,20 +945,20 @@ export function memberShipFees(req,res){
 	field = req.query.field ? req.query.field : "id";
 
 	var includeArr = [
-		{ 
-			model: model['Plan']
-		},{ 
-			model: model['Vendor'] 
-		},{
-			model: model['Payment'],
-			attributes: ['id','amount','date','created_on'],
-			where: { 
-				id: {
-					$ne: null
-				},
-				status: statusCode['ACTIVE']
-			}
+	{ 
+		model: model['Plan']
+	},{ 
+		model: model['Vendor'] 
+	},{
+		model: model['Payment'],
+		attributes: ['id','amount','date','created_on'],
+		where: { 
+			id: {
+				$ne: null
+			},
+			status: statusCode['ACTIVE']
 		}
+	}
 	]
 
 	service.findRows('VendorPlan', queryObj, offset, limit, field, order, includeArr)
