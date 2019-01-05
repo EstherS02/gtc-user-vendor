@@ -298,7 +298,17 @@ export function topMarketPlace(req, res) {
 		orderItemQueryObj.limit = parseInt(req.query.limit);
 		orderItemQueryObj.offset = parseInt(req.query.offset);
 	}
-
+	orderItemStatus['$or']= [{
+                    order_item_status: orderItemStatus['ORDER_INITIATED']
+                }, {
+                    order_item_status:orderItemStatus['CONFIRMED']
+                },{
+                    order_item_status: orderItemStatus['SHIPPED']
+                }, {
+                    order_item_status:orderItemStatus['DELIVERED']
+                },{
+                    order_item_status:orderItemStatus['COMPLETED']
+                }];
 	if (req.user.role == 2){
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
@@ -424,7 +434,17 @@ export function topCategories(req, res) {
 		orderItemQueryObj.limit = parseInt(req.query.limit);
 		orderItemQueryObj.offset = parseInt(req.query.offset);
 	}
-
+	orderItemStatus['$or']= [{
+                    order_item_status: orderItemStatus['ORDER_INITIATED']
+                }, {
+                    order_item_status:orderItemStatus['CONFIRMED']
+                },{
+                    order_item_status: orderItemStatus['SHIPPED']
+                }, {
+                    order_item_status:orderItemStatus['DELIVERED']
+                },{
+                    order_item_status:orderItemStatus['COMPLETED']
+                }];
 	if (req.user.role == 2){
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
@@ -685,7 +705,6 @@ export function compareCategoryPerformance(req, res){
 	}
 
 	ReportService.categoryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('comparePerformance err', err);

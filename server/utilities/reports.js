@@ -13,6 +13,7 @@ const _ = require('lodash');
 const Op = sequelize.Op;
 
 function sumofPrice(modelName, queryObj) {
+
     return new Promise((resolve, reject) => {
         let total;
         return model[modelName].findAll({
@@ -115,7 +116,7 @@ function getAllPerformanceApi(queryObj, limit, offset,attributes,groupBy,include
                     order_item_status:orderItemStatus['DELIVERED']
                 },{
                     order_item_status:orderItemStatus['COMPLETED']
-                }],
+                }]
         };
         let includeArray = includeArr ? includeArr:[];
     return new Promise((resolve, reject) => {
@@ -458,6 +459,21 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
         currentRange.item_created_on = {
             $between: rhsBetween
         };
+        pastRange['$or'] = currentRange['$or']=orderItemQueryObj['$or']= [{
+                    order_item_status: orderItemStatus['ORDER_INITIATED']
+                }, {
+                    order_item_status:orderItemStatus['CONFIRMED']
+                },{
+                    order_item_status: orderItemStatus['SHIPPED']
+                }, {
+                    order_item_status:orderItemStatus['DELIVERED']
+                },{
+                    order_item_status:orderItemStatus['COMPLETED']
+                }];
+                orderItemQueryObj['item_created_on'] = {
+                    $between: lhsBetween
+                };
+
         model['OrderItemOverview'].findAll({
             raw: true,
             where: orderItemQueryObj,
@@ -574,6 +590,20 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
         currentRange.item_created_on = {
             $between: rhsBetween
         };
+        pastRange['$or'] = currentRange['$or']=orderItemQueryObj['$or']= [{
+                    order_item_status: orderItemStatus['ORDER_INITIATED']
+                }, {
+                    order_item_status:orderItemStatus['CONFIRMED']
+                },{
+                    order_item_status: orderItemStatus['SHIPPED']
+                }, {
+                    order_item_status:orderItemStatus['DELIVERED']
+                },{
+                    order_item_status:orderItemStatus['COMPLETED']
+                }];
+        orderItemQueryObj['item_created_on'] = {
+            $between: lhsBetween
+        };
         model['OrderItemOverview'].findAll({
             raw: true,
             where: orderItemQueryObj,
@@ -590,6 +620,7 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
                 result.rows = results;
             else
                 result.rows = [];
+
             return sumofPrice('OrderItemOverview', orderItemQueryObj).then(function(total) {
                 result.total = total;
                 return result;
