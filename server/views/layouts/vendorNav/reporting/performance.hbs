@@ -1,6 +1,5 @@
 <script>
 	$(function() {
-		/*$("#lhs_from, #lhs_to,#rhs_from,#rhs_to").datepicker();*/
 		$("#lhs_from").datepicker({
 			trigger: $("#lhs_fromRange"),
 			autoHide: true
@@ -23,9 +22,9 @@
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var params = {{{ DisplayJSON queryURIString }}};
-	var category = {{{ DisplayJSON selectedTopCatogory }}};
+	var metrics = {{{ DisplayJSON selectedMetrics }}};
 	function downloadCSV(args) {
-		if (category == 'products') {
+		if (metrics == 'products') {
 			$.ajax({
 				type: 'POST',
 				url: '/api/export-csv/reportperformancecsv',
@@ -48,7 +47,7 @@
 					console.log('status', status);
 				}
 			});
-		} else if (category == 'marketplace') {
+		} else if (metrics == 'marketplace') {
 			$.ajax({
 				type: 'POST',
 				url: '/api/export-csv/reportmarketplacecsv',
@@ -71,7 +70,7 @@
 					console.log('status', status);
 				}
 			});
-		} else if (category == 'city') {
+		} else if (metrics == 'city') {
 			$.ajax({
 				type: 'POST',
 				url: '/api/export-csv/reportcitycsv',
@@ -115,6 +114,7 @@
 	}
 
 	function onSearch() {
+		var metric;
 		var from = $('#lhs_from').val();
 		var to = $('#lhs_to').val();
 		var Cfrom = $('#rhs_from').val();
@@ -122,17 +122,14 @@
 		Compare = $('#compare').is(":checked");
 
 		if ($("#inputTop").val() == 1) {
-			console.log("top products")
-			topCategory = "products";
+			metric = "products";
 		} else if ($("#inputTop").val() == 2) {
-			console.log("top marketplace")
-			topCategory = "marketplace"
+			metric = "marketplace"
 		} else if ($("#inputTop").val() == 3) {
-			console.log("top city")
-			topCategory = "city"
+			metric = "city"
 		}
 
-		location.href = "/store/performance?top=" + topCategory + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
+		location.href = "/store/performance?top=" + metric + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
 	}
 
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
@@ -147,11 +144,11 @@
 					<div class="ibox">
 						<div class="ibox-content">
 							<div class="ibox-title">
-								<h2>Report Performance{{selectedTopCategory}}</h2>
+								<h2>Performance
+									<span class="pull-right" style="font-size:12px"><a href="/store/performance">Clear All</a></span>
+								</h2>
 							</div>
-							<div class="hr-line"></div>
 							<div class="content-body">
-								{{!-- Started --}}
 								<div class="row">
 									<div class="col-md-12">
 										<form class="form-inline pull-left m-t-md">
@@ -191,13 +188,11 @@
 													</select>
 												</div>
 											</div>
-
 											<div class="form-group mgT-5">
 												<div class="customCheckbox" style="margin-left: 30px;">
 													<input type="checkbox" checked='checked' id="compare" value="true" class="customCheckboxInput">
 													<label class="checkbox-b" for="compare"></label>
 												</div>
-
 											</div>
 											<div class="form-group">
 												<label class="label-control">compare to </label>
@@ -230,12 +225,11 @@
 											<div class="form-group">
 												<button type="button" class="update-btn1 report_update report_update_btn_override" style="color:#fff;background-color:#3bb802;margin-left:5px"
 												 onclick="onSearch()">UPDATE</button>
-
 											</div>
 										</form>
 										<form class="form-inline pull-right m-t-md">
 											<div class="form-group m-r">
-												{{#if topCategory.lhs_result}}
+												{{#if topItems.lhs_result}}
 													<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
 													<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
 												{{else}}
@@ -243,7 +237,6 @@
 													<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
 												{{/if}}
 											</div>
-
 										</form>
 									</div>
 								</div>
@@ -252,23 +245,21 @@
 									<div class="col-md-2">
 										<p style="font-size:13px;margin-top:3px">Select a metric</p>
 									</div>
-
 									<div class="col-md-7">
-
 										<div class="form-group" style="width:273px;margin-left:-63px;">
-
 											<div class="select-container">
 												<select id="inputTop" style="height:25px;" onchange="onSearch()" class="form-control-customized form-control-sm custom-dropdown"
 												 name="countyr">
-													<option value="1" {{#ifCond queryURI.top "==" 'products'}} selected="true" {{/ifCond}}>TOP PERFORMING PRODUCTS</option>
-													<option value="2" {{#ifCond queryURI.top "==" 'marketplace'}} selected="true" {{/ifCond}}>TOP PERFORMING MARKETPLACES</option>
-													<option value="3" {{#ifCond queryURI.top "==" 'city'}} selected="true" {{/ifCond}}>TOP PERFORMING CITIES</option>
+													<option value="1" {{#ifCond queryURI.top "==" 'products'}} selected="true" {{/ifCond}}>TOP SELLING PRODUCTS</option>
+													<option value="2" {{#ifCond queryURI.top "==" 'countries'}} selected="true" {{/ifCond}}>TOP SELLING COUNTRIES</option>
+													<option value="3" {{#ifCond queryURI.top "==" 'cities'}} selected="true" {{/ifCond}}>TOP PERFORMING CITIES</option>
+													<option value="4" {{#ifCond queryURI.top "==" 'buyers'}} selected="true" {{/ifCond}}>TOP BUYERS</option>
+													{{!-- <option value="2" {{#ifCond queryURI.top "==" 'marketplace'}} selected="true" {{/ifCond}}>TOP PERFORMING MARKETPLACES</option> --}}
+													
 												</select>
 											</div>
 										</div>
-
 									</div>
-
 									<div class="col-md-3 float-right" style="padding-left: 52px;">
 										<div class="form-group">
 											<div class="input-group gtc-rounded">
@@ -293,6 +284,25 @@
 										</p>
 									</div>
 								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<table class="table order-table">
+											{{#ifCond queryURI.top "==" "products"}}
+												<thead>
+													<tr>
+														<th>
+															<div class="customCheckbox">
+																<input type="checkbox" onclick="selectAll(this);" id="inputCheckbox" class="customCheckboxInput">
+																<label class="checkbox-b" for="inputCheckbox"></label>
+															</div>
+														</th>
+														
+													</tr>
+												</thead>
+											{{/ifCond}}
+										</table>
+									</div>
+								</div>
 								{{#ifCond queryURI.top "==" "products"}}
 									<div class="row">
 										<table class="table table-hover">
@@ -307,7 +317,7 @@
 												</tr>
 											</thead>
 											<tbody>
-												{{#each topCategory.lhs_result}}
+												{{#each topItems.lhs_result}}
 													<tr>
 														<td>
 															<img src="../..{{this.product_url}}" style="width: 15px;" />
@@ -325,7 +335,7 @@
 										</table>
 									</div>
 								{{/ifCond}}
-								{{#ifCond queryURI.top "==" "marketplace"}}
+								{{!-- {{#ifCond queryURI.top "==" "marketplace"}}
 									<div class="row">
 										<table class="table table-hover">
 											<thead>
@@ -338,7 +348,7 @@
 												</tr>
 											</thead>
 											<tbody>
-												{{#each topCategory.lhs_result}}
+												{{#each topItems.lhs_result}}
 													<tr>
 														<td>
 															<img src="../..{{this.product_url}}" style="width: 15px;" />
@@ -355,7 +365,7 @@
 											</tbody>
 										</table>
 									</div>
-								{{/ifCond}}
+								{{/ifCond}} --}}
 								{{#ifCond queryURI.top "==" "city"}}
 									<div class="row">
 										<table class="table table-hover">
@@ -369,7 +379,7 @@
 												</tr>
 											</thead>
 											<tbody>
-												{{#each topCategory.lhs_result}}
+												{{#each topItems.lhs_result}}
 													<tr>
 														<td>
 															<img src="../..{{this.product_url}}" style="width: 15px;" />
@@ -387,7 +397,7 @@
 										</table>
 									</div>
 								{{/ifCond}}
-								<div class="row">
+								{{!-- <div class="row">
 									<div class="col-md-6">
 									</div>
 									<div class="col-md-6">
@@ -398,8 +408,7 @@
 											<a {{#ifCond queryURI.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
 										</p>
 									</div>
-								</div>
-
+								</div> --}}
 							</div>
 						</div>
 					</div>
