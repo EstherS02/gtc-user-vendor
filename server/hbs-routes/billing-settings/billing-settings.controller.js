@@ -10,7 +10,6 @@ const cartService = require('../../api/cart/cart.service');
 const vendorPlan = require('../../config/gtc-plan');
 const addressCode = require('../../config/address');
 const notifictionService = require('../../api/notification/notification.service');
-
 var openIdConnect = paypal.openIdConnect;
 
 paypal.configure({

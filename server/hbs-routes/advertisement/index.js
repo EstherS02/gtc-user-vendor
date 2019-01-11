@@ -3,8 +3,7 @@
 var express = require('express');
 var router = express.Router();
 var auth = require('../../auth/auth.service');
-const roles = require('../../config/roles');
-
+var roles = require('../../config/roles');
 var controller = require('./advertisement.controller');
 
 router.get('/add', auth.hasRole(roles['VENDOR']), controller.adForm);
