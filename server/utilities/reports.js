@@ -1082,7 +1082,8 @@ export function vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit
     });
 }
 
-// starts export performance selected values//
+//PERFORMANCE EXPORT FUNCTIONALITY
+
 export function exportperformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
     const pastRange = _.assign({}, queryObj);
     pastRange.from = lhsBetween[0];
@@ -1111,9 +1112,7 @@ export function exportperformanceChanges(queryObj, lhsBetween, rhsBetween, limit
         });
     });
 }
-// Ends export performance selected values//
 
-// started selected values to exported the export functions//
 function getAllexportPerformance(queryObj, limit, offset) {
 	return new Promise((resolve, reject) => {
         SequelizeInstance.query(`SELECT orderVendor.order_id AS order_id,
@@ -1153,4 +1152,3 @@ function getAllexportPerformance(queryObj, limit, offset) {
         });
     });
 }
-// Ends selected values to exported the export functions//
