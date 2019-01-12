@@ -142,7 +142,6 @@ export function topSellingCountries(req, res){
 	});
 }
 
-
 export function topActiveBuyers(req, res) {
 	var queryObj = {};
 	var result = {};
@@ -625,6 +624,7 @@ export function vendorPerformance(req, res){
 		return res.status(500).send(err);
 	});
 }
+
 export function productPerformanceChanges(req, res){
 	var queryObj = {};
 	var lhsBetween = [];
@@ -754,6 +754,7 @@ export function compareMarketPlacePerformance(req, res){
 		return res.status(500).send(err);
 	});
 }
+
 export function compareCityPerformance(req, res){
 	var queryObj = {};
 	var lhsBetween = [];
@@ -790,13 +791,13 @@ export function compareCityPerformance(req, res){
 	}
 
 	ReportService.cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('comparePerformance err', err);
 		return res.status(500).send(err);
 	});
 }
+
 export function compareCountriesPerformance(req, res){
 	var queryObj = {};
 	var lhsBetween = [];
@@ -880,7 +881,6 @@ export function compareUserPerformance(req, res){
 	}
 
 	ReportService.userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('comparePerformance err', err);

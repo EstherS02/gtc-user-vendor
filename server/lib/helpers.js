@@ -619,6 +619,250 @@ Handlebars.registerHelper('compareSalePerformance', function(obj, compareProduct
 	return new Handlebars.SafeString(ret);
 });
 
+Handlebars.registerHelper('productPerformance', function(product, compareProducts){
+	var domElement= '';
+	var matchedObj = _.find(compareProducts, function(aObj){
+		return aObj.product_id == product.product_id;;
+	});
+
+	if (matchedObj) {
+		domElement = `<td>
+			<div class="customCheckbox">
+				<input type="checkbox" class="customCheckboxInput" name="selected">
+				<label class="checkbox-b"></label>
+			</div>
+		</td>
+		<td class="table-data">
+			<span class="d-inline-block text-truncate" style="max-width: 150px;" title="`+product.product_name+`">
+				`+product.product_name+`
+			</span>
+		</td>
+		<td>
+			`+product.marketplace_name+`
+		</td>
+		<td>
+			`+product.sales+`<span class = "` + getTextColor(product.sales, matchedObj.sales) + `"> +`+(product.sales-matchedObj.sales)+`</span>
+			<span class = "text_grey_color"> vs `+matchedObj.sales+`(`+ calculatePercentage(product.sales, matchedObj.sales)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(product.total_fees)+`<span class = "` + getTextColor(product.total_fees, matchedObj.total_fees) + `">`+currencyFormat(product.total_fees-matchedObj.total_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.total_fees)+`(`+ calculatePercentage(product.total_fees, matchedObj.total_fees)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(product.gtc_fees)+`<span class = "` + getTextColor(product.gtc_fees, matchedObj.gtc_fees) + `">`+currencyFormat(product.gtc_fees-matchedObj.gtc_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.gtc_fees)+`(`+calculatePercentage(product.gtc_fees, matchedObj.gtc_fees)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(product.vendor_fees)+`<span class = "` + getTextColor(product.vendor_fees, matchedObj.vendor_fees) + `">`+currencyFormat(product.vendor_fees-matchedObj.vendor_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(product.vendor_fees, matchedObj.vendor_fees)+`) </span>
+		</td>`;		
+	} else {
+		domElement = `<td>
+			<div class="customCheckbox">
+				<input type="checkbox" class="customCheckboxInput" name="selected">
+				<label class="checkbox-b"></label>
+			</div>
+		</td>
+		<td class="table-data">
+			<span class="d-inline-block text-truncate" style="max-width: 250px;" title="`+product.product_name+`">
+				`+product.product_name+`
+			</span>
+		</td>
+		<td>
+			`+product.marketplace_name+`
+		</td>
+		<td>
+			`+product.sales+`
+		</td>
+		<td>
+			`+currencyFormat(product.total_fees)+`
+		</td>
+		<td>
+			`+currencyFormat(product.gtc_fees)+`
+		</td>
+		<td>
+			`+currencyFormat(product.vendor_fees)+`
+		</td>`;	
+	}
+	return new Handlebars.SafeString(domElement);
+})
+
+Handlebars.registerHelper('cityPerformance', function(city, compareCity){
+	var domElement= '';
+	var matchedObj = _.find(compareCity, function(aObj){
+		return aObj['Product.city'] == city['Product.city'];
+	});
+
+	if (matchedObj) {
+		domElement = `<td>
+			<div class="customCheckbox">
+				<input type="checkbox" class="customCheckboxInput" name="selected">
+				<label class="checkbox-b"></label>
+			</div>
+		</td>
+		<td class="table-data">
+			`+city['Product.city']+`
+		</td>
+		<td>
+			`+city.sales+`<span class = "` + getTextColor(city.sales, matchedObj.sales) + `"> +`+(city.sales-matchedObj.sales)+`</span>
+			<span class = "text_grey_color"> vs `+matchedObj.sales+`(`+ calculatePercentage(city.sales, matchedObj.sales)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(city.total_fees)+`<span class = "` + getTextColor(city.total_fees, matchedObj.total_fees) + `">`+currencyFormat(city.total_fees-matchedObj.total_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.total_fees)+`(`+ calculatePercentage(city.total_fees, matchedObj.total_fees)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(city.gtc_fees)+`<span class = "` + getTextColor(city.gtc_fees, matchedObj.gtc_fees) + `">`+currencyFormat(city.gtc_fees-matchedObj.gtc_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.gtc_fees)+`(`+ calculatePercentage(city.gtc_fees, matchedObj.gtc_fees)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(city.vendor_fees)+`<span class = "` + getTextColor(city.vendor_fees, matchedObj.vendor_fees) + `">`+currencyFormat(city.vendor_fees-matchedObj.vendor_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(city.vendor_fees, matchedObj.vendor_fees)+`) </span>
+		</td>`;		
+	} else {
+		domElement = `<td>
+			<div class="customCheckbox">
+				<input type="checkbox" class="customCheckboxInput" name="selected">
+				<label class="checkbox-b"></label>
+			</div>
+		</td>
+		<td class="table-data">
+			`+city['Product.city']+`
+		</td>
+		<td>
+		`+city.sales+`
+		</td>
+		<td>
+			`+currencyFormat(city.total_fees)+`
+		</td>
+		<td>
+			`+currencyFormat(city.gtc_fees) +`
+		</td>
+		<td>
+			`+currencyFormat(city.vendor_fees) +`
+		</td>`;	
+	}
+	return new Handlebars.SafeString(domElement);
+})
+
+Handlebars.registerHelper('countryPerformance', function(country, compareCountry){
+
+	var domElement= '';
+	var matchedObj = _.find(compareCountry, function(aObj){
+		return aObj['Product.Country.id'] == country['Product.Country.id'];
+	});
+
+	if (matchedObj) {
+		domElement = `<td>
+			<div class="customCheckbox">
+				<input type="checkbox" class="customCheckboxInput" name="selected">
+				<label class="checkbox-b"></label>
+			</div>
+		</td>
+		<td class="table-data">
+			`+country['Product.Country.name']+`
+		</td>
+		<td>
+			`+country.sales+`<span class = "` + getTextColor(country.sales, matchedObj.sales) + `"> +`+(country.sales-matchedObj.sales)+`</span>
+			<span class = "text_grey_color"> vs `+matchedObj.sales+`(`+ calculatePercentage(country.sales, matchedObj.sales)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(country.total_fees)+`<span class = "` + getTextColor(country.total_fees, matchedObj.total_fees) + `"> `+currencyFormat(country.total_fees-matchedObj.total_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.total_fees)+`(`+ calculatePercentage(country.total_fees, matchedObj.total_fees)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(country.gtc_fees)+`<span class = "` + getTextColor(country.gtc_fees, matchedObj.gtc_fees) + `"> `+currencyFormat(country.gtc_fees-matchedObj.gtc_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.gtc_fees)+`(`+ calculatePercentage(country.gtc_fees, matchedObj.gtc_fees)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(country.vendor_fees)+`<span class = "` + getTextColor(country.vendor_fees, matchedObj.vendor_fees) + `"> `+currencyFormat(country.vendor_fees-matchedObj.vendor_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(country.vendor_fees, matchedObj.vendor_fees)+`) </span>
+		</td>`;		
+	} else {
+		domElement = `<td>
+			<div class="customCheckbox">
+				<input type="checkbox" class="customCheckboxInput" name="selected">
+				<label class="checkbox-b"></label>
+			</div>
+		</td>
+		<td class="table-data">
+			`+country['Product.Country.name']+`
+		</td>
+		<td>
+		`+country.sales+`
+		</td>
+		<td>
+			`+currencyFormat(country.total_fees)+`
+		</td>
+		<td>
+			`+currencyFormat(country.gtc_fees) +`
+		</td>
+		<td>
+			`+currencyFormat(country.vendor_fees) +`
+		</td>`;	
+	}
+	return new Handlebars.SafeString(domElement);
+})
+
+Handlebars.registerHelper('buyerPerformance', function(buyer, compareBuyer){
+
+	var domElement= '';
+	var matchedObj = _.find(compareBuyer, function(aObj){
+		return aObj['Order.User.id'] == country['Order.User.id'];
+	});
+
+	if (matchedObj) {
+		domElement = `<td>
+			<div class="customCheckbox">
+				<input type="checkbox" class="customCheckboxInput" name="selected">
+				<label class="checkbox-b"></label>
+			</div>
+		</td>
+		<td class="table-data">
+			`+buyer['Order.User.first_name']+` `+ buyer['Order.User.last_name']+`
+		</td>
+		<td>
+			`+buyer.sales+`<span class = "` + getTextColor(buyer.sales, matchedObj.sales) + `"> +`+(buyer.sales-matchedObj.sales)+`</span>
+			<span class = "text_grey_color"> vs `+matchedObj.sales+`(`+ calculatePercentage(buyer.sales, matchedObj.sales)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(buyer.total_fees)+`<span class = "` + getTextColor(buyer.total_fees, matchedObj.total_fees) + `">`+currencyFormat(buyer.total_fees-matchedObj.total_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.total_fees)+`(`+ calculatePercentage(buyer.total_fees, matchedObj.total_fees)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(buyer.gtc_fees)+`<span class = "` + getTextColor(buyer.gtc_fees, matchedObj.gtc_fees) + `">`+currencyFormat(buyer.gtc_fees-matchedObj.gtc_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.gtc_fees)+`(`+ calculatePercentage(buyer.gtc_fees, matchedObj.gtc_fees)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(buyer.vendor_fees)+`<span class = "` + getTextColor(buyer.vendor_fees, matchedObj.vendor_fees) + `">`+currencyFormat(buyer.vendor_fees-matchedObj.vendor_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(buyer.vendor_fees, matchedObj.vendor_fees)+`) </span>
+		</td>`;		
+	} else {
+		domElement = `<td>
+			<div class="customCheckbox">
+				<input type="checkbox" class="customCheckboxInput" name="selected">
+				<label class="checkbox-b"></label>
+			</div>
+		</td>
+		<td class="table-data">
+			`+buyer['Order.User.first_name']+` `+ buyer['Order.User.last_name']+`
+		</td>
+		<td>
+		`+buyer.sales+`
+		</td>
+		<td>
+			`+currencyFormat(buyer.total_fees)+`
+		</td>
+		<td>
+			`+currencyFormat(buyer.gtc_fees)+`
+		</td>
+		<td>
+			`+currencyFormat(buyer.vendor_fees)+`
+		</td>`;	
+	}
+	return new Handlebars.SafeString(domElement);
+})
+
 Handlebars.registerHelper('socialIcon', function(obj, options) {
 	if (obj == '' || obj == null || obj == 'null')
 		return options.inverse(this);

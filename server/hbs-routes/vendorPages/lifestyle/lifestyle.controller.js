@@ -233,9 +233,7 @@ export function vendorLifestyle(req, res) {
 				});
 		},
 	}, function(err, results) {
-		// console.log(results);
 		queryPaginationObj['maxSize'] = 5;
-		console.log("====================", results.VendorDetail, results.vendorPlan)
 		if (!err && results.vendorPlan) {
 			res.render('vendorPages/vendor-lifestyle', {
 				title: "Global Trade Connect",

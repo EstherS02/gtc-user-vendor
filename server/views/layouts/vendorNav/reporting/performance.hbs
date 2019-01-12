@@ -124,15 +124,18 @@
 		if ($("#inputTop").val() == 1) {
 			metric = "products";
 		} else if ($("#inputTop").val() == 2) {
-			metric = "marketplace"
+			metric = "countries"
 		} else if ($("#inputTop").val() == 3) {
-			metric = "city"
+			metric = "cities"
+		} else if ($("#inputTop").val() == 4) {
+			metric = "buyers"
 		}
 
 		location.href = "/store/performance?top=" + metric + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
 	}
 
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+</script> 
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -253,9 +256,7 @@
 													<option value="1" {{#ifCond queryURI.top "==" 'products'}} selected="true" {{/ifCond}}>TOP SELLING PRODUCTS</option>
 													<option value="2" {{#ifCond queryURI.top "==" 'countries'}} selected="true" {{/ifCond}}>TOP SELLING COUNTRIES</option>
 													<option value="3" {{#ifCond queryURI.top "==" 'cities'}} selected="true" {{/ifCond}}>TOP PERFORMING CITIES</option>
-													<option value="4" {{#ifCond queryURI.top "==" 'buyers'}} selected="true" {{/ifCond}}>TOP BUYERS</option>
-													{{!-- <option value="2" {{#ifCond queryURI.top "==" 'marketplace'}} selected="true" {{/ifCond}}>TOP PERFORMING MARKETPLACES</option> --}}
-													
+													<option value="4" {{#ifCond queryURI.top "==" 'buyers'}} selected="true" {{/ifCond}}>TOP BUYERS</option>	
 												</select>
 											</div>
 										</div>
@@ -269,7 +270,6 @@
 												</button>
 											</div>
 										</div>
-
 									</div>
 								</div>
 								<div class="row">
@@ -296,107 +296,97 @@
 																<label class="checkbox-b" for="inputCheckbox"></label>
 															</div>
 														</th>
-														
+														<th>Product</th>
+														<th>Type</th>
+														<th>Sales</th>
+														<th>Revenue</th>		
+														<th>GTC Processing Fees</th>
+														<th>Vendor Revenue</th>
 													</tr>
 												</thead>
+												<tbody>
+													{{#each topItems.lhs_result}}
+														<tr>
+															{{productPerformance this @root.performance.rhs_result}} 
+														</tr>
+													{{/each}}
+												</tbody>
+											{{/ifCond}}
+											{{#ifCond queryURI.top "==" "countries"}}
+												<thead>
+													<tr>
+														<th>
+															<div class="customCheckbox">
+																<input type="checkbox" id="inputCheckbox" class="customCheckboxInput">
+																<label class="checkbox-b" for="inputCheckbox"></label>
+															</div>
+														</th>
+														<th>Country</th>
+														<th>Sales</th>
+														<th>Revenue</th>
+														<th>GTC Processing Fees</th>
+														<th>Vendor Revenue</th>
+													</tr>
+												</thead>
+												<tbody>
+													{{#each topItems.lhs_result}}
+														<tr>
+															{{countryPerformance this @root.performance.rhs_result}} 
+														</tr>
+													{{/each}}
+												</tbody>
+											{{/ifCond}}
+											{{#ifCond queryURI.top "==" "cities"}}
+												<thead>
+													<tr>
+														<th>
+															<div class="customCheckbox">
+																<input type="checkbox" id="inputCheckbox" class="customCheckboxInput">
+																<label class="checkbox-b" for="inputCheckbox"></label>
+															</div>
+														</th>
+														<th>City</th>
+														<th>Sales</th>
+														<th>Revenue</th>
+														<th>GTC Processing Fees</th>
+														<th>Vendor Revenue</th>
+													</tr>
+												</thead>
+												<tbody>
+													{{#each topItems.lhs_result}}
+														<tr>
+															{{cityPerformance this @root.performance.rhs_result}} 
+														</tr>
+													{{/each}}
+												</tbody>
+											{{/ifCond}}
+											{{#ifCond queryURI.top "==" "buyers"}}
+												<thead>
+													<tr>
+														<th>
+															<div class="customCheckbox">
+																<input type="checkbox" id="inputCheckbox" class="customCheckboxInput">
+																<label class="checkbox-b" for="inputCheckbox"></label>
+															</div>
+														</th>
+														<th>Buyer Name</th>
+														<th>Total Purchase</th>
+														<th>Revenue</th>
+														<th>GTC Processing Fees</th>
+														<th>Vendor Revenue</th>
+													</tr>
+												</thead>
+												<tbody>
+													{{#each topItems.lhs_result}}
+														<tr>
+															{{buyerPerformance this @root.performance.rhs_result}} 
+														</tr>
+													{{/each}}
+												</tbody>
 											{{/ifCond}}
 										</table>
 									</div>
 								</div>
-								{{#ifCond queryURI.top "==" "products"}}
-									<div class="row">
-										<table class="table table-hover">
-											<thead>
-												<tr>
-													<th>Product</th>
-													<th>Type</th>
-													<th>Sales</th>
-													<th>Vendor Revenue</th>
-													<th>GTC Processing Fees</th>
-
-												</tr>
-											</thead>
-											<tbody>
-												{{#each topItems.lhs_result}}
-													<tr>
-														<td>
-															<img src="../..{{this.product_url}}" style="width: 15px;" />
-															<a href="javascript:;" class="text_blue_color">
-																<span class="d-inline-block text-truncate" style="max-width: 330px;">
-																	{{this.product_name}}
-																</span>
-															</a>
-														</td>
-														<td>{{this.marketplace_name}}</td>
-														{{compareSalePerformance this @root.performance.rhs_result}}
-													</tr>
-												{{/each}}
-											</tbody>
-										</table>
-									</div>
-								{{/ifCond}}
-								{{!-- {{#ifCond queryURI.top "==" "marketplace"}}
-									<div class="row">
-										<table class="table table-hover">
-											<thead>
-												<tr>
-													<th>Marketplace Name</th>
-													<th>Sales</th>
-													<th>Revenue</th>
-													<th>Gtc Fees</th>
-													<th>Vendor Revenue</th>
-												</tr>
-											</thead>
-											<tbody>
-												{{#each topItems.lhs_result}}
-													<tr>
-														<td>
-															<img src="../..{{this.product_url}}" style="width: 15px;" />
-															<a href="javascript:;" class="text_blue_color">
-																<span class="d-inline-block text-truncate" style="max-width: 330px;">
-																	{{this.product_name}}
-																</span>
-															</a>
-														</td>
-														<td>{{this.marketplace_name}}</td>
-														{{compareSalePerformance this @root.performance.rhs_result}}
-													</tr>
-												{{/each}}
-											</tbody>
-										</table>
-									</div>
-								{{/ifCond}} --}}
-								{{#ifCond queryURI.top "==" "city"}}
-									<div class="row">
-										<table class="table table-hover">
-											<thead>
-												<tr>
-													<th>City Name</th>
-													<th>Sales</th>
-													<th>Revenue</th>
-													<th>Gtc Fees</th>
-													<th>Vendor Revenue</th>
-												</tr>
-											</thead>
-											<tbody>
-												{{#each topItems.lhs_result}}
-													<tr>
-														<td>
-															<img src="../..{{this.product_url}}" style="width: 15px;" />
-															<a href="javascript:;" class="text_blue_color">
-																<span class="d-inline-block text-truncate" style="max-width: 330px;">
-																	{{this.product_name}}
-																</span>
-															</a>
-														</td>
-														<td>{{this.marketplace_name}}</td>
-														{{compareSalePerformance this @root.performance.rhs_result}}
-													</tr>
-												{{/each}}
-											</tbody>
-										</table>
-									</div>
-								{{/ifCond}}
 								{{!-- <div class="row">
 									<div class="col-md-6">
 									</div>

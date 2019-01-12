@@ -100,7 +100,7 @@ function getAllPerformance(queryObj, limit, offset) {
         });
     });
 }
-//
+
 function getAllPerformanceApi(queryObj, limit, offset,attributes,groupBy,includeArr) {
     let queryObject = {
         item_created_on: {
@@ -158,7 +158,7 @@ function getAllCountryPerformance(queryObj, limit, offset,attributes,groupBy,inc
                     order_item_status:orderItemStatus['COMPLETED']
                 }],
         };
-        let includeArray = includeArr ? includeArr:[];
+    let includeArray = includeArr ? includeArr:[];
     return new Promise((resolve, reject) => {
 
     model['OrderItem'].findAll({
@@ -258,8 +258,9 @@ function getAllCityPerformance(queryObj, limit, offset,attributes,groupBy,includ
                 },{
                     order_item_status:orderItemStatus['COMPLETED']
                 }],
-        };
-        let includeArray = includeArr ? includeArr:[];
+		};
+		
+    let includeArray = includeArr ? includeArr:[];
     return new Promise((resolve, reject) => {
 
     model['OrderItem'].findAll({
@@ -376,7 +377,6 @@ function getAllProductPerformance(queryObj, limit, offset) {
         });
     });
 }
-
 
 export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween) {
     return new Promise((resolve, reject) => {
@@ -514,9 +514,7 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
     })
 }
 
-
 export function topPerformingCities(orderItemQueryObj, lhsBetween, rhsBetween){
-
 
 	return new Promise((resolve, reject) => {
 		var result = {},Limit = 5, Offset = 0;
@@ -683,7 +681,6 @@ export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
     });
 }
 
-
 export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) {
     const pastRange = _.assign({}, orderItemQueryObj);
     pastRange.item_created_on = {
@@ -834,7 +831,6 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
                 }
             });
     });
-
 }
 
 export function performanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
@@ -865,7 +861,7 @@ export function performanceChanges(queryObj, lhsBetween, rhsBetween, limit, offs
         });
     });
 }
-// getAllCategoryPerformance
+
 export function categoryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
     const pastRange = _.assign({}, queryObj);
     pastRange.from = lhsBetween[0];
@@ -901,7 +897,8 @@ export function categoryPerformanceChanges(queryObj, lhsBetween, rhsBetween, lim
         });
     });
 }
-export function marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
+
+export function marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {	
     const pastRange = _.assign({}, queryObj);
     pastRange.from = lhsBetween[0];
     pastRange.to = lhsBetween[1];
@@ -936,8 +933,10 @@ export function marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, 
         });
     });
 }
+
 export function productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
-   const pastRange = _.assign({}, queryObj);
+	var queryObj = { vendor_id: null };//NEED TO REMOVE
+   	const pastRange = _.assign({}, queryObj);
     pastRange.from = lhsBetween[0];
     pastRange.to = lhsBetween[1];
     const currentRange = _.assign({}, queryObj);
@@ -964,13 +963,15 @@ export function productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limi
         });
     });
 }
+
 export function countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset){
- const pastRange = _.assign({}, queryObj);
+	var queryObj = { vendor_id: null };//NEED TO REMOVE
+ 	const pastRange = _.assign({}, queryObj);
     pastRange.from = lhsBetween[0];
     pastRange.to = lhsBetween[1];
     const currentRange = _.assign({}, queryObj);
     currentRange.from = rhsBetween[0];
-    currentRange.to = rhsBetween[1];
+	currentRange.to = rhsBetween[1];
 
     return new Promise((resolve, reject) => {
         var result = {};
@@ -994,6 +995,7 @@ export function countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limi
 }
 
 export function userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset){
+	var queryObj = { vendor_id: null };//NEED TO REMOVE
 	const pastRange = _.assign({}, queryObj);
 	pastRange.from = lhsBetween[0];
 	pastRange.to = lhsBetween[1];
@@ -1023,17 +1025,18 @@ export function userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, 
 }
 
 export function cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset){
- const pastRange = _.assign({}, queryObj);
+	var queryObj = { vendor_id: null };//NEED TO REMOVE
+ 	const pastRange = _.assign({}, queryObj);
     pastRange.from = lhsBetween[0];
     pastRange.to = lhsBetween[1];
     const currentRange = _.assign({}, queryObj);
     currentRange.from = rhsBetween[0];
-    currentRange.to = rhsBetween[1];
+	currentRange.to = rhsBetween[1];
 
     return new Promise((resolve, reject) => {
         var result = {};
         return getAllCityPerformance(pastRange, limit, offset).then(function(lhsResult) {
-            result.lhs_result = lhsResult;
+			result.lhs_result = lhsResult;
             return result;
         }).then(function() {
             if (queryObj.compare == 'true') {

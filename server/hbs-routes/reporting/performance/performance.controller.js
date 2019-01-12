@@ -25,14 +25,13 @@ export function performance(req, res) {
 	var rhsBetween = [];
 	var queryURI = {};
 
-	var selectedTopCatogory;
+	var selectedMetrics;
 
-	selectedTopCatogory = req.query.top ? req.query.top : "products";
+	selectedMetrics = req.query.top ? req.query.top : "products";
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	field = 'id';
 	order = 'asc';
-	// var productModel = "MarketplaceProduct";
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -40,14 +39,14 @@ export function performance(req, res) {
 	let user_id = LoggedInUser.id;
 
 	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("MM/DD/YYYY"), moment(req.query.lhs_to).format("MM/DD/YYYY"))
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
 	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("MM/DD/YYYY"), moment(req.query.rhs_to).format("MM/DD/YYYY"));
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
 	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
 
 	queryURI['offset'] = offset;
@@ -57,8 +56,7 @@ export function performance(req, res) {
 	queryURI['rhs_from'] = rhsBetween[0];
 	queryURI['rhs_to'] = rhsBetween[1];
 	queryURI['compare'] = 'true';
-	queryURI['top'] = selectedTopCatogory;
-
+	queryURI['top'] = selectedMetrics;
 
 	async.series({
 		cartInfo: function(callback) {
@@ -73,17 +71,6 @@ export function performance(req, res) {
 				return callback(null);
 			}
 		},
-		/*products: function(callback) {
-				queryObj['vendor_id'] = LoggedInUser.Vendor.id;
-				service.findRows(productModel, queryObj, offset, limit, field, order)
-					.then(function(products) {
-						return callback(null, products.rows);
-
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
-			},*/
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -105,23 +92,6 @@ export function performance(req, res) {
 					return callback(null);
 				});
 		},
-		// performance: function(callback) {
-		// 	let performanceQueryObj = {};
-		// 	if (req.user.role == 2)
-		// 		performanceQueryObj.vendor_id = req.user.Vendor.id;
-
-		// 	if (req.query.compare) {
-		// 		performanceQueryObj.compare = req.query.compare;
-		// 		queryURI['compare'] = req.query.compare;
-		// 	}
-
-		// 	ReportService.performanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-		// 		return callback(null, results);
-		// 	}).catch((err) => {
-		// 		console.log('performance err', err);
-		// 		return callback(err);
-		// 	});
-		// },
 		unreadCounts: function(callback) {
 			notifictionService.notificationCounts(LoggedInUser.id)
 				.then(function(counts) {
@@ -130,40 +100,48 @@ export function performance(req, res) {
 					return callback(null);
 				});
 		},
-		topCategory: function(callback) {
+		topItems: function(callback) {
 			let performanceQueryObj = {};
 			if (req.user.role == 2)
 				performanceQueryObj.vendor_id = req.user.Vendor.id;
 
 			if (req.query.top == "products") {
-				ReportService.performanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+				ReportService.productPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
 					.then(function(results) {
 						return callback(null, results);
 					}).catch(function(error) {
 						return callback(error);
 					});
-			} else if (req.query.top == "marketplace") {
-				ReportService.marketplacePerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+			} if (req.query.top == "countries") {
+				ReportService.countryPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
 					.then(function(results) {
 						return callback(null, results);
 					}).catch(function(error) {
 						return callback(error);
 					});
-			} else if (req.query.top == "city") {
+			} else if (req.query.top == "cities") {
 				ReportService.cityPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
 					.then(function(results) {
 						return callback(null, results);
 					}).catch(function(error) {
 						return callback(error);
 					});
-			} else {
-				ReportService.performanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+			} else if (req.query.top == "buyers") {
+				ReportService.userPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
 					.then(function(results) {
 						return callback(null, results);
 					}).catch(function(error) {
-						return callback(null);
+						return callback(error);
 					});
-			}
+			} else {
+				ReportService.productPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+					.then(function(results) {
+						console.log("--------------results-------------", results)
+						return callback(null, results);
+					}).catch(function(error) {
+						return callback(error);
+					});
+				}
 		}
 	},
 		function(err, results) {
@@ -172,7 +150,6 @@ export function performance(req, res) {
 			if (!err) {
 				res.render('vendorNav/reporting/performance', {
 					title: "Global Trade Connect",
-					//products: results.products,
 					marketPlace: marketplace,
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
@@ -186,8 +163,8 @@ export function performance(req, res) {
 					cart: results.cartInfo,
 					performance: results.performance,
 					statusCode: statusCode,
-					selectedTopCatogory: selectedTopCatogory,
-					topCategory:results.topCategory
+					selectedMetrics: selectedMetrics,
+					topItems:results.topItems
 				});
 			} else {
 				res.render('vendorNav/reporting/performance', err);
