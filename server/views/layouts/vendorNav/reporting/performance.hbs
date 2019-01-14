@@ -4,7 +4,7 @@
 	var params = {{{ DisplayJSON queryURIString }}};
 	var metrics = {{{ DisplayJSON selectedMetrics }}};
 	function downloadCSV(args) {
-		if (metrics == 'products') {
+		if (metrics == 'products'){
 			$.ajax({
 				type: 'POST',
 				url: '/api/export-csv/reportperformancecsv',
@@ -27,7 +27,7 @@
 					console.log('status', status);
 				}
 			});
-		} else if (metrics == 'marketplace') {
+		} else if (metrics == 'marketplace'){
 			$.ajax({
 				type: 'POST',
 				url: '/api/export-csv/reportmarketplacecsv',
@@ -50,7 +50,7 @@
 					console.log('status', status);
 				}
 			});
-		} else if (metrics == 'city') {
+		} else if (metrics == 'city'){
 			$.ajax({
 				type: 'POST',
 				url: '/api/export-csv/reportcitycsv',
@@ -76,14 +76,14 @@
 		}
 	}
 
-	function limit(size) {
+	function limit(size){
 		params = replaceUrlParam(params, "limit", size);
 		params = replaceUrlParam(params, "page", 1);
 		params = replaceUrlParam(params, "offset", 0);
 		location.href = "/store/performance?" + params;
 	}
 
-	function replaceUrlParam(existingQueryParams, paramsName, paramsValue) {
+	function replaceUrlParam(existingQueryParams, paramsName, paramsValue){
 		var urlParams = new URLSearchParams(existingQueryParams);
 		if (paramsValue) {
 			urlParams.set(paramsName, paramsValue);
@@ -93,7 +93,7 @@
 		return urlParams;
 	}
 
-	function onSearch() {
+	function onSearch(){
 		var metric;
 		var from = $('#lhs_from').val();
 		var to = $('#lhs_to').val();
@@ -114,7 +114,7 @@
 		location.href = "/store/performance?top=" + metric + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
 	}
 
-	$(function() {
+	$(function(){
 		$("#lhs_from").datepicker({
 			trigger: $("#lhs_fromRange"),
 			autoHide: true
@@ -133,19 +133,56 @@
 		});
 	});
 
-	$( document ).ready(function() {
+	$( document ).ready(function(){
 		$("#compareBtn").attr('disabled', 'disabled');
 
 		$("#inputDateRange").change(function() {
-			var dateRange = $('#inputDateRange').val();
-			if(dateRange == 7){		
-				calculateDays(7);
-			}else if(dateRange == 14){
-				calculateDays(14);
-			}else if(dateRange == 60){
-				calculateDays(60);
-			}else{
-				calculateDays(30);
+			if ($("#inputDateRange").val() == 1) {
+				$("#lhs_from").datepicker("setDate", new Date());
+				$("#lhs_to").datepicker("setDate", new Date());
+			} else if ($("#inputDateRange").val() == 2) {
+				var startDate = new Date();
+				var endDate = new Date();
+				startDate.setDate(startDate.getDate() - 1);
+				endDate.setDate(endDate.getDate() - 1);
+
+				$("#lhs_from").datepicker("setDate", startDate);
+				$("#lhs_to").datepicker("setDate", startDate);
+				
+			} else if ($("#inputDateRange").val() == 3) {
+				var startDate = new Date();
+				var endDate = new Date();
+				startDate.setDate(startDate.getDate() - 7);
+				endDate.setDate(endDate.getDate() - 1);
+
+				$("#lhs_from").datepicker("setDate", startDate);
+				$("#lhs_to").datepicker("setDate", endDate);
+				
+			} else if ($("#inputDateRange").val() == 4) {
+				var startDate = new Date();
+				var endDate = new Date();
+				startDate.setDate(startDate.getDate() - 30);
+				endDate.setDate(endDate.getDate() - 1);
+
+				$("#lhs_from").datepicker("setDate", startDate);
+				$("#lhs_to").datepicker("setDate", endDate);
+				
+			} else if ($("#inputDateRange").val() == 5) {
+				var startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+				var endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+
+				$("#lhs_from").datepicker("setDate", startDate);
+				$("#lhs_to").datepicker("setDate", endDate);
+				
+			} else if ($("#inputDateRange").val() == 6) {
+				var startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
+				var endDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1 + 1, 0);
+
+				$("#lhs_from").datepicker("setDate", startDate);
+				$("#lhs_to").datepicker("setDate", endDate);
+				
+			} else {
+				//window.location.href = "/store/accounting?range=" + $("#inputDateRange").val();
 			}
 		});
 
@@ -211,16 +248,7 @@
 				location.href = "/store/performance?top=" + metric + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + true;
 			}
 		})
-
-		//calculateDays(30);
 	});
-
-	function calculateDays(days){
-		var lhsFrom = moment().subtract(days, 'days').format('MM/DD/YYYY');
-		var rhsTo = moment().subtract(1, 'days').format('MM/DD/YYYY'); 
-		$("#lhs_from").val(lhsFrom);
-		$("#lhs_to").val(rhsTo);
-	}
 
 </script> 
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
@@ -236,89 +264,84 @@
 						<div class="ibox-content">
 							<div class="ibox-title">
 								<h2>Performance
-									<span class="pull-right" style="font-size:12px"><a href="/store/performance">Clear All</a></span>
+								<span class="pull-right" style="font-size:12px"><a href="/store/performance">Clear All</a></span>
 								</h2>
 							</div>
 							<div class="content-body">
 								<div class="row">
 									<div class="col-md-12">
 										<form id="compareForm" class="form-inline pull-left m-t-md">
-											<div class="form-group">
-												<label class="label-control" style="padding: 5px;">Date Range </label>
+											<div class="form-group m-r-lg">
+												<label class="label-control">Date Range </label>
 											</div>
-											<div class="form-group">
-												<div class="input-group mgT-5">
-													<input id="lhs_from" name="lhs_from" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
-													 value="{{queryURI.lhs_from}}" placeholder="MM/DD/YYYY" aria-label="lhs_fromRange" aria-describedby="lhs_fromRange" required>
+											<div class="form-group m-r">
+												<div class="input-group">
+													<input id="lhs_from" name="lhs_from" type="text" class="custom-form-control date_range_picker" 
+													value="{{queryURI.lhs_from}}" placeholder="MM/DD/YYYY" aria-label="inputFromDateRange" aria-describedby="inputFromDateRange" required>
 													<div class="input-group-append cursor-pointer">
-														<span class="input-group-text pad-3" id="lhs_fromRange">
+														<span class="input-group-text" id="inputFromDateRange">
 															<img class="calendar-icon" src="../../img/calendar.png">
 														</span>
 													</div>
 												</div>
 											</div>
-											<div class="form-group">
-												<label class="label-control">to </label>
+											<div class="form-group m-r">
+												<label class="label-control">to</label>
 											</div>
-											<div class="form-group">
-												<div class="input-group mgT-5">
-													<input id="lhs_to" name="lhs_to" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
-													 value="{{queryURI.lhs_to}}" placeholder="MM/DD/YYYY" aria-label="lhs_toRange" aria-describedby="lhs_toRange" required>
+											<div class="form-group m-r">
+												<div class="input-group">
+													<input id="lhs_to" name="lhs_to" type="text" class="custom-form-control date_range_picker" 
+													value="{{queryURI.lhs_to}}" placeholder="MM/DD/YYYY" aria-label="inputToDateRange" aria-describedby="inputToDateRange" required>
 													<div class="input-group-append cursor-pointer">
-														<span class="input-group-text pad-3" id="lhs_toRange">
+														<span class="input-group-text" id="inputToDateRange">
 															<img class="calendar-icon" src="../../img/calendar.png">
 														</span>
 													</div>
 												</div>
 											</div>
-											<div class="form-group mgT-5">
+											<div class="form-group m-r">
 												<div class="select-container">
-													<select id="inputDateRange" style="width:100px;padding:3px;height: 25px;" class="form-control-customized form-control-sm custom-dropdown">
-														<option value="30">LAST 30 DAY</option>
-														<option value="7">LAST 7 DAY</option>
-														<option value="14">LAST 14 DAY</option>
-														<option value="60">LAST 60 DAY</option>
+													<select id="inputDateRange" class="form-control-customized form-control-sm custom-dropdown" name="date_range">
+														{{#each dateRangeOptions}}
+															<option {{#ifCond @root.queryURI.range '==' this.value}} selected="true" {{/ifCond}} value="{{this.value}}">{{this.column}}</option>
+														{{/each}}
 													</select>
 												</div>
 											</div>
-											<div class="form-group mgT-5">
-												<div class="customCheckbox" style="margin-left: 30px;">
+											<div class="form-group">
+												<div class="customCheckbox">
 													<input type="checkbox" id="compare" name="compare" class="customCheckboxInput"
 													{{#if queryURI.compare}} checked {{/if}}>
 													<label class="checkbox-b" for="compare"></label>
 												</div>
 											</div>
-											<div class="form-group">
-												<label class="label-control">compare to </label>
-											</div>
-											<div class="form-group">
-												<div class="input-group mgT-5">
-													<input id="rhs_from" name="rhs_from" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
-													 value="{{queryURI.rhs_from}}" placeholder="MM/DD/YYYY" aria-label="rhs_fromRange" aria-describedby="rhs_fromRange" required>
+											<div class="form-group m-r">
+												<div class="input-group">
+													<input id="rhs_from" name="rhs_from" type="text" class="custom-form-control date_range_picker" 
+													value="{{queryURI.rhs_from}}" placeholder="MM/DD/YYYY" aria-label="inputFromDateRange" aria-describedby="inputFromDateRange" required>
 													<div class="input-group-append cursor-pointer">
-														<span class="input-group-text pad-3" id="rhs_fromRange">
+														<span class="input-group-text" id="inputFromDateRange">
+															<img class="calendar-icon" src="../../img/calendar.png">
+														</span>
+													</div>
+												</div>
+											</div>
+											<div class="form-group m-r">
+												<label class="label-control">to</label>
+											</div>
+											<div class="form-group m-r">
+												<div class="input-group">
+													<input id="rhs_to" name="rhs_to" type="text" class="custom-form-control date_range_picker" 
+													value="{{queryURI.rhs_to}}" placeholder="MM/DD/YYYY" aria-label="inputToDateRange" aria-describedby="inputToDateRange" required>
+													<div class="input-group-append cursor-pointer">
+														<span class="input-group-text" id="inputToDateRange">
 															<img class="calendar-icon" src="../../img/calendar.png">
 														</span>
 													</div>
 												</div>
 											</div>
 											<div class="form-group">
-												<label class="label-control">to </label>
-											</div>
-											<div class="form-group">
-												<div class="input-group mgT-5">
-													<input id="rhs_to" name="rhs_to" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
-													 value="{{queryURI.rhs_to}}" placeholder="MM/DD/YYYY" aria-label="rhs_toRange" aria-describedby="rhs_toRange" required>
-													<div class="input-group-append cursor-pointer">
-														<span class="input-group-text pad-3" id="rhs_toRange">
-															<img class="calendar-icon" src="../../img/calendar.png">
-														</span>
-													</div>
-												</div>
-											</div>
-											<div class="form-group">
-												<button type="submit" id="compareBtn" class="update-btn1 report_update report_update_btn_override" style="color:#fff;background-color:#3bb802;margin-left:5px"
-												>UPDATE</button>
+												<button type="submit" id="compareBtn" class="btn btn-md btn-muted update-btn-customised">UPDATE</button>
 											</div>
 										</form>
 										<form class="form-inline pull-right m-t-md">
@@ -334,47 +357,25 @@
 										</form>
 									</div>
 								</div>
-								<br>
-								<div class="row" style="padding: 5px;">
-									<div class="col-md-2">
-										<p style="font-size:13px;margin-top:3px">Select a metric</p>
-									</div>
-									<div class="col-md-7">
-										<div class="form-group" style="width:273px;margin-left:-63px;">
-											<div class="select-container">
-												<select id="inputTop" style="height:25px;" onchange="onSearch()" class="form-control-customized form-control-sm custom-dropdown"
-												 name="countyr">
-													<option value="1" {{#ifCond queryURI.top "==" 'products'}} selected="true" {{/ifCond}}>TOP SELLING PRODUCTS</option>
-													<option value="2" {{#ifCond queryURI.top "==" 'countries'}} selected="true" {{/ifCond}}>TOP SELLING COUNTRIES</option>
-													<option value="3" {{#ifCond queryURI.top "==" 'cities'}} selected="true" {{/ifCond}}>TOP PERFORMING CITIES</option>
-													<option value="4" {{#ifCond queryURI.top "==" 'buyers'}} selected="true" {{/ifCond}}>TOP BUYERS</option>	
-												</select>
-											</div>
-										</div>
-									</div>
-									{{!-- <div class="col-md-3 float-right" style="padding-left: 52px;">
-										<div class="form-group">
-											<div class="input-group gtc-rounded">
-												<input type="text" placeholder="Search Products#" class="form-control form-control-sm">
-												<button type="submit" class="btn btn-sm btn-gtc">
-													<i class="fa fa-search"></i>
-												</button>
-											</div>
-										</div>
-									</div> --}}
-								</div>
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-md-12">
+										<div class="form-inline pull-left m-t-md">
+											<div class="form-group m-r-lg">
+												<label class="label-control">Select a metric:</label>
+											</div>
+											<div class="form-group m-r">
+												<div class="select-container">
+													<select id="inputTop" class="form-control-customized form-control-sm custom-dropdown" onChange="onSearch();">
+														<option value="1" {{#ifCond queryURI.top "==" 'products'}} selected="true" {{/ifCond}}>TOP SELLING PRODUCTS</option>
+														<option value="2" {{#ifCond queryURI.top "==" 'countries'}} selected="true" {{/ifCond}}>TOP SELLING COUNTRIES</option>
+														<option value="3" {{#ifCond queryURI.top "==" 'cities'}} selected="true" {{/ifCond}}>TOP PERFORMING CITIES</option>
+														<option value="4" {{#ifCond queryURI.top "==" 'buyers'}} selected="true" {{/ifCond}}>TOP BUYERS</option>	
+													</select>
+												</div>
+											</div>
+										</div>		
 									</div>
-									<div class="col-md-6">
-										<p class="vend_edit_lists_pstyle float-right">Entries per page:
-											<a {{#ifCond queryURI.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
-											<a {{#ifCond queryURI.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
-											<a {{#ifCond queryURI.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
-											<a {{#ifCond queryURI.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
-										</p>
-									</div>
-								</div>
+								</div><br/>
 								<div class="row">
 									<div class="col-md-12">
 										<table class="table order-table">
@@ -478,18 +479,7 @@
 										</table>
 									</div>
 								</div>
-								{{!-- <div class="row">
-									<div class="col-md-6">
-									</div>
-									<div class="col-md-6">
-										<p class="vend_edit_lists_pstyle float-right">Entries per page:
-											<a {{#ifCond queryURI.limit '==' 10}} class="active" {{/ifCond}} onclick="limit(10)" href="javascript:;">10</a>
-											<a {{#ifCond queryURI.limit '==' 25}} class="active" {{/ifCond}} onclick="limit(25)" href="javascript:;">25</a>
-											<a {{#ifCond queryURI.limit '==' 100}} class="active" {{/ifCond}} onclick="limit(100)" href="javascript:;">100</a>
-											<a {{#ifCond queryURI.limit '==' 10000000000000}} class="active" {{/ifCond}} onclick="limit(10000000000000)" href="javascript:;">All</a>
-										</p>
-									</div>
-								</div> --}}
+
 							</div>
 						</div>
 					</div>

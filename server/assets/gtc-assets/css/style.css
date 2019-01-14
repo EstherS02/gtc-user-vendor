@@ -3301,3 +3301,12 @@ p.address-info{
   /* This is important */
   width: 100%;
 }
+
+.update-btn-customised {
+	color:#fff;
+	background-color:#3bb802;
+}
+.update-btn-customised:hover {
+	color:#fff;
+	background-color:#3bb802;
+}
