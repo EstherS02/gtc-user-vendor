@@ -935,7 +935,7 @@ export function marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, 
 }
 
 export function productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
-	var queryObj = { vendor_id: null };//NEED TO REMOVE
+	queryObj.vendor_id = null;//NEED TO REMOVE
    	const pastRange = _.assign({}, queryObj);
     pastRange.from = lhsBetween[0];
     pastRange.to = lhsBetween[1];
@@ -944,7 +944,7 @@ export function productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limi
     currentRange.to = rhsBetween[1];
     var groupBy = "product_id";
     return new Promise((resolve, reject) => {
-        var result = {};
+		var result = {};
         return getAllProductPerformance(pastRange, limit, offset,groupBy).then(function(lhsResult) {
             result.lhs_result = lhsResult;
             return result;
@@ -965,7 +965,7 @@ export function productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limi
 }
 
 export function countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset){
-	var queryObj = { vendor_id: null };//NEED TO REMOVE
+	queryObj.vendor_id = null;//NEED TO REMOVE
  	const pastRange = _.assign({}, queryObj);
     pastRange.from = lhsBetween[0];
     pastRange.to = lhsBetween[1];
@@ -995,7 +995,7 @@ export function countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limi
 }
 
 export function userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset){
-	var queryObj = { vendor_id: null };//NEED TO REMOVE
+	queryObj.vendor_id = null;//NEED TO REMOVE
 	const pastRange = _.assign({}, queryObj);
 	pastRange.from = lhsBetween[0];
 	pastRange.to = lhsBetween[1];
@@ -1025,7 +1025,7 @@ export function userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, 
 }
 
 export function cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset){
-	var queryObj = { vendor_id: null };//NEED TO REMOVE
+	queryObj.vendor_id = null;//NEED TO REMOVE
  	const pastRange = _.assign({}, queryObj);
     pastRange.from = lhsBetween[0];
     pastRange.to = lhsBetween[1];

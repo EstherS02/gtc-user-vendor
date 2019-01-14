@@ -3,11 +3,11 @@
 	var userInfo = {{{DisplayJSON LoggedInUser}}}
 	var vendorInfo = {{{DisplayJSON VendorDetail}}}
 	$(document).ready(function() {
+
 		$('.hide').hide();
 		$('.allComments').hide();
 		$("#blog_img").hide();
 		$(".comment-image").hide();
-
 
 		var cropBoxData, canvasData, cropper, cropperInputImage;
 		var cropperOutputImage;
@@ -50,8 +50,6 @@
 		$("#selectedBlogFile").change(function() {
 			imagesPreview(this);
 		});
-
-
 
 		$('#postBlog').click(function() {
 			var formData = {};
@@ -103,8 +101,6 @@
 		});
 
 	$(".newComment").change(function() {
-		// $("#blog_img").show();
-		// readURL(this);
 	var id = $(this).attr("data-commentid");
 		$("#comment_img-"+id).show();
 		readCommentURL(this);
@@ -282,8 +278,6 @@ function commentType(data) {
 	return comment;
 }
 
-
-
 function show(e) {
 	$('#allComments' + e).show();
 	$('#hideAll' + e).show();
@@ -359,7 +353,6 @@ function userLike(e) {
 		window.location.href = "/login";
 	}
 }
-
 
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}

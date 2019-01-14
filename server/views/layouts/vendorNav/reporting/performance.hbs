@@ -1,24 +1,4 @@
-<script>
-	$(function() {
-		$("#lhs_from").datepicker({
-			trigger: $("#lhs_fromRange"),
-			autoHide: true
-		});
-		$("#lhs_to").datepicker({
-			trigger: $("#lhs_toRange"),
-			autoHide: true
-		});
-		$("#rhs_from").datepicker({
-			trigger: $("#rhs_fromRange"),
-			autoHide: true
-		});
-		$("#rhs_to").datepicker({
-			trigger: $("#rhs_toRange"),
-			autoHide: true
-		});
-	});
-</script>
-
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var params = {{{ DisplayJSON queryURIString }}};
@@ -134,6 +114,114 @@
 		location.href = "/store/performance?top=" + metric + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
 	}
 
+	$(function() {
+		$("#lhs_from").datepicker({
+			trigger: $("#lhs_fromRange"),
+			autoHide: true
+		});
+		$("#lhs_to").datepicker({
+			trigger: $("#lhs_toRange"),
+			autoHide: true
+		});
+		$("#rhs_from").datepicker({
+			trigger: $("#rhs_fromRange"),
+			autoHide: true,
+		});
+		$("#rhs_to").datepicker({
+			trigger: $("#rhs_toRange"),
+			autoHide: true
+		});
+	});
+
+	$( document ).ready(function() {
+		$("#compareBtn").attr('disabled', 'disabled');
+
+		$("#inputDateRange").change(function() {
+			var dateRange = $('#inputDateRange').val();
+			if(dateRange == 7){		
+				calculateDays(7);
+			}else if(dateRange == 14){
+				calculateDays(14);
+			}else if(dateRange == 60){
+				calculateDays(60);
+			}else{
+				calculateDays(30);
+			}
+		});
+
+		$('#lhs_from,#lhs_to,#rhs_from,#rhs_to,#compare').change(function(e){
+			if ($('#compareForm').valid()) {
+				 $("#compareBtn").removeAttr('disabled');
+			}else{
+				$("#compareBtn").attr('disabled', 'disabled');
+			}
+		})
+
+		$('#compareForm').validate({
+			rule:{
+				lhs_from: {
+					required: true,
+					date: true
+				},
+				lhs_to: {
+					required: true,
+					date: true
+				},
+				rhs_from: {
+					required: true,
+					date: true
+				},
+				rhs_to: {
+					required: true,
+					date: true
+				},
+				compare:{
+					required:true
+				}
+			},
+			messages:{
+				lhs_from:'',
+				lhs_to: '',
+				rhs_from: '',
+				rhs_to: '',
+				compare:''
+			}	
+		})
+
+		$("#compareForm").submit(function (e) {
+			e.preventDefault();
+			if ($('#compareForm').valid()) {
+
+				var from = $('#lhs_from').val();
+				var to = $('#lhs_to').val();
+				var Cfrom = $('#rhs_from').val();
+				var Cto = $('#rhs_to').val();
+				Compare = $('#compare').is(":checked");
+
+				if ($("#inputTop").val() == 1) {
+					metric = "products";
+				} else if ($("#inputTop").val() == 2) {
+					metric = "countries"
+				} else if ($("#inputTop").val() == 3) {
+					metric = "cities"
+				} else if ($("#inputTop").val() == 4) {
+					metric = "buyers"
+				}
+
+				location.href = "/store/performance?top=" + metric + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + true;
+			}
+		})
+
+		calculateDays(30);
+	});
+
+	function calculateDays(days){
+		var lhsFrom = moment().subtract(days, 'days').format('MM/DD/YYYY');
+		var rhsTo = moment().subtract(1, 'days').format('MM/DD/YYYY'); 
+		$("#lhs_from").val(lhsFrom);
+		$("#lhs_to").val(rhsTo);
+	}
+
 </script> 
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
@@ -154,14 +242,14 @@
 							<div class="content-body">
 								<div class="row">
 									<div class="col-md-12">
-										<form class="form-inline pull-left m-t-md">
+										<form id="compareForm" class="form-inline pull-left m-t-md">
 											<div class="form-group">
 												<label class="label-control" style="padding: 5px;">Date Range </label>
 											</div>
 											<div class="form-group">
 												<div class="input-group mgT-5">
-													<input id="lhs_from" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
-													 value="{{queryURI.lhs_from}}" placeholder="MM/DD/YYYY" aria-label="lhs_fromRange" aria-describedby="lhs_fromRange">
+													<input id="lhs_from" name="lhs_from" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
+													 value="{{queryURI.lhs_from}}" placeholder="MM/DD/YYYY" aria-label="lhs_fromRange" aria-describedby="lhs_fromRange" required>
 													<div class="input-group-append cursor-pointer">
 														<span class="input-group-text pad-3" id="lhs_fromRange">
 															<img class="calendar-icon" src="../../img/calendar.png">
@@ -174,8 +262,8 @@
 											</div>
 											<div class="form-group">
 												<div class="input-group mgT-5">
-													<input id="lhs_to" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
-													 value="{{queryURI.lhs_to}}" placeholder="MM/DD/YYYY" aria-label="lhs_toRange" aria-describedby="lhs_toRange">
+													<input id="lhs_to" name="lhs_to" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
+													 value="{{queryURI.lhs_to}}" placeholder="MM/DD/YYYY" aria-label="lhs_toRange" aria-describedby="lhs_toRange" required>
 													<div class="input-group-append cursor-pointer">
 														<span class="input-group-text pad-3" id="lhs_toRange">
 															<img class="calendar-icon" src="../../img/calendar.png">
@@ -185,15 +273,17 @@
 											</div>
 											<div class="form-group mgT-5">
 												<div class="select-container">
-													<select id="inputDateRange" style="width:100px;padding:3px;height: 25px;" class="form-control-customized form-control-sm custom-dropdown"
-													 name="countyr">
-														<option value="0">LAST 30 DAY</option>
+													<select id="inputDateRange" style="width:100px;padding:3px;height: 25px;" class="form-control-customized form-control-sm custom-dropdown">
+														<option value="30">LAST 30 DAY</option>
+														<option value="7">LAST 7 DAY</option>
+														<option value="14">LAST 14 DAY</option>
+														<option value="60">LAST 60 DAY</option>
 													</select>
 												</div>
 											</div>
 											<div class="form-group mgT-5">
 												<div class="customCheckbox" style="margin-left: 30px;">
-													<input type="checkbox" checked='checked' id="compare" value="true" class="customCheckboxInput">
+													<input type="checkbox" id="compare" name="compare" class="customCheckboxInput">
 													<label class="checkbox-b" for="compare"></label>
 												</div>
 											</div>
@@ -202,8 +292,8 @@
 											</div>
 											<div class="form-group">
 												<div class="input-group mgT-5">
-													<input id="rhs_from" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
-													 value="{{queryURI.lhs_from}}" placeholder="MM/DD/YYYY" aria-label="rhs_fromRange" aria-describedby="rhs_fromRange">
+													<input id="rhs_from" name="rhs_from" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
+													 value="{{queryURI.rhs_from}}" placeholder="MM/DD/YYYY" aria-label="rhs_fromRange" aria-describedby="rhs_fromRange" required>
 													<div class="input-group-append cursor-pointer">
 														<span class="input-group-text pad-3" id="rhs_fromRange">
 															<img class="calendar-icon" src="../../img/calendar.png">
@@ -216,8 +306,8 @@
 											</div>
 											<div class="form-group">
 												<div class="input-group mgT-5">
-													<input id="rhs_to" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
-													 value="{{queryURI.rhs_to}}" placeholder="MM/DD/YYYY" aria-label="rhs_toRange" aria-describedby="rhs_toRange">
+													<input id="rhs_to" name="rhs_to" style="width:89px;height: 25px;" type="text" class="custom-form-control date_range_picker no-padding"
+													 value="{{queryURI.rhs_to}}" placeholder="MM/DD/YYYY" aria-label="rhs_toRange" aria-describedby="rhs_toRange" required>
 													<div class="input-group-append cursor-pointer">
 														<span class="input-group-text pad-3" id="rhs_toRange">
 															<img class="calendar-icon" src="../../img/calendar.png">
@@ -226,8 +316,8 @@
 												</div>
 											</div>
 											<div class="form-group">
-												<button type="button" class="update-btn1 report_update report_update_btn_override" style="color:#fff;background-color:#3bb802;margin-left:5px"
-												 onclick="onSearch()">UPDATE</button>
+												<button type="submit" id="compareBtn" class="update-btn1 report_update report_update_btn_override" style="color:#fff;background-color:#3bb802;margin-left:5px"
+												>UPDATE</button>
 											</div>
 										</form>
 										<form class="form-inline pull-right m-t-md">
@@ -261,7 +351,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="col-md-3 float-right" style="padding-left: 52px;">
+									{{!-- <div class="col-md-3 float-right" style="padding-left: 52px;">
 										<div class="form-group">
 											<div class="input-group gtc-rounded">
 												<input type="text" placeholder="Search Products#" class="form-control form-control-sm">
@@ -270,7 +360,7 @@
 												</button>
 											</div>
 										</div>
-									</div>
+									</div> --}}
 								</div>
 								<div class="row">
 									<div class="col-md-6">
@@ -307,7 +397,7 @@
 												<tbody>
 													{{#each topItems.lhs_result}}
 														<tr>
-															{{productPerformance this @root.performance.rhs_result}} 
+															{{productPerformance this @root.topItems.rhs_result}} 
 														</tr>
 													{{/each}}
 												</tbody>
@@ -331,7 +421,7 @@
 												<tbody>
 													{{#each topItems.lhs_result}}
 														<tr>
-															{{countryPerformance this @root.performance.rhs_result}} 
+															{{countryPerformance this @root.topItems.rhs_result}} 
 														</tr>
 													{{/each}}
 												</tbody>
@@ -355,7 +445,7 @@
 												<tbody>
 													{{#each topItems.lhs_result}}
 														<tr>
-															{{cityPerformance this @root.performance.rhs_result}} 
+															{{cityPerformance this @root.topItems.rhs_result}} 
 														</tr>
 													{{/each}}
 												</tbody>
@@ -379,7 +469,7 @@
 												<tbody>
 													{{#each topItems.lhs_result}}
 														<tr>
-															{{buyerPerformance this @root.performance.rhs_result}} 
+															{{buyerPerformance this @root.topItems.rhs_result}} 
 														</tr>
 													{{/each}}
 												</tbody>

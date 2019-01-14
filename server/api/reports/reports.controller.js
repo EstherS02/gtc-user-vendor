@@ -616,11 +616,11 @@ export function vendorPerformance(req, res){
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
+	
 	ReportService.vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-		
 		return res.status(200).send(results);
 	}).catch((err) => {
-		console.log('compareVendorPerformance err', err);
+		console.log('vendorPerformance err', err);
 		return res.status(500).send(err);
 	});
 }
@@ -661,7 +661,6 @@ export function productPerformanceChanges(req, res){
 	}
 
 	ReportService.productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('comparePerformance err', err);

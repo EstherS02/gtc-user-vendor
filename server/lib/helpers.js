@@ -620,6 +620,7 @@ Handlebars.registerHelper('compareSalePerformance', function(obj, compareProduct
 });
 
 Handlebars.registerHelper('productPerformance', function(product, compareProducts){
+
 	var domElement= '';
 	var matchedObj = _.find(compareProducts, function(aObj){
 		return aObj.product_id == product.product_id;;

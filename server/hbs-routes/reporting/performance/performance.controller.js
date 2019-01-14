@@ -40,22 +40,17 @@ export function performance(req, res) {
 
 	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-	} else {
+	}else {
 		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
 	if (req.query.rhs_from && req.query.rhs_to) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-
+	} 
+	
 	queryURI['offset'] = offset;
 	queryURI['limit'] = limit;
 	queryURI['lhs_from'] = lhsBetween[0];
 	queryURI['lhs_to'] = lhsBetween[1];
-	queryURI['rhs_from'] = rhsBetween[0];
-	queryURI['rhs_to'] = rhsBetween[1];
-	queryURI['compare'] = 'true';
 	queryURI['top'] = selectedMetrics;
 
 	async.series({
@@ -105,14 +100,11 @@ export function performance(req, res) {
 			if (req.user.role == 2)
 				performanceQueryObj.vendor_id = req.user.Vendor.id;
 
-			if (req.query.top == "products") {
-				ReportService.productPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
-					.then(function(results) {
-						return callback(null, results);
-					}).catch(function(error) {
-						return callback(error);
-					});
-			} if (req.query.top == "countries") {
+			if(req.query.compare){
+				performanceQueryObj.compare = req.query.compare;
+			}
+				
+			if (req.query.top == "countries") {
 				ReportService.countryPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
 					.then(function(results) {
 						return callback(null, results);
@@ -133,41 +125,39 @@ export function performance(req, res) {
 					}).catch(function(error) {
 						return callback(error);
 					});
-			} else {
+			} 
+			else {
 				ReportService.productPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
 					.then(function(results) {
-						console.log("--------------results-------------", results)
 						return callback(null, results);
 					}).catch(function(error) {
 						return callback(error);
 					});
-				}
-		}
-	},
-		function(err, results) {
-			var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-			var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
-			if (!err) {
-				res.render('vendorNav/reporting/performance', {
-					title: "Global Trade Connect",
-					marketPlace: marketplace,
-					LoggedInUser: LoggedInUser,
-					categories: results.categories,
-					unreadCounts: results.unreadCounts,
-					bottomCategory: bottomCategory,
-					queryURI: queryURI,
-					queryURIString: querystring.stringify(queryURI),
-					selectedPage: 'performance',
-					vendorPlan: vendorPlan,
-					dropDownUrl: dropDownUrl,
-					cart: results.cartInfo,
-					performance: results.performance,
-					statusCode: statusCode,
-					selectedMetrics: selectedMetrics,
-					topItems:results.topItems
-				});
-			} else {
-				res.render('vendorNav/reporting/performance', err);
 			}
-		});
+		}
+	},function(err, results) {
+		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+		var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
+		if (!err) {
+			res.render('vendorNav/reporting/performance', {
+				title: "Global Trade Connect",
+				marketPlace: marketplace,
+				LoggedInUser: LoggedInUser,
+				categories: results.categories,
+				unreadCounts: results.unreadCounts,
+				bottomCategory: bottomCategory,
+				queryURI: queryURI,
+				queryURIString: querystring.stringify(queryURI),
+				selectedPage: 'performance',
+				vendorPlan: vendorPlan,
+				dropDownUrl: dropDownUrl,
+				cart: results.cartInfo,
+				statusCode: statusCode,
+				selectedMetrics: selectedMetrics,
+				topItems:results.topItems
+			});
+		} else {
+			res.render('vendorNav/reporting/performance', err);
+		}
+	});
 }
