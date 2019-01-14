@@ -188,7 +188,11 @@
 
 		$('#lhs_from,#lhs_to,#rhs_from,#rhs_to,#compare').change(function(e){
 			if ($('#compareForm').valid()) {
-				 $("#compareBtn").removeAttr('disabled');
+				if ($('#compare').is(':checked')) {
+					$("#compareBtn").removeAttr('disabled');
+				}else{
+					$("#compareBtn").attr('disabled', 'disabled');	
+				}
 			}else{
 				$("#compareBtn").attr('disabled', 'disabled');
 			}
@@ -249,7 +253,6 @@
 			}
 		})
 	});
-
 </script> 
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
@@ -479,7 +482,6 @@
 										</table>
 									</div>
 								</div>
-
 							</div>
 						</div>
 					</div>
