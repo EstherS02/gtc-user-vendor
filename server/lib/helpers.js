@@ -809,7 +809,7 @@ Handlebars.registerHelper('buyerPerformance', function(buyer, compareBuyer){
 
 	var domElement= '';
 	var matchedObj = _.find(compareBuyer, function(aObj){
-		return aObj['Order.User.id'] == country['Order.User.id'];
+		return aObj['Order.User.id'] == buyer['Order.User.id'];
 	});
 
 	if (matchedObj) {

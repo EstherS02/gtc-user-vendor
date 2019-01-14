@@ -9,7 +9,6 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
-const orderStatus = require('../../../config/order_status');
 const async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
 const ReportService = require('../../../utilities/reports');
@@ -24,7 +23,6 @@ export function performance(req, res) {
 	var lhsBetween = [];
 	var rhsBetween = [];
 	var queryURI = {};
-
 	var selectedMetrics;
 
 	selectedMetrics = req.query.top ? req.query.top : "products";
@@ -41,10 +39,12 @@ export function performance(req, res) {
 	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	}else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1,'days').format("YYYY/MM/DD"));
 	}
 	if (req.query.rhs_from && req.query.rhs_to) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+		queryURI['rhs_from'] = lhsBetween[0];
+		queryURI['rhs_to'] = lhsBetween[1];
 	} 
 	
 	queryURI['offset'] = offset;
@@ -73,7 +73,6 @@ export function performance(req, res) {
 			const categoryField = "id";
 			const categoryOrder = "asc";
 			const categoryQueryObj = {};
-
 			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
 			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
@@ -102,6 +101,7 @@ export function performance(req, res) {
 
 			if(req.query.compare){
 				performanceQueryObj.compare = req.query.compare;
+				queryURI['compare'] = req.query.compare;
 			}
 				
 			if (req.query.top == "countries") {
@@ -136,6 +136,9 @@ export function performance(req, res) {
 			}
 		}
 	},function(err, results) {
+
+		console.log("------queryURI---------------queryURI-------------------",queryURI )
+
 		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 		var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
 		if (!err) {
