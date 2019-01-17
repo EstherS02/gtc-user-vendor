@@ -265,7 +265,7 @@
 		function getTopSellingCities(){
 			$.ajax({
 				type: "GET",
-				url: "/api/reports/top-selling-cities",
+				url: "/api/reports/top-cities",
 				success: function(data) {
 					if (data.length > 0) {
 						data.forEach(function(aObj, i) {
