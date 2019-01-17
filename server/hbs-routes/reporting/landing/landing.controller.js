@@ -23,133 +23,164 @@ export function reporting(req, res) {
     var categoryModel = "Category";
     var lhsBetween = [];
     var rhsBetween = [];
-    queryURI['compare'] = 'true';
+	queryURI['compare'] = 'true';
+	
+	const dateRangeOptions = [{
+		"column": "Today",
+		"value": 1
+	}, {
+		"column": "Yesterday",
+		"value": 2
+	}, {
+		"column": "Last 7 Days",
+		"value": 3
+	}, {
+		"column": "Last 30 Days",
+		"value": 4
+	}, {
+		"column": "This Month",
+		"value": 5
+	}, {
+		"column": "Last Month",
+		"value": 6
+	}, {
+		"column": "Custom Range",
+		"value": 7
+	}];
 
     if (req.user)
         LoggedInUser = req.user;
 
-    let user_id = LoggedInUser.id;
+	let user_id = LoggedInUser.id;
+	
+	if (req.query.range) {
+		queryURI['range'] = req.query.range;
+	} else {
+		queryURI['range'] = 4;
+	}
 
-    if (req.query.lhs_from && req.query.lhs_to) {
-        lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-    } else {
-        lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-    }
-    if (req.query.rhs_from && req.query.rhs_to) {
-        rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-    } else {
-        rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-    }
+	if (queryURI['range'] == 4) {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1,'days').format("YYYY/MM/DD"));
+	}else{
+		if (req.query.lhs_from && req.query.lhs_to) {
+			lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+		}
+	}
+
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+		queryURI['rhs_from'] = rhsBetween[0];
+		queryURI['rhs_to'] = rhsBetween[1];
+	} 
 
     let orderItemQueryObj = {};
     if (req.user.role == 2)
         orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
-    queryURI['rep_from'] = moment(lhsBetween[0]).format("MM/DD/YYYY");
-    queryURI['rep_to'] = moment(lhsBetween[1]).format("MM/DD/YYYY");;
-    queryURI['com_from'] = moment(rhsBetween[0]).format("MM/DD/YYYY");;
-    queryURI['com_to'] = moment(rhsBetween[1]).format("MM/DD/YYYY");;
+	queryURI['lhs_from'] = lhsBetween[0];
+	queryURI['lhs_to'] = lhsBetween[1];
 
     async.series({
-            cartInfo: function(callback) {
-                if (LoggedInUser.id) {
-                    cartService.cartCalculation(LoggedInUser.id, req, res)
-                        .then((cartResult) => {
-                            return callback(null, cartResult);
-                        }).catch((error) => {
-                            return callback(error);
-                        });
-                } else {
-                    return callback(null);
-                }
-            },
-            categories: function(callback) {
-                var includeArr = [];
-                const categoryOffset = 0;
-                const categoryLimit = null;
-                const categoryField = "id";
-                const categoryOrder = "asc";
-                const categoryQueryObj = {};
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req, res)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
+				return callback(null);
+			}
+		},
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
-                categoryQueryObj['status'] = statusCode["ACTIVE"];
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
-                service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-                    .then(function(category) {
-                        var categories = category.rows;
-                        bottomCategory['left'] = categories.slice(0, 8);
-                        bottomCategory['right'] = categories.slice(8, 16);
-                        return callback(null, category.rows);
-                    }).catch(function(error) {
-                        console.log('Error :::', error);
-                        return callback(null);
-                    });
-            },
-            topProducts: function(callback) {
-                ReportService.topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
-                    return callback(null, results);
-                }).catch((err) => {
-                    console.log('err', err);
-                    return callback(err);
-                });
-            },
-            topMarketPlace: function(callback) {
-                ReportService.topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
-                    return callback(null, results);
-                }).catch((err) => {
-                    console.log('err', err);
-                    return callback(err);
-                });
-            },
-            revenueChanges: function(callback) {
-                ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
-                    return callback(null, results);
-                }).catch((err) => {
-                    console.log('revenueChanges err', err);
-                    return callback(err);
-                });
-            },
-            revenueCounts: function(callback) {
-                ReportService.revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
-                    return callback(null, results);
-                }).catch((err) => {
-                    console.log('revenueCounts err', err);
-                    return callback(err);
-                });
-            },
-            unreadCounts: function(callback) {
-                notifictionService.notificationCounts(LoggedInUser.id)
-                    .then(function(counts) {
-                        return callback(null, counts);
-                    }).catch(function(error) {
-                        return callback(null);
-                    });
-            }
-        },
-        function(err, results) {
-            var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-            var dropDownUrl = fullUrl.replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
-            if (!err) {
-                res.render('vendorNav/reporting/reporting', {
-                    title: "Global Trade Connect",
-                    products: results.products,
-                    marketPlace: marketplace,
-                    LoggedInUser: LoggedInUser,
-                    categories: results.categories,
-                    bottomCategory: bottomCategory,
-                    selectedPage: 'reporting',
-                    vendorPlan: vendorPlan,
-                    dropDownUrl: dropDownUrl,
-                    queryURI: queryURI,
-                    cart: results.cartInfo,
-                    topProducts: results.topProducts,
-                    topMarketPlace: results.topMarketPlace,
-                    revenueChanges: results.revenueChanges,
-                    revenueCounts: results.revenueCounts,
-                    unreadCounts: results.unreadCounts,
-                    statusCode: statusCode
-                });
-            } else {
-                res.render('vendorNav/reporting/reporting', err);
-            }
-        });
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		topProducts: function(callback) {
+			ReportService.topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
+				return callback(null, results);
+			}).catch((err) => {
+				console.log('err', err);
+				return callback(err);
+			});
+		},
+		topMarketPlace: function(callback) {
+			ReportService.topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
+				return callback(null, results);
+			}).catch((err) => {
+				console.log('err', err);
+				return callback(err);
+			});
+		},
+		revenueChanges: function(callback) {
+			ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
+				return callback(null, results);
+			}).catch((err) => {
+				console.log('revenueChanges err', err);
+				return callback(err);
+			});
+		},
+		revenueCounts: function(callback) {
+			ReportService.revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
+				return callback(null, results);
+			}).catch((err) => {
+				console.log('revenueCounts err', err);
+				return callback(err);
+			});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
+		}
+	},
+	function(err, results) {
+		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+		var dropDownUrl = fullUrl.replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
+		if (!err) {
+			res.render('vendorNav/reporting/reporting', {
+				title: "Global Trade Connect",
+				products: results.products,
+				marketPlace: marketplace,
+				LoggedInUser: LoggedInUser,
+				categories: results.categories,
+				bottomCategory: bottomCategory,
+				selectedPage: 'reporting',
+				vendorPlan: vendorPlan,
+				dropDownUrl: dropDownUrl,
+				queryURI: queryURI,
+				cart: results.cartInfo,
+				topProducts: results.topProducts,
+				topMarketPlace: results.topMarketPlace,
+				revenueChanges: results.revenueChanges,
+				revenueCounts: results.revenueCounts,
+				unreadCounts: results.unreadCounts,
+				statusCode: statusCode,
+				dateRangeOptions:dateRangeOptions
+			});
+		} else {
+			res.render('vendorNav/reporting/reporting', err);
+		}
+	});
 }

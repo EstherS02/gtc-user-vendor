@@ -109,7 +109,10 @@
                                 <ul class="footer-menu-list">
                                     {{#if LoggedInUser.id}}
                                     <li><a href="/user/my-profile">My Account</a></li>
-									<li ><a href="/order-track">Track your Order</a></li>
+									<li >
+										{{!-- <a href="/order-track"> --}}
+										<a href="javascript:;">
+										Track your Order</a></li>
                                     <li ><a href="/wishlist">Wishlist</a></li>
                                     <li ><a href="/cart">Shopping Cart</a></li>
                                     {{else}}

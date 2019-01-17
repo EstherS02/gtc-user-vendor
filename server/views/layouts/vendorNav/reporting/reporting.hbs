@@ -1,51 +1,47 @@
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 
-	$(function() {
-		$("#rep_from").datepicker({
-			trigger: $("#date_range_from"),
+	$(function(){
+		$("#lhs_from").datepicker({
+			trigger: $("#lhs_fromRange"),
 			autoHide: true
 		});
-
-		$('#rep_from').datepicker('getMonthName', true);
-
-		$("#rep_to").datepicker({
-			trigger: $("#date_range_to"),
+		$("#lhs_to").datepicker({
+			trigger: $("#lhs_toRange"),
 			autoHide: true
 		});
-
-		$("#com_from").datepicker({
-			trigger: $("#compare_range_from"),
-			autoHide: true
+		$("#rhs_from").datepicker({
+			trigger: $("#rhs_fromRange"),
+			autoHide: true,
 		});
-
-		$("#com_to").datepicker({
-			trigger: $("#compare_range_to"),
+		$("#rhs_to").datepicker({
+			trigger: $("#rhs_toRange"),
 			autoHide: true
 		});
 	});
 
-	function onSearch() {
-		var from = $('#rep_from').val();
-		var to = $('#rep_to').val();
-		var Cfrom = $('#com_from').val();
-		var Cto = $('#com_to').val();
-		var Compare =$('#compare').is(":checked");
-		
-		location.href = "/store/reports?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
-	}
+	$( document ).ready(function(){
+		$("#compareBtn").attr('disabled', 'disabled');
 
-	$(document).ready(function() {
-		//get the line chart canvas
 		var ctx = $("#revenue-line-chartcanvas");
-
 		var lhsData = [],
 			rhsData = [];
+		var from, to, Cfrom, Cto, Compare;
+		
+		from = $('#lhs_from').val();
+		to = $('#lhs_to').val();
 
-		var from = $('#rep_from').val(),
-			to = $('#rep_to').val(),
-			Cfrom = $('#com_from').val(),
-			Cto = $('#com_to').val(),
-		    Compare =$('#compare').is(":checked");
+		if ($('#rhs_from').val() != '' && $('#rhs_to').val() != '' && $('#compare').is(":checked")){
+
+			Cfrom = $('#rhs_from').val();
+			Cto = $('#rhs_to').val();
+			Compare = $('#compare').is(":checked");
+		}else{
+
+			Cfrom = moment().subtract(61, 'days').format('YYYY/MM/DD');
+			Cto = moment().subtract(31, 'days').format('YYYY/MM/DD');
+			Compare = true;
+		}
 
 		var dates = [from, to, Cfrom, Cto];
 		dates.sort();
@@ -83,7 +79,6 @@
 					else
 						rhsData.push(null);
 				});
-				//line chart data
 				var data = {
 					labels: between,
 					backgroundColor: "lightgray",
@@ -105,8 +100,6 @@
 						radius: 5
 					}]
 				};
-
-				//options
 				var options = {
 					responsive: true,
 					title: {
@@ -126,13 +119,116 @@
 					},
 					spanGaps: true
 				};
-
-				//create Chart class object
 				var chart = new Chart(ctx, {
 					type: "line",
 					data: data,
 					options: options
 				});
+			}
+		});
+
+		$("#inputDateRange").change(function() {
+			if ($("#inputDateRange").val() == 1) {
+				$("#lhs_from").datepicker("setDate", new Date());
+				$("#lhs_to").datepicker("setDate", new Date());
+			} else if ($("#inputDateRange").val() == 2) {
+				var startDate = new Date();
+				var endDate = new Date();
+				startDate.setDate(startDate.getDate() - 1);
+				endDate.setDate(endDate.getDate() - 1);
+
+				$("#lhs_from").datepicker("setDate", startDate);
+				$("#lhs_to").datepicker("setDate", startDate);
+				
+			} else if ($("#inputDateRange").val() == 3) {
+				var startDate = new Date();
+				var endDate = new Date();
+				startDate.setDate(startDate.getDate() - 7);
+				endDate.setDate(endDate.getDate() - 1);
+
+				$("#lhs_from").datepicker("setDate", startDate);
+				$("#lhs_to").datepicker("setDate", endDate);
+				
+			} else if ($("#inputDateRange").val() == 4) {
+				var startDate = new Date();
+				var endDate = new Date();
+				startDate.setDate(startDate.getDate() - 30);
+				endDate.setDate(endDate.getDate() - 1);
+
+				$("#lhs_from").datepicker("setDate", startDate);
+				$("#lhs_to").datepicker("setDate", endDate);
+				
+			} else if ($("#inputDateRange").val() == 5) {
+				var startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+				var endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+
+				$("#lhs_from").datepicker("setDate", startDate);
+				$("#lhs_to").datepicker("setDate", endDate);
+				
+			} else if ($("#inputDateRange").val() == 6) {
+				var startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
+				var endDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1 + 1, 0);
+
+				$("#lhs_from").datepicker("setDate", startDate);
+				$("#lhs_to").datepicker("setDate", endDate);
+				
+			} else {
+				//window.location.href = "/store/accounting?range=" + $("#inputDateRange").val();
+			}
+		});
+
+		$('#lhs_from,#lhs_to,#rhs_from,#rhs_to,#compare').change(function(e){
+			if ($('#compareForm').valid()) {
+				if ($('#compare').is(':checked')) {
+					$("#compareBtn").removeAttr('disabled');
+				}else{
+					$("#compareBtn").attr('disabled', 'disabled');	
+				}
+			}else{
+				$("#compareBtn").attr('disabled', 'disabled');
+			}
+		});
+
+		$('#compareForm').validate({
+			rule:{
+				lhs_from: {
+					required: true,
+					date: true
+				},
+				lhs_to: {
+					required: true,
+					date: true
+				},
+				rhs_from: {
+					required: true,
+					date: true
+				},
+				rhs_to: {
+					required: true,
+					date: true
+				},
+				compare:{
+					required:true
+				}
+			},
+			messages:{
+				lhs_from:'',
+				lhs_to: '',
+				rhs_from: '',
+				rhs_to: '',
+				compare:''
+			}	
+		});
+
+		$("#compareForm").submit(function (e) {
+			e.preventDefault();
+			if ($('#compareForm').valid()) {
+				from = $('#lhs_from').val();
+				to = $('#lhs_to').val();
+				Cfrom = $('#rhs_from').val();
+				Cto = $('#rhs_to').val();
+				Compare = $('#compare').is(":checked");
+				location.href = "/store/reports?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
 			}
 		});
 
@@ -154,7 +250,6 @@
 			if (seconds < 10) {
 				seconds = "0" + seconds;
 			}
-
 			return days + ' days ' + hours + ' hrs ' + minutes + ' min ago';
 		}
 
@@ -167,7 +262,7 @@
 			return status[statusCode] ? status[statusCode] : "OPEN";
 		}
 
-		function getTopSellingCities() {
+		function getTopSellingCities(){
 			$.ajax({
 				type: "GET",
 				url: "/api/reports/top-selling-cities",
@@ -292,7 +387,6 @@
 			});
 		}
 
-
 		function getLatestTickets() {
 			$.ajax({
 				type: "GET",
@@ -341,13 +435,9 @@
 		getLatestTickets();
 		getLatestRefunds();
 	});
-</script>
-
-{{> header/top-header LoggedInUser = LoggedInUser}}
-{{> vendor/vendor-menu}}
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray reporting_content">
-	<!-- no container because of full width chart -->
 	<div class="">
 		<div class="row">
 			<div class="col-sm-2" style="padding-left: 5.5%;">
@@ -363,70 +453,88 @@
 							<div class="content-body">
 								<div class="row">
 									<div class="col-md-8">
-										<section class="reporting_date_range">
-											<div class="row">
-												<div class="col-md-6 no-padding" style="display:inline-flex">
-													<div class="form-inline">
-														<p class="report_date_range_title">Date Range</p>
-														<div class="input-group mb-3 date_range_group">
-															<input id="rep_from" type="text" class="form-control date_range_picker" placeholder="MM/DD/YYYY" value="{{queryURI.rep_from}}"
-															 aria-label="date_range_from" aria-describedby="date_range_from">
-															<div class="input-group-append cursor-pointer">
-																<span class="input-group-text" id="date_range_from">
-																	<img class="calendar-icon" src="../../img/calendar.png">
-																</span>
+										<div class="row">
+											<div class="col-md-12">
+												<section class="reporting_date_range">
+													<form id="compareForm" class="form-inline pull-left m-t-md">
+														<div class="form-group m-r-lg">
+															<label class="label-control">Date Range </label>
+														</div>
+														<div class="form-group m-r">
+															<div class="input-group">
+																<input id="lhs_from" name="lhs_from" type="text" class="custom-form-control date_range_picker" value="{{queryURI.lhs_from}}"
+																 placeholder="MM/DD/YYYY" aria-label="lhs_fromRange" aria-describedby="lhs_fromRange" required>
+																<div class="input-group-append cursor-pointer">
+																	<span class="input-group-text" id="lhs_fromRange">
+																		<img class="calendar-icon" src="../../img/calendar.png">
+																	</span>
+																</div>
 															</div>
 														</div>
-														<p class="report_date_range_title">to</p>
-														<div class="input-group mb-3 date_range_group">
-															<input id="rep_to" type="text" class="form-control date_range_picker" placeholder="MM/DD/YYYY"
-															 aria-label="date_range_to" aria-describedby="date_range_to" value="{{queryURI.rep_to}}">
-															<div class="input-group-append cursor-pointer">
-																<span class="input-group-text" id="date_range_to">
-																	<img class="calendar-icon" src="../../img/calendar.png">
-																</span>
+														<div class="form-group m-r">
+															<label class="label-control">to</label>
+														</div>
+														<div class="form-group m-r">
+															<div class="input-group">
+																<input id="lhs_to" name="lhs_to" type="text" class="custom-form-control date_range_picker" value="{{queryURI.lhs_to}}" placeholder="MM/DD/YYYY"
+																 aria-label="lhs_toRange" aria-describedby="lhs_toRange" required>
+																<div class="input-group-append cursor-pointer">
+																	<span class="input-group-text" id="lhs_toRange">
+																		<img class="calendar-icon" src="../../img/calendar.png">
+																	</span>
+																</div>
 															</div>
 														</div>
-													</div>
-													<div class="select-container">
-														<select class="form-control-customized form-control-sm reporting_range_select_override" name="status">
-															<option value="Last 30 Days" selected>Last 30 Days</option>
-														</select>
-													</div>
-												</div>
-												<div class="col-md-6 no-padding" style="display: inline-flex;">
-													{{!-- <input id="compare" type="checkbox" value="true" class="check_report1" checked="checked"> --}}
-
-													<div class="customCheckbox" style="margin-left: 30px;">
-														<input type="checkbox" checked='checked' id="compare" value="true" class="customCheckboxInput">
-														<label class="checkbox-b" for="compare"></label>
-													</div>
-													<div class="form-inline">
-														<p class="report_date_range_title">Compare to</p>
-														<div class="input-group mb-3 date_range_group">
-															<input type="text" id="com_from" class="form-control date_range_picker" placeholder="MM/DD/YYYY" value="{{queryURI.com_from}}"
-															 aria-label="compare_range_from" aria-describedby="compare_range_from">
-															<div class="input-group-append cursor-pointer">
-																<span class="input-group-text" id="compare_range_from">
-																	<img class="calendar-icon" src="../../img/calendar.png">
-																</span>
+														<div class="form-group m-r">
+															<div class="select-container">
+																<select id="inputDateRange" class="form-control-customized form-control-sm custom-dropdown" name="date_range">
+																	{{#each dateRangeOptions}}
+																		<option {{#ifCond @root.queryURI.range '==' this.value}} selected="true" {{/ifCond}} value="{{this.value}}">{{this.column}}</option>
+																	{{/each}}
+																</select>
 															</div>
 														</div>
-														<p class="report_date_range_title">to</p>
-														<div class="input-group mb-3 date_range_group">
-															<input type="text" id="com_to" class="form-control date_range_picker" placeholder="MM/DD/YYYY"
-															 aria-label="compare_range_to" aria-describedby="compare_range_to" value="{{queryURI.com_to}}">
-															<div class="input-group-append cursor-pointer">
-																<span class="input-group-text" id="compare_range_to">
-																	<img class="calendar-icon" src="../../img/calendar.png">
-																</span>
+														<div class="form-group">
+															<div class="customCheckbox">
+																<input type="checkbox" id="compare" name="compare" class="customCheckboxInput" {{#if queryURI.compare}} checked {{/if}}>
+																<label class="checkbox-b" for="compare"></label>
 															</div>
 														</div>
-													</div>
-													<button class="update-btn1 report_update report_update_btn_override" onclick="onSearch()">UPDATE</button>
-												</div>
+														<div class="form-group m-r">
+															<label class="label-control">Compare to</label>
+														</div>
+														<div class="form-group m-r">
+															<div class="input-group">
+																<input id="rhs_from" name="rhs_from" type="text" class="custom-form-control date_range_picker" value="{{queryURI.rhs_from}}"
+																 placeholder="MM/DD/YYYY" aria-label="rhs_fromRange" aria-describedby="rhs_fromRange" required>
+																<div class="input-group-append cursor-pointer">
+																	<span class="input-group-text" id="rhs_fromRange">
+																		<img class="calendar-icon" src="../../img/calendar.png">
+																	</span>
+																</div>
+															</div>
+														</div>
+														<div class="form-group m-r">
+															<label class="label-control">to</label>
+														</div>
+														<div class="form-group m-r">
+															<div class="input-group">
+																<input id="rhs_to" name="rhs_to" type="text" class="custom-form-control date_range_picker" value="{{queryURI.rhs_to}}" placeholder="MM/DD/YYYY"
+																 aria-label="rhs_toRange" aria-describedby="rhs_toRange" required>
+																<div class="input-group-append cursor-pointer">
+																	<span class="input-group-text" id="rhs_toRange">
+																		<img class="calendar-icon" src="../../img/calendar.png">
+																	</span>
+																</div>
+															</div>
+														</div>
+														<div class="form-group">
+															<button type="submit" id="compareBtn" class="btn btn-md btn-muted update-btn-customised">UPDATE</button>
+														</div>
+													</form>
+												</section>
 											</div>
-										</section>
+										</div>
 										<section class="reporting_top_performing" style="margin-bottom: 17px;margin-top: 20px;">
 											<div class="row">
 												<div class="col-md-6">
@@ -510,8 +618,7 @@
 																<div class="col-md-6 no-padding">
 																	<div class="stat_title">Revenue(%)</div>
 																	<div class="stat_price">{{revenueCounts.revenue_count.diff_count}}</div>
-																	<div class="stat_price_compare">{{revenueCounts.revenue_count.current_count}} vs
-																		{{revenueCounts.revenue_count.past_count}}
+																	<div class="stat_price_compare">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}
 																	</div>
 																</div>
 															</div>
@@ -521,20 +628,20 @@
 																<div class="col-md-4 stat_padding">
 																	<div class="stat_title">Transactions</div>
 																	<div class="stat_price">{{revenueCounts.completed_count.diff_completed}}</div>
-																	<div class="stat_price_compare">{{revenueCounts.completed_count.current_completed}} vs
-																		{{revenueCounts.completed_count.past_completed}}</div>
+																	<div class="stat_price_compare">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}
+																	</div>
 																</div>
 																<div class="col-md-4 stat_padding">
 																	<div class="stat_title">Returns</div>
 																	<div class="stat_price stat_price_red">+ {{revenueCounts.returns_count.diff_returned}}</div>
-																	<div class="stat_price_compare">{{revenueCounts.returns_count.current_returned}} vs
-																		{{revenueCounts.returns_count.past_returned}}</div>
+																	<div class="stat_price_compare">{{revenueCounts.returns_count.current_returned}} vs {{revenueCounts.returns_count.past_returned}}
+																	</div>
 																</div>
 																<div class="col-md-4 stat_padding">
 																	<div class="stat_title">Disputes</div>
 																	<div class="stat_price">${{revenueCounts.disputes_count.diff_disputes}}</div>
-																	<div class="stat_price_compare">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs
-																		{{currency revenueCounts.disputes_count.past_disputes '$'}}</div>
+																	<div class="stat_price_compare">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes '$'}}
+																	</div>
 																</div>
 															</div>
 														</div>
@@ -543,14 +650,13 @@
 																<div class="col-md-6 no-padding">
 																	<div class="stat_title">Refunds</div>
 																	<div class="stat_price stat_price_red">+ {{revenueCounts.refunds_count.diff_refunds}}</div>
-																	<div class="stat_price_compare">{{revenueCounts.refunds_count.current_refunds}} vs
-																		{{revenueCounts.refunds_count.past_refunds}}</div>
+																	<div class="stat_price_compare">{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}
+																	</div>
 																</div>
 																<div class="col-md-6 no-padding">
 																	<div class="stat_title">Cancellations</div>
 																	<div class="stat_price stat_price_red">+ {{revenueCounts.cancelled_count.diff_cancelled}}</div>
-																	<div class="stat_price_compare">{{revenueCounts.cancelled_count.current_cancelled}} vs
-																		{{revenueCounts.cancelled_count.past_cancelled}}
+																	<div class="stat_price_compare">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}
 																	</div>
 																</div>
 															</div>
@@ -618,13 +724,10 @@
 						</div>
 					</div>
 				</div>
-				{{else}}
-					{{> plan-inactive}}
+			{{else}}
+				{{> plan-inactive}}
 			{{/if}}
 		</div>
 	</div>
 </div>
-
-
-
 {{> footer/bottom-footer}}

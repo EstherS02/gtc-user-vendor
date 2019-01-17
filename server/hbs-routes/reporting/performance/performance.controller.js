@@ -74,8 +74,8 @@ export function performance(req, res) {
 
 	if (req.query.rhs_from && req.query.rhs_to) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-		queryURI['rhs_from'] = lhsBetween[0];
-		queryURI['rhs_to'] = lhsBetween[1];
+		queryURI['rhs_from'] = rhsBetween[0];
+		queryURI['rhs_to'] = rhsBetween[1];
 	} 
 	
 	queryURI['offset'] = offset;
