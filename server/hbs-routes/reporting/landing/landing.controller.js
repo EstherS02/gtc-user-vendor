@@ -1,28 +1,23 @@
 'use strict';
 
 const config = require('../../../config/environment');
-const model = require('../../../sqldb/model-connect');
 const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
-const sequelize = require('sequelize');
 const moment = require('moment');
-const _ = require('lodash');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
-const orderStatus = require('../../../config/order_status');
 var async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
 const ReportService = require('../../../utilities/reports');
 const notifictionService = require('../../../api/notification/notification.service');
 
 export function reporting(req, res) {
-    console.log('reporting req query', req.query);
-    var LoggedInUser = {};
-    var queryURI = {};
-    var bottomCategory = {};
-    var categoryModel = "Category";
-    var lhsBetween = [];
-    var rhsBetween = [];
+	var LoggedInUser = {}, 
+		queryURI ={},
+		bottomCategory = {},
+		orderItemQueryObj = {};
+	var lhsBetween = [], rhsBetween = [];
+	
 	queryURI['compare'] = 'true';
 	
 	const dateRangeOptions = [{
@@ -73,7 +68,6 @@ export function reporting(req, res) {
 		queryURI['rhs_to'] = rhsBetween[1];
 	} 
 
-    let orderItemQueryObj = {};
     if (req.user.role == 2)
         orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
@@ -103,7 +97,7 @@ export function reporting(req, res) {
 
 			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
@@ -115,6 +109,7 @@ export function reporting(req, res) {
 				});
 		},
 		topProducts: function(callback) {
+
 			ReportService.topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 				return callback(null, results);
 			}).catch((err) => {
