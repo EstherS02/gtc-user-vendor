@@ -85,16 +85,16 @@
 					datasets: [{
 						label: $.datepicker.formatDate('M dd, yy', new Date(from)) + " - " + $.datepicker.formatDate('M dd, yy', new Date(to)),
 						data: lhsData,
-						backgroundColor: "gray",
-						borderColor: "lightgray",
+						backgroundColor: "green",
+						borderColor: "lightgreen",
 						fill: false,
 						lineTension: 0,
 						radius: 5
 					}, {
 						label: $.datepicker.formatDate('M dd, yy', new Date(Cfrom)) + " - " + $.datepicker.formatDate('M dd, yy', new Date(Cto)),
 						data: rhsData,
-						backgroundColor: "green",
-						borderColor: "lightgreen",
+						backgroundColor: "gray",
+						borderColor: "lightgray",
 						fill: false,
 						lineTension: 0,
 						radius: 5
@@ -184,7 +184,9 @@
 		});
 
 		$('#lhs_from,#lhs_to,#rhs_from,#rhs_to,#compare').change(function(e){
+
 			if ($('#compareForm').valid()) {
+
 				if ($('#compare').is(':checked')) {
 					$("#compareBtn").removeAttr('disabled');
 				}else{

@@ -959,7 +959,6 @@ export function marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, 
 }
 
 export function productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
-	queryObj.vendor_id = null;//NEED TO REMOVE
 	const pastRange = _.assign({}, queryObj);
 	pastRange.from = lhsBetween[0];
 	pastRange.to = lhsBetween[1];
@@ -989,7 +988,6 @@ export function productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limi
 }
 
 export function countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
-	queryObj.vendor_id = null;//NEED TO REMOVE
 	const pastRange = _.assign({}, queryObj);
 	pastRange.from = lhsBetween[0];
 	pastRange.to = lhsBetween[1];
@@ -1019,7 +1017,6 @@ export function countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limi
 }
 
 export function userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
-	queryObj.vendor_id = null;//NEED TO REMOVE
 	const pastRange = _.assign({}, queryObj);
 	pastRange.from = lhsBetween[0];
 	pastRange.to = lhsBetween[1];
@@ -1049,7 +1046,6 @@ export function userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, 
 }
 
 export function cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
-	queryObj.vendor_id = null;//NEED TO REMOVE
 	const pastRange = _.assign({}, queryObj);
 	pastRange.from = lhsBetween[0];
 	pastRange.to = lhsBetween[1];

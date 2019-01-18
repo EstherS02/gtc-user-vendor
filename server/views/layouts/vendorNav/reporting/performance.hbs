@@ -95,7 +95,6 @@
 	}
 
 	function onSearch(){
-		var metric;
 		var from = $('#lhs_from').val();
 		var to = $('#lhs_to').val();
 		var Cfrom = $('#rhs_from').val();
@@ -103,18 +102,18 @@
 		Compare = $('#compare').is(":checked");
 
 		if ($("#inputTop").val() == 1) {
-			metric = "products";
+			metrics = "products";
 		} else if ($("#inputTop").val() == 2) {
-			metric = "marketplaces"
+			metrics = "marketplaces"
 		} else if ($("#inputTop").val() == 3) {
-			metric = "countries"
+			metrics = "countries"
 		} else if ($("#inputTop").val() == 4) {
-			metric = "cities"
+			metrics = "cities"
 		} else if ($("#inputTop").val() == 5) {
-			metric = "buyers"
+			metrics = "buyers"
 		}
 
-		location.href = "/store/performance?top=" + metric + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare +"&range="+range;
+		location.href = "/store/performance?top=" + metrics + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare +"&range="+range;
 	}
 
 	$(function(){
@@ -241,7 +240,6 @@
 		$("#compareForm").submit(function (e) {
 			e.preventDefault();
 			if ($('#compareForm').valid()) {
-
 				var from = $('#lhs_from').val();
 				var to = $('#lhs_to').val();
 				var Cfrom = $('#rhs_from').val();
@@ -249,16 +247,18 @@
 				Compare = $('#compare').is(":checked");
 
 				if ($("#inputTop").val() == 1) {
-					metric = "products";
+					metrics = "products";
 				} else if ($("#inputTop").val() == 2) {
-					metric = "countries"
-				} else if ($("#inputTop").val() == 3) {
-					metric = "cities"
+					metrics = "marketplaces"
+				}  else if ($("#inputTop").val() == 3) {
+					metrics = "countries"
 				} else if ($("#inputTop").val() == 4) {
-					metric = "buyers"
+					metrics = "cities"
+				} else if ($("#inputTop").val() == 5) {
+					metrics = "buyers"
 				}
 
-				location.href = "/store/performance?top=" + metric + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + true +"&range="+range;;
+				location.href = "/store/performance?top=" + metrics + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + true +"&range="+range;;
 			}
 		})
 	});
