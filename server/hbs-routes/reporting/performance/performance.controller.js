@@ -134,8 +134,15 @@ export function performance(req, res) {
 				performanceQueryObj.compare = req.query.compare;
 				queryURI['compare'] = req.query.compare;
 			}
-				
-			if (req.query.top == "countries") {
+			
+			if (req.query.top == "marketplaces") {
+				ReportService.marketplacePerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+					.then(function(results) {
+						return callback(null, results);
+					}).catch(function(error) {
+						return callback(error);
+					});
+			} else if (req.query.top == "countries") {
 				ReportService.countryPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
 					.then(function(results) {
 						return callback(null, results);

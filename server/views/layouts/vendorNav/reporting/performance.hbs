@@ -104,10 +104,12 @@
 		if ($("#inputTop").val() == 1) {
 			metric = "products";
 		} else if ($("#inputTop").val() == 2) {
-			metric = "countries"
+			metric = "marketplaces"
 		} else if ($("#inputTop").val() == 3) {
-			metric = "cities"
+			metric = "countries"
 		} else if ($("#inputTop").val() == 4) {
+			metric = "cities"
+		} else if ($("#inputTop").val() == 5) {
 			metric = "buyers"
 		}
 
@@ -373,9 +375,10 @@
 												<div class="select-container">
 													<select id="inputTop" class="form-control-customized form-control-sm custom-dropdown" onChange="onSearch();">
 														<option value="1" {{#ifCond queryURI.top "==" 'products'}} selected="true" {{/ifCond}}>TOP SELLING PRODUCTS</option>
-														<option value="2" {{#ifCond queryURI.top "==" 'countries'}} selected="true" {{/ifCond}}>TOP SELLING COUNTRIES</option>
-														<option value="3" {{#ifCond queryURI.top "==" 'cities'}} selected="true" {{/ifCond}}>TOP PERFORMING CITIES</option>
-														<option value="4" {{#ifCond queryURI.top "==" 'buyers'}} selected="true" {{/ifCond}}>TOP BUYERS</option>	
+														<option value="2" {{#ifCond queryURI.top "==" 'marketplaces'}} selected="true" {{/ifCond}}>TOP SELLING MARKETPLACES</option>
+														<option value="3" {{#ifCond queryURI.top "==" 'countries'}} selected="true" {{/ifCond}}>TOP SELLING COUNTRIES</option>
+														<option value="4" {{#ifCond queryURI.top "==" 'cities'}} selected="true" {{/ifCond}}>TOP PERFORMING CITIES</option>
+														<option value="5" {{#ifCond queryURI.top "==" 'buyers'}} selected="true" {{/ifCond}}>TOP BUYERS</option>	
 													</select>
 												</div>
 											</div>
@@ -406,6 +409,30 @@
 													{{#each topItems.lhs_result}}
 														<tr>
 															{{productPerformance this @root.topItems.rhs_result}} 
+														</tr>
+													{{/each}}
+												</tbody>
+											{{/ifCond}}
+											{{#ifCond queryURI.top "==" "marketplaces"}}
+												<thead>
+													<tr>
+														<th>
+															<div class="customCheckbox">
+																<input type="checkbox" id="inputCheckbox" class="customCheckboxInput">
+																<label class="checkbox-b" for="inputCheckbox"></label>
+															</div>
+														</th>
+														<th>Marketplace</th>
+														<th>Sales</th>
+														<th>Revenue</th>
+														<th>GTC Processing Fees</th>
+														<th>Vendor Revenue</th>
+													</tr>
+												</thead>
+												<tbody>
+													{{#each topItems.lhs_result}}
+														<tr>
+															{{marketplacePerformance this @root.topItems.rhs_result}} 
 														</tr>
 													{{/each}}
 												</tbody>

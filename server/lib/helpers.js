@@ -688,6 +688,64 @@ Handlebars.registerHelper('productPerformance', function(product, compareProduct
 	return new Handlebars.SafeString(domElement);
 })
 
+Handlebars.registerHelper('marketplacePerformance', function(marketplace, compareMarketplace){
+	var domElement= '';
+	var matchedObj = _.find(compareMarketplace, function(aObj){
+		return aObj.marketplace_id == marketplace.marketplace_id;
+	});
+
+	if (matchedObj) {
+		domElement = `<td>
+				<div class="customCheckbox">
+					<input type="checkbox" class="customCheckboxInput" name="selected">
+					<label class="checkbox-b"></label>
+			</div>
+		</td>
+		<td class="table-data">
+			`+marketplace.marketplace_name+`
+		</td>
+		<td>
+			`+marketplace.sales+`<span class = "` + getTextColor(marketplace.sales, matchedObj.sales) + `"> +`+(marketplace.sales-matchedObj.sales)+`</span>
+			<span class = "text_grey_color"> vs `+matchedObj.sales+`(`+ calculatePercentage(marketplace.sales, matchedObj.sales)+`) </span>
+		</td>
+		<td>
+			`+ currencyFormat(marketplace.total_fees)+`<span class = "` + getTextColor(marketplace.total_fees, matchedObj.total_fees) + `">`+currencyFormat(marketplace.total_fees-matchedObj.total_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.total_fees)+`(`+ calculatePercentage(marketplace.total_fees, matchedObj.total_fees)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(marketplace.vendor_fees)+`<span class = "` + getTextColor(marketplace.vendor_fees, matchedObj.vendor_fees) + `">`+currencyFormat(marketplace.vendor_fees-matchedObj.vendor_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(marketplace.vendor_fees, matchedObj.vendor_fees)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(marketplace.gtc_fees)+`<span class = "` + getTextColor(marketplace.gtc_fees, matchedObj.gtc_fees) + `">`+currencyFormat(marketplace.gtc_fees-matchedObj.gtc_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.gtc_fees)+`(`+ calculatePercentage(marketplace.gtc_fees, matchedObj.gtc_fees)+`) </span>
+		</td>`;		
+	} else {
+		domElement = `<td>
+				<div class="customCheckbox">
+					<input type="checkbox" class="customCheckboxInput" name="selected">
+					<label class="checkbox-b"></label>
+			</div>
+		</td>
+		<td class="table-data">
+			`+marketplace.marketplace_name+`
+		</td>
+		<td>
+		`+marketplace.sales+`
+		</td>
+		<td>
+			`+currencyFormat(marketplace.total_fees)+`
+		</td>
+		<td>
+			`+currencyFormat(marketplace.vendor_fees)+`
+		</td>
+		<td>
+			`+currencyFormat(marketplace.gtc_fees)+`
+		</td>`;	
+	}
+	return new Handlebars.SafeString(domElement);
+})
+
 Handlebars.registerHelper('cityPerformance', function(city, compareCity){
 	var domElement= '';
 	var matchedObj = _.find(compareCity, function(aObj){
