@@ -62,29 +62,29 @@ export function generateReports(req, res) {
 }
 
 export function topSellingCities(req, res) {
-	var productQueryObj = {}, result = {}, queryObj= {};
+	var productQueryObj = {}, result = {}, queryObj = {};
 	var Limit = 5;
 	var createdBetween = [];
 
-	if(req.query.limit)
+	if (req.query.limit)
 		Limit = parseInt(req.query.limit);
-	
+
 	if (req.user.role == 2)
 		productQueryObj.vendor_id = req.user.Vendor.id;
 
-	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1,'days').format("YYYY/MM/DD"));	
+	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1, 'days').format("YYYY/MM/DD"));
 
 	queryObj['$or'] = [{
-			order_item_status: orderItemStatus['ORDER_INITIATED']
-		}, {
-			order_item_status: orderItemStatus['CONFIRMED']
-		}, {
-			order_item_status: orderItemStatus['SHIPPED']
-		}, {
-			order_item_status: orderItemStatus['DELIVERED']
-		}, {
-			order_item_status: orderItemStatus['COMPLETED']
-		}
+		order_item_status: orderItemStatus['ORDER_INITIATED']
+	}, {
+		order_item_status: orderItemStatus['CONFIRMED']
+	}, {
+		order_item_status: orderItemStatus['SHIPPED']
+	}, {
+		order_item_status: orderItemStatus['DELIVERED']
+	}, {
+		order_item_status: orderItemStatus['COMPLETED']
+	}
 	];
 
 	queryObj['created_on'] = {
@@ -105,7 +105,7 @@ export function topSellingCities(req, res) {
 		],
 		group: ['Product.city'],
 		order: [
-		[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
+			[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
 		],
 		limit: Limit
 
@@ -121,31 +121,31 @@ export function topSellingCities(req, res) {
 	});
 }
 
-export function topSellingCountries(req, res){
+export function topSellingCountries(req, res) {
 
-	var productQueryObj = {}, queryObj= {}, result = {};
+	var productQueryObj = {}, queryObj = {}, result = {};
 	var Limit = 5;
 	var createdBetween = [];
 
-	if(req.query.limit)
+	if (req.query.limit)
 		Limit = parseInt(req.query.limit);
 
 	if (req.user.role == 2)
 		productQueryObj.vendor_id = req.user.Vendor.id;
 
-	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1,'days').format("YYYY/MM/DD"));	
+	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1, 'days').format("YYYY/MM/DD"));
 
 	queryObj['$or'] = [{
 		order_item_status: orderItemStatus['ORDER_INITIATED']
-		}, {
-			order_item_status: orderItemStatus['CONFIRMED']
-		}, {
-			order_item_status: orderItemStatus['SHIPPED']
-		}, {
-			order_item_status: orderItemStatus['DELIVERED']
-		}, {
-			order_item_status: orderItemStatus['COMPLETED']
-		}
+	}, {
+		order_item_status: orderItemStatus['CONFIRMED']
+	}, {
+		order_item_status: orderItemStatus['SHIPPED']
+	}, {
+		order_item_status: orderItemStatus['DELIVERED']
+	}, {
+		order_item_status: orderItemStatus['COMPLETED']
+	}
 	];
 
 	queryObj['created_on'] = {
@@ -154,12 +154,12 @@ export function topSellingCountries(req, res){
 
 	model['OrderItem'].findAll({
 		raw: true,
-		include:[{
+		include: [{
 			model: model['Product'],
-			where:productQueryObj,
+			where: productQueryObj,
 			attributes: ['product_location'],
-			include:[{
-				model:model['Country'],
+			include: [{
+				model: model['Country'],
 				attributes: ['name'],
 			}]
 		}],
@@ -170,7 +170,7 @@ export function topSellingCountries(req, res){
 		],
 		group: ['Product.product_location'],
 		order: [
-		[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
+			[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
 		],
 		limit: Limit
 	}).then(function(results) {
@@ -178,7 +178,7 @@ export function topSellingCountries(req, res){
 			result = results;
 		else
 			result = [];
-		
+
 		return res.status(200).send(result);
 	}).catch(function(error) {
 		console.log('Error:::', error);
@@ -187,15 +187,16 @@ export function topSellingCountries(req, res){
 }
 
 export function topActiveBuyers(req, res) {
-	var queryObj = {};
-	var result = {};
+	var queryObj = {}, result = {};
+
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
+
 	model['Order'].findAll({
 		raw: true,
 		where: {},
 		order: [
-		['created_on', 'DESC']
+			['created_on', 'DESC']
 		],
 		group: 'user_id',
 		include: [{
@@ -235,7 +236,7 @@ export function latestTickets(req, res) {
 		raw: true,
 		where: {},
 		order: [
-		['created_on', 'DESC']
+			['created_on', 'DESC']
 		],
 		group: 'user_id',
 		include: [{
@@ -243,7 +244,7 @@ export function latestTickets(req, res) {
 			where: {},
 			attributes: ['first_name', 'last_name', 'user_pic_url']
 		}],
-		attributes: ['id','ticket_id','user_id', 'message', 'status', 'created_on'],
+		attributes: ['id', 'ticket_id', 'user_id', 'message', 'status', 'created_on'],
 		limit: 5
 	}).then(function(results) {
 		if (results.length > 0)
@@ -258,47 +259,47 @@ export function latestTickets(req, res) {
 }
 
 export function latestRefunds(req, res) {
-	var queryObj = {};  
+	var queryObj = {};
 	var vendorQuery = {};
 	var result = {};
 	if (req.user.role == 2)
 		vendorQuery.vendor_id = req.user.Vendor.id;
-	queryObj['$or']= [{
+	queryObj['$or'] = [{
 		order_item_status: orderItemStatus['REQUEST_FOR_RETURN']
 	}, {
-		order_item_status:orderItemStatus['APPROVED_REQUEST_FOR_RETURN']
-	},{
+		order_item_status: orderItemStatus['APPROVED_REQUEST_FOR_RETURN']
+	}, {
 		order_item_status: orderItemStatus['RETURN_RECIVED']
 	}, {
-		order_item_status:orderItemStatus['REFUND']
+		order_item_status: orderItemStatus['REFUND']
 	}],
-	model['User'].findAll({
-		attributes: ['id', 'first_name', 'last_name', 'status'],
-		limit: 5,
-		include: [{
-			model: model['Order'],
-			attributes: ['id'],
+		model['User'].findAll({
+			attributes: ['id', 'first_name', 'last_name', 'status'],
+			limit: 5,
 			include: [{
-				model: model['OrderItem'],
-				attributes: ['id', 'order_item_status'],
-				where: queryObj,
+				model: model['Order'],
+				attributes: ['id'],
 				include: [{
-					model: model['Product'],
-					where: vendorQuery,
-					attributes: []
+					model: model['OrderItem'],
+					attributes: ['id', 'order_item_status'],
+					where: queryObj,
+					include: [{
+						model: model['Product'],
+						where: vendorQuery,
+						attributes: []
+					}]
 				}]
 			}]
-		}]
-	}).then(function(results) {
-		if (results.length > 0)
-			result = results;
-		else
-			result = [];
-		return res.status(200).send(result);
-	}).catch(function(error) {
-		console.log('Error:::', error);
-		return res.status(200).send(error);
-	});
+		}).then(function(results) {
+			if (results.length > 0)
+				result = results;
+			else
+				result = [];
+			return res.status(200).send(result);
+		}).catch(function(error) {
+			console.log('Error:::', error);
+			return res.status(200).send(error);
+		});
 }
 
 export function topProducts(req, res) {
@@ -306,7 +307,7 @@ export function topProducts(req, res) {
 	var lhsBetween = [];
 	var rhsBetween = [];
 
-	if(req.user.role == 1){
+	if (req.user.role == 1) {
 		orderItemQueryObj.limit = parseInt(req.query.limit);
 		orderItemQueryObj.offset = parseInt(req.query.offset);
 	}
@@ -335,24 +336,24 @@ export function topProducts(req, res) {
 export function topMarketPlace(req, res) {
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
-	var rhsBetween = [];	
+	var rhsBetween = [];
 
-	if(req.user.role == 1){
+	if (req.user.role == 1) {
 		orderItemQueryObj.limit = parseInt(req.query.limit);
 		orderItemQueryObj.offset = parseInt(req.query.offset);
 	}
-	orderItemStatus['$or']= [{
-                    order_item_status: orderItemStatus['ORDER_INITIATED']
-                }, {
-                    order_item_status:orderItemStatus['CONFIRMED']
-                },{
-                    order_item_status: orderItemStatus['SHIPPED']
-                }, {
-                    order_item_status:orderItemStatus['DELIVERED']
-                },{
-                    order_item_status:orderItemStatus['COMPLETED']
-                }];
-	if (req.user.role == 2){
+	orderItemStatus['$or'] = [{
+		order_item_status: orderItemStatus['ORDER_INITIATED']
+	}, {
+		order_item_status: orderItemStatus['CONFIRMED']
+	}, {
+		order_item_status: orderItemStatus['SHIPPED']
+	}, {
+		order_item_status: orderItemStatus['DELIVERED']
+	}, {
+		order_item_status: orderItemStatus['COMPLETED']
+	}];
+	if (req.user.role == 2) {
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
 		if (req.query.lhs_from && req.query.lhs_to) {
@@ -366,8 +367,8 @@ export function topMarketPlace(req, res) {
 			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 		}
 	}
-	
-	if(req.user.role != 2){
+
+	if (req.user.role != 2) {
 		if (req.query.lhs_from && req.query.lhs_to) {
 			lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
 		} else {
@@ -387,78 +388,103 @@ export function topMarketPlace(req, res) {
 	});
 }
 
-export function topBuyers(req,res){
-	var result = {},Limit = 5, Offset = 0;
-	if(req.query.limit)
+export function topBuyers(req, res) {
+	var result = {}, queryObj = {}, productQueryObj = {};
+	var createdBetween = [];
+	var Limit = 5, Offset = 0;
+
+	if (req.query.limit)
 		Limit = req.query.limit;
 
-	if(req.query.offset)
+	if (req.query.offset)
 		Offset = req.query.offset
+
+	if (req.user.role == 2)
+		productQueryObj.vendor_id = req.user.Vendor.id;
 
 	delete req.query.limit;
 	delete req.query.offset;
+
+	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1, 'days').format("YYYY/MM/DD"));
+
+	queryObj['$or'] = [{
+		order_item_status: orderItemStatus['ORDER_INITIATED']
+	}, {
+		order_item_status: orderItemStatus['CONFIRMED']
+	}, {
+		order_item_status: orderItemStatus['SHIPPED']
+	}, {
+		order_item_status: orderItemStatus['DELIVERED']
+	}, {
+		order_item_status: orderItemStatus['COMPLETED']
+	}
+	];
+
+	queryObj['created_on'] = {
+		$between: createdBetween
+	};
+
 	model['Order'].findAll({
 		raw: true,
-		// where: req.query,
-		include:[{
-			model:model['OrderItem'],
-			// where:
-			include:[{
-				model:model['Product'],
-				attributes:[],
+		include: [{
+			model: model['OrderItem'],
+			where: queryObj,
+			include: [{
+				model: model['Product'],
+				attributes: [],
+				where: productQueryObj
 			}],
 			attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
 
-		},{
-			model:model['User'],
-			where:{status:statusCode['ACTIVE']},
-			attributes:['id','first_name','user_pic_url']
+		}, {
+			model: model['User'],
+			where: { status: statusCode['ACTIVE'] },
+			attributes: ['id', 'first_name', 'user_pic_url']
 		}],
-		attributes:[],
+		attributes: [],
 		group: ['user_id'],
 
 		order: [
-		[sequelize.fn('sum', sequelize.col('OrderItems.quantity')), 'DESC']
+			[sequelize.fn('sum', sequelize.col('OrderItems.quantity')), 'DESC']
 		],
-		
 	}).then(function(results) {
-		if(results.length>0){
+		if (results.length > 0) {
 			results = results.slice(Offset, Offset + Limit);
 		}
 		return res.status(200).send(results);
 	}).catch(function(error) {
 		console.log('Error:::', error);
 		return res.status(500).send(error)
-	});		
+	});
 }
 
-export function topVendors(req,res){
-	var result = {},Limit = 5, Offset = 0;
-	if(req.query.limit)
+export function topVendors(req, res) {
+	var result = {}, Limit = 5, Offset = 0;
+	if (req.query.limit)
 		Limit = req.query.limit;
-	if(req.query.offset)
+	if (req.query.offset)
 		Offset = req.query.offset
 	delete req.query.limit;
 	delete req.query.offset;
 	model['OrderItem'].findAll({
 		raw: true,
 		where: req.query,
-		include:[{
-			model:model['Product'],
-			attributes:[],
-			include:[{
-				model:model['Vendor'],
-				attributes:['id','vendor_name','vendor_profile_pic_url']
+		include: [{
+			model: model['Product'],
+			attributes: [],
+			include: [{
+				model: model['Vendor'],
+				attributes: ['id', 'vendor_name', 'vendor_profile_pic_url']
 			}]
 		}],
 		attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales']],
 		group: ['Product.vendor_id'],
 		order: [
-		[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
+			[sequelize.fn('sum', sequelize.col('quantity')), 'DESC']
 		],
-		offset:0,
-		limit:5
-		
+		offset: 0,
+		limit: 5
+
 	}).then(function(results) {
 		return res.status(200).send(results);
 	}).catch(function(error) {
@@ -471,24 +497,24 @@ export function topVendors(req,res){
 export function topCategories(req, res) {
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
-	var rhsBetween = [];	
+	var rhsBetween = [];
 
-	if(req.user.role == 1){
+	if (req.user.role == 1) {
 		orderItemQueryObj.limit = parseInt(req.query.limit);
 		orderItemQueryObj.offset = parseInt(req.query.offset);
 	}
-	orderItemStatus['$or']= [{
-                    order_item_status: orderItemStatus['ORDER_INITIATED']
-                }, {
-                    order_item_status:orderItemStatus['CONFIRMED']
-                },{
-                    order_item_status: orderItemStatus['SHIPPED']
-                }, {
-                    order_item_status:orderItemStatus['DELIVERED']
-                },{
-                    order_item_status:orderItemStatus['COMPLETED']
-                }];
-	if (req.user.role == 2){
+	orderItemStatus['$or'] = [{
+		order_item_status: orderItemStatus['ORDER_INITIATED']
+	}, {
+		order_item_status: orderItemStatus['CONFIRMED']
+	}, {
+		order_item_status: orderItemStatus['SHIPPED']
+	}, {
+		order_item_status: orderItemStatus['DELIVERED']
+	}, {
+		order_item_status: orderItemStatus['COMPLETED']
+	}];
+	if (req.user.role == 2) {
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
 		if (req.query.lhs_from && req.query.lhs_to) {
@@ -502,8 +528,8 @@ export function topCategories(req, res) {
 			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 		}
 	}
-	
-	if(req.user.role != 2){
+
+	if (req.user.role != 2) {
 		if (req.query.lhs_from && req.query.lhs_to) {
 			lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
 		} else {
@@ -528,8 +554,8 @@ export function recentRevenueChanges(req, res) {
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
-	
-	if (req.user.role == 2){
+
+	if (req.user.role == 2) {
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
 		if (req.query.lhs_from && req.query.lhs_to) {
@@ -543,8 +569,8 @@ export function recentRevenueChanges(req, res) {
 			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 		}
 	}
-	
-	if(req.user.role != 2){
+
+	if (req.user.role != 2) {
 		if (req.query.lhs_from && req.query.lhs_to) {
 			lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
 		} else {
@@ -562,7 +588,6 @@ export function recentRevenueChanges(req, res) {
 		return res.status(500).send(err);
 	});
 }
-
 
 export function revenueChangesCount(req, res) {
 	var orderItemQueryObj = {};
@@ -623,7 +648,7 @@ export function comparePerformance(req, res) {
 	});
 }
 
-export function vendorPerformance(req, res){
+export function vendorPerformance(req, res) {
 	var queryObj = {};
 	var lhsBetween = [], rhsBetween = [];
 	var limit, offset, compare;
@@ -631,27 +656,27 @@ export function vendorPerformance(req, res){
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if(req.user.role == 1){
-		if(req.query.compare){
+	if (req.user.role == 1) {
+		if (req.query.compare) {
 			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
 			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
-		}		
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
+		}
 	}
 
-	if(req.user.role == 2)
+	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
 	else
 		queryObj.vendor_id = null;
 
-	if(req.query.compare){
+	if (req.query.compare) {
 		queryObj.compare = req.query.compare ? req.query.compare : 'false';
 	}
 
-	if(req.query.lhs_from && req.query.lhs_to){
+	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-	}else {
+	} else {
 		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
 
@@ -660,7 +685,7 @@ export function vendorPerformance(req, res){
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	
+
 	ReportService.vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
@@ -669,7 +694,7 @@ export function vendorPerformance(req, res){
 	});
 }
 
-export function productPerformanceChanges(req, res){
+export function productPerformanceChanges(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -677,13 +702,13 @@ export function productPerformanceChanges(req, res){
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if(req.user.role == 1){
-		if(req.query.compare){
+	if (req.user.role == 1) {
+		if (req.query.compare) {
 			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
 			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
-		}		
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
+		}
 	}
 
 	if (req.user.role == 2)
@@ -712,7 +737,7 @@ export function productPerformanceChanges(req, res){
 	});
 }
 
-export function compareCategoryPerformance(req, res){
+export function compareCategoryPerformance(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -720,13 +745,13 @@ export function compareCategoryPerformance(req, res){
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if(req.user.role == 1){
-		if(req.query.compare){
+	if (req.user.role == 1) {
+		if (req.query.compare) {
 			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
 			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
-		}		
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
+		}
 	}
 
 	if (req.user.role == 2)
@@ -754,7 +779,8 @@ export function compareCategoryPerformance(req, res){
 		return res.status(500).send(err);
 	});
 }
-export function compareMarketPlacePerformance(req, res){
+
+export function compareMarketPlacePerformance(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -762,13 +788,13 @@ export function compareMarketPlacePerformance(req, res){
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if(req.user.role == 1){
-		if(req.query.compare){
+	if (req.user.role == 1) {
+		if (req.query.compare) {
 			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
 			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
-		}		
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
+		}
 	}
 
 	if (req.user.role == 2)
@@ -798,7 +824,7 @@ export function compareMarketPlacePerformance(req, res){
 	});
 }
 
-export function compareCityPerformance(req, res){
+export function compareCityPerformance(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -806,13 +832,13 @@ export function compareCityPerformance(req, res){
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if(req.user.role == 1){
-		if(req.query.compare){
+	if (req.user.role == 1) {
+		if (req.query.compare) {
 			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
 			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
-		}		
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
+		}
 	}
 
 	if (req.user.role == 2)
@@ -841,7 +867,7 @@ export function compareCityPerformance(req, res){
 	});
 }
 
-export function compareCountriesPerformance(req, res){
+export function compareCountriesPerformance(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -849,13 +875,13 @@ export function compareCountriesPerformance(req, res){
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if(req.user.role == 1){
-		if(req.query.compare){
+	if (req.user.role == 1) {
+		if (req.query.compare) {
 			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
 			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
-		}		
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
+		}
 	}
 
 	if (req.user.role == 2)
@@ -884,7 +910,8 @@ export function compareCountriesPerformance(req, res){
 		return res.status(500).send(err);
 	});
 }
-export function compareUserPerformance(req, res){
+
+export function compareUserPerformance(req, res) {
 
 	var queryObj = {};
 	var lhsBetween = [];
@@ -893,13 +920,13 @@ export function compareUserPerformance(req, res){
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if(req.user.role == 1){
-		if(req.query.compare){
+	if (req.user.role == 1) {
+		if (req.query.compare) {
 			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
 			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from)); 
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));	 
-		}		
+			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
+			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
+		}
 	}
 
 	if (req.user.role == 2)
@@ -916,7 +943,7 @@ export function compareUserPerformance(req, res){
 	} else {
 		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	
+
 	if (req.query.rhs_from && req.query.rhs_to) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
 	} else {
@@ -928,8 +955,9 @@ export function compareUserPerformance(req, res){
 	}).catch((err) => {
 		console.log('comparePerformance err', err);
 		return res.status(500).send(err);
-	});	
+	});
 }
+
 export function vendorTrail(req, res) {
 	var queryObj = {};
 	var planQueryObj = {};
@@ -945,15 +973,15 @@ export function vendorTrail(req, res) {
 		attributes: ['id', 'start_date', 'end_date', 'status'],
 		where: planQueryObj
 	}];
-	try{
+	try {
 		model["Vendor"].findAll({
 			include: includeArr,
 			where: queryObj,
-			attributes: ['id', 'vendor_name','vendor_profile_pic_url','created_on'],
+			attributes: ['id', 'vendor_name', 'vendor_profile_pic_url', 'created_on'],
 			offset: offset,
 			limit: limit,
 			order: [
-			[field, order]
+				[field, order]
 			]
 		}).then(function(rows) {
 			if (rows.length > 0) {
@@ -965,13 +993,14 @@ export function vendorTrail(req, res) {
 			console.log("error:::::::", error)
 			return res.status(500).send(error);
 		});
-	}  catch (error) {
+	} catch (error) {
 		console.log("Add To Cart Error:::", error);
 		return res.status(500).send(error);
 	}
 }
+
 export function accounting(req, res) {
-	
+
 	var accountingQueryParams = {};
 	if (req.query.start_date) {
 		accountingQueryParams['start_date'] = new Date(parseInt(req.query.start_date));
@@ -982,17 +1011,17 @@ export function accounting(req, res) {
 
 	}
 	reportsService.AccountingReport(0, accountingQueryParams)
-	.then((response) => {
+		.then((response) => {
 
-		return res.status(200).send(response);
-	})
-	.catch((error) => {
-		console.log(error)
-		return res.status(500).send("Internal server error");
-	});
+			return res.status(200).send(response);
+		})
+		.catch((error) => {
+			console.log(error)
+			return res.status(500).send("Internal server error");
+		});
 }
 
-export function memberShipFees(req,res){
+export function memberShipFees(req, res) {
 
 	var queryObj = {
 		plan_id: {
@@ -1000,34 +1029,34 @@ export function memberShipFees(req,res){
 		}
 	};
 	var field, order, offset, limit;
-	
+
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	order = req.query.order ? req.query.order : "desc";
 	field = req.query.field ? req.query.field : "id";
 
 	var includeArr = [
-	{ 
-		model: model['Plan']
-	},{ 
-		model: model['Vendor'] 
-	},{
-		model: model['Payment'],
-		attributes: ['id','amount','date','created_on'],
-		where: { 
-			id: {
-				$ne: null
-			},
-			status: statusCode['ACTIVE']
+		{
+			model: model['Plan']
+		}, {
+			model: model['Vendor']
+		}, {
+			model: model['Payment'],
+			attributes: ['id', 'amount', 'date', 'created_on'],
+			where: {
+				id: {
+					$ne: null
+				},
+				status: statusCode['ACTIVE']
+			}
 		}
-	}
 	]
 
 	service.findRows('VendorPlan', queryObj, offset, limit, field, order, includeArr)
-	.then(function(plans){
-		return res.status(200).send(plans)
-	}).catch(function(error){
-		console.log(error)
-		return res.status(500).send("Internal server error");
-	})
+		.then(function(plans) {
+			return res.status(200).send(plans)
+		}).catch(function(error) {
+			console.log(error)
+			return res.status(500).send("Internal server error");
+		})
 }

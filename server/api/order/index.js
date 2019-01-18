@@ -5,7 +5,6 @@ var auth = require('../../auth/auth.service');
 var controller = require('./order.controller');
 var roles = require('../../config/roles');
 var permission = require('../../config/permission');
-
 var router = express.Router();
 
 router.get('/:id', controller.orderItemdetails);

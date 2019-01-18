@@ -315,24 +315,27 @@
 		function getActiveBuyers() {
 			$.ajax({
 				type: "GET",
-				url: "/api/reports/active-buyers",
+				url: "/api/reports/top-buyers",
 				success: function(data) {
 					if (data.length > 0) {
 						data.forEach(function(aObj) {
 							var activeBuyerList = $("#reporting-most-active-buyers");
-							var tag = `<div class="reporting_block_content_individual">
-										<div class="row">
-											<div class="col-md-3 col-1 no-padding">
-												<img src="${aObj["User.user_pic_url"]}" class="avatar-img" alt="${aObj["User.first_name"]}" onError="imgError(this)">
-											</div>
-											<div class="col-md-9 col-11 no-padding">
-												<h4 class="reporting_subject reporting_title">
-													<a href="javascript:;">${aObj["User.first_name"]}</a></h4>
-												<p class="reporting_subject" title="${calHoursAgo(aObj["created_on"])}">${calHoursAgo(aObj["created_on"])}</p>
-											</div>
+							var tag =`<div class="reporting_block_content_individual">
+									<div class="row">
+										<div class="col-md-3 col-1 no-padding">
+											<img src="${aObj["User.user_pic_url"]}" class="avatar-img" alt="${aObj["User.first_name"]}" onError="imgError(this)">
 										</div>
-										<hr class="widget-line">
-									</div>`;
+										<div class="col-md-9 col-11 no-padding">
+											<h4 class="reporting_subject reporting_title">
+												<a href="javascript:;">${aObj["User.first_name"]}</a>
+											</h4>
+											<p class="reporting_subject">Total Purchase:
+												<span class="lt-user-name">${aObj["OrderItems.sales"]}</span>
+											</p>
+										</div>
+									</div>
+									<hr class="widget-line">
+								</div>`;
 							activeBuyerList.append(tag);
 						});
 					} else {
