@@ -14,7 +14,6 @@ const reportsService = require('../../api/reports/reports.service');
 var moment = require('moment');
 var async = require('async');
 
-
 export function generateReports(req, res) {
 	var result = {};
 	var orderItemQueryObj = {};
@@ -63,22 +62,43 @@ export function generateReports(req, res) {
 }
 
 export function topSellingCities(req, res) {
-	var queryObj = {};
-	var result = {}, Limit = 5;
+	var productQueryObj = {}, result = {}, queryObj= {};
+	var Limit = 5;
+	var createdBetween = [];
 
 	if(req.query.limit)
 		Limit = parseInt(req.query.limit);
 	
 	if (req.user.role == 2)
-		queryObj.vendor_id = req.user.Vendor.id;
+		productQueryObj.vendor_id = req.user.Vendor.id;
+
+	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1,'days').format("YYYY/MM/DD"));	
+
+	queryObj['$or'] = [{
+			order_item_status: orderItemStatus['ORDER_INITIATED']
+		}, {
+			order_item_status: orderItemStatus['CONFIRMED']
+		}, {
+			order_item_status: orderItemStatus['SHIPPED']
+		}, {
+			order_item_status: orderItemStatus['DELIVERED']
+		}, {
+			order_item_status: orderItemStatus['COMPLETED']
+		}
+	];
+
+	queryObj['created_on'] = {
+		$between: createdBetween
+	};
 
 	model['OrderItem'].findAll({
 		raw: true,
 		include: [{
 			model: model['Product'],
-			where: {},
+			where: productQueryObj,
 			attributes: ['city']
 		}],
+		where: queryObj,
 		attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales'],
 		[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales'],
 		[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']
@@ -103,23 +123,47 @@ export function topSellingCities(req, res) {
 
 export function topSellingCountries(req, res){
 
-	var queryObj = {};
-	var result = {}, Limit = 5;
+	var productQueryObj = {}, queryObj= {}, result = {};
+	var Limit = 5;
+	var createdBetween = [];
+
 	if(req.query.limit)
 		Limit = parseInt(req.query.limit);
+
 	if (req.user.role == 2)
-		queryObj.vendor_id = req.user.Vendor.id;
+		productQueryObj.vendor_id = req.user.Vendor.id;
+
+	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1,'days').format("YYYY/MM/DD"));	
+
+	queryObj['$or'] = [{
+		order_item_status: orderItemStatus['ORDER_INITIATED']
+		}, {
+			order_item_status: orderItemStatus['CONFIRMED']
+		}, {
+			order_item_status: orderItemStatus['SHIPPED']
+		}, {
+			order_item_status: orderItemStatus['DELIVERED']
+		}, {
+			order_item_status: orderItemStatus['COMPLETED']
+		}
+	];
+
+	queryObj['created_on'] = {
+		$between: createdBetween
+	};
+
 	model['OrderItem'].findAll({
 		raw: true,
 		include:[{
 			model: model['Product'],
-			where:{},
+			where:productQueryObj,
 			attributes: ['product_location'],
 			include:[{
 				model:model['Country'],
 				attributes: ['name'],
 			}]
 		}],
+		where: queryObj,
 		attributes: [[sequelize.fn('count', sequelize.col('quantity')), 'sales'],
 		[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales'],
 		[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']
