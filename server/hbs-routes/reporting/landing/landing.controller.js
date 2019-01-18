@@ -111,7 +111,6 @@ export function reporting(req, res) {
 				});
 		},
 		topProducts: function(callback) {
-			console.log("------------------------",orderItemQueryObj, lhsBetween, rhsBetween );
 			ReportService.topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 				return callback(null, results);
 			}).catch((err) => {
