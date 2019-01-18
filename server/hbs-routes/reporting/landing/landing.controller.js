@@ -63,16 +63,18 @@ export function reporting(req, res) {
 	}
 
 	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-		queryURI['rhs_from'] = rhsBetween[0];
-		queryURI['rhs_to'] = rhsBetween[1];
-	} 
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));		
+	}else{
+		rhsBetween.push(moment().subtract(61, 'days').format("YYYY/MM/DD"), moment().subtract(31,'days').format("YYYY/MM/DD"));	
+	}
 
     if (req.user.role == 2)
         orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
 	queryURI['lhs_from'] = lhsBetween[0];
 	queryURI['lhs_to'] = lhsBetween[1];
+	queryURI['rhs_from'] = rhsBetween[0];
+	queryURI['rhs_to'] = rhsBetween[1];
 
     async.series({
 		cartInfo: function(callback) {
@@ -109,7 +111,7 @@ export function reporting(req, res) {
 				});
 		},
 		topProducts: function(callback) {
-
+			console.log("------------------------",orderItemQueryObj, lhsBetween, rhsBetween );
 			ReportService.topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 				return callback(null, results);
 			}).catch((err) => {

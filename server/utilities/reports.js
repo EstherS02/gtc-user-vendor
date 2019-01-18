@@ -406,6 +406,19 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
 			$between: lhsBetween
 		};
 
+		orderItemQueryObj['$or'] = pastRange['$or'] = currentRange['$or'] = [{
+				order_item_status: orderItemStatus['ORDER_INITIATED']
+			}, {
+				order_item_status: orderItemStatus['CONFIRMED']
+			}, {
+				order_item_status: orderItemStatus['SHIPPED']
+			}, {
+				order_item_status: orderItemStatus['DELIVERED']
+			}, {
+				order_item_status: orderItemStatus['COMPLETED']
+			}
+		];
+
 		model['OrderItemOverview'].findAll({
 			raw: true,
 			where: orderItemQueryObj,
