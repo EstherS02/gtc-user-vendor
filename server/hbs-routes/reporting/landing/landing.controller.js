@@ -48,26 +48,24 @@ export function reporting(req, res) {
 
 	let user_id = LoggedInUser.id;
 	
-	if (req.query.range) {
-		queryURI['range'] = req.query.range;
-	} else {
-		queryURI['range'] = 4;
-	}
-
-	if (queryURI['range'] == 4) {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1,'days').format("YYYY/MM/DD"));
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"));
+		queryURI['range'] = 7;
 	}else{
-		if (req.query.lhs_from && req.query.lhs_to) {
-			lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-		}
+		lhsBetween.push(moment().subtract(61, 'days').format("YYYY/MM/DD"), moment().subtract(31,'days').format("YYYY/MM/DD"));	
+		queryURI['range'] = 7;
 	}
-
+	
 	if (req.query.rhs_from && req.query.rhs_to) {
 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));		
 	}else{
-		rhsBetween.push(moment().subtract(61, 'days').format("YYYY/MM/DD"), moment().subtract(31,'days').format("YYYY/MM/DD"));	
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1,'days').format("YYYY/MM/DD"));	
 	}
 
+	if (req.query.range) {
+		queryURI['range'] = req.query.range;
+	} 
+	
     if (req.user.role == 2)
         orderItemQueryObj.vendor_id = req.user.Vendor.id;
 

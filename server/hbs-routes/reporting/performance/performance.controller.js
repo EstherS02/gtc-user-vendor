@@ -1,11 +1,8 @@
 'use strict';
 
 const querystring = require('querystring');
-const config = require('../../../config/environment');
-const model = require('../../../sqldb/model-connect');
 const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
-const sequelize = require('sequelize');
 const moment = require('moment');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');

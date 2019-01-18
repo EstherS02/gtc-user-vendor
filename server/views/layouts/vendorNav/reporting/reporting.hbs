@@ -1,6 +1,6 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-
+	var range = 7;
 	$(function(){
 		$("#lhs_from").datepicker({
 			trigger: $("#lhs_fromRange"),
@@ -129,9 +129,11 @@
 
 		$("#inputDateRange").change(function() {
 			if ($("#inputDateRange").val() == 1) {
+				range =1;
 				$("#lhs_from").datepicker("setDate", new Date());
 				$("#lhs_to").datepicker("setDate", new Date());
 			} else if ($("#inputDateRange").val() == 2) {
+				range =2;
 				var startDate = new Date();
 				var endDate = new Date();
 				startDate.setDate(startDate.getDate() - 1);
@@ -141,6 +143,7 @@
 				$("#lhs_to").datepicker("setDate", startDate);
 				
 			} else if ($("#inputDateRange").val() == 3) {
+				range =3;
 				var startDate = new Date();
 				var endDate = new Date();
 				startDate.setDate(startDate.getDate() - 7);
@@ -150,6 +153,7 @@
 				$("#lhs_to").datepicker("setDate", endDate);
 				
 			} else if ($("#inputDateRange").val() == 4) {
+				range =4;
 				var startDate = new Date();
 				var endDate = new Date();
 				startDate.setDate(startDate.getDate() - 30);
@@ -159,6 +163,7 @@
 				$("#lhs_to").datepicker("setDate", endDate);
 				
 			} else if ($("#inputDateRange").val() == 5) {
+				range =5;
 				var startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 				var endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
 
@@ -166,6 +171,7 @@
 				$("#lhs_to").datepicker("setDate", endDate);
 				
 			} else if ($("#inputDateRange").val() == 6) {
+				range =6;
 				var startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
 				var endDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1 + 1, 0);
 
@@ -173,7 +179,7 @@
 				$("#lhs_to").datepicker("setDate", endDate);
 				
 			} else {
-				//window.location.href = "/store/accounting?range=" + $("#inputDateRange").val();
+				range =7;
 			}
 		});
 
@@ -228,7 +234,7 @@
 				Cfrom = $('#rhs_from').val();
 				Cto = $('#rhs_to').val();
 				Compare = $('#compare').is(":checked");
-				location.href = "/store/reports?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
+				location.href = "/store/reports?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare +"&range="+range;
 			}
 		});
 
