@@ -358,8 +358,9 @@
 				type: "GET",
 				url: "/api/reports/latest-refunds",
 				success: function(data) {
-					if (data.length > 0) {
-						data.forEach(function(aObj) {
+					if (data.rows.length > 0) {
+						var refundRows = data.rows;
+						refundRows.forEach(function(aObj) {
 							var latestRefundList = $("#reporting-latest-refunds");
 							var tag = `<div class="reporting_block_content_individual">
 									<div class="row">
@@ -368,12 +369,9 @@
 										</div>
 										<div class="col-md-9 col-11 no-padding">
 											<h4 class="reporting_subject reporting_title">
-												<a href="javascript:;">${aObj["first_name"]}</a></h4>
-											<p class="reporting_subject">Subject:
-												<span class="lt-user-name">-</span>
-											</p>
+												<a href="javascript:;">${aObj.Order.User.first_name}</a></h4>
 											<p class="reporting_subject">Status:
-												<span class="lt-status">${getStatus(aObj["user_status"])}</span>
+												<span class="lt-status">${getStatus(aObj.order_item_status)}</span>
 											</p>
 										</div>
 									</div>

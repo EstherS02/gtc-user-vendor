@@ -14,6 +14,7 @@ const reportsService = require('../../api/reports/reports.service');
 var moment = require('moment');
 var async = require('async');
 const roles = require('../../config/roles');
+const orderItemStatusCode = require('../../config/order-item-new-status');
 
 export function generateReports(req, res) {
 	var result = {};
@@ -294,12 +295,14 @@ export function latestTickets(req,res){
 	});
 }
 
-export function latestRefunds(req, res) {
+/*export function latestRefunds(req, res) {
 	var queryObj = {};
 	var vendorQuery = {};
 	var result = {};
+
 	if (req.user.role == 2)
 		vendorQuery.vendor_id = req.user.Vendor.id;
+
 	queryObj['$or'] = [{
 		order_item_status: orderItemStatus['REQUEST_FOR_RETURN']
 	}, {
@@ -309,36 +312,100 @@ export function latestRefunds(req, res) {
 	}, {
 		order_item_status: orderItemStatus['REFUND']
 	}],
-		model['User'].findAll({
-			attributes: ['id', 'first_name', 'last_name', 'status'],
-			limit: 5,
+
+	model['User'].findAll({
+		attributes: ['id', 'first_name', 'last_name', 'status'],
+		limit: 5,
+		include: [{
+			model: model['Order'],
+			attributes: ['id'],
 			include: [{
-				model: model['Order'],
-				attributes: ['id'],
+				model: model['OrderItem'],
+				attributes: ['id', 'order_item_status'],
+				where: queryObj,
 				include: [{
-					model: model['OrderItem'],
-					attributes: ['id', 'order_item_status'],
-					where: queryObj,
-					include: [{
-						model: model['Product'],
-						where: vendorQuery,
-						attributes: []
-					}]
+					model: model['Product'],
+					where: vendorQuery,
+					attributes: []
 				}]
 			}]
-		}).then(function(results) {
-			if (results.length > 0)
-				result = results;
-			else
-				result = [];
-			return res.status(200).send(result);
-		}).catch(function(error) {
-			console.log('Error:::', error);
-			return res.status(200).send(error);
+		}]
+	}).then(function(results) {
+		if (results.length > 0)
+			result = results;
+		else
+			result = [];
+		return res.status(200).send(result);
+	}).catch(function(error) {
+		console.log('Error:::', error);
+		return res.status(500).send(error);
+	});
+}*/
+
+export function latestRefunds(req,res){
+	var offset, limit, field, order;
+	var queryObj = {}, vendorQuery = {};
+	var includeArr = [];
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+    delete req.query.offset;
+    limit = req.query.limit ? parseInt(req.query.limit) : 5;
+    delete req.query.limit;
+    field = req.query.field ? req.query.field : "created_on";
+    delete req.query.field;
+    order = req.query.order ? req.query.order : "desc";
+	delete req.query.order;
+
+	if (req.user.role === roles['VENDOR']){
+		vendorQuery.vendor_id = req.user.Vendor.id;
+	}
+
+	includeArr = [
+		{ 
+			model:model['Product'],
+			attributes:['id', 'product_name', 'vendor_id'],
+			where: vendorQuery,
+			include: [
+				{
+					model: model['Vendor'],
+					attributes: ['id', 'vendor_name']
+				}
+			]
+		},
+		{ 
+			model:model['Order'],
+			include: [
+				{ 
+					model: model['User'],
+					attributes:['id', 'first_name', 'last_name', 'user_pic_url']
+				}
+			], 
+			attributes:['id', 'user_id']
+		}
+	]
+
+	queryObj['$or'] = [{
+		order_item_status: orderItemStatusCode['REQUEST_FOR_RETURN']
+	}, {
+		order_item_status: orderItemStatusCode['APPROVED_REQUEST_FOR_RETURN']
+	},{
+		order_item_status: orderItemStatusCode['RETURN_RECIVED']
+	},{
+		order_item_status: orderItemStatusCode['REFUND']
+	}];	
+	
+	service.findRows('OrderItem', queryObj, offset, limit, field, order, includeArr)
+	.then(function(rows){
+		return res.status(200).send(rows);
+	}).catch(function(error){
+		console.log("Error:::", error);
+		return res.status(500).send({
+			"message": "error",
+			"errorDescription": error
 		});
+	})
 }
 
-export function topProducts(req, res) {
+export function topProducts(req, res){
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -370,6 +437,7 @@ export function topProducts(req, res) {
 }
 
 export function topMarketPlace(req, res) {
+
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -378,6 +446,7 @@ export function topMarketPlace(req, res) {
 		orderItemQueryObj.limit = parseInt(req.query.limit);
 		orderItemQueryObj.offset = parseInt(req.query.offset);
 	}
+
 	orderItemStatus['$or'] = [{
 		order_item_status: orderItemStatus['ORDER_INITIATED']
 	}, {
@@ -389,6 +458,7 @@ export function topMarketPlace(req, res) {
 	}, {
 		order_item_status: orderItemStatus['COMPLETED']
 	}];
+
 	if (req.user.role == 2) {
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
@@ -416,6 +486,7 @@ export function topMarketPlace(req, res) {
 			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 		}
 	}
+
 	ReportService.topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
@@ -425,6 +496,7 @@ export function topMarketPlace(req, res) {
 }
 
 export function topBuyers(req, res) {
+
 	var result = {}, queryObj = {}, productQueryObj = {};
 	var createdBetween = [];
 	var Limit = 5, Offset = 0;
@@ -495,6 +567,7 @@ export function topBuyers(req, res) {
 }
 
 export function topVendors(req, res) {
+
 	var result = {}, queryObj = {};
 	var createdBetween = [];
 	var Limit = 5, Offset = 0;

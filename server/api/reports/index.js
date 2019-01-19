@@ -21,7 +21,7 @@ router.get('/revenue-counts', auth.isAuthenticated(), controller.revenueChangesC
 router.get('/performance', auth.isAuthenticated(), controller.comparePerformance);
 router.get('/active-buyers', auth.isAuthenticated(), controller.topActiveBuyers);
 router.get('/latest-tickets', auth.hasRole(roles['VENDOR']),  controller.latestTickets);
-router.get('/latest-refunds', auth.isAuthenticated(), controller.latestRefunds);
+router.get('/latest-refunds', auth.hasRole(roles['VENDOR']), controller.latestRefunds);
 router.get('/vendor-trail', auth.isAuthenticated(), controller.vendorTrail);
 router.get('/accounting', auth.isAuthenticated(), controller.accounting);
 router.get('/membership-fee',auth.isAuthenticated(), controller.memberShipFees);
