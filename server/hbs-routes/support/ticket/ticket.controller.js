@@ -1,14 +1,9 @@
 'use strict';
 
-const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const statusCode = require('../../../config/status');
-const productService = require('../../../api/product/product.service');
-const populate = require('../../../utilities/populate');
 const service = require('../../../api/service');
 const cartService = require('../../../api/cart/cart.service');
-const marketplace = require('../../../config/marketplace');
-const moment = require('moment');
 const async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
 const notifictionService = require('../../../api/notification/notification.service');
@@ -30,13 +25,12 @@ export function viewTicket(req, res) {
 		queryPaginationObj["field"] = field;
 	}
 
-	var order = "desc"; //"asc"
+	var order = "desc";
 	var offset = 0;
 	var limit = 1;
 	var vendor_id;
 	if (LoggedInUser.Vendor)
 		vendor_id = LoggedInUser.Vendor.id;
-	//pagination 
 	var page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -54,8 +48,6 @@ export function viewTicket(req, res) {
 
 	offset = (page - 1) * limit;
 	var maxSize;
-
-	// End pagination
 	
 	var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 	var dropDownUrl = fullUrl.replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
@@ -139,6 +131,7 @@ export function viewTicket(req, res) {
 		}
 	});
 }
+
 export function createTicket(req, res) {
 	var LoggedInUser = {};
 	if (req.user)
@@ -217,6 +210,7 @@ export function createTicket(req, res) {
 		}
 	});
 }
+
 export function updateTicket(req, res) {
 	var LoggedInUser = {};
 	if (req.user)

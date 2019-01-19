@@ -3,6 +3,7 @@
 var express = require('express');
 var auth = require('../../auth/auth.service');
 var controller = require('./reports.controller');
+var roles = require('../../config/roles');
 
 var router = express.Router();
 
@@ -19,7 +20,7 @@ router.get('/revenue-changes', auth.isAuthenticated(), controller.recentRevenueC
 router.get('/revenue-counts', auth.isAuthenticated(), controller.revenueChangesCount);
 router.get('/performance', auth.isAuthenticated(), controller.comparePerformance);
 router.get('/active-buyers', auth.isAuthenticated(), controller.topActiveBuyers);
-router.get('/latest-tickets', auth.isAuthenticated(), controller.latestTickets);
+router.get('/latest-tickets', auth.hasRole(roles['VENDOR']),  controller.latestTickets);
 router.get('/latest-refunds', auth.isAuthenticated(), controller.latestRefunds);
 router.get('/vendor-trail', auth.isAuthenticated(), controller.vendorTrail);
 router.get('/accounting', auth.isAuthenticated(), controller.accounting);

@@ -13,6 +13,7 @@ const ReportService = require('../../utilities/reports');
 const reportsService = require('../../api/reports/reports.service');
 var moment = require('moment');
 var async = require('async');
+const roles = require('../../config/roles');
 
 export function generateReports(req, res) {
 	var result = {};
@@ -227,7 +228,7 @@ export function topActiveBuyers(req, res) {
 	});
 }
 
-export function latestTickets(req, res) {
+/*export function latestTickets(req, res) {
 	var queryObj = {};
 	var result = {};
 	if (req.user.role == 2)
@@ -246,6 +247,41 @@ export function latestTickets(req, res) {
 		}],
 		attributes: ['id', 'ticket_id', 'user_id', 'message', 'status', 'created_on'],
 		limit: 5
+	}).then(function(results) {
+		if (results.length > 0)
+			result = results;
+		else
+			result = [];
+		return res.status(200).send(result);
+	}).catch(function(error) {
+		console.log('Error:::', error);
+		return res.status(200).send(error);
+	});
+}*/
+
+export function latestTickets(req,res){
+	var queryObj = {}, result = {};
+
+	queryObj['status'] = {
+		'$ne': statusCode["DELETED"]
+	}
+
+	if (req.user.role === roles['VENDOR']){
+		queryObj['user_id'] = req.user.id;
+	}
+	model['Ticket'].findAll({
+		raw:true,
+		where: queryObj,
+		order: [
+			['created_on', 'DESC']
+		],
+		include: [{
+			model: model['User'],
+			where: {},
+			attributes: ['first_name', 'last_name', 'user_pic_url']
+		}],
+		limit: 5,
+		offset:0
 	}).then(function(results) {
 		if (results.length > 0)
 			result = results;
@@ -459,16 +495,38 @@ export function topBuyers(req, res) {
 }
 
 export function topVendors(req, res) {
-	var result = {}, Limit = 5, Offset = 0;
+	var result = {}, queryObj = {};
+	var createdBetween = [];
+	var Limit = 5, Offset = 0;
 	if (req.query.limit)
 		Limit = req.query.limit;
 	if (req.query.offset)
 		Offset = req.query.offset
 	delete req.query.limit;
 	delete req.query.offset;
+
+	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1, 'days').format("YYYY/MM/DD"));
+
+	queryObj['$or'] = [{
+		order_item_status: orderItemStatus['ORDER_INITIATED']
+	}, {
+		order_item_status: orderItemStatus['CONFIRMED']
+	}, {
+		order_item_status: orderItemStatus['SHIPPED']
+	}, {
+		order_item_status: orderItemStatus['DELIVERED']
+	}, {
+		order_item_status: orderItemStatus['COMPLETED']
+	}
+	];
+
+	queryObj['created_on'] = {
+		$between: createdBetween
+	};
+
 	model['OrderItem'].findAll({
 		raw: true,
-		where: req.query,
+		where: queryObj,
 		include: [{
 			model: model['Product'],
 			attributes: [],
@@ -491,7 +549,6 @@ export function topVendors(req, res) {
 		console.log('Error:::', error);
 		return res.status(500).send(error)
 	});
-
 }
 
 export function topCategories(req, res) {
