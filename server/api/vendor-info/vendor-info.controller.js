@@ -182,3 +182,19 @@ export function upsert(req, res) {
 			return
 		});
 }
+
+export function verification(req, res){
+
+	var verificationId = req.params.id;
+	var verificationIncludeArr = [];
+	
+	service.findIdRow('VendorVerification', verificationId, verificationIncludeArr)
+	.then(function(row){
+		return res.status(200).send(row);
+	}).catch(function(error){
+		console.log("Error::",error);
+		return res.status(500).send('Internal server error');
+	})
+
+
+}

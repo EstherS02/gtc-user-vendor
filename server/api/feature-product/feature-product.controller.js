@@ -44,9 +44,6 @@ export function index(req, res) {
 	includeArr = [{model:model['Product'],
 				where: productQueryObj }]
 
-
-	console.log("------------------------------------",queryObj, offset, limit, field, order, )
-
 	service.findRows(featuredProductModel, queryObj, offset, limit, field, order, includeArr)
 	.then(function(products){
 		return res.status(200).send(products);

@@ -263,9 +263,19 @@
 
 		function getStatus(statusCode) {
 			var status = {
-				1: "OPEN",
-				2: "HOLD",
-				3: "CLOSED"
+				4: "Open",
+				5: "Hold",
+				6: "Closed"
+			}
+			return status[statusCode] ? status[statusCode] : "OPEN";
+		}
+
+		function getRefundStatus(statusCode) {
+			var status = {
+				6: "Open",
+				7: "Open",
+				8: "Hold",
+				11: "Issued"
 			}
 			return status[statusCode] ? status[statusCode] : "OPEN";
 		}
@@ -371,7 +381,7 @@
 											<h4 class="reporting_subject reporting_title">
 												<a href="javascript:;">${aObj.Order.User.first_name}</a></h4>
 											<p class="reporting_subject">Status:
-												<span class="lt-status">${getStatus(aObj.order_item_status)}</span>
+												<span class="lt-status">${getRefundStatus(aObj.order_item_status)}</span>
 											</p>
 										</div>
 									</div>
