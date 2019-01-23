@@ -35,13 +35,12 @@ export async function createAd(req, res) {
 	req.checkBody('target_url', 'Missing Query Param').notEmpty();
 	req.checkBody('start_date', 'Missing Start Date').notEmpty();
 	req.checkBody('end_date', 'Missing End Date').notEmpty();
-	req.checkBody('file', 'Missing Image').notEmpty();
 
 	const startDate = new Date(req.body.start_date);
 	const endDate = new Date(req.body.end_date);
 	const currentDate = new Date();
 
-	if (startDate <= currentDate) {
+	if (startDate < currentDate) {
 		return res.status(400).send({
 			"message": "Error",
 			"messageDetails": "Start date must be greater than current date."

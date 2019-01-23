@@ -39,8 +39,9 @@
 											</div>
 										</div>
 									{{/each}}
-									<p style="padding-top: 15px;"><i class="fas fa-plus-circle text_orange_color"></i>
-										<a href="javascript:;" onclick="toggleAddCard();">Add another card</a></p>
+									<p style="padding-top: 15px;">
+										<a href="javascript:;" onclick="toggleAddCard();">
+											<i class="fas fa-plus-circle text_orange_color"></i>&nbsp;&nbsp;Add another card</a></p>
 									<div style="display:none;border: 1px solid #eee;padding: 20px 10px 20px 10px;" id="add_new_card_content" class="pyt_group">
 										<div class="row">
 											<div class="col-md-8" style="margin-left: 15px">
@@ -250,7 +251,7 @@
 	}
 
 	function toggleAddCard() {
-		$('#add_new_card_content').css('display', 'block');
+		$('#add_new_card_content').toggle();
 	}
 
 

@@ -158,6 +158,8 @@ export function directory(req, res) {
 				where: queryObj
 			}).then(function(row) {
 				if (row) {
+
+					console.log("***************************************",row);
 					return callback(null, row.toJSON());
 				} else {
 					return callback(null);
