@@ -3992,17 +3992,10 @@ input.upload-btn1 {
     cursor: pointer;
 }
 
-button.update-btn {
-    background-color: #4178BB;
-    font-size: 11px;
-    border: none;
-    padding: 5px 15px;
-    color: white;
-    font-weight: bold;
-    margin-right: 15px;
-    font-family: 'heebo', sans-serif;
-    cursor: pointer;
-}
+/*button.update-btn {
+	background: #2775c3;
+	border-color: #2775c3;
+}*/
 
 button.cancel-btn {
     background-color: #cccccc;

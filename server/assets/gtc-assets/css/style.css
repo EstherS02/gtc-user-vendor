@@ -2428,8 +2428,18 @@ p.summary-info span {
 	color: #4a4949;
 }
 
+.update-btn,
+.update-btn:not(:disabled):not(.disabled):active {
+	background: #2775c3;
+	border-color: #2775c3;
+	color: #fff;
+}
+
 .update-btn:hover {
-	background-color: #2560ab;
+	/*background-color: #2560ab;*/
+	background: #154a7f;
+	border-color: #154a7f;
+	color: #fff;
 }
 
 /*related product in product view page*/

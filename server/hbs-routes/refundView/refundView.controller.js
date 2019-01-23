@@ -1,5 +1,4 @@
 'use strict';
-const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../../api/service');
 const statusCode = require('../../config/status');
@@ -17,7 +16,6 @@ export function refund(req, res) {
 		queryURI = {}, queryObj = {}, queryPaginationObj = {};
 	var offset, limit, field, order, page, maxSize;
 	var includeArr = [];
-
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -139,7 +137,7 @@ export function refund(req, res) {
 				});
 		},
 		refunds: function(callback) {
-			service.findRows('OrderItem', queryObj, offset, limit, field, order, includeArr)
+			service.findAllRows('OrderItem', includeArr,queryObj, offset, limit, field, order)
 				.then(function(refunds) {
 					return callback(null, refunds);
 				}).catch(function(error) {

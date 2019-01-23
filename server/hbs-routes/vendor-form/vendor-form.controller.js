@@ -7,6 +7,7 @@ const roles = require('../../config/roles');
 const vendorPlan = require('../../config/gtc-plan');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
+const notifictionService = require('../../api/notification/notification.service');
 
 export function vendorForm(req, res) {
 
@@ -94,6 +95,14 @@ export function vendorForm(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(error, results) {
 		if (!error) {
@@ -111,7 +120,8 @@ export function vendorForm(req, res) {
 					currency: results.currency,
 					timezone: results.timezone,
 					selectedPage: 'vendor-form',
-					vendorPlan: vendorPlan
+					vendorPlan: vendorPlan,
+					unreadCounts: results.unreadCounts
 				});
 			}
 		} else {

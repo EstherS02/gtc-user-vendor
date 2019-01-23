@@ -512,24 +512,28 @@
 												</div>
 											</div>
 										</div>
-									</div>
+									</div>	
+								</div>
+								<div class="row">
 									<div class="col-lg-12">
-									<span class="preview"></span>
+										<div class="form-group">
+											<span class="preview"></span>
+										</div>			
 									</div>
 								</div>
-								<br/>
-								<br/>
-								<hr/>
+								<div class="hr-line"></div>
 								<div class="row">
-									<div class="col-md-12">
-										<button class="ladda-button btn {{#if editProduct}}update-btn{{else}}btn-primary{{/if}} btn-small" type="submit" data-style="expand-left">
-											<span class="ladda-label">{{#if editProduct}}UPDATE{{else}}SUBMIT{{/if}}</span>
-											<span class="ladda-spinner"></span>
-										</button>
-										<button class="ladda-button btn btn-small btn-muted" type="reset" id="reset" data-style="expand-left">
-											<span class="ladda-label">CANCEL</span>
-											<span class="ladda-spinner"></span>
-										</button>
+									<div class="col-lg-12">
+										<div class="form-group">
+											<button class="btn btn-md {{#if editProduct}}update-btn{{else}}btn-success{{/if}} m-t" type="submit" data-style="expand-left">
+												<span class="ladda-label">{{#if editProduct}}UPDATE{{else}}SUBMIT{{/if}}</span>
+												<span class="ladda-spinner"></span>
+											</button>
+											<button class="ladda-button btn btn-md btn-muted m-t" type="reset" id="reset" data-style="expand-left">
+												<span class="ladda-label">CANCEL</span>
+												<span class="ladda-spinner"></span>
+											</button>
+										</div>
 									</div>
 								</div>
 							</form>

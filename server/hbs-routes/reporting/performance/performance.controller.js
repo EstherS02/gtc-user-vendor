@@ -75,8 +75,8 @@ export function performance(req, res) {
 	
 	queryURI['offset'] = offset;
 	queryURI['limit'] = limit;
-	queryURI['lhs_from'] = lhsBetween[0];
-	queryURI['lhs_to'] = lhsBetween[1];
+	queryURI['lhs_from'] = moment(lhsBetween[0]).format("MM/DD/YYYY");
+	queryURI['lhs_to'] = moment(lhsBetween[1]).format("MM/DD/YYYY");
 	queryURI['top'] = selectedMetrics;
 
 	async.series({

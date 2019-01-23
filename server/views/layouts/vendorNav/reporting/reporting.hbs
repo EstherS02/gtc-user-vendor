@@ -4,7 +4,8 @@
 	$(function(){
 		$("#lhs_from").datepicker({
 			trigger: $("#lhs_fromRange"),
-			autoHide: true
+			autoHide: true,
+			format: 'mm/dd/yyyy'
 		});
 		$("#lhs_to").datepicker({
 			trigger: $("#lhs_toRange"),
@@ -565,7 +566,7 @@
 															<p class="top_perf_title">Top Performing Products by total sales</p>
 															{{#ifCond topProducts.rows.length '==' "0"}}
 																<div class="top_perf_product_name" style="text-align:center">
-																	No Product Found
+																	No Records Found
 																</div>
 															{{/ifCond}}
 															{{#each topProducts.rows as |item|}}

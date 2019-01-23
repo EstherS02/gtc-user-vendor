@@ -249,13 +249,13 @@
 													<div class="form-group">
 											<div class="input-group">
 												<select name="status" id="inputStatus" class="custom-select form-control-customized form-control-sm custom_left_arrow_style" required="true">
-															<option disabled="true" selected="true">Select status</option>
-															{{#select coupon.status}}
-																<option value="{{statusCode.ACTIVE}}">Active</option>
-																<option value="{{statusCode.SUSPENDED}}">Suspended</option>
-																<option value="{{statusCode.SOLDOUT}}">Sold Out</option>
-															{{/select}}
-														</select>										
+													<option disabled="true" selected="true">Select status</option>
+													{{#select coupon.status}}
+														<option value="{{statusCode.ACTIVE}}">Active</option>
+														<option value="{{statusCode.SUSPENDED}}">Suspended</option>
+														<option value="{{statusCode.SOLDOUT}}">Sold Out</option>
+													{{/select}}
+												</select>										
 											</div>
 										</div>
                  						</div>
@@ -434,7 +434,7 @@
 						</div>
 					</div>
 				</div>
-				{{else}}
+			{{else}}
 					{{> plan-inactive}}
 			{{/if}}
 		</div>

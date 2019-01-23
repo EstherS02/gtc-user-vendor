@@ -229,8 +229,8 @@
 	}
 
 </script> 
-{{> header/top-header LoggedInUser = LoggedInUser}}
-
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
  aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
