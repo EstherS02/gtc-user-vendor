@@ -25,9 +25,11 @@
 	function compose(e) {
 		window.location.href = '/gtc-mail/compose';
 	}
+
 	function refresh(e) {
 		location.reload(true);
 	}
+
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -44,6 +46,7 @@
 			}
 		}
 	}
+	
 	function deleteMail() {
        var chkArray = [];
         $(":checkbox:checked").each(function(i) {

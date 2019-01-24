@@ -282,6 +282,7 @@ export function message(req, res) {
 			if (!err) {
 				var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 				var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
+					
 				res.render('gtc-mail/messageView', {
 					title: "Global Trade Connect",
 					LoggedInUser: LoggedInUser,

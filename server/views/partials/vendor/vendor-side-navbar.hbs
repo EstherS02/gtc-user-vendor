@@ -48,6 +48,13 @@
 
 		$('#collapseGTCMail li a').each(function() {
 			var $this = $(this);
+			if (current.indexOf($this.attr('href')) !== -1) {
+				$this.addClass('active');
+			}
+		}); 
+
+		$('#collapseGTCMail li a').each(function() {
+			var $this = $(this);
 			if ($this.attr('class') && $this.attr('class').indexOf('active') !== -1) {
 				$('#collapseGTCMail').addClass('show');
 			}
