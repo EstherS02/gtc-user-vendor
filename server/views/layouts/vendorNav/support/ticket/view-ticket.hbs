@@ -1,14 +1,31 @@
 <script>
-	$(document).ready(function() {
-		$("#searchTickets").submit(function(e) {
-		e.preventDefault();
-		let formInput = $("#searchTickets :input").filter(function(index, element) {
-			return $(element).val() != '';
-		}).serialize();
-		if (formInput != '') {
-			window.location.href = '/support/ticket?' + formInput;
+	function selectAll(ele) {
+		var checkboxes = document.getElementsByTagName('input');
+		if (ele.checked) {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = true;
+				}
+			}
+		} else {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = false;
+				}
+			}
 		}
-	});
+	}
+	$(document).ready(function() {
+		$("#gtc-cart-alert").hide();
+		$("#searchTickets").submit(function(e) {
+			e.preventDefault();
+			let formInput = $("#searchTickets :input").filter(function(index, element) {
+				return $(element).val() != '';
+			}).serialize();
+			if (formInput != '') {
+				window.location.href = '/support/ticket?' + formInput;
+			}
+		});
 	});
 	function createTicket() {
 		window.location.href = 'support/ticket/create-Ticket';
@@ -32,7 +49,30 @@
 		}
 		return urlParams;
 	}
+
+	function edit(e) {
+		var chkArray = [];
+		$(':checkbox:checked').each(function (i) {
+			if ($(this).val() != 'on') {
+				chkArray.push($(this).val());
+			}			
+		});
+		
+		var ticket_id = chkArray.join(',');
+
+		if (chkArray.length == 1) {
+			window.location.href = '/support/ticket/update-Ticket/'+ticket_id;
+		}
+		else {
+			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+			$('#gtc-cart-alert .cart-message').text('Select one ticket to edit')
+			$("#gtc-cart-alert").fadeTo(1000, 500).slideUp(500, function () {
+			$("#gtc-cart-alert").slideUp(200);
+			});
+		}
+	}
 </script> 
+
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 {{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <div class="wrapper-content bg-gray">
@@ -77,29 +117,34 @@
 												</select>
 											</div>
 										</div> 
-										{{!-- <div class="form-group">
-											<button type="submit" class="btn btn-md btn-muted" name="{{this.type}}" onclick="edit(this);">EDIT/FEATURE</button>
-										</div> --}}
+										<div class="form-group">
+											<button type="submit" class="btn btn-md btn-muted" onclick="edit(this);">VIEW/ EDIT</button>
+										</div>
 									</div>
 									<form id="searchTickets" name="searchTickets">
 										<div class="form-inline pull-right m-t-md">
-										
-										<div class="form-group">
-											<div class="input-group gtc-rounded">
-												<input type="text" placeholder="Search Ticket" class="form-control form-control-sm" name="ticketNumber" {{#if queryURI.ticketNumber}}
-													value= {{queryURI.ticketNumber}} {{/if}}>
-												<button type="submit" class="btn btn-sm btn-gtc">
-													<i class="fa fa-search"></i>
-												</button>
+											<div class="form-group">
+												<div class="input-group gtc-rounded">
+													<input type="text" placeholder="Search Ticket #" class="form-control form-control-sm" name="ticketNumber" {{#if queryURI.ticketNumber}}
+														value= {{queryURI.ticketNumber}} {{/if}}>
+													<button type="submit" class="btn btn-sm btn-gtc">
+														<i class="fa fa-search"></i>
+													</button>
+												</div>
 											</div>
-										</div>
-									</div> 
+										</div> 
 									</form>
 								</div>
 							</div>
 							{{#if ticketListing.count}}
 								<div class="row py-2">
 									<div class="col-md-12">
+										<div class="alert" id="gtc-cart-alert">
+											<button type="button" class="close" data-dismiss="alert">
+												<span aria-hidden="true">&times;</span>
+											</button>
+											<span class="cart-message"></span>
+										</div>
 										<small class="font-weight-light">{{ticketListing.count}} items total</small>
 										<div class="float-right">
 											<small class="font-weight-light">Entries per page : </small>
@@ -129,12 +174,11 @@
 															<label class="checkbox-b" for="inputCheckbox"></label>
 														</div>
 													</th>
-													<th scope="col">Ticket Number</th>
+													<th scope="col">Ticket #</th>
 													<th scope="col">Subject</th>
 													<th scope="col">Submitted By</th>
 													<th scope="col">Submitted Date</th>
 													<th scope="col">Status</th>
-
 												</tr>
 											</thead>
 											<tbody>
@@ -146,9 +190,7 @@
 																<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
 															</div>
 														</td>
-														<td>
-															<a href="support/ticket/update-Ticket/{{this.id}}">{{this.id}}</a>
-														</td>
+														<td>{{this.id}}</td>
 														<td>{{dotdotdot this.title}}</td>
 														<td>{{this.created_by}} </td>
 														<td>{{formatTime this.created_on "MMM D, YYYY"}}</td>
@@ -171,13 +213,11 @@
 																	<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 															</li>
 														{{/unless}}
-
 														{{#each pages}}
 															<li class="page-item {{#if isCurrent}} active {{/if}}">
 																<a class="page-link" href="{{../../originalUrl}}/{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 															</li>
 														{{/each}}
-
 														{{#unless endAtLastPage}}
 															<li class="page-item-next" style="margin-right:-391px;">
 																<a href="{{../originalUrl}}/{{QueryParams ../../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;

@@ -10,7 +10,9 @@ const notifictionService = require('../../../api/notification/notification.servi
 const querystring = require('querystring');
 
 export function viewTicket(req, res) {
-	var LoggedInUser = {} ,queryURI = {},queryObj ={},queryPaginationObj = {}, queryParams = {};
+	var LoggedInUser = {} ,queryURI = {},
+	queryObj ={},queryPaginationObj = {}, 
+	queryParams = {}, bottomCategory = {};
 	if (req.user)
 		LoggedInUser = req.user;
 
@@ -65,6 +67,30 @@ export function viewTicket(req, res) {
 				return callback(null);
 			}
 		},
+		categories: function(callback) {
+
+			var includeArr = [];
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
+
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 		ticketListing: function(callback) {
 			var includeArr = [];
 		     queryObj = {
@@ -78,10 +104,13 @@ export function viewTicket(req, res) {
 					'$ne': statusCode["DELETED"]
 				}
 			}
-			if(req.query.ticketNumber)
-			queryObj['id'] = {
-				like: '%' + req.query.ticketNumber + '%'
-			};
+			if(req.query.ticketNumber){
+				queryURI['ticketNumber'] = req.query.ticketNumber;
+				queryObj['id'] = {
+					like: '%' + req.query.ticketNumber + '%'
+				};
+			}
+			
 			var field = "id";
 			var order = "desc";
 			var limit = null;
@@ -124,7 +153,9 @@ export function viewTicket(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				statusCode: statusCode,
 				selectedPage: 'view-ticket',
-				originalUrl:originalUrl
+				originalUrl:originalUrl,
+				categories: results.categories,
+				bottomCategory: bottomCategory
 			});
 		} else {
 			res.render('vendorNav/support/ticket/view-ticket', err);
@@ -133,7 +164,8 @@ export function viewTicket(req, res) {
 }
 
 export function createTicket(req, res) {
-	var LoggedInUser = {};
+
+	var LoggedInUser = {}, bottomCategory = {};
 	if (req.user)
 		LoggedInUser = req.user;
 
@@ -147,16 +179,13 @@ export function createTicket(req, res) {
 		queryPaginationObj["field"] = field;
 	}
 
-	var order = "desc"; //"asc"
+	var order = "desc"; 
 	var offset = 0;
 	var limit = 1;
 	var vendor_id;
 	if (LoggedInUser.Vendor)
 		vendor_id = LoggedInUser.Vendor.id;
 
-	
-
-	//pagination 
 	var page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
@@ -170,7 +199,7 @@ export function createTicket(req, res) {
 
 	offset = (page - 1) * limit;
 	var maxSize;
-	// End pagination
+
 	var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 	var dropDownUrl = fullUrl.replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
 
@@ -186,6 +215,30 @@ export function createTicket(req, res) {
 			} else {
 				return callback(null);
 			}
+		},
+		categories: function(callback) {
+
+			var includeArr = [];
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
+
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		},
 	    unreadCounts: function(callback) {
 			notifictionService.notificationCounts(LoggedInUser.id)
@@ -203,7 +256,9 @@ export function createTicket(req, res) {
 				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
-				selectedPage: 'create-ticket'
+				selectedPage: 'create-ticket',
+				categories: results.categories,
+				bottomCategory: bottomCategory
 			});
 		} else {
 			res.render('create-ticket', err);
@@ -212,12 +267,12 @@ export function createTicket(req, res) {
 }
 
 export function updateTicket(req, res) {
-	var LoggedInUser = {};
+	var LoggedInUser = {}, bottomCategory = {};
 	if (req.user)
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
-	var order = "desc"; //"asc"
+	var order = "desc"; 
 	var offset = 0;
 	var limit = 1;
 	var vendor_id;
@@ -240,6 +295,30 @@ export function updateTicket(req, res) {
 			} else {
 				return callback(null);
 			}
+		},
+		categories: function(callback) {
+
+			var includeArr = [];
+			var categoryOffset, categoryLimit, categoryField, categoryOrder;
+			var categoryQueryObj = {};
+
+			categoryOffset = 0;
+			categoryLimit = null;
+			categoryField = "id";
+			categoryOrder = "asc";
+
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows('Category', includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		},
 		ticketListing: function(callback) {
 			var includeArr = [{
@@ -297,7 +376,9 @@ export function updateTicket(req, res) {
 				ticketdetails:results.ticketdetails,
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
-				selectedPage: 'ticket-detail'
+				selectedPage: 'ticket-detail',
+				categories: results.categories,
+				bottomCategory: bottomCategory
 			});
 		} else {
 			res.render('ticket-detail', err);

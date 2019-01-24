@@ -9,6 +9,7 @@ const roles = require('../../config/roles');
 const model = require('../../sqldb/model-connect');
 
 export function createTicketThread(req, res) {
+
 	var name;
 	var bodyParams = {};
 	var ticketID = req.params.ticket_id;

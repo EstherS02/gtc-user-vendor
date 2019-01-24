@@ -1,81 +1,84 @@
 <script>
 	$(document).ready(function() {
-		$('#gtc-social-profile').css("display", "none");
-		$('#vendorUpdateBtn').prop('disabled', true);
+
+		$('#gtc-tickets').css("display", "none");
+		$('#ticketUpdateBtn').prop('disabled', true);
 		$('#title').val("");
 		$('#content').val("");
-			$('#title, #title').keyup(function() {
-				if ($('#title').val() != '' && $('#title').val() != '') {
-					  $('#vendorUpdateBtn').prop('disabled', false);
-				} else {
-				     $('#vendorUpdateBtn').prop('disabled', true);
-				}
-			});
+
+		$('#title').keyup(function() {
+			if ($('#title').val() != '') {
+				$('#ticketUpdateBtn').prop('disabled', false);
+			} else {
+				$('#ticketUpdateBtn').prop('disabled', true);
+			}
+		});
 		
 		$("#ticketdetailsform").submit(function(e) {
 			e.preventDefault();
+			
 			if($('#title').val() != '' && $('#content').val() != ''){
+
                let formInput = $("#ticketdetailsform :input").filter(function(index, element) {
-				return $(element).val() != '';
-			}).serialize();
-			if ($('#ticketdetailsform').valid()) {
-				$.ajax({
-					url: '/api/tickets/',
-					type: 'POST',
-					data: formInput,
-					success: function(updateData) {
-						$('#gtc-social-profile').removeClass('alert-danger').addClass('alert-success');
-						$('#gtc-social-profile .cart-message').text("Ticket Created Successfully");
-						$("#gtc-social-profile").fadeTo(2000, 3000).slideUp(500, function() {
-							$("#gtc-social-profile").slideUp(500);
-							location.reload(true);
-						});
-					},
-					error: function(error) {
-						$('#gtc-social-profile').removeClass('alert-success').addClass('alert-danger');
-						$('#gtc-social-profile .cart-message').text(error);
-						$("#gtc-social-profile").fadeTo(2000, 3000).slideUp(500, function() {
-							$("#gtc-social-profile").slideUp(500);
-							location.reload(true);
-						});
+					return $(element).val() != '';
+				}).serialize();
+
+				if ($('#ticketdetailsform').valid()) {
+					$.ajax({
+						url: '/api/tickets/',
+						type: 'POST',
+						data: formInput,
+						success: function(updateData) {
+							$('#gtc-tickets').removeClass('alert-danger').addClass('alert-success');
+							$('#gtc-tickets .cart-message').text("Ticket Created Successfully");
+							$("#gtc-tickets").fadeTo(2000, 3000).slideUp(500, function() {
+								$("#gtc-tickets").slideUp(500);
+								location.reload(true);
+							});
+						},
+						error: function(error) {
+							$('#gtc-tickets').removeClass('alert-success').addClass('alert-danger');
+							$('#gtc-tickets .cart-message').text(error);
+							$("#gtc-tickets").fadeTo(2000, 3000).slideUp(500, function() {
+								$("#gtc-tickets").slideUp(500);
+								location.reload(true);
+							});
+						}
+					});
+				}
+			}else{
+
+				var message = '<p>Please enter the content.</p>';
+				$('#dialog').empty();
+				$('#dialog').append(message)
+				$(".wrapper-content").attr('style', 'opacity:.30; z-index:100;');
+				$("#dialog").dialog({
+					modal: true,
+					close: function(ev, ui) {
+						$(".wrapper-content").attr('style', 'opacity:1; z-index:100;');
 					}
 				});
-			}
-			}
-			else{
-			 var message = '<p>Please enter the content.</p>';
-			$('#dialog').empty();
-			$('#dialog').append(message)
-			$(".wrapper-content").attr('style', 'opacity:.30; z-index:100;');
-			$("#dialog").dialog({
-				modal: true,
-				close: function(ev, ui) {
-					$(".wrapper-content").attr('style', 'opacity:1; z-index:100;');
-				}
-			});
-			return;
-			}
-			
+				return;
+			}	
 		});
+
 		$('#content').summernote({
-		placeholder: 'Type Message',
-		tabsize: 2,
-		height: 300,
-		toolbar: [
-           ['style', ['bold', 'italic', 'underline', 'clear']],
-           ['font', ['strikethrough', 'superscript', 'subscript']],
-           ['fontsize', ['fontsize']],
-           ['color', ['color']],
-           ['para', ['ul', 'ol', 'paragraph']],
-           ['height', ['height']]
-         ]
- 	     });
-		 function vendorCancel()
-		 {
-			location.reload(true);
-		 }
-    	});
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+			placeholder: 'Type Message',
+			tabsize: 2,
+			height: 300,
+			toolbar: [
+				['style', ['bold', 'italic', 'underline', 'clear']],
+				['font', ['strikethrough', 'superscript', 'subscript']],
+				['fontsize', ['fontsize']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['height', ['height']]
+			]
+ 	    });
+    });
+</script> 
+
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 {{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -89,9 +92,9 @@
 						<div class="ibox-title">
 							<h2>New Ticket</h2>
 						</div>
-							<div id="dialog" title="Error:"></div>
+						<div id="dialog" title="Error:"></div>
 						<div class="content-body">
-							<div class="alert" id="gtc-social-profile">
+							<div class="alert" id="gtc-tickets">
 								<button type="button" class="close" data-dismiss="alert">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -117,11 +120,11 @@
 								<br>
 								<div class="row">
 									<div class="col-md-12">
-										<button class="ladda-button btn update-btn btn-small btn-muted" id="vendorUpdateBtn" type="submit" data-style="expand-left">
-											<span class="ladda-label">SEND</span>
+										<button class="ladda-button btn btn-md update-btn m-t" id="ticketUpdateBtn" type="submit" data-style="expand-left">
+											<span class="ladda-label">CREATE</span>
 											<span class="ladda-spinner"></span>
 										</button>
-										<button class="ladda-button btn btn-small btn-muted" onClick="window.location.href=window.location.href" type="reset" data-style="expand-left">
+										<button class="ladda-button btn btn-md btn-muted m-t" onClick="window.location.href=window.location.href" type="reset" data-style="expand-left">
 											<span class="ladda-label">CANCEL</span>
 											<span class="ladda-spinner"></span>
 										</button>
@@ -135,3 +138,4 @@
 		</div>
 	</div>
 </div>
+{{> footer/bottom-footer}}
