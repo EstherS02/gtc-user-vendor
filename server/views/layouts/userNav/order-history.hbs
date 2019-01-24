@@ -64,8 +64,6 @@
 			}
 			location.href = "/order-history?" + params;
 		});
-
-
 	});
 
 	function limit(size) {
@@ -146,8 +144,7 @@
 					console.log('status', status);
 				}
 			});
-		}
-		else {
+		}else {
 			$("#gtc-form-alert").show();
 			$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
 			$('#gtc-form-alert .form-message').text("Please select the orders");
@@ -157,7 +154,9 @@
 		}
 	}
 
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+</script> 
+
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 {{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -188,7 +187,7 @@
 										<div class="form-group m-r">
 											<div class="select-container">
 												<select id="inputDateRange" class="form-control-customized form-control-sm custom-dropdown" name="date_range">
-													<option value="0">Select...</option>
+													{{!-- <option value="0">Select...</option> --}}
 													{{#each dateRangeOptions}}
 														<option {{#ifCond @root.queryParams.range '==' this.value}} selected="true" {{/ifCond}} value="{{this.value}}">{{this.column}}</option>
 													{{/each}}
@@ -198,7 +197,7 @@
 										<div class="form-group m-r">
 											<div class="select-container">
 												<select id="inputStatus" class="form-control-customized form-control-sm custom-dropdown" name="status">
-													<option value="0">Select...</option>
+													<option disabled selected>CHANGE STATUS</option>
 													<option value="1" {{#ifCond queryParams.status '==' 1}} selected="true" {{/ifCond}}>ACTIVE</option>
 													<option value="2" {{#ifCond queryParams.status '==' 2}} selected="true" {{/ifCond}}>FAILED</option>
 												</select>
@@ -294,7 +293,6 @@
 										</table>
 									</div>
 								</div>
-								{{!-- Pagination starts --}}
 								{{#ifCond orders.count '>' queryParams.limit}}
 									<div class="row">
 										<div class="col-md-12 align-self-center">
@@ -325,7 +323,6 @@
 										</div>
 									</div>
 								{{/ifCond}}
-								{{!-- Pagination Ends --}}
 							{{else}}
 								<h4 class="font-weight-light py-3 text-center">No Results!</h4>
 							{{/if}}

@@ -7,17 +7,14 @@
 		$('input[type=radio][name=talk_profile_pic_url_radio]').change(function() {
 			$("#UpdateTalks").prop('disabled', false);
 		})
-		$('textarea[name=default_msg]').keyup(function(){
-			if($('textarea[name=default_msg]').val()=='')
-			{
-               $("#UpdateTalks").prop('disabled', true);
+		$('textarea[name=default_msg]').keyup(function() {
+			if ($('textarea[name=default_msg]').val() == '') {
+				$("#UpdateTalks").prop('disabled', true);
 			}
-			else
-			{
+			else {
 				$("#UpdateTalks").prop('disabled', false);
 			}
-        
-        });
+		});
 		$("#hideNewTimeSlotForm").hide();
 		$("#addTimeSlotFormNew").hide();
 		$("#addNewTimeSlotForm").click(function() {
@@ -26,7 +23,7 @@
 			$("#hideNewTimeSlotForm").show();
 
 		});
-		   $("#hideNewTimeSlotForm").click(function() {
+		$("#hideNewTimeSlotForm").click(function() {
 			$("#addTimeSlotFormNew").hide();
 			$("#addNewTimeSlotForm").show();
 			$("#hideNewTimeSlotForm").hide();
@@ -34,7 +31,7 @@
 	});
 
 	$(document).ready(function() {
-			$("#uploadOperationHours").click(function(e) {
+		$("#uploadOperationHours").click(function(e) {
 			e.preventDefault();
 			// alert($('#start_time').val(), $('input[name=end_time]').val())
 			var op_hours = {};
@@ -62,6 +59,7 @@
 			});
 		});
 	});
+
 	function outputPopup(data) {
 		$('#gtc-talk-alert').removeClass('alert-danger').addClass('alert-success');
 		$('#gtc-talk-alert .talk-message').text(data)
@@ -77,15 +75,15 @@
 		});
 	}
 	$(document).ready(function() {
-		 document.getElementById('selectedFile').onchange = uploadOnChange;
-         function uploadOnChange() {
-         var filename = this.value;
-         var lastIndex = filename.lastIndexOf("\\");
-         if (lastIndex >= 0) {
-         filename = filename.substring(lastIndex + 1);
-         }
-         $("#customfile").html(filename);
-         }
+		document.getElementById('selectedFile').onchange = uploadOnChange;
+		function uploadOnChange() {
+			var filename = this.value;
+			var lastIndex = filename.lastIndexOf("\\");
+			if (lastIndex >= 0) {
+				filename = filename.substring(lastIndex + 1);
+			}
+			$("#customfile").html(filename);
+		}
 		// console.log($('input[name=gtc_talk_enabled]').is(':checked'))
 		$("#gtc-talk-alert").hide();
 		$("#UpdateTalks").click(function(e) {
@@ -105,17 +103,15 @@
 					success: function(data, text) {
 						outputPopup("Data Updated Successfully");
 						// location.reload();
-
 					},
 					error: function(request, status, error) {
 						outputPopupError(error);
 						console.log('status', status);
 						console.log('error', error);
-
 					}
 				});
-			} else {
- 				var imgVal = $('input[name=talk_profile_pic_url]').val();
+			}else {
+				var imgVal = $('input[name=talk_profile_pic_url]').val();
 				var form = new FormData();
 				form.append("file", $("#selectedFile")[0].files[0]);
 				if (imgVal) {
@@ -129,7 +125,7 @@
 						contentType: false,
 						success: function(data) {
 							formData.talk_profile_pic_url = data.imageURL;
-								$.ajax({
+							$.ajax({
 								type: 'POST',
 								url: '/api/gtc-talk/store',
 								data: formData,
@@ -138,7 +134,7 @@
 									outputPopup("Data Inserted Successfully");
 								},
 								error: function(request, status, error) {
-								console.log('status', status);
+									console.log('status', status);
 									console.log('error', error);
 									outputPopupError(error);
 								}
@@ -161,15 +157,14 @@
 							console.log('error', error);
 						}
 					});
-
 				}
 			}
 			var imgVal = $('input[name=talk_profile_pic_url]').val();
 		});
 	});
+</script> 
 
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -224,7 +219,7 @@
 											{{#if talk.talk_profile_pic_url}}
 												<input type="radio" name="talk_profile_pic_url_radio" value="old" />
 												<span class="mgT-5">Store Profile Photo/Logo(default)</span>
-												
+
 												<br/>
 												<input type="hidden" name="defaultVendor_profile_pic" id="defaultVendor_profile_pic" value="{{vendorDetail.vendor_profile_pic_url}}">
 												<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new" checked/> Custom
@@ -236,12 +231,11 @@
 												/>
 												<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new" /> Custom {{/if}}
 											<div class="custom-file">
-											<input type="text" value="talk_profile_pic_url" class="custom-file-input" id="talkProfile1"> 
-											<label class="custom-file-label customized-file-label" for="talkProfile" id="customfile">Browse...</label>
+												<input type="text" value="talk_profile_pic_url" class="custom-file-input" id="talkProfile1">
+												<label class="custom-file-label customized-file-label" for="talkProfile" id="customfile">Browse...</label>
 											</div>
 											<input type="file" id="selectedFile" style="display: none;" name="talk_profile_pic_url" />
-											<input class="btn btn-small btn-muted" type="button"  value="UPLOAD" onclick="document.getElementById('selectedFile').click();"
-											/>
+											<input class="btn btn-md btn-muted" type="button" value="UPLOAD" onclick="document.getElementById('selectedFile').click();"/>
 										</small>
 									</div>
 								</div>
@@ -291,50 +285,43 @@
 									<div class="col-lg-12">
 										<form>
 											<div class="row">
-												{{!-- <div class="col-lg-1"> --}}
 												<label class="label-control" style="padding-left:20px;">From</label>
-												{{!-- </div> --}}
 												<div class="col-lg-2">
 													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="from_day" name="from_day">
-														<option value="">from-day</option>
+														<option disabled selected>Choose Day</option>
 														{{#each dayCode}}
 															<option value="{{this}}">{{@key}}</option>
 														{{/each}}
 													</select>
 												</div>
-												{{!-- <div class="col-lg-1"> --}}
-												<label class="label-control">To</label>
-												{{!-- </div> --}}
+												<label class="label-control">to</label>
 												<div class="col-lg-2">
 													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="to_day" name="to_day">
-														<option value="">to-day</option>
+														<option disabled selected>Choose Day</option>
 														{{#each dayCode}}
 															<option value="{{this}}">{{@key}}</option>
 														{{/each}}
 													</select>
 												</div>
-												{{!-- <div class="col-lg-1"> --}}
 												<label class="label-control">Time</label>
-												{{!-- </div> --}}
 												<div class="col-lg-1">
 													<input type="time" name="start_time" class="classic required" id="start_time">
 												</div>
+												<label class="label-control" style="padding-left:20px;">to</label>
 												<div class="col-lg-1">
 													<input type="time" name="end_time" class="classic required" id="end_time">
 												</div>
-
-												<label class="label-control" style="padding-left:20px;">Time Zone</label>
-
-												<div class="col-lg-2">
+												{{!-- <label class="label-control" style="padding-left:20px;">Time Zone</label> --}}
+												<div class="col-lg-2" style="padding-left:20px;">
 													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="time_zone">
-														<option value="">selected</option>
+														<option disabled selected>Time Zone</option>
 														{{#each this.timeZone}}
 															<option value= {{this.id}}>{{this.timezone}}</option>
 														{{/each}}
 													</select>
 												</div>
 												<div class="col-lg-1">
-													<button class="ladda-button btn btn-md btn-muted m-t" id="uploadOperationHours" type="submit" data-style="expand-left">
+													<button class="ladda-button btn btn-md btn-muted" id="uploadOperationHours" type="submit" data-style="expand-left">
 														<span class="ladda-label">SUBMIT</span>
 														<span class="ladda-spinner"></span>
 													</button>
