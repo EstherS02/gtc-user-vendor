@@ -4,7 +4,6 @@ var async = require('async');
 const moment = require('moment');
 const sequelize = require('sequelize');
 const querystring = require('querystring');
-const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
@@ -194,7 +193,6 @@ export function revenue(req, res) {
 					return callback(null, response);
 				})
 				.catch((error) => {
-					console.log("error--------------------", error)
 					return callback(null);
 				});
 		}
@@ -264,7 +262,6 @@ export function processing(req, res) {
 				});
 		},
 		processingFee: function(callback) {
-			console.log("---------------------------------------------------processingFee----------------------------------------------------------",limit,page);
 			var queryObj = {};
 			var OrderVendorModelName = 'OrderVendor'
 			queryObj['vendor_id'] = req.user.Vendor.id;
@@ -348,7 +345,6 @@ export function subscription(req, res) {
 				});
 		},
 		subscriptionFee: function(callback) {
-			console.log("---------------------------------------------------subscriptionFee----------------------------------------------------------");
 			var queryObj = {};
 			var OrderVendorModelName = 'OrderVendor'
 			queryObj['vendor_id'] = req.user.Vendor.id;
@@ -391,7 +387,7 @@ export function gtcpay(req, res) {
 	var queryURI = {};
 	var originalUrl = req.originalUrl.split('?')[0];
 
-offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
@@ -431,7 +427,6 @@ offset = req.query.offset ? parseInt(req.query.offset) : 0;
 				});
 		},
 		gtcPayFee: function(callback) {
-			console.log("---------------------------------------------------gtcPayFee----------------------------------------------------------");
 			var queryObj = {};
 			var OrderVendorModelName = 'OrderVendor'
 			queryObj['vendor_id'] = req.user.Vendor.id;
@@ -535,10 +530,8 @@ export function membership(req, res) {
 				where: {
 					id: {
 						$ne: null
-
 					}
-				},
-				
+				}	
 			}]
 			var queryObj = {
 				vendor_id: LoggedInUser.Vendor.id,

@@ -32,9 +32,7 @@
 								<div class="row">
 									<div class="col-md-12">
 										<h5 class="content-header-title">Ad & Featured Listings Revenue</h5>
-										<p class="content-txt">Here you'll be able to generate reports on the ad revenue GTC has generated for both Custom Ads and Featured Lisitings.
-											Search by ad type, date range or search by name. You can also export a CSV for your records or two import into
-											another accounting program.</p>
+										<p class="content-txt">This is where you can see all your advertisements and featured products on the Global Trade Connect.</p>
 										<span class="pull-right" style="font-size:12px">
 										</span>
 									</div>
@@ -103,8 +101,6 @@
 											</div>
 										</div>
 									</div>
-
-									{{!-- Pagination starts --}}
 									{{#ifCond vendorRevenue.count '>' queryPaginationObj.limit}}
 										<div class="row m-t-sm">
 											<div class="col-md-12">
@@ -114,7 +110,8 @@
 															{{#unless startFromFirstPage}}
 																<li class="page-item-prev" style="margin-left:-391px;">
 																	<a href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(DiffFloat ../../queryPaginationObj.page 1) limit=../../queryPaginationObj.limit) 'null'}}">
-																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous
+																	</a>
 																</li>
 															{{/unless}}
 
@@ -123,7 +120,6 @@
 																	<a class="page-link" href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 																</li>
 															{{/each}}
-
 															{{#unless endAtLastPage}}
 																<li class="page-item-next" style="margin-right:-391px;">
 																	<a href="{{../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
@@ -137,8 +133,6 @@
 											</div>
 										</div>
 									{{/ifCond}}
-									{{!-- pagination ends --}}
-
 								{{else}}
 									{{#ifCond vendorRevenue.count '==' 0 }}
 										<h4 class="font-weight-light py-3 text-center">No Results!</h4>
@@ -166,7 +160,7 @@
 								<div class="row">
 									<div class="col-md-12">
 										<h5 class="content-header-title">Processing Fees</h5>
-										<p class="content-txt">Processing Fees This is were you can see, GTC Fees for all the order placed.</p>
+										<p class="content-txt">This is were you can see, GTC Fees for all the order placed.</p>
 										<span class="pull-right" style="font-size:12px">
 										</span>
 									</div>
@@ -219,8 +213,6 @@
 											</table>
 										</div>
 									</div>
-
-									{{!-- Pagination starts --}}
 									{{#ifCond processingFee.count '>' queryPaginationObj.limit}}
 										<div class="row m-t-sm">
 											<div class="col-md-12">
@@ -233,13 +225,11 @@
 																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 																</li>
 															{{/unless}}
-
 															{{#each pages}}
 																<li class="page-item {{#if isCurrent}} active {{/if}}">
 																	<a class="page-link" href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 																</li>
 															{{/each}}
-
 															{{#unless endAtLastPage}}
 																<li class="page-item-next" style="margin-right:-391px;">
 																	<a href="{{../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
@@ -253,8 +243,6 @@
 											</div>
 										</div>
 									{{/ifCond}}
-									{{!-- pagination ends --}}
-
 								{{else}}
 									{{#ifCond processingFee.count '==' 0 }}
 										<h4 class="font-weight-light py-3 text-center">No Results!</h4>
@@ -334,8 +322,6 @@
 											</table>
 										</div>
 									</div>
-
-									{{!-- Pagination starts --}}
 									{{#ifCond subscriptionFee.count '>' queryPaginationObj.limit}}
 										<div class="row m-t-sm">
 											<div class="col-md-12">
@@ -348,13 +334,11 @@
 																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 																</li>
 															{{/unless}}
-
 															{{#each pages}}
 																<li class="page-item {{#if isCurrent}} active {{/if}}">
 																	<a class="page-link" href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 																</li>
 															{{/each}}
-
 															{{#unless endAtLastPage}}
 																<li class="page-item-next" style="margin-right:-391px;">
 																	<a href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
@@ -368,8 +352,6 @@
 											</div>
 										</div>
 									{{/ifCond}}
-									{{!-- pagination ends --}}
-
 								{{else}}
 									{{#ifCond subscriptionFee.count '==' 0 }}
 										<h4 class="font-weight-light py-3 text-center">No Results!</h4>
@@ -397,9 +379,8 @@
 								<div class="row">
 									<div class="col-md-12">
 										<h5 class="content-header-title">GTC pay Escrow Fees</h5>
-										<p class="content-txt">This is were you can see, the amount paid to vendor.</p>
-										<span class="pull-right" style="font-size:12px">
-										</span>
+										<p class="content-txt">This is were you can see, all the amount paid to you by GTC for your orders.</p>
+										<span class="pull-right" style="font-size:12px"></span>
 									</div>
 								</div>
 								{{#if gtcPayFee.count}}
@@ -448,8 +429,6 @@
 											</table>
 										</div>
 									</div>
-
-									{{!-- Pagination starts --}}
 									{{#ifCond gtcPayFee.count '>' queryPaginationObj.limit}}
 										<div class="row m-t-sm">
 											<div class="col-md-12">
@@ -462,13 +441,11 @@
 																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 																</li>
 															{{/unless}}
-
 															{{#each pages}}
 																<li class="page-item {{#if isCurrent}} active {{/if}}">
 																	<a class="page-link" href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 																</li>
 															{{/each}}
-
 															{{#unless endAtLastPage}}
 																<li class="page-item-next" style="margin-right:-391px;">
 																	<a href="{{../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
@@ -482,8 +459,6 @@
 											</div>
 										</div>
 									{{/ifCond}}
-									{{!-- pagination ends --}}
-
 								{{else}}
 									{{#ifCond gtcPayFee.count '==' 0 }}
 										<h4 class="font-weight-light py-3 text-center">No Results!</h4>
@@ -511,7 +486,7 @@
 								<div class="row">
 									<div class="col-md-12">
 										<h5 class="content-header-title">Membership Fees</h5>
-										<p class="content-txt">This is were you can see, membership fees for this vendor.</p>
+										<p class="content-txt">This is were you can see, all membership fees paid by you to GTC.</p>
 										<span class="pull-right" style="font-size:12px">
 										</span>
 									</div>
@@ -560,11 +535,11 @@
 													{{#each membershipDetails.rows}}
 														<tr>
 															{{!-- <td>
-												<div class="customCheckbox">
-													<input type="checkbox" id="inputTerms{{this.id}}" class="customCheckboxInput" name="selected" value= {{this.id}}>
-													<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
-												</div>
-											</td> --}}
+																	<div class="customCheckbox">
+																		<input type="checkbox" id="inputTerms{{this.id}}" class="customCheckboxInput" name="selected" value= {{this.id}}>
+																		<label class="checkbox-b" for="inputTerms{{this.id}}"></label>
+																	</div>
+																</td> --}}
 															<td>
 																{{#ifCond this.plan_id '==' 2}} Service Provider{{/ifCond}}
 																{{#ifCond this.plan_id '==' 3}} Lifestyle Provider {{/ifCond}}
@@ -576,8 +551,8 @@
 															<td>
 																{{#ifCond this.status '==' 1}}
 																	<div style="color:green">ACTIVE</div>
-								{{else}}
-									<div style="color:red">INACTIVE</div>
+																{{else}}
+																	<div style="color:red">INACTIVE</div>
 																{{/ifCond}}
 															</td>
 															<td>{{formatTime this.Payment.created_on "MMM DD, YYYY"}}</td>
@@ -591,7 +566,6 @@
 											{{/ifCond}}
 										</div>
 									</div>
-									{{!-- Pagination starts --}}
 									{{#ifCond membershipDetails.count '>' queryParams.limit}}
 										<div class="row">
 											<div class="col-md-12 align-self-center">
@@ -604,13 +578,11 @@
 																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 																</li>
 															{{/unless}}
-
 															{{#each pages}}
 																<li class="page-item {{#if isCurrent}} active {{/if}}">
 																	<a class="page-link" href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 																</li>
 															{{/each}}
-
 															{{#unless endAtLastPage}}
 																<li class="page-item-next" style="margin-right:-391px;">
 																	<a href="{{../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
@@ -624,7 +596,6 @@
 											</div>
 										</div>
 									{{/ifCond}}
-									{{!-- Pagination Ends --}}
 								{{else}}
 									<h4 class="font-weight-light py-3 text-center">No Results!</h4>
 								{{/if}}

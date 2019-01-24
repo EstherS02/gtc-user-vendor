@@ -1,5 +1,4 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
-
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -24,28 +23,33 @@
 											<a href="/reviews?sort=rating" class="{{#ifCond queryPaginationObj.field '==' 'rating' }}text_black_color review-sort {{/ifCond}}  ">Star Rating</a>
 										</span>
 									</p>
-									<div id="Recent" class="tabcontent review-bottom">
-										{{!-- <hr class="review-hr"> --}}
-										{{#each userReviews.rows}}
-											<hr class="review-hr" />
-											<div class="row">
-												<div class="col-md-1">
-													<img class="responsive" src="{{this.User.user_pic_url}}" onError="imgError(this)" alt="img" style=" width: 100%;height: auto;" />{{!-- "../../img/signup-feature-1.png" --}}
+									{{#ifCond userReviews.rows.length '==' "0"}}
+										<div id="Recent" class="tabcontent review-bottom">
+											<h4 class="font-weight-light py-3 text-center">No Results!</h4>
+										</div>
+									{{else}}
+										<div id="Recent" class="tabcontent review-bottom">
+											{{#each userReviews.rows}}
+												<hr class="review-hr" />
+												<div class="row">
+													<div class="col-md-1">
+														<img class="responsive" src="{{this.User.user_pic_url}}" onError="imgError(this)" alt="img" style=" width: 100%;height: auto;" />{{!-- "../../img/signup-feature-1.png" --}}
+													</div>
+													<div class="col-md-7">
+														<p style="font-size: small;margin-bottom: 0rem;">
+															<span class="{{!-- text_blue_color --}}"><strong>{{Titlecase this.User.first_name}}</strong></span><span class="text_gray_color"> reviewed {{../LoggedInUser.Vendor.vendor_name}} for </span><a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a> - {{this.rating}}&nbsp;star</p>
+														<p style="padding-left: 5px;font-size: small;" class="text_gray_color">{{formatTime this.created_on "MMMM DD, YYYY"}}
+														</p>
+													</div>
+													<div class="col-md-2">
+														<p style="font-size: 13px;">{{starCount this.rating}}</p>
+													</div>
 												</div>
-												<div class="col-md-7">
-													<p style="font-size: small;margin-bottom: 0rem;">
-														<span class="{{!-- text_blue_color --}}"><strong>{{Titlecase this.User.first_name}}</strong></span><span class="text_gray_color"> reviewed {{../LoggedInUser.Vendor.vendor_name}} for </span><a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a> - {{this.rating}}&nbsp;star</p>
-													<p style="padding-left: 5px;font-size: small;" class="text_gray_color">{{formatTime this.created_on "MMMM DD, YYYY"}}
-													</p>
-												</div>
-												<div class="col-md-2">
-													<p style="font-size: 13px;">{{starCount this.rating}}</p>
-												</div>
-											</div>
-											<div class="text_blue_color" style="font-size: 13px;font-weight:bold;text-transform:uppercase;margin-top:0.5rem;">{{this.title}}</div>
-											<div style="font-size: smaller;text-align:justify;">{{this.comment}}</div>
-										{{/each}}
-									</div>
+												<div class="text_blue_color" style="font-size: 13px;font-weight:bold;text-transform:uppercase;margin-top:0.5rem;">{{this.title}}</div>
+												<div style="font-size: smaller;text-align:justify;">{{this.comment}}</div>
+											{{/each}}
+										</div>
+									{{/ifCond}}
 								</div>
 							</div>
 							<div class="col-md-3">
@@ -71,10 +75,8 @@
 								</div>
 							</div>
 						</div>
-						{{!-- Pagination starts --}}
-							<div class="row m-t-sm">
-								<div class="col-md-12">
-								{{!-- <div style="margin:0 auto;width:100px;"> --}}
+						<div class="row m-t-sm">
+							<div class="col-md-12">
 								{{#pagination queryPaginationObj.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
 									<nav aria-label="Page navigation example">
 										<ul class="pagination justify-content-center">
@@ -99,21 +101,19 @@
 										</ul>
 									</nav>
 								{{/pagination}}
-				{{!-- 					{{#pagination collectionSize page pageSize maxSize}}
-										<nav aria-label="Page navigation example">
-											<ul class="pagination justify-content-center">
-												{{#each pages}}
-													<li class="page-item {{#if isCurrent}} active {{/if}}">
-														<a class="page-link" href="reviews?page={{page}}&limit={{../../pageSize}}" </a>
-													</li>
-												{{/each}}
-											</ul>
-										</nav>
-									{{/pagination}} --}}
-								</div>
+			               {{!--{{#pagination collectionSize page pageSize maxSize}}
+									<nav aria-label="Page navigation example">
+										<ul class="pagination justify-content-center">
+											{{#each pages}}
+												<li class="page-item {{#if isCurrent}} active {{/if}}">
+													<a class="page-link" href="reviews?page={{page}}&limit={{../../pageSize}}" </a>
+												</li>
+											{{/each}}
+										</ul>
+									</nav>
+								{{/pagination}} --}}
 							</div>
-						{{!-- Pagination Ends --}}
-						
+						</div>
 					</div>
 				</div>
 			</div>
@@ -125,57 +125,3 @@
 </div>
 {{> footer/bottom-footer}} 
 
-
-
-
-
-
-
-{{!-- 
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-<section class="showing_categ">
-	<div class="" >
-		<div class="container-fluid">
-			<div class="row">
-				{{> vendor/navbar}} 
-				<div class="col-md-8" style="background-color: #fff;">
-					<div class="row">
-						<div class="col-md-9" id="render_list" >
-
-							<h5 style="padding-top: 20px;margin-bottom: 30px">My Reviews</h5>
-
-							
-
-
-						</div>
-
-
-						<div class="col-md-3" style="padding-top: 20px;">
-							<p class="list_bg_blue" style="font-size: 11px;margin-bottom: 0px;">{{this.avgRating}} &nbsp;&nbsp;{{starCount this.avgRating}}</p>
-							<div style="border: 1px solid #E6E6E6; padding: 10px;">
-								<p class="text_blue_color" style="font-size: 8px">{{this.avgRating}} of 5 start based on {{this.ratingCount}} reviews</p>
-								<hr style="    margin-top: 10px;" />
-								<div class="row rating-row">
-									{{#each Ratings}}
-									<div class="side">
-										<div> {{this.starCount}} star</div>
-									</div>
-									<div class="middle">
-										<div class="bar-container">
-											<div style="width: {{progressBar this.ratingCount ../ratingCount}}%" class="bar-select"></div>
-										</div>
-									</div>
-									<div class="side right">
-										<div>{{this.ratingCount}}</div>
-									</div>
-									{{/each}}
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>		
-			</div>
-		</div>
-	</div>
-</section>
-{{> footer/bottom-footer}} --}}

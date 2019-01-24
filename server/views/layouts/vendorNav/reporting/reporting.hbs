@@ -599,11 +599,17 @@
 															<p class="top_perf_price_gain">{{currency topMarketPlace.diff_total '$'}}</p>
 															<p class="top_perf_price_versus">{{currency topMarketPlace.past_total '$'}} vs {{currency topMarketPlace.current_total '$'}}</p>
 															<p class="top_perf_title top_perf_margin_override">Top Performing Marketplaces by total sales</p>
-															<div class="top_perf_marketplace_content row">
-																<ul class="chart top_perf_marketplace_vertical_chart">
-																	{{marketPlaceChart topMarketPlace.total topMarketPlace.rows}}
-																</ul>
-															</div>
+															{{#ifCond topMarketPlace.rows.length '==' "0"}}
+																<div class="top_perf_product_name" style="text-align:center">
+																	No Records Found
+																</div>
+															{{else}}
+																<div class="top_perf_marketplace_content row">
+																	<ul class="chart top_perf_marketplace_vertical_chart">
+																		{{marketPlaceChart topMarketPlace.total topMarketPlace.rows}}
+																	</ul>
+																</div>
+															{{/ifCond}}
 														</div>
 														<p class="reporting_chart_see_all">
 															<a href="/store/performance?top=marketplaces" style="color: white;">More &#9658;</a>

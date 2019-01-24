@@ -170,10 +170,10 @@
 					<div class="ibox">
 						<div class="ibox-content">
 							<div class="ibox-title">
-									<h2>
-										<span>Accounting</span>
-										<span class="font-sm m-t-xs text-muted float-right">Current location: <span class="text-black text-500">{{LoggedInUser.Vendor.city}}, {{LoggedInUser.Vendor.State.name}}, {{LoggedInUser.Vendor.Country.name}}</span></span>
-									</h2>
+								<h2>
+									<span>Accounting</span>
+									<span class="font-sm m-t-xs text-muted float-right">Current location: <span class="text-black text-500">{{LoggedInUser.Vendor.city}}, {{LoggedInUser.Vendor.State.name}}, {{LoggedInUser.Vendor.Country.name}}</span></span>
+								</h2>
 							</div>
 							<div class="hr-line"></div>
 							<div class="content-body m-t-sm">
@@ -235,40 +235,40 @@
 									<label>
 										<h3>{{currency @root.accountingReport.featured_product '$'}}</h3></label>
 									<p class="text-sm">Ad & Featured Listings Revenue</p>
-									<a class="text-sm" href="/store/accounting/revenue">View Full Report</a>
+									<a class="text-sm" href="/store/revenue">View Full Report</a>
 								</div>
 								<div class="col-lg-2">
 									<label>
 										<h3>{{currency @root.accountingReport.processing_fees '$'}}</h3></label>
 									<p class="text-sm">Processing Fees</p>
-									<a class="text-sm" href="/store/accounting/processing">View Full Report</a>
+									<a class="text-sm" href="/store/processing">View Full Report</a>
 								</div>
 								<div class="col-lg-2">
 									<label>
 										<h3>{{currency @root.accountingReport.subscription_fees '$'}}</h3></label>
 									<p class="text-sm">Subscription Fees</p>
-									<a class="text-sm" href="/store/accounting/subscription">View Full Report</a>
+									<a class="text-sm" href="/store/plan-fees">View Full Report</a>
 								</div>
 								<div class="col-lg-2">
 									<label>
 										<h3>{{currency @root.accountingReport.gtc_pay_escrow '$'}}</h3></label>
 									<p class="text-sm">GTC pay Escrow Fees</p>
-									<a class="text-sm" href="/store/accounting/gtcpay">View Full Report</a>
+									<a class="text-sm" href="/store/gtcpay">View Full Report</a>
 								</div>
 								<div class="col-lg-2">
 									<label>
 										<h3>{{currency @root.accountingReport.membership '$'}}</h3></label>
 									<p class="text-sm">Membership Fees</p>
-									<a class="text-sm" href="/store/accounting/membership">View Full Report</a>
+									<a class="text-sm" href="/store/membership">View Full Report</a>
 								</div>
 							</div>
 							<br/>
 							<br/>
 							<div>
 								<label>
-									<h3>Other</h3></label>
+									<h4>Other</h4></label>
 								<br/>
-								<a>Tax Summary( Collected based on Country, State/Province)</a>
+								<a class="text-sm" href="/store/tax">Tax Summary ( Collected based on Country, State/Province )</a>
 							</div>
 							
 						</div>
