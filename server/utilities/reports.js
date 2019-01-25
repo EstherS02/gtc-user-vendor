@@ -430,9 +430,6 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
 			limit: Limit,
 			offset: Offset
 		}).then(function(results) {
-
-			console.log("ORDERITEMVIEW RESULT...", results)
-
 			if (results.length > 0)
 				result.rows = results;
 			else
@@ -675,6 +672,10 @@ export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
 	currentRange.item_created_on = {
 		$between: rhsBetween
 	};
+
+	console.log("================================",pastRange );
+	console.log("======8888888888888888888888888888====",currentRange );
+
 	return new Promise((resolve, reject) => {
 		var result = {};
 		model['OrderItemOverview'].findAll({
@@ -697,6 +698,8 @@ export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
 				]
 			}).then(function(currentResults) {
 				result.current_range = currentResults;
+
+				console.log("----------RESULTTTTTTTT------------------------------",result);
 				return resolve(result);
 			});
 		}).catch(function(error) {

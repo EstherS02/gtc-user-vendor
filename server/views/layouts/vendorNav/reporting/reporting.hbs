@@ -61,11 +61,15 @@
 			type: "GET",
 			url: "/api/reports/revenue-changes?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare,
 			success: function(data) {
+
 				between.forEach(function(aDate) {
+
 					var objA = _.find(data.past_range, function(pastDate) {
+
 						var pastDateVal = $.datepicker.formatDate('M dd', new Date(pastDate.item_created_on));
 						return aDate.toString() == pastDateVal.toString();
 					})
+
 					if (objA)
 						lhsData.push(parseInt(objA.amount));
 					else

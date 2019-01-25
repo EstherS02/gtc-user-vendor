@@ -259,7 +259,7 @@
 													<th>Order#</th>
 													<th>Date</th>
 													<th>Method</th>
-													<th colspan="2">Date</th>
+													<th>Date</th>
 													<th>Amount</th>
 												</tr>
 											</thead>
@@ -280,12 +280,12 @@
 														<td>
 															{{#if this.status}} Active {{else}}Failed {{/if}}
 														</td>
-														<td><a href="../order-track/{{this.id}}">Track Order</a></td>
+														{{!-- <td><a href="../order-track/{{this.id}}">Track Order</a></td> --}}
 														<td>{{currency this.total_price '$'}} CAD</td>
 													</tr>
 												{{/each}}
 												<tr>
-													<td colspan="5"></td>
+													<td colspan="4"></td>
 													<td class="text-right">Total Transaction : </td>
 													<td>{{currency @root.orders.total '$'}} CAD</td>
 												</tr>

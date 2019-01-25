@@ -126,6 +126,7 @@ export function reporting(req, res) {
 		},
 		revenueChanges: function(callback) {
 			ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
+				console.log("==============Resultsssssssss=======================", results);
 				return callback(null, results);
 			}).catch((err) => {
 				console.log('revenueChanges err', err);
