@@ -45,8 +45,10 @@
 		}
 
 		var dates = [from, to, Cfrom, Cto];
-		dates.sort();
+		//dates.sort();
 
+		dates.sort(function(a,b){ return new Date(a) - new Date(b); });
+		
 		var start = dates[0],
 			end = new Date(dates[dates.length - 1]),
 			currentDate = new Date(start),
