@@ -73,7 +73,6 @@ export function reporting(req, res) {
 	queryURI['lhs_to'] = moment(lhsBetween[1]).format("MM/DD/YYYY");
 	queryURI['rhs_from'] = moment(rhsBetween[0]).format("MM/DD/YYYY");
 	queryURI['rhs_to'] = moment(rhsBetween[1]).format("MM/DD/YYYY");
-	console.log("---------comming here------------orderItemQueryObbbbbbbb-----------------------------", orderItemQueryObj);
 
     async.series({
 		cartInfo: function(callback) {
@@ -125,7 +124,7 @@ export function reporting(req, res) {
 				return callback(err);
 			});
 		},
-		revenueChanges: function(callback) {
+	/*	revenueChanges: function(callback) {
 
 			ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 				return callback(null, results);
@@ -133,7 +132,7 @@ export function reporting(req, res) {
 				console.log('revenueChanges err', err);
 				return callback(err);
 			});
-		},
+		},*/
 		revenueCounts: function(callback) {
 			ReportService.revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 				return callback(null, results);

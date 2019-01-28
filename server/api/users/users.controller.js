@@ -93,6 +93,7 @@ export function index(req, res) {
 }
 
 export function create(req, res) {
+
 	var queryObj = {};
 	var randomCode = uuid.v1();
 
@@ -167,7 +168,8 @@ export function create(req, res) {
 									var subject = response.subject.replace('%USERNAME%', username);
 									var body;
 									body = response.body.replace('%USERNAME%', username);
-									body = body.replace('%LINK%', config.baseUrl + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
+									//body = body.replace('%LINK%', config.baseUrl + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
+									body = body.replace('%LINK%', req.protocol + '://' + req.get('host') + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
 
 									var mailArray = [];
 									mailArray.push({

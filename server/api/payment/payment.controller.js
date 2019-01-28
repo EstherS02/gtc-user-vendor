@@ -551,7 +551,7 @@ export function deleteCard(req, res) {
 export function sendOrderMail(orderIdStore, req) { // export function sendOrderMail(req,res) {//
 	var user = {};
 	user = req.user;
-	var orderIdStore = orderIdStore;//[763,764];//
+	var orderIdStore = orderIdStore;
 	var includeArr = [{
 		model: model['OrderItem'],
 		include: [{
