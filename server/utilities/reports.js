@@ -141,6 +141,8 @@ function getAllPerformanceApi(queryObj, limit, offset, attributes, groupBy, incl
 }
 
 function getAllCountryPerformance(queryObj, limit, offset, attributes, groupBy, includeArr) {
+	var productQueryObj = {};
+
 	let queryObject = {
 		created_on: {
 			$between: [queryObj.from, queryObj.to]
@@ -157,6 +159,11 @@ function getAllCountryPerformance(queryObj, limit, offset, attributes, groupBy, 
 			order_item_status: orderItemStatus['COMPLETED']
 		}],
 	};
+
+	if(queryObj.vendor_id){
+		productQueryObj['vendor_id'] = queryObj.vendor_id;
+	}
+
 	let includeArray = includeArr ? includeArr : [];
 	return new Promise((resolve, reject) => {
 
@@ -170,6 +177,7 @@ function getAllCountryPerformance(queryObj, limit, offset, attributes, groupBy, 
 			include: [{
 				model: model['Product'],
 				attributes: [],
+				where: productQueryObj,
 				include: [{
 					model: model['Country'],
 					attributes: ['name']
@@ -191,6 +199,8 @@ function getAllCountryPerformance(queryObj, limit, offset, attributes, groupBy, 
 }
 
 function getAllUserPerformance(queryObj, limit, offset, attributes, groupBy, includeArr) {
+	var productQueryObj = {};
+
 	let queryObject = {
 		created_on: {
 			$between: [queryObj.from, queryObj.to]
@@ -207,6 +217,10 @@ function getAllUserPerformance(queryObj, limit, offset, attributes, groupBy, inc
 			order_item_status: orderItemStatus['COMPLETED']
 		}],
 	};
+
+	if(queryObj.vendor_id){
+		productQueryObj['vendor_id'] = queryObj.vendor_id;
+	}
 
 	let includeArray = includeArr ? includeArr : [];
 	return new Promise((resolve, reject) => {
@@ -225,6 +239,10 @@ function getAllUserPerformance(queryObj, limit, offset, attributes, groupBy, inc
 					model: model['User'],
 					attributes: ['id', 'first_name', 'last_name']
 				}]
+			},{
+				model: model['Product'],
+				attributes: [],
+				where: productQueryObj
 			}],
 			limit: limit,
 			offset: offset,
@@ -242,6 +260,9 @@ function getAllUserPerformance(queryObj, limit, offset, attributes, groupBy, inc
 }
 
 function getAllCityPerformance(queryObj, limit, offset, attributes, groupBy, includeArr) {
+
+	var productQueryObj = {};
+
 	let queryObject = {
 		created_on: {
 			$between: [queryObj.from, queryObj.to]
@@ -259,6 +280,11 @@ function getAllCityPerformance(queryObj, limit, offset, attributes, groupBy, inc
 		}],
 	};
 
+
+	if(queryObj.vendor_id){
+		productQueryObj['vendor_id'] = queryObj.vendor_id;
+	}
+
 	let includeArray = includeArr ? includeArr : [];
 	return new Promise((resolve, reject) => {
 
@@ -271,7 +297,8 @@ function getAllCityPerformance(queryObj, limit, offset, attributes, groupBy, inc
 			[sequelize.literal('(SUM(gtc_fees)+ SUM(plan_fees))'), 'gtc_fees']],
 			include: [{
 				model: model['Product'],
-				attributes: ['city']
+				attributes: ['city'],
+				where: productQueryObj
 			}],
 			limit: limit,
 			offset: offset,
@@ -353,12 +380,16 @@ function getAllProductPerformance(queryObj, limit, offset) {
             WHERE
                     order_item.created_on between :from and :to
                     AND (order_item.order_item_status = 1 OR order_item.order_item_status = 2 OR order_item.order_item_status = 3
-                     OR order_item.order_item_status = 5 OR order_item.order_item_status = 12)
-            GROUP BY
-                product_id
-            ORDER BY SUM(order_item.final_price) DESC
-            LIMIT :limit OFFSET :offset`
+					 OR order_item.order_item_status = 5 OR order_item.order_item_status = 12)`;
 
+	if (queryObj.vendor_id > 0) {
+		queryResult = queryResult + ` and product.vendor_id =` + queryObj.vendor_id;
+	}
+	
+    queryResult = queryResult + ` GROUP BY
+               						product_id
+            ORDER BY SUM(order_item.final_price) DESC
+            LIMIT :limit OFFSET :offset`;
 
 	return new Promise((resolve, reject) => {
 		SequelizeInstance.query(queryResult, {
@@ -756,7 +787,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 						result.current_count = total;
 						let per = 0;
 						if (result.current_count > 0)
-							per = (parseFloat(result.past_count) - parseFloat(result.current_count)) / parseFloat(result.current_count) * 100;
+							per = ((parseFloat(result.past_count) - parseFloat(result.current_count)) / parseFloat(result.current_count) * 100).toFixed(2);
 						result.diff_count = per.toString() + '%';
 						return callback(null, result);
 					});
@@ -1072,6 +1103,7 @@ export function cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, 
 			return result;
 		}).then(function() {
 			if (queryObj.compare == 'true') {
+
 				return getAllCityPerformance(currentRange, limit, offset).then(function(rhsResult) {
 					result.rhs_result = rhsResult;
 					resolve(result);
