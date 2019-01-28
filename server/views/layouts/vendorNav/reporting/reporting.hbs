@@ -48,7 +48,7 @@
 		//dates.sort();
 
 		dates.sort(function(a,b){ return new Date(a) - new Date(b); });
-		
+
 		var start = dates[0],
 			end = new Date(dates[dates.length - 1]),
 			currentDate = new Date(start),
@@ -461,8 +461,9 @@
 		getLatestTickets();
 		getLatestRefunds();
 	});
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+</script> 
 
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray reporting_content">
 	<div class="">
 		<div class="row">

@@ -9,7 +9,6 @@ const SequelizeInstance = require('../sqldb/index');
 const async = require('async');
 const moment = require('moment');
 const _ = require('lodash');
-
 const Op = sequelize.Op;
 
 function sumofPrice(modelName, queryObj) {
@@ -664,17 +663,29 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
 }
 
 export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
+
 	const pastRange = _.assign({}, orderItemQueryObj);
 	pastRange.item_created_on = {
 		$between: lhsBetween
 	};
+
 	const currentRange = _.assign({}, orderItemQueryObj);
 	currentRange.item_created_on = {
 		$between: rhsBetween
 	};
 
-	console.log("================================",pastRange );
-	console.log("======8888888888888888888888888888====",currentRange );
+	pastRange['$or'] = currentRange['$or'] = [{
+			order_item_status: orderItemStatus['ORDER_INITIATED']
+		}, {
+			order_item_status: orderItemStatus['CONFIRMED']
+		}, {
+			order_item_status: orderItemStatus['SHIPPED']
+		}, {
+			order_item_status: orderItemStatus['DELIVERED']
+		}, {
+			order_item_status: orderItemStatus['COMPLETED']
+		}
+	];
 
 	return new Promise((resolve, reject) => {
 		var result = {};
@@ -698,8 +709,6 @@ export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
 				]
 			}).then(function(currentResults) {
 				result.current_range = currentResults;
-
-				console.log("----------RESULTTTTTTTT------------------------------",result);
 				return resolve(result);
 			});
 		}).catch(function(error) {
