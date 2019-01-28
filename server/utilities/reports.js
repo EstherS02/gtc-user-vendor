@@ -117,6 +117,11 @@ function getAllPerformanceApi(queryObj, limit, offset, attributes, groupBy, incl
 			order_item_status: orderItemStatus['COMPLETED']
 		}]
 	};
+
+	if(queryObj.vendor_id){
+		queryObject['vendor_id'] = queryObj.vendor_id;
+	}
+
 	let includeArray = includeArr ? includeArr : [];
 	return new Promise((resolve, reject) => {
 

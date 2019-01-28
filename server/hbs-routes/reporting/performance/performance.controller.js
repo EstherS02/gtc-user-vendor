@@ -125,7 +125,7 @@ export function performance(req, res) {
 			if (req.user.role == 2)
 				performanceQueryObj.vendor_id = req.user.Vendor.id;
 
-			if(req.query.compare){
+			if(req.query.compare == 'true'){
 				performanceQueryObj.compare = req.query.compare;
 				queryURI['compare'] = req.query.compare;
 			}
