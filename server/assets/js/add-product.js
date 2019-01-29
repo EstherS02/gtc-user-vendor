@@ -621,24 +621,47 @@ $(document).ready(function() {
 		rules: {
 			start_date: {
 				required: true,
-				date: true
+				date: true,
+				lesserThan: 'currentDate'
 			},
 			end_date: {
 				required: "#feature_indefinitely:unchecked",
-				date: true
+				date: true,
+				greaterThan: "#start_date"
 			}
 		},
 		messages: {
 			start_date: {
 				required: "Select start date",
-				date: "Enter valid date"
+				date: "Enter valid date",
+				lesserThan: "Must be greater than current date"
 			},
 			end_date: {
 				required: "Select end date",
-				date: "Enter valid date"
+				date: "Enter valid date",
+				greaterThan: "Must be greater than start date"
 			}
 		}
 	});
+
+	$.validator.addMethod("greaterThan",
+		function(value, element, params) {
+			if (!/Invalid|NaN/.test(new Date(value))) {
+				return new Date(value) > new Date($(params).val());
+			}
+			return isNaN(value) && isNaN($(params).val())
+				|| (Number(value) > Number($(params).val()));
+		}, 'Must be greater than {0}.');
+
+	$.validator.addMethod("lesserThan",
+		function(value, element, params) {
+			if (!/Invalid|NaN/.test(new Date(value))) {
+				return new Date(value) > new Date();
+			}
+			return isNaN(value) && isNaN($(params).val())
+				|| (Number(value) > Number($(params).val()));
+		}, 'Must be greater than {0}.');
+
 
 	$('#featureForm').submit(function(e) {
 		e.preventDefault();
@@ -770,7 +793,7 @@ $(document).ready(function() {
 		$('.indefiniteFeatureMsg').hide();
 	});
 
-	$("#start_date").change(function() {
+/*	$("#start_date").change(function() {
 		var startDate = $('#start_date').val();
 		let currentUTCDate = new Date();
 		var from = new Date(startDate);
@@ -792,7 +815,7 @@ $(document).ready(function() {
 		} else {
 			outputPopupError("Please select start date");
 		}
-	});
+	});*/
 
 	function outputPopupError(data) {
 		$('#gtc-feature-form-alert').removeClass('alert-success').addClass('alert-danger');
@@ -803,7 +826,7 @@ $(document).ready(function() {
 	}
 
 	$("#start_date, #end_date").datepicker({
-		format: 'yyyy-mm-dd',
+		format: 'mm/dd/yyyy',
 		autoHide: true,
 		zIndex: 9999
 	});

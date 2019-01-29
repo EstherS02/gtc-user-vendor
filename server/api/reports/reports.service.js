@@ -264,6 +264,9 @@ export async function adFeaturedRevenue(req,res){
 		productQuery['product_name'] = queryObj1['name'];
 	}
 
+    productQuery['status']  = {
+		'$ne': status["GTC_INACTIVE"]
+	}
 
 	results.count = 0;
 	results.total = 0;
@@ -295,7 +298,11 @@ export async function adFeaturedRevenue(req,res){
 			include: [{
 				model: model['Product'],
 				where:productQuery,
-				attributes: ['product_name']
+				attributes: ['product_name', 'product_slug', 'id'],
+				include:{
+					model: model['Marketplace'],
+					attributes:['id']
+				}
 			}, {
 				model: model['Payment'],
 				attributes: ['id', 'amount'],
@@ -325,12 +332,11 @@ export async function adFeaturedRevenue(req,res){
 	results.total = total_count;
 	return results;
 } catch (error) {
-		console.log("Error::::::::::::::",error)
+		console.log("Error::",error)
 		done(error);
 	}
 }
 function paymentInEscrowApi(vendorID,queryObj){
-		console.log("===========================",queryObj.start_date)
 	var queryResult = `SELECT SUM(order_vendor.final_price) AS amount
 					   FROM order_vendor LEFT OUTER JOIN order_vendor_payout 
 					   ON order_vendor.id=order_vendor_payout.order_vendor_id 
@@ -347,10 +353,8 @@ function paymentInEscrowApi(vendorID,queryObj){
         SequelizeInstance.query(queryResult, {
             type: sequelize.QueryTypes.SELECT
         }).then(data => {
-        	console.log("------------------------------adsadf",data)
             resolve(data);
         }).catch(function(err) {
-        	console.log("------------------------------error",err)
             reject(err);
         });
     });

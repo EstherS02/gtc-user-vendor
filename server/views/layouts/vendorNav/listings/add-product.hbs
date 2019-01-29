@@ -370,13 +370,13 @@
 									<div class="col-lg-4">
 										<div class="form-group">
 											<label class="label-control">Sale start date & time</label>
-											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_start_date}}value="{{formatTime editProduct.exclusive_start_date "YYYY/MM/DD HH:mm"}}" {{/if}} name="exclusive_start_date" id="exclusive_start_date" disabled>
+											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_start_date}}value="{{formatTime editProduct.exclusive_start_date "MM/DD/YYYY HH:mm"}}" {{/if}} name="exclusive_start_date" id="exclusive_start_date" disabled>
 										</div>
 									</div>
 									<div class="col-lg-4">
 										<div class="form-group">
 											<label class="label-control">Sale end date & time</label>
-											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_end_date}}value="{{formatTime editProduct.exclusive_end_date "YYYY/MM/DD HH:mm"}}" {{/if}} name="exclusive_end_date" id="exclusive_end_date" disabled>
+											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_end_date}}value="{{formatTime editProduct.exclusive_end_date "MM/DD/YYYY HH:mm"}}" {{/if}} name="exclusive_end_date" id="exclusive_end_date" disabled>
 										</div>
 									</div>
 									<div class="col-lg-4">
@@ -598,14 +598,14 @@
 								<div class="row date-picker">
 									<div class="col-lg-4">
 										<input class="form-control-customized form-control-sm" id='start_date' name="start_date"
-										type="text" placeholder="mm/dd/yyyy">
+										type="text" placeholder="MM/DD/YYYY">
 									</div>
 									<div class="col-lg-1">
 										<label class="label-control">to:</label>
 									</div>
 									<div class="col-lg-4">
 										<input class="form-control-customized form-control-sm" name="end_date" id='end_date'
-										type="text" placeholder="mm/dd/yyyy">
+										type="text" placeholder="MM/DD/YYYY">
 									</div>
 								</div>
 							</div>
@@ -643,9 +643,9 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="reset" class="btn btn-small btn-muted" data-dismiss="modal">
+					<button type="reset" class="btn btn-md btn-muted m-t" data-dismiss="modal">
 						<b>CANCEL</button>
-					<button type="submit" class="btn btn-small btn-primary" id='continue' style="background:green">
+					<button type="submit" class="btn btn-md btn-success m-t" id='continue' style="background:green">
 						<b>CONTINUE</b>
 					</button>
 				</div>
@@ -693,9 +693,9 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="reset" class="btn btn-small btn-muted" data-dismiss="modal">
+					<button type="reset" class="btn btn-md btn-muted m-t" data-dismiss="modal">
 						<b>CANCEL</button>
-					<button type="submit" class="btn btn-small btn-primary" style="background:green">
+					<button type="submit" class="btn btn-md btn-success m-t" style="background:green">
 						<b>FEATURE</b>
 					</button>
 				</div>
@@ -715,8 +715,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
-					<b>Ok</button>
+				<button type="button" class="btn btn-md btn-muted m-t" data-dismiss="modal">
+					<b>OK</button>
 			</div>
 		</div>
 	</div>

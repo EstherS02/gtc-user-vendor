@@ -65,19 +65,26 @@
 												<thead>
 													<tr>
 														<th>Ad/Listing Name</th>
-														<th>type</th>
+														<th>Type</th>
 														<th>Position</th>
 														<th>Start Date</th>
 														<th>End Date</th>
 														<th>Impressions </th>
 														<th>Clicks</th>
 														<th>CTR</th>
-														<th>Cost to Vendor</th>
+														<th>Vendor Fees</th>
 													</tr>
 												</thead>
-												{{#each vendorRevenue.rows}}
-													<tbody>
-														<td>{{this.product_name}}</td>
+												<tbody>
+													{{#each vendorRevenue.rows}}
+													<tr>
+														<td>
+															<a href="/{{MarketPlaceURL this.Product.Marketplace.id}}/{{this.Product.product_slug}}/{{this.Product.id}}">
+																<span class="d-inline-block text-truncate" style="max-width: 250px;">
+																	{{this.product_name}}
+																</span>
+															</a>
+														</td>
 														<td>
 															{{#ifCond this.type '==' 1}}Ad
 															{{else}} Featured Listing {{/ifCond}}
@@ -93,7 +100,7 @@
 																	{{#case 6}}Product Landing{{/case}}
 																{{/switch}}
 															{{else ifCond this.type '==' 2}} 
-					 											{{#if this.position_homepage}} Home Page, <br/>{{/if}}
+																{{#if this.position_homepage}} Home Page, <br/>{{/if}}
 																{{#if this.position_searchresult}} Search Result, <br/>{{/if}}
 																{{#if this.position_profilepage}} Profile Square, <br/>{{/if}}
 																{{#if this.position_wholesale_landing}} Wholesale Landing, <br/>{{/if}}
@@ -116,12 +123,10 @@
 														{{/if}}
 														<td>-</td>
 														<td>{{this.Payment.amount}}</td>
-													</tbody>
-												{{/each}}
+													</tr>
+													{{/each}}
+												</tbody>
 											</table>
-											<div class="row">
-
-											</div>
 										</div>
 									</div>
 									{{#ifCond vendorRevenue.count '>' queryPaginationObj.limit}}
@@ -215,24 +220,24 @@
 											<table class="table order-table">
 												<thead>
 													<tr>
-														<th scope="col">Order#</th>
-														<th scope="col">Vendor Name</th>
-														<th scope="col">Order Total</th>
-														<th scope="col">Shipping Cost</th>
-														<th scope="col">GTC Fee(%)</th>
-														<th scope="col">GTC Fee</th>
+														<th>Order#</th>
+														<th>Order Total</th>
+														<th>Shipping Cost</th>
+														<th>GTC Fee(%)</th>
+														<th>GTC Fee</th>
 													</tr>
 												</thead>
-												{{#each processingFee.rows}}
-													<tbody>
-														<td>{{this.order_id}}</td>
-														<td>{{this.Vendor.vendor_name}}</td>
-														<td>{{this.total_price}}</td>
-														<td>{{this.shipping_cost}}</td>
-														<td>{{this.gtc_fees_percent}}</td>
-														<td>{{this.gtc_fees}}</td>
-													</tbody>
-												{{/each}}
+												<tbody>
+													{{#each processingFee.rows}}
+														<tr>
+															<td><a href="../my-order/order/{{this.order_id}}">{{this.order_id}}</a></td>
+															<td>{{this.total_price}}</td>
+															<td>{{this.shipping_cost}}</td>
+															<td>{{this.gtc_fees_percent}}</td>
+															<td>{{this.gtc_fees}}</td>
+														</tr>
+													{{/each}}
+												</tbody>
 											</table>
 										</div>
 									</div>
@@ -324,24 +329,24 @@
 											<table class="table order-table">
 												<thead>
 													<tr>
-														<th scope="col">Order#</th>
-														<th scope="col">Vendor Name</th>
-														<th scope="col">Order Total</th>
-														<th scope="col">Shipping Cost</th>
-														<th scope="col">Plan Fee(%)</th>
-														<th scope="col">Plan Fee</th>
+														<th>Order#</th>
+														<th>Order Total</th>
+														<th>Shipping Cost</th>
+														<th>Plan Fee(%)</th>
+														<th>Plan Fee</th>
 													</tr>
 												</thead>
-												{{#each subscriptionFee.rows}}
-													<tbody>
-														<td>{{this.order_id}}</td>
-														<td>{{this.Vendor.vendor_name}}</td>
-														<td>{{this.total_price}}</td>
-														<td>{{this.shipping_cost}}</td>
-														<td>{{this.gtc_fees_percent}}</td>
-														<td>{{this.gtc_fees}}</td>
-													</tbody>
-												{{/each}}
+												<tbody>
+													{{#each subscriptionFee.rows}}
+														<tr>
+															<td><a href="../my-order/order/{{this.order_id}}">{{this.order_id}}</a></td>
+															<td>{{this.total_price}}</td>
+															<td>{{this.shipping_cost}}</td>
+															<td>{{this.gtc_fees_percent}}</td>
+															<td>{{this.gtc_fees}}</td>
+														</tr>
+													{{/each}}
+												</tbody>
 											</table>
 										</div>
 									</div>
@@ -433,22 +438,22 @@
 											<table class="table order-table">
 												<thead>
 													<tr>
-														<th scope="col">Order#</th>
-														<th scope="col">Vendor Name</th>
-														<th scope="col">Order Total</th>
-														<th scope="col">Shipping Cost</th>
-														<th scope="col">Paid to Vendor</th>
+														<th>Order#</th>
+														<th>Order Total</th>
+														<th>Shipping Cost</th>
+														<th>Paid to Vendor</th>
 													</tr>
 												</thead>
-												{{#each gtcPayFee.rows}}
-													<tbody>
-														<td>{{this.order_id}}</td>
-														<td>{{this.Vendor.vendor_name}}</td>
+												<tbody>
+													{{#each gtcPayFee.rows}}
+													<tr>
+														<td><a href="../my-order/order/{{this.order_id}}">{{this.order_id}}</a></td>
 														<td>{{this.total_price}}</td>
 														<td>{{this.shipping_cost}}</td>
 														<td>{{this.gtc_fees_percent}}</td>
-													</tbody>
-												{{/each}}
+													</tr>
+													{{/each}}
+												</tbody>
 											</table>
 										</div>
 									</div>
@@ -550,8 +555,8 @@
 														<th scope="col">Start Date</th>
 														<th scope="col">End Date</th>
 														<th scope="col">Status </th>
-														<th scope="col">Payment Date</th>
-														<th scope="col">Cost to Vendor</th>
+														<th scope="col">Paid Date</th>
+														<th scope="col">Membership Fees</th>
 													</tr>
 												</thead>
 												<tbody>

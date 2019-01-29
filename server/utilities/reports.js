@@ -366,7 +366,9 @@ function getAllVendorPerformance(queryObj, limit, offset) {
 function getAllProductPerformance(queryObj, limit, offset) {
 
 	var queryResult = `SELECT product.id AS product_id,
-            product.product_name,
+			product.product_slug AS product_slug,
+			product.product_name,
+			marketplace.id AS marketplace_id,
             marketplace.name AS marketplace_name,
             vendor.vendor_name As vendor_name,
             users.first_name As owner_name, 

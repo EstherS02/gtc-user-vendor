@@ -624,11 +624,33 @@ Handlebars.registerHelper('compareSalePerformance', function(obj, compareProduct
 
 Handlebars.registerHelper('productPerformance', function(product, compareProducts){
 
-	var domElement= '';
+	var domElement= '', marketPlace;
 	var matchedObj = _.find(compareProducts, function(aObj){
 		return aObj.product_id == product.product_id;;
 	});
 
+	if (!product.marketplace_id)
+		marketPlace = 'products';
+	else{
+		switch (product.marketplace_id) {
+			case 1:
+				marketPlace = "wholesale";
+				break;
+			case 2:
+				marketPlace = "shop";
+				break;
+			case 3:
+				marketPlace = "services";
+				break;
+			case 4:
+				marketPlace = "lifestyle";
+				break;
+			default:
+				marketPlace = "products";
+				break;
+		}
+	}
+	
 	if (matchedObj) {
 		domElement = `<td>
 			<div class="customCheckbox">
@@ -637,9 +659,9 @@ Handlebars.registerHelper('productPerformance', function(product, compareProduct
 			</div>
 		</td>
 		<td class="table-data">
-			<span class="d-inline-block text-truncate" style="max-width: 150px;" title="`+product.product_name+`">
+			<a href="`+ marketPlace +`/`+product.product_slug+`/`+product.product_id+`" class="d-inline-block text-truncate" style="max-width: 150px;" title="`+product.product_name+`">
 				`+product.product_name+`
-			</span>
+			</a>
 		</td>
 		<td>
 			`+product.marketplace_name+`
@@ -668,9 +690,9 @@ Handlebars.registerHelper('productPerformance', function(product, compareProduct
 			</div>
 		</td>
 		<td class="table-data">
-			<span class="d-inline-block text-truncate" style="max-width: 250px;" title="`+product.product_name+`">
+			<a href="`+ marketPlace +`/`+product.product_slug+`/`+product.product_id+`" class="d-inline-block text-truncate" style="max-width: 250px;" title="`+product.product_name+`">
 				`+product.product_name+`
-			</span>
+			</a>
 		</td>
 		<td>
 			`+product.marketplace_name+`
