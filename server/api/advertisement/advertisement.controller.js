@@ -197,7 +197,7 @@ export async function editAd(req, res) {
 // 	});
 
 // }
-export function index(req, res) {
+export function  index(req, res) {
 	reportsService.adFeaturedRevenue(req, res)
 		.then((response) => {
 			return res.status(200).send(response);

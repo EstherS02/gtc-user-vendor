@@ -64,22 +64,45 @@
 											<table class="table order-table">
 												<thead>
 													<tr>
-														<th scope="col">Ad/Listing Name</th>
-														<th scope="col">type</th>
-														<th scope="col">Position</th>
-														<th scope="col">Start Date</th>
-														<th scope="col">End Date</th>
-														<th scope="col">Impressions </th>
-														<th scope="col">Clicks</th>
-														<th scope="col">CTR</th>
-														<th scope="col">Cost to Vendor</th>
+														<th>Ad/Listing Name</th>
+														<th>type</th>
+														<th>Position</th>
+														<th>Start Date</th>
+														<th>End Date</th>
+														<th>Impressions </th>
+														<th>Clicks</th>
+														<th>CTR</th>
+														<th>Cost to Vendor</th>
 													</tr>
 												</thead>
 												{{#each vendorRevenue.rows}}
 													<tbody>
 														<td>{{this.product_name}}</td>
-														<td>{{this.type}}</td>
-														<td>{{#if this.position}}{{this.position}} {{else}} - {{/if}}</td>												<td>{{formatTime this.start_date "MMM DD, YYYY"}}</td>
+														<td>
+															{{#ifCond this.type '==' 1}}Ad
+															{{else}} Featured Listing {{/ifCond}}
+														</td>
+														<td>
+															{{#ifCond this.type '==' 1}}
+																{{#switch this.position}}
+																	{{#case 1}}Directory Landing{{/case}}
+																	{{#case 2}}Wholesale Landing{{/case}}
+																	{{#case 3}}Shop Landing{{/case}}
+																	{{#case 4}}Service Landing{{/case}}
+																	{{#case 5}}Lifestyle Landing{{/case}}
+																	{{#case 6}}Product Landing{{/case}}
+																{{/switch}}
+															{{else ifCond this.type '==' 2}} 
+					 											{{#if this.position_homepage}} Home Page, <br/>{{/if}}
+																{{#if this.position_searchresult}} Search Result, <br/>{{/if}}
+																{{#if this.position_profilepage}} Profile Square, <br/>{{/if}}
+																{{#if this.position_wholesale_landing}} Wholesale Landing, <br/>{{/if}}
+																{{#if this.position_shop_landing}} Shop Landing, <br/>{{/if}}
+																{{#if this.position_service_landing}} Service Landing, <br/>{{/if}}
+																{{#if this.position_subscription_landing}} Lifestyle Landing {{/if}}
+															{{/ifCond}}
+														</td>												
+														<td>{{formatTime this.start_date "MMM DD, YYYY"}}</td>
 														<td>{{formatTime this.end_date "MMM DD, YYYY"}}</td>
 														{{#if this.impression}}
 															<td>{{this.impression}}</td>

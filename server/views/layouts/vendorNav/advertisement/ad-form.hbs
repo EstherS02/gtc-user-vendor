@@ -16,12 +16,12 @@
 		$("#gtc-form-alert").hide();
 
 		$("#startDate").datepicker({
-			format: 'yyyy-mm-dd',
+			format: 'mm/dd/yyyy',
 			autohide: true,
 		});
 
 		$("#endDate").datepicker({
-			format: 'yyyy-mm-dd',
+			format: 'mm/dd/yyyy',
 			autohide: true,
 		});
 
@@ -39,7 +39,6 @@
 						var width = this.width;
 						if (($("#position").val() == 1) || ($("#position").val() == 2) || ($("#position").val() == 6)) {
 							if ((height >= 195 && height<= 220) || (width >= 475 && width<=500)) {
-								alert("Height and Width must not exceed 100px.");
 								obj.adImageUrl = e.target.result;
 								adImageArr.push(obj);
 								appendImage();
@@ -52,7 +51,6 @@
 							}
 						} else if (($("#position").val() == 2) || ($("#position").val() == 4) || ($("#position").val() == 5)) {
 							if ((height >= 45 && height<= 80) || (width >= 475 && width<=500)) {
-								alert("Height and Width must not exceed 100px.");
 								obj.adImageUrl = e.target.result;
 								adImageArr.push(obj);
 								appendImage();
@@ -64,7 +62,7 @@
 								return false;
 							}
 						} else {
-								$('#adImage').value='';
+							$('#adImage').value='';
 							alert("Select Position before Upload the Image .");
 						}
 					};
@@ -156,7 +154,10 @@
 			rules: {
 				name: "required",
 				position: "required",
-				target_url: "required",
+				target_url:{
+					required: true,
+					url: true
+				},
 				status: {
 					required: function() {
 						if ($('#id')) {
@@ -181,7 +182,10 @@
 			messages: {
 				name: "Please enter Ad title",
 				position: "Please select Ad position",
-				target_url: "Please enter Ad target url",
+				target_url: {
+					required: "Please enter target url",
+					url:"Please enter valid url"
+				},
 				status: "Please enter Ad status",
 				start_date: {
 					required: "Select start date",
@@ -224,7 +228,9 @@
 		if (adImageArr && (adImageArr.length > 0))
 			appendImage();
 	});
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+</script> 
+
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container"> 	
 		<div class="row">
@@ -278,8 +284,7 @@
 										<div class="form-group">
 											<label class="label-control">Ad Image
 												<span class="text-danger">* </span>
-												<span class="text-danger" id="alert-text">
-													<span>
+												<span class="text-danger" id="alert-text"><span>
 											</label>
 											<div class="input-group">
 												<div class="custom-file custom_error_message">
@@ -337,7 +342,7 @@
 											<span class="text-danger">*</span>
 										</label>
 										<div class="input-group ">
-											<input type="text" class="form-control-customized" name="start_date" placeholder="mm/dd/yyyy" id="startDate" value="{{ads.start_date}}"
+											<input type="text" class="form-control-customized" name="start_date" placeholder="MM/DD/YYYY" id="startDate" value="{{ads.start_date}}"
 											 aria-describedby="basic-addon2">
 											<div class="input-group-append">
 												{{!-- <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span> --}}
@@ -349,7 +354,7 @@
 											<span class="text-danger">*</span>
 										</label>
 										<div class="input-group ">
-											<input type="text" class="form-control-customized" placeholder="mm/dd/yyyy" value="{{ads.end_date}}" id="endDate" name="end_date"
+											<input type="text" class="form-control-customized" placeholder="MM/DD/YYYY" value="{{ads.end_date}}" id="endDate" name="end_date"
 											 aria-describedby="basic-addon2">
 											<div class="input-group-append">
 												{{!-- <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span> --}}
@@ -390,19 +395,21 @@
 										</div>
 									</div>
 								</div>
-								<hr>
+								<div class="hr-line"></div>
 								<div class="row">
-									<div class="col-md-12">
-										<button class="ladda-button btn {{#if ads}}update-btn{{else}}btn-primary{{/if}} btn-small" type="submit" data-style="expand-left">
-											<span class="ladda-label">
-												{{#if ads}}UPDATE{{else}}SUBMIT{{/if}}
-											</span>
-											<span class="ladda-spinner"></span>
-										</button>
-										<button class="ladda-button btn btn-small btn-muted" type="reset" id="reset" data-style="expand-left">
-											<span class="ladda-label">CANCEL</span>
-											<span class="ladda-spinner"></span>
-										</button>
+									<div class="col-lg-12">
+										<div class="form-group">
+											<button class="ladda-button btn btn-md {{#if ads}}update-btn{{else}}btn-success{{/if}} m-t" type="submit" data-style="expand-left">
+												<span class="ladda-label">
+													{{#if ads}}UPDATE{{else}}SUBMIT{{/if}}
+												</span>
+												<span class="ladda-spinner"></span>
+											</button>
+											<button class="ladda-button btn btn-md btn-muted m-t" type="reset" id="reset" data-style="expand-left">
+												<span class="ladda-label">CANCEL</span>
+												<span class="ladda-spinner"></span>
+											</button>
+										</div>			
 									</div>
 								</div>
 							</form>

@@ -169,6 +169,7 @@ export async function AccountingReport(vendorID, queryParams) {
 }
 
 export async function adFeaturedRevenue(req,res){
+
 	var offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	var limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	var productAdsSettingTable = 'ProductAdsSetting';

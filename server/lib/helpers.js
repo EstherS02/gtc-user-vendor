@@ -264,6 +264,7 @@ Handlebars.registerHelper('FormatDate', function(context, options) {
 		return newdate;
 	}
 });
+
 Handlebars.registerHelper('timeLeft', function(context, options) {
 	var currentDate = moment().utc().format('YYYY-M-DD HH:mm:ss');
 	var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
@@ -458,6 +459,7 @@ Handlebars.registerHelper('navbarSetting', function(user, type, options) {
 		return options.fn(this);
 	}
 });
+
 Handlebars.registerHelper('json', function(jsonStr, key) {
 	if (_.isUndefined(jsonStr) || _.isNull(jsonStr)) {
 		return '';
@@ -508,6 +510,7 @@ Handlebars.registerHelper('last2', function(str, isJson, key) {
 Handlebars.registerHelper('currency', function(amt, symbol) {
 	return numeral(amt).format(symbol + '0,0.00');
 });
+
 Handlebars.registerHelper('CommaSeparate', function(amt) {
 	return numeral(amt).format('0,0');
 });
@@ -1033,6 +1036,7 @@ Handlebars.registerHelper('Location', function(id, arrayEle, options) {
 	});
 	return name;
 });
+
 Handlebars.registerHelper('searchCategory', function(element, id) {
 	var name = '';
 	for (var i = 0, len = element.length; i < len; i++) {
@@ -1060,6 +1064,7 @@ Handlebars.registerHelper('searchSubCategory', function(element, sub_cat, cat) {
 	}
 	return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
 });
+
 Handlebars.registerHelper('dotdotdot', function(str) {
 	var body = str;
 	var regex = /(<([^>]+)>)/ig;
@@ -1071,9 +1076,11 @@ Handlebars.registerHelper('dotdotdot', function(str) {
 
 	return result;
 });
+
 Handlebars.registerHelper('decimalFixed', function(distance) {
 	return parseFloat(distance).toFixed(0);
 });
+
 Handlebars.registerHelper('decimalFixedOne', function(distance) {
 	var rating = Math.ceil(distance);
 	return rating;
@@ -1083,6 +1090,7 @@ Handlebars.registerHelper('sizeInKB', function(value) {
 	var valueInKB = value / 1000;
 	return valueInKB.toFixed(2);
 });
+
 Handlebars.registerHelper('verificationStatus', function(obj, status, content, option) {
 	var text = '';
 	if (obj.APPROVED == status) {
@@ -1105,6 +1113,7 @@ Handlebars.registerHelper('verificationStatus', function(obj, status, content, o
 	}
 	return text;
 });
+
 Handlebars.registerHelper('returnCond', function(date) {
 	const deliveredDate = new Date(date);
 	const currentDate = new Date();
@@ -1138,4 +1147,34 @@ Handlebars.registerHelper('ctrCalculation', function(impressions, clicks) {
 		}
 	}
 	return ctr;
+});
+
+Handlebars.registerHelper("switch", function(value, options) {
+    this._switch_value_ = value;
+    this._switch_break_ = false;
+    var html = options.fn(this);
+    delete this._switch_break_;
+    delete this._switch_value_;
+    return html;
+});
+
+Handlebars.registerHelper("case", function(value, options) {
+    var args = Array.prototype.slice.call(arguments);
+    var options    = args.pop();
+    var caseValues = args;
+
+    if (this._switch_break_ || caseValues.indexOf(this._switch_value_) === -1) {
+        return '';
+    } else {
+        if (options.hash.break === true) {
+            this._switch_break_ = true;
+        }
+        return options.fn(this);
+    }
+});
+
+Handlebars.registerHelper("default", function(options) {
+    if (!this._switch_break_) {
+        return options.fn(this);
+    }
 });
