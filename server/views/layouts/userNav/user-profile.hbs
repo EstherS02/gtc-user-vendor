@@ -141,8 +141,10 @@ $(document).ready(function() {
 			billingUpdate.country_id = $('#b_country').val();
 			billingUpdate.province_id = $('#b_state').val();
 			billingUpdate.city = $('#b_city').val();
-			billingUpdate.postal_code = $('#b_postal_code').val();
 
+			if($('#b_postal_code').val()){
+				billingUpdate.postal_code = $('#b_postal_code').val();
+			}
 			data.billingUpdate = JSON.stringify(billingUpdate);
 		}
 
@@ -165,7 +167,11 @@ $(document).ready(function() {
 					shippingUpdate.country_id = $('#s_country').val();
 					shippingUpdate.province_id = $('#s_state').val();
 					shippingUpdate.city = $('#s_city').val();
-					shippingUpdate.postal_code = $('#s_postal_code').val();
+
+					if($('#s_postal_code').val()){
+						shippingUpdate.postal_code = $('#s_postal_code').val();
+					}
+				
 					shippingUpdate.same_shipping_address = null;
 
 					data.shippingUpdate = JSON.stringify(shippingUpdate);
