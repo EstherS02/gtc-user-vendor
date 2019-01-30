@@ -66,11 +66,11 @@ export async function storeData(req, res) {
 			if (req.files.hasOwnProperty(key)) {
 				const parsedFile = path.parse(req.files[key].originalFilename);
 				const timeInMilliSeconds = new Date().getTime();
-				const uploadPath = config.images_base_path+ parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+				const uploadPath = config.images_base_path+"/verification/"+ parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 
 				const productMediaUpload = await service.move(req.files[key].path, uploadPath);
 				if (productMediaUpload) {
-					bodyParam[key] = config.imageUrlRewritePath.base + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+					bodyParam[key] = config.imageUrlRewritePath.base +"verification/"+ parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 					var status = key;
 					status = status.replace('link', 'status');
 					bodyParam[status] = verificationStatus['WAITING'];
@@ -96,13 +96,12 @@ export async function storeData(req, res) {
 	} catch (error) {
 		console.log('Error:::', error);
 		return res.status(500).send({
-						"message": "Error",
-						"messageDetails": "Verification Request Sent"
-					});
+			"message": "Error",
+			"messageDetails": "Internal Server Error"
+		});
 	}
-
-
 }
+
 export async function updateData(req, res) {
 	var bodyParam = {},
 		vendorParam = {};
@@ -125,10 +124,10 @@ export async function updateData(req, res) {
 				if (req.files.hasOwnProperty(key)) {
 					const parsedFile = path.parse(req.files[key].originalFilename);
 					const timeInMilliSeconds = new Date().getTime();
-					const uploadPath = config.images_base_path + "/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+					const uploadPath = config.images_base_path + "/verification/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 					const productMediaUpload = await service.move(req.files[key].path, uploadPath);
 					if (productMediaUpload) {
-						bodyParam[key] = config.imageUrlRewritePath.base + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+						bodyParam[key] = config.imageUrlRewritePath.base +"verification/"+ parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 						deleteImg[key] = findData[key];
 						var status = key;
 						status = status.replace('link', 'status');
@@ -139,7 +138,8 @@ export async function updateData(req, res) {
 			bodyParam.last_updated_on = new Date();
 			bodyParam.last_updated_by = req.user.first_name;
 			const updateData = await service.updateRow(modelName, bodyParam, req.params.id);
-			if (!updateData) {
+
+		/*	if (!updateData) {
 
 				res.status(500).send({
 						"message": "Error",
@@ -148,6 +148,7 @@ export async function updateData(req, res) {
 				return;
 			} else {
 				if(deleteImg){
+					
 					for(let key in deleteImg){
 						if(deleteImg[key] != '' && deleteImg[key] != null){
 							let newValue = deleteImg[key];
@@ -162,19 +163,27 @@ export async function updateData(req, res) {
 						"messageDetails": "Verification Request Sent"
 					});
 				return;
-			}
+			}*/
+
+			res.status(200).send({
+				"message": "Success",
+				"messageDetails": "Verification Request Sent"
+			});
+			
+			return;
+
 		} else {
-			res.status(500).send({
+			res.status(404).send({
 						"message": "Error",
-						"messageDetails": "Internal server error."
+						"messageDetails": "Not Found."
 					});
 			return;
 		}
 	} catch (error) {
 		console.log('Error :::', error);
 		return res.status(500).send({
-						"message": "Error",
-						"messageDetails": "Internal server error."
-					});
+			"message": "Error",
+			"messageDetails": "Internal server error."
+		});
 	}
 }
