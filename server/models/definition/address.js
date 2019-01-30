@@ -83,7 +83,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         postal_code: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(16),
             field: 'postal_code',
             allowNull: true
         },

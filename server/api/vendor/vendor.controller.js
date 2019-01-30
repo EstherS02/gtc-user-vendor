@@ -634,7 +634,7 @@ export function create(req, res) {
 		where: queryObj
 	}).then(function(user) {
 		if (user) {
-			res.status(409).send("Email address already exists");
+			res.status(409).send("Email address already exists.");
 			return;
 		} else {
 			bodyParams["status"] = status["ACTIVE"];

@@ -147,12 +147,14 @@
 						customerInformationObj['rules'].billing_country = "required";
 						customerInformationObj['rules'].billing_state = "required";
 						customerInformationObj['rules'].billing_phone = "required";
+						customerInformationObj['rules'].billing_postal = "required";
 						customerInformationObj['messages'].billing_first_name = "First name is required.";
 						customerInformationObj['messages'].billing_addressline1 = "Address line 1 is required.";
 						customerInformationObj['messages'].billing_city = "City is required.";
 						customerInformationObj['messages'].billing_country = "Country is required.";
 						customerInformationObj['messages'].billing_state = "State is required.";
 						customerInformationObj['messages'].billing_phone = "Phone Number is required.";
+						customerInformationObj['messages'].billing_postal = "Postal is required.";
 					}
 
 					if (!$('#inputShippingAddressId').val() && !$('#shippingAddressSelectId').val()) {
@@ -162,12 +164,14 @@
 						customerInformationObj['rules'].shipping_country = "required";
 						customerInformationObj['rules'].shipping_state = "required";
 						customerInformationObj['rules'].shipping_phone = "required";
+						customerInformationObj['rules'].shipping_postal = "required";
 						customerInformationObj['messages'].shipping_first_name = "First name is required.";
 						customerInformationObj['messages'].shipping_addressline1 = "Address line 1 is required.";
 						customerInformationObj['messages'].shipping_city = "City is required.";
 						customerInformationObj['messages'].shipping_country = "Country is required.";
 						customerInformationObj['messages'].shipping_state = "State is required.";
 						customerInformationObj['messages'].shipping_phone = "Phone Number is required.";
+						customerInformationObj['messages'].shipping_postal = "Postal is required.";
 					}
 
 					if ($('#customer-information').valid()) {
@@ -413,7 +417,7 @@
 											<div class="col-4">
 												<div class="form-group">
 													<input type="text" id="billing_postal" name="billing_postal" class="form-control form-control-sm input-rounded-border"
-													 placeholder="Postal">
+													 placeholder="Postal" required="required">
 												</div>
 											</div>
 											<div class="col-6">
@@ -529,7 +533,7 @@
 											<div class="col-4">
 												<div class="form-group">
 													<input id="shipping_postal" name="shipping_postal" type="text" class="form-control form-control-sm input-rounded-border"
-													 placeholder="Postal">
+													 placeholder="Postal" required="required">
 												</div>
 											</div>
 											<div class="col-6">

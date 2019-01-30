@@ -146,7 +146,7 @@ export async function create(req, res) {
         if (user) {
 			return res.status(409).send({
 				"message": "Error",
-				"messageDetails": "Email address already exists"
+				"messageDetails": "Email address already exists."
 			});
         } else {
 

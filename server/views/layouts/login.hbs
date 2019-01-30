@@ -49,6 +49,19 @@
 				$('#loginErrorMessage').text(error.responseText);
 			});
 		});
+
+		/*$('#loginForm').validate({
+			rules: {
+				email:{
+					required:true,
+					email: true
+				},
+			},
+			messages:{
+				required: "Please enter email",
+				email: "Please enter vaild email"
+			}
+		})*/
 	});
 	function forceSignup() {
 		$('#myModal').modal('show');
@@ -88,6 +101,7 @@
                                     </div>
                                 </div>
                                 <h2 class="divider-line"><span>OR</span></h2>
+								
                                 <div class="col-md-6 signup-right">
                                     <form id="signUpForm" class="form" novalidate="novalidate">
 										<small id="signUpErrorLog" style="color:red"></small>

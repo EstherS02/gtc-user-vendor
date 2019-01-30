@@ -160,7 +160,7 @@ function processShippingAddress(req, billing_address_id) {
 
 function validateBillingAddress(req) {
 	req.checkBody('billing_first_name', 'Billing Address First Name is Required').notEmpty();
-	req.checkBody('billing_last_name', 'Billing Address Last Name is Required').notEmpty();
+	//req.checkBody('billing_last_name', 'Billing Address Last Name is Required').notEmpty();
 	req.checkBody('billing_addressline1', 'Billing Address Line 1 is Required').notEmpty();
 	req.checkBody('billing_city', 'Billing Address City is Required').notEmpty();
 	req.checkBody('billing_country', 'Billing Address Country is Required').notEmpty();
@@ -172,7 +172,7 @@ function validateBillingAddress(req) {
 
 function validateShippingAddress(req) {
 	req.checkBody('shipping_first_name', 'Shipping Address First Name is Required').notEmpty();
-	req.checkBody('shipping_last_name', 'Shipping Address Last Name is Required').notEmpty();
+	//req.checkBody('shipping_last_name', 'Shipping Address Last Name is Required').notEmpty();
 	req.checkBody('shipping_addressline1', 'Shipping Address Line 1 is Required').notEmpty();
 	req.checkBody('shipping_city', 'Shipping Address City is Required').notEmpty();
 	req.checkBody('shipping_country', 'Shipping Address Country is Required').notEmpty();
