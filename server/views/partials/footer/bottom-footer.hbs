@@ -30,11 +30,12 @@
         }
         });
 	});
+
     $(window).bind("pageshow", function(event) {
-    if (event.originalEvent.persisted) {
-        window.location.reload(); 
-    }
-});
+		if (event.originalEvent.persisted) {
+			window.location.reload(); 
+		}
+	});
 
 	function orderTrack() {
 		$.ajax({

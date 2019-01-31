@@ -1,49 +1,64 @@
 <script>
+	var vendorPlanId ={{{LoggedInUser.Vendor.VendorPlans.[0].Plan.id}}};
+	var vendorPlan = {{{ DisplayJSON vendorPlan }}};
+
 	$(document).ready(function() {
-
-
 	
-	$(function () {
-  $('[data-toggle="popover"]').popover({
-		html: true,
-		content: function() {
-			return ($("#shareRemainingIcons").html());
-		}
-	});
-
-})
-    var vendorID =$('#vendor_id').val();
-	var vendorName=$('#vendor_name').val();
-	var url =  window.location.protocol + "//" + window.location.host + "/"+"vendor"+"/"+vendorID
-   $("#shareRemainingIcons").jsSocials({
-		url: url,
-		text: vendorName,
-		showLabel: false,
-		showCount: false,
-		shares: ["whatsapp"]
-	});
-		$("#shareIcons").jsSocials({
-		url: url,
-		text: vendorName,
-		showLabel: false,
-		showCount: false,
-		shares: ["linkedin","twitter","facebook","pinterest","email"],
-	});
+		$(function () {
+			$('[data-toggle="popover"]').popover({
+					html: true,
+					content: function() {
+						return ($("#shareRemainingIcons").html());
+					}
+				});
+		})
+		var vendorID =$('#vendor_id').val();
+		var vendorName=$('#vendor_name').val();
+		var url =  window.location.protocol + "//" + window.location.host + "/"+"vendor"+"/"+vendorID;
+		
+		$("#shareRemainingIcons").jsSocials({
+			url: url,
+			text: vendorName,
+			showLabel: false,
+			showCount: false,
+			shares: ["whatsapp"]
 		});
-</script>
+			$("#shareIcons").jsSocials({
+			url: url,
+			text: vendorName,
+			showLabel: false,
+			showCount: false,
+			shares: ["linkedin","twitter","facebook","pinterest","email"],
+		});
+	});
 
-{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+	function featureProduct() {
+
+		if(vendorPlanId == vendorPlan['STARTER_SELLER'])
+			location.href = '/listings/shop';
+		else if(vendorPlanId == vendorPlan['SERVICE_PROVIDER'])
+			location.href = '/listings/services';
+		else if(vendorPlanId == vendorPlan['LIFESTYLE_PROVIDER'])
+			location.href = '/listings/lifestyle';
+		else if(vendorPlanId == vendorPlan['PUBLIC_SELLER'])
+			location.href = '/listings/shop';
+		else if(vendorPlanId == vendorPlan['WHOLESALER'])
+			location.href = '/listings/wholesale';
+
+	}
+</script>
 <style>
 	.bg-promote-img3 a{
-	padding: 2px 7px 7px 7px;
-    font-size: 17px;
-	margin-left:1px;
+		padding: 2px 7px 7px 7px;
+		font-size: 17px;
+		margin-left:1px;
 	}
 	.jssocials-share {
 		margin:0.0.0em;
 	}
-
 </style>
+
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -79,7 +94,7 @@
 												<div class="col-md-12">
 													<h5>FEATURE A PRODUCT</h5>
 													<p>Choose a product to take preferred placement on the GTC homepage, department pages, and your profile!</p>
-													<a class="btn btn-warning" href="/listings/services">GET STARTED</a>
+													<a class="btn btn-warning" href="javascript:;" onclick="featureProduct();">GET STARTED</a>
 												</div>
 											</div>
 										</div>
@@ -116,75 +131,5 @@
 			{{/if}}
 		</div>
 	</div>
-</div>
-											
-													  
-													{{!-- <div class="row social-img">
-										                     				
-	      													<div class="col-md-1">
-														
-																
-																<div id="shareIcons"></div>
-															
-															
-														</div>
-														<div class="col-md-1">
-															<a href="javascript:;">
-																<img src="../../img/social-icons/twitter.png" />
-															</a>
-														</div>
-														<div class="col-md-1">
-															<a href="javascript:;">
-																<img src="../../img/social-icons/facebook.png" />
-															</a>
-														</div>
-														<div class="col-md-1">
-															<a href="javascript:;">
-																<img src="../../img/social-icons/pintrest.png" />
-															</a>
-														</div>
-														<div class="col-md-1">
-															<a href="javascript:;">
-																<img src="../../img/social-icons/google.png" />
-															</a>
-														</div>
-														
-														<div class="col-md-1">
-															<a href="javascript:;">
-																<img src="../../img/social-icons/plus.png" />
-															</a>
-														</div>
-													</div> --}}
-{{!-- 												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div> --}}
-{{> footer/bottom-footer}} {{!-- {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
-<section class="showing_categ">
-	<div class="">
-		<div class="container">
-			<div class="row">
-				{{> vendor/navbar}}
-				<div class="col-md-10" style="background-color: #fff;">
-					<h5 style="padding-top: 20px;">Promote Your Store</h5>
-
-
-
-
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
-{{> footer/bottom-footer}} --}}
+</div>																							
+{{> footer/bottom-footer}} 
