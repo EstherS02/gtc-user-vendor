@@ -45,7 +45,14 @@ export function subscriptions(req, res) {
 
 	subscriptionQueryObj['user_id'] = LoggedInUser.id
 
-	subscriptionIncludeArr = populate.populateData('Product');
+	subscriptionIncludeArr = [
+		{
+			model: model['Product'],
+			include:[{
+				model: model['ProductMedia']
+			}]
+		}
+	]
 
 	if (req.query.status) {
 		queryURI['status'] = req.query.status;

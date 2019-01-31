@@ -28,7 +28,7 @@ export function findRows(modelName, queryObj, offset, limit, field, order, inclu
 	});
 }
 
-export function findAllRows(modelName, includeArr, queryObj, offset, limit, field, order) {
+export function findAllRows(modelName, includeArr, queryObj, offset, limit, field, order){
 	var result = {};
 	return new Promise((resolve, reject) => {
 		model[modelName].findAll({

@@ -89,8 +89,8 @@ export function confirmation(req, res) {
 				cart: results.cartInfo,
 				marketPlace: marketplace,
 				orderVendors: results.orderVendors,
-				LoggedInUser: LoggedInUser
-
+				LoggedInUser: LoggedInUser,
+				orderID:orderID
 			});
 		} else {
 			return res.render('checkout/confirmation/' + orderID, error);

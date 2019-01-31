@@ -310,8 +310,11 @@
 														</td>
 														<td>
 															<a href="{{MarketPlaceURL this.Product.marketplace_id}}/{{this.Product.product_slug}}/{{this.Product.id}}">
-																<img src="{{this.Product.product_base_image}}" onError="imgError(this)" style="width: 30px;" />
-															{{this.Product.product_name}}</a>
+																<img src="{{this.Product.ProductMedia.[0].url}}" onError="imgError(this)" style="width: 30px;" />
+																<span class="d-inline-block text-truncate" style="max-width: 130px;">
+																	{{this.Product.product_name}}
+																</span>
+															</a>
 														</td>
 														<td>{{this.Product.price}}</td>
 														<td>{{this.quantity}}</td>

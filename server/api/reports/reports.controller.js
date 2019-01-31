@@ -262,6 +262,13 @@ export function topActiveBuyers(req, res) {
 
 export function latestTickets(req,res){
 	var queryObj = {}, result = {};
+	var ticketIncludeArr = [];
+	var offset, limit, field, order;
+
+	offset = 0;
+	limit = 5;
+	order = 'DESC';
+	field = 'created_on';
 
 	queryObj['status'] = {
 		'$ne': statusCode["DELETED"]
@@ -270,29 +277,22 @@ export function latestTickets(req,res){
 	if (req.user.role === roles['VENDOR']){
 		queryObj['user_id'] = req.user.id;
 	}
-	model['Ticket'].findAll({
-		raw:true,
-		where: queryObj,
-		order: [
-			['created_on', 'DESC']
-		],
-		include: [{
+
+	ticketIncludeArr = [
+		{
 			model: model['User'],
-			where: {},
-			attributes: ['first_name', 'last_name', 'user_pic_url']
-		}],
-		limit: 5,
-		offset:0
-	}).then(function(results) {
-		if (results.length > 0)
-			result = results;
-		else
-			result = [];
-		return res.status(200).send(result);
-	}).catch(function(error) {
-		console.log('Error:::', error);
-		return res.status(200).send(error);
-	});
+			attributes: ['id','first_name','last_name','user_pic_url']
+		}
+	]
+
+	service.findRows('Ticket', queryObj, offset, limit, field, order, ticketIncludeArr) 
+	.then(function(tickets){
+		return res.status(200).send(tickets);
+
+	}).catch(function(error){
+		console.log("Error::",error);
+		return res.status(500).send(error);
+	})
 }
 
 /*export function latestRefunds(req, res) {

@@ -24,8 +24,8 @@
 		<p>This will appear is your
 			<a href="/order-history" class="checkout_thank_para_span_1">account billing history.</a>
 		</p>
-		<p class="checkout_thank_para_1">Your confirmation email has been sent and your order is being processed and will be shipped in accordance with each Vendor
-			Shipping policy.</p>
+		<p class="checkout_thank_para_1">Your confirmation email has been sent and your order is being processed and will be shipped in accordance with each vendor
+			shipping policy.</p>
 		<h6>What's Next?</h6>
 		{{#each orderVendors}}
 		<p>
@@ -42,8 +42,9 @@
 		{{/each}}
 		<p>You can follow Merchant and Stay Updated on their latest promotions, and product updates. </p>
 		<p>You can also
-			<a href="/order-track" class="checkout_thank_para_span_1">track your order,</a> find us on
-			<a href="//www.facebook.com" class="checkout_thank_para_span_1">facebook, search for more products,</a> Or
+			<a href="/order-history/{{this.orderID}}" class="checkout_thank_para_span_1">track your order,</a> find us on
+			<a href="//www.facebook.com" class="checkout_thank_para_span_1">facebook, </a>
+			<a href="/" class="checkout_thank_para_span_1">search for more products,</a> Or
 			<a href="/" class="checkout_thank_para_span_1">return to the homepage.</a>
 		</p>
 	</div>

@@ -123,8 +123,8 @@
 			location.reload();
 		});
 	}
-
 </script> 
+
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -154,164 +154,163 @@
 									verify your ownership of this business.
 								</p>
 								<hr style="margin-top: 25px;">
-								
 								<div class="row">
 									<h5 class="gtc-title" style=" padding-left: 20px; float: left;font-size:23px"> Personal ID Verification</h5>
 									<p class="verification-incomplete">{{{verificationStatus verificationStatus verification.personal_id_verification_file_status 'Personal Id' verification.personal_id_reason_for_reject}}}
-									</div>
-									<p class="verfication_para">
-										Choose 1 of the 3 following type of ID to upload to verify your personal identity
-									</p>
-									<div class="col-md-6">
-										<input type="radio" value="passport" name="personal_id_verification_file_type" {{setChecked "passport" verification.personal_id_verification_file_type}}
-										/>
-										<label for="passport" class="upload-id-card">Passport </label>
-										<br>
-										<input type="radio" value="nationalIdCard" name="personal_id_verification_file_type" {{setChecked "nationalIdCard" verification.personal_id_verification_file_type}}
-										/>
-										<label for="nationalIdCard" class="upload-id-card">National Id card</label>
-										<br>
-										<input type="radio" value="drivingLicense" name="personal_id_verification_file_type" {{setChecked "drivingLicense" verification.personal_id_verification_file_type}}
-										/>
-										<label for="drivingLicense" class="upload-id-card">Driving license</label>
+								</div>
+								<p class="verfication_para">
+									Choose 1 of the 3 following type of ID to upload to verify your personal identity
+								</p>
+								<div class="col-md-6">
+									<input type="radio" value="passport" name="personal_id_verification_file_type" {{setChecked "passport" verification.personal_id_verification_file_type}}
+									/>
+									<label for="passport" class="upload-id-card">Passport </label>
+									<br>
+									<input type="radio" value="nationalIdCard" name="personal_id_verification_file_type" {{setChecked "nationalIdCard" verification.personal_id_verification_file_type}}
+									/>
+									<label for="nationalIdCard" class="upload-id-card">National Id card</label>
+									<br>
+									<input type="radio" value="drivingLicense" name="personal_id_verification_file_type" {{setChecked "drivingLicense" verification.personal_id_verification_file_type}}
+									/>
+									<label for="drivingLicense" class="upload-id-card">Driving license</label>
 
-										<div class="input-group rt-7">
-											<div class="custom-file custom_error_message">
-												<input type="file" class="custom-file-input" onchange="readURL(this);" id="personalIdProof" name="personalIdProof" accept=".jpeg, .jpg, .png, .pdf"> 
-												<label name="pId" class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">Browse</label>
-											</div>
+									<div class="input-group rt-7">
+										<div class="custom-file custom_error_message">
+											<input type="file" class="custom-file-input" onchange="readURL(this);" id="personalIdProof" name="personalIdProof" accept=".jpeg, .jpg, .png, .pdf"> 
+											<label name="pId" class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">Browse</label>
 										</div>
-										{{#if verification.personal_id_verification_file_link }}
-										<img id="personalIdProof_img_old" src="{{verification.personal_id_verification_file_link}}" alt="your image" class="verification-id" style="object-fit: contain;"
-										/> {{/if}}
-										<input type="hidden" id="personal_id_verification_file_link">
-										<img class="verification-id" id="personalIdProof_img" />
 									</div>
-									<hr style="margin-top: 25px;">
-									<div class="row">
-										<h5 class="gtc-title" style="padding-left: 20px; float: left;font-size:23px">Upload Bill With Personal Address</h5>
-										<p class="verification-incomplete">
-											{{{verificationStatus verificationStatus verification.personal_address_verification_file_status 'Personal Address'verification.personal_address_reason_for_reject}}}
-										</p>
-									</div>
-									<p class="verfication_para">
-										Please atleast one utility bill which has the name of the Personal Address you've registered on it
+									{{#if verification.personal_id_verification_file_link }}
+									<img id="personalIdProof_img_old" src="{{verification.personal_id_verification_file_link}}" alt="your image" class="verification-id" style="object-fit: contain;"
+									/> {{/if}}
+									<input type="hidden" id="personal_id_verification_file_link">
+									<img class="verification-id" id="personalIdProof_img" />
+								</div>
+								<hr style="margin-top: 25px;">
+								<div class="row">
+									<h5 class="gtc-title" style="padding-left: 20px; float: left;font-size:23px">Upload Bill With Personal Address</h5>
+									<p class="verification-incomplete">
+										{{{verificationStatus verificationStatus verification.personal_address_verification_file_status 'Personal Address'verification.personal_address_reason_for_reject}}}
 									</p>
-									<div class="col-md-6">
-										<div class="input-group rt-20">
-											<div class="custom-file custom_error_message">
-												<input type="file" class="custom-file-input" id="personalAddressProof" name="personalAddressProof" accept=".jpg, .png, .pdf" onchange="readURL(this);">
-												<label name="pAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">Browse</label>
-											</div>
+								</div>
+								<p class="verfication_para">
+									Please atleast one utility bill which has the name of the Personal Address you've registered on it
+								</p>
+								<div class="col-md-6">
+									<div class="input-group rt-20">
+										<div class="custom-file custom_error_message">
+											<input type="file" class="custom-file-input" id="personalAddressProof" name="personalAddressProof" accept=".jpg, .png, .pdf" onchange="readURL(this);">
+											<label name="pAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">Browse</label>
 										</div>
+									</div>
 
-										<br>
-										<input type="hidden" id="personal_address_verification_file_link">
-										{{#if verification.personal_address_verification_file_link }}
-										<img id="personalAddressProof_img_old" src="{{verification.personal_address_verification_file_link}}" alt="your image" class="verification-id"
-										style="object-fit: contain;" />
-										{{/if}}
-										<img id="personalAddressProof_img" alt="your image" class="verification-id" style="object-fit: contain;" />
-										<input type="hidden" id="personal_address_verification_file_link">
-									</div>
-									<hr style="margin-top: 25px;">
-									<div class="row">
-										<h5 class="gtc-title" style="padding-left: 20px; float: left;font-size:23px">
-											Business License / Articles Of Incorporation
-										</h5>
-										<p class="verification-incomplete">
-											{{{verificationStatus verificationStatus verification.business_verification_file_status 'Business License' verification.business_id_reason_for_reject}}}
-										</p>
-									</div>
-									<p class="verfication_para">
-										Submit at least one piece of documentation which confirms you have an active business license, or an article of incorporation.
+									<br>
+									<input type="hidden" id="personal_address_verification_file_link">
+									{{#if verification.personal_address_verification_file_link }}
+									<img id="personalAddressProof_img_old" src="{{verification.personal_address_verification_file_link}}" alt="your image" class="verification-id"
+									style="object-fit: contain;" />
+									{{/if}}
+									<img id="personalAddressProof_img" alt="your image" class="verification-id" style="object-fit: contain;" />
+									<input type="hidden" id="personal_address_verification_file_link">
+								</div>
+								<hr style="margin-top: 25px;">
+								<div class="row">
+									<h5 class="gtc-title" style="padding-left: 20px; float: left;font-size:23px">
+										Business License / Articles Of Incorporation
+									</h5>
+									<p class="verification-incomplete">
+										{{{verificationStatus verificationStatus verification.business_verification_file_status 'Business License' verification.business_id_reason_for_reject}}}
 									</p>
-									<div class="col-md-6">
-										<div class="input-group rt-20">
-											<div class="custom-file custom_error_message">
-												<input type="file" class="custom-file-input" id="businessIdProof" name="businessIdProof" accept=".jpg, .png, .pdf" onchange="readURL(this);">
-												<label name="bId" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">Browse</label>
-											</div>
+								</div>
+								<p class="verfication_para">
+									Submit at least one piece of documentation which confirms you have an active business license, or an article of incorporation.
+								</p>
+								<div class="col-md-6">
+									<div class="input-group rt-20">
+										<div class="custom-file custom_error_message">
+											<input type="file" class="custom-file-input" id="businessIdProof" name="businessIdProof" accept=".jpg, .png, .pdf" onchange="readURL(this);">
+											<label name="bId" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">Browse</label>
 										</div>
-										<br>
-										<img id="businessIdProof_img" alt="your image" class="verification-id" style="object-fit: contain;" />
-										<input type="hidden" id="business_verification_file_link">
-										{{#if verification.business_verification_file_link }}
-										<img id="businessIdProof_img_old" src="{{verification.business_verification_file_link}}" alt="your image" class="verification-id" style="object-fit: contain;"
-										/> {{/if}}
 									</div>
-									<hr style="margin-top: 25px;">
-									<div class="row">
-										<h5 class="gtc-title" style="padding-left: 20px; float: left;font-size:23px">Upload Bill with address</h5>
-										<p class="verification-incomplete">
-											{{{verificationStatus verificationStatus verification.business_address_verification_file_status  'Business Address'verification.business_address_reason_for_reject}}}
-										</p>
-									</div>
-									<p class="verfication_para">Please atleast one utility bill which has the name of the Company you've registered on it</p>
-									<div class="col-md-6">
-										<div class="input-group rt-20">
-											<div class="custom-file custom_error_message">
-												<input type="file" class="custom-file-input" id="businessAddressProof" name="businessAddressProof" accept=".jpg, .png, .pdf" onchange="readURL(this);">
-												<label name="bAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">Browse</label>
-											</div>
+									<br>
+									<img id="businessIdProof_img" alt="your image" class="verification-id" style="object-fit: contain;" />
+									<input type="hidden" id="business_verification_file_link">
+									{{#if verification.business_verification_file_link }}
+									<img id="businessIdProof_img_old" src="{{verification.business_verification_file_link}}" alt="your image" class="verification-id" style="object-fit: contain;"
+									/> {{/if}}
+								</div>
+								<hr style="margin-top: 25px;">
+								<div class="row">
+									<h5 class="gtc-title" style="padding-left: 20px; float: left;font-size:23px">Upload Bill with address</h5>
+									<p class="verification-incomplete">
+										{{{verificationStatus verificationStatus verification.business_address_verification_file_status  'Business Address'verification.business_address_reason_for_reject}}}
+									</p>
+								</div>
+								<p class="verfication_para">Please atleast one utility bill which has the name of the Company you've registered on it</p>
+								<div class="col-md-6">
+									<div class="input-group rt-20">
+										<div class="custom-file custom_error_message">
+											<input type="file" class="custom-file-input" id="businessAddressProof" name="businessAddressProof" accept=".jpg, .png, .pdf" onchange="readURL(this);">
+											<label name="bAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">Browse</label>
 										</div>
-										<br>
-										<img id="businessAddressProof_img" alt="your image" class="verification-id" style="object-fit: contain;" />
-										<input type="hidden" id="business_address_verification_file_link">
-										{{#if verification.business_address_verification_file_link }}
-										<img id="businessAddressProof_img_old" src="{{verification.business_address_verification_file_link}}" alt="your image" class="verification-id"
-										style="object-fit: contain;" /> {{/if}}
 									</div>
-									<hr style="margin-top: 25px;">
-									<div style="display:none">
+									<br>
+									<img id="businessAddressProof_img" alt="your image" class="verification-id" style="object-fit: contain;" />
+									<input type="hidden" id="business_address_verification_file_link">
+									{{#if verification.business_address_verification_file_link }}
+									<img id="businessAddressProof_img_old" src="{{verification.business_address_verification_file_link}}" alt="your image" class="verification-id"
+									style="object-fit: contain;" /> {{/if}}
+								</div>
+								<hr style="margin-top: 25px;">
+								<div style="display:none">
 
-										<h5 class="gtc-title verfication_header" style="padding-top: 20px; padding-left: 5px; float: left;">Connect a Social Account
-										</h5>
-										<p class="verification-incomplete">
-											<span class="exclamation">
-												<i class="fas fa-exclamation-circle"></i>
-											</span>You haven't submitted this yet.
-										</p>
-										<p>
-											<small>Connect with one of the following accounts to prove you have ownership of at least social media profile</small>
-										</p>
-										<div class="col-md-10">
-											<button class="ladda-button btn btn-small btn-muted" type="button" id="gtcVerficationFbLogin">
-												<i class="fab fa-facebook-f" style="padding-right: 10px;"></i>
-												CONNECT WITH FACEBOOK
-											</button>
-											<button class="ladda-button btn btn-small btn-muted" type="button" id="gtcVerficationLinkedLogin">
-												<i class="fab fa-linkedin-in" style="padding-right: 10px;"></i>
-												CONNECT WITH LINKEDIN
-											</button>
-											<button class="ladda-button btn btn-small btn-muted" type="button" id="gtcVerficationTwitterLogin">
-												<i class="fab fa-twitter" style="padding-right: 10px;"></i>
-												CONNECT WITH TWITTER
-											</button>
-										</div>
-										<hr/>
+									<h5 class="gtc-title verfication_header" style="padding-top: 20px; padding-left: 5px; float: left;">Connect a Social Account
+									</h5>
+									<p class="verification-incomplete">
+										<span class="exclamation">
+											<i class="fas fa-exclamation-circle"></i>
+										</span>You haven't submitted this yet.
+									</p>
+									<p>
+										<small>Connect with one of the following accounts to prove you have ownership of at least social media profile</small>
+									</p>
+									<div class="col-md-10">
+										<button class="ladda-button btn btn-small btn-muted" type="button" id="gtcVerficationFbLogin">
+											<i class="fab fa-facebook-f" style="padding-right: 10px;"></i>
+											CONNECT WITH FACEBOOK
+										</button>
+										<button class="ladda-button btn btn-small btn-muted" type="button" id="gtcVerficationLinkedLogin">
+											<i class="fab fa-linkedin-in" style="padding-right: 10px;"></i>
+											CONNECT WITH LINKEDIN
+										</button>
+										<button class="ladda-button btn btn-small btn-muted" type="button" id="gtcVerficationTwitterLogin">
+											<i class="fab fa-twitter" style="padding-right: 10px;"></i>
+											CONNECT WITH TWITTER
+										</button>
 									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<button class="ladda-button btn btn-md update-btn m-t" disabled type="submit" data-style="expand-left" id="uploadDocs" >{{!-- disables --}}
-												<span class="ladda-label">UPDATE</span>
-												<span class="ladda-spinner"></span>
-											</button>
-											<button class="ladda-button btn btn-md btn-muted m-t" type="reset" data-style="expand-left" id="resetForm">
-												<span class="ladda-label">CANCEL</span>
-												<span class="ladda-spinner"></span>
-											</button>
-										</div>
+									<hr/>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<button class="ladda-button btn btn-md update-btn m-t" disabled type="submit" data-style="expand-left" id="uploadDocs" >{{!-- disables --}}
+											<span class="ladda-label">UPDATE</span>
+											<span class="ladda-spinner"></span>
+										</button>
+										<button class="ladda-button btn btn-md btn-muted m-t" type="reset" data-style="expand-left" id="resetForm">
+											<span class="ladda-label">CANCEL</span>
+											<span class="ladda-spinner"></span>
+										</button>
 									</div>
-								</form>
-							</div>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>
-				{{else}}
-				{{> plan-inactive}}
-				{{/if}}
 			</div>
+			{{else}}
+			{{> plan-inactive}}
+			{{/if}}
 		</div>
 	</div>
-	{{> footer/bottom-footer}}
+</div>
+{{> footer/bottom-footer}}

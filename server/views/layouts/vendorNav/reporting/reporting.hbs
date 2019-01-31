@@ -419,13 +419,13 @@
 				type: "GET",
 				url: "/api/reports/latest-tickets",
 				success: function(data) {
-					if (data.length > 0) {
-						data.forEach(function(aObj) {
+					if (data.rows.length > 0) {
+						data.rows.forEach(function(aObj) {
 							var latestTicketList = $("#reporting-latest-tickets");
 							var tag = `<div class="reporting_block_content_individual">
 										<div class="row">
 											<div class="col-md-3 col-1 no-padding">
-												<img src="${aObj["User.user_pic_url"]}" class="avatar-img" alt="${aObj["User.first_name"]}" onError="imgError(this)">
+												<img src="${aObj.User.user_pic_url}" class="avatar-img" alt="${aObj["User.first_name"]}" onError="imgError(this)">
 											</div>
 											<div class="col-md-9 col-11 no-padding">
 												<h4 class="reporting_subject reporting_title">
