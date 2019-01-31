@@ -46,6 +46,7 @@ function removeBaseImage(e, imageIndex) {
 			productBaseImage.splice(imageIndex, 1);
 			$(e).parents("#base").remove();
 			$("#baseImage").removeAttr("disabled");
+			
 			appendBaseImage();
 		} else {
 			appendBaseImage();
@@ -74,6 +75,7 @@ function appendImage() {
 }
 
 function appendBaseImage() {
+
 	$('div.base_image').empty();
 	for (var i = 0; i < productBaseImage.length; i++) {
 		var domElement;
@@ -107,7 +109,7 @@ $(function() {
 
 $(document).ready(function() {
 
-	var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage, productBaseImageId;
+	var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 	var fileDetails = {}, baseImageFileDetails;
 	var product_id = $('#edit_product_id').val();
 
@@ -527,6 +529,7 @@ $(document).ready(function() {
 					contentType: false,
 					success: function(data) {
 						if (productBaseImageId && productBaseImage.length > 0) {
+
 							$.ajax({
 								url: '/api/product-medias/'+ productBaseImageId,
 								type: 'DELETE',
