@@ -649,6 +649,10 @@ $(document).ready(function() {
 
 	$.validator.addMethod("greaterThan",
 		function(value, element, params) {
+
+			if(!value){
+				return true;
+			}
 			if (!/Invalid|NaN/.test(new Date(value))) {
 				return new Date(value) > new Date($(params).val());
 			}
