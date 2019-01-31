@@ -1,7 +1,6 @@
 'use strict';
 
 const status = require('../config/status');
-const orderStatus = require('../config/order_status');
 const orderItemStatus = require('../config/order-item-new-status');
 const model = require('../sqldb/model-connect');
 const sequelize = require('sequelize');

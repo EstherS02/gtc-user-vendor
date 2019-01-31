@@ -209,3 +209,44 @@ export async function dispatchOrder(req, res) {
 		return res.status(500).send(error);
 	}
 }
+
+
+export function orderTrack(req,res){
+
+	var orderTrackQueryObj = {}, orderId;
+	var orderTrackIncludeArr = [];
+
+	orderTrackQueryObj['$or'] = [{
+		order_item_status: orderItemStatus['ORDER_INITIATED']
+		}, {
+			order_item_status: orderItemStatus['CONFIRMED']
+		}, {
+			order_item_status: orderItemStatus['SHIPPED']
+		}];
+
+	orderTrackIncludeArr = [{ 
+			model: model['Order'],
+			attributes: ['id'],
+			where:{
+				user_id: req.user.id
+			}
+		}]
+
+	model['OrderItem'].findOne({
+		include: orderTrackIncludeArr,
+		where: orderTrackQueryObj,
+		order: [['created_on', 'DESC']],
+	}).then(function(order){
+		if(order){
+			orderId = order.Order.id;		
+		}else{
+			orderId = null;
+		}
+		return res.status(200).send({
+			orderId: orderId
+		});
+	}).catch(function(error){
+		console.log("Error::",error);
+		return res.status(500).send(error);
+	})
+}

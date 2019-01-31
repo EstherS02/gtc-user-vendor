@@ -6,9 +6,6 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
-const orderStatus = require('../../config/order_status');
-const carriersCode = require('../../config/carriers');
-const trackingUrl = require('../../config/tracking-url');
 const notifictionService = require('../../api/notification/notification.service');
 
 export function orderTrack(req, res) {
@@ -17,9 +14,7 @@ export function orderTrack(req, res) {
 
 	if (req.user)
 		LoggedInUser = req.user;
-
 	let user_id = LoggedInUser.id;
-	var orderModel = "Order";
 	
 	async.series({
 		cartCounts: function(callback) {
@@ -52,63 +47,6 @@ export function orderTrack(req, res) {
 					return callback(null);
 				});
 		},
-		orderTrack: function(callback) {
-			var includeArr = [
-				{
-					model: model['Address'],
-					as: 'shippingAddress',
-					include: [
-						{ model: model['State'] },
-						{ model: model['Country'] },
-					]
-				},
-				{ 	model: model['Shipping'] 	},
-				{
-					model: model['OrderItem'],
-					include: [{
-						model: model['Product'],
-						include: [{
-							model: model['ProductMedia'],
-						}]
-					}]
-				}
-			];
-
-			if (req.params.id) {
-
-				order_id = req.params.id;
-				service.findIdRow(orderModel, order_id, includeArr)
-					.then(function(result) {
-						return callback(null, result);
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
-
-			} else{
-
-				userOrderObj['user_id'] = user_id;
-				userOrderObj['order_status'] = {
-					'$lt': orderStatus["DELIVEREDORDER"]
-				}
-				userOrderObj['status'] = statusCode["ACTIVE"];
-
-				model['Order'].findOne({
-					include: includeArr,
-					where: userOrderObj,
-					order: [['created_on', 'DESC']],
-				}).then(function(result) {
-					if (result) {
-						return callback(null, result.toJSON());
-					} else {
-						return callback(null);
-					}
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-			}
-		},
 		unreadCounts: function(callback) {
 			notifictionService.notificationCounts(user_id)
 				.then(function(counts) {
@@ -125,12 +63,8 @@ export function orderTrack(req, res) {
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				cartheader: results.cartCounts,
-				orderTrack: results.orderTrack,
 				unreadCounts: results.unreadCounts,
-				vendorPlan: vendorPlan,
-				orderStatus: orderStatus,
-				carriersCode: carriersCode,
-				trackingUrl: trackingUrl
+				vendorPlan: vendorPlan
 			});
 		} else {
 			res.render('order-track', err);

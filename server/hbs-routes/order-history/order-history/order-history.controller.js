@@ -11,7 +11,6 @@ const service = require('../../../api/service');
 const orderService = require('../../../api/order/order.service');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
-const orderStatusCode = require('../../../config/order_status');
 const vendorPlan = require('../../../config/gtc-plan');
 const notifictionService = require('../../../api/notification/notification.service');
 

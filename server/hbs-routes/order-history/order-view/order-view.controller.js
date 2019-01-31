@@ -4,7 +4,6 @@ const async = require('async');
 const _ = require('lodash');
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
-const orderStatusCode = require('../../../config/order_status');
 const status = require('../../../config/status');
 const carriersCode = require('../../../config/carriers');
 const marketplace = require('../../../config/marketplace');

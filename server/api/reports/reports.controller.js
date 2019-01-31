@@ -8,7 +8,6 @@ const orderItemStatus = require('../../config/order-item-new-status');
 const statusCode = require('../../config/status');
 const vendorPlan = require('../../config/gtc-plan');
 const carrierCode = require('../../config/carriers');
-const orderStaus = require('../../config/order_status');
 const ReportService = require('../../utilities/reports');
 const reportsService = require('../../api/reports/reports.service');
 var moment = require('moment');

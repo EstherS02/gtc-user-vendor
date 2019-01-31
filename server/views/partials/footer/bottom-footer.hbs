@@ -35,6 +35,23 @@
         window.location.reload(); 
     }
 });
+
+	function orderTrack() {
+		$.ajax({
+			type: "GET",
+			url: "/api/orders/order-track",
+			success: function(result) {
+				if(result.orderId){
+					location.href = '/order-history/'+result.orderId;
+				}else{
+					location.href = '/order-track';
+				}
+			},
+			error: function(error) {
+				console.log("Error::",error);
+			}
+		});
+	}
 </script>
 <style>
 	.footer-social-links li:hover {
@@ -110,8 +127,7 @@
                                     {{#if LoggedInUser.id}}
                                     <li><a href="/user/my-profile">My Account</a></li>
 									<li >
-										{{!-- <a href="/order-track"> --}}
-										<a href="javascript:;">
+										<a href="javascript:;" onclick="orderTrack()">
 										Track your Order</a></li>
                                     <li ><a href="/wishlist">Wishlist</a></li>
                                     <li ><a href="/cart">Shopping Cart</a></li>

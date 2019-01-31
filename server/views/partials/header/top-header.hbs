@@ -66,7 +66,7 @@
 										</a>
 									</li>
 									<li>
-										<a href="javascript:;">
+										<a href="javascript:;" onclick="orderTrack()">
 										{{!-- <a href="/order-track"> --}}
 											<svg xmlns="http://www.w3.org/2000/svg" width="17" height="22" viewBox="0 0 17 22">
 												<path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M8.5 1C4.4 1 1 4.4 1 8.5S7.3 21 8.5 21 16 12.6 16 8.5 12.6 1 8.5 1z"></path>
@@ -339,6 +339,23 @@
 			},
 			error: function() {
 				console.log("Error while logging out")
+			}
+		});
+	}
+
+	function orderTrack() {
+		$.ajax({
+			type: "GET",
+			url: "/api/orders/order-track",
+			success: function(result) {
+				if(result.orderId){
+					location.href = '/order-history/'+result.orderId;
+				}else{
+					location.href = '/order-track';
+				}
+			},
+			error: function(error) {
+				console.log("Error::",error);
 			}
 		});
 	}
