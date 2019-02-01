@@ -241,71 +241,72 @@ export async function adFeaturedRevenue(req,res){
 	results.count = 0;
 	results.total = 0;
 	try{
-	if (type == 0 || type == 1) {
-		await model[productAdsSettingTable].findAndCountAll({
-			where: queryObj1,
-			include: [{
-				model: model['Payment'],
-				attributes: ['id', 'amount'],
-				required: false
-			}],
-			attributes: ['id', ['name', 'product_name'], 'position', 'start_date', 'end_date', 'status', 'impression', 'clicks', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on']
-		}).then(function(response) {
-			results.count = results.count + response.count;
-			var arrayItem = JSON.parse(JSON.stringify(response.rows));
+		if (type == 0 || type == 1) {
+			await model[productAdsSettingTable].findAndCountAll({
+				where: queryObj1,
+				include: [{
+					model: model['Payment'],
+					attributes: ['id', 'amount'],
+					required: false
+				}],
+				attributes: ['id', ['name', 'product_name'], 'position', 'start_date', 'end_date', 'status', 'impression', 'clicks', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on']
+			}).then(function(response) {
+				results.count = results.count + response.count;
+				var arrayItem = JSON.parse(JSON.stringify(response.rows));
 
-			_.forOwn(arrayItem, function(element) {
-				element['type'] = 1;
-				element['feature_indefinitely'] = null;
-				newArray.push(element);
+				_.forOwn(arrayItem, function(element) {
+					element['type'] = 1;
+					element['feature_indefinitely'] = null;
+					newArray.push(element);
+				});
 			});
-		});
-	}
-	if (type == 0 || type == 2) {
-		const featuredProductTable = 'FeaturedProduct';
-		await model[featuredProductTable].findAndCountAll({
-			where: queryObj2,
-			include: [{
-				model: model['Product'],
-				where:productQuery,
-				attributes: ['product_name', 'product_slug', 'id'],
-				include:{
-					model: model['Marketplace'],
-					attributes:['id']
-				}
-			}, {
-				model: model['Payment'],
-				attributes: ['id', 'amount'],
-				required: false
-			}],
-			attributes: ['id', 'position_homepage','feature_indefinitely', 'position_searchresult', 'position_profilepage', 'position_wholesale_landing', 'position_shop_landing', 'position_service_landing', 'position_subscription_landing', 'start_date', 'status', 'end_date', 'impression', 'clicks', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on']
-		}).then(function(response) {
-			results.count = results.count + response.count;
-			var arrayItem = JSON.parse(JSON.stringify(response.rows));
-			_.forOwn(arrayItem, function(element) {
-				element.type = 2;
-				element.product_name = element.Product.product_name;
-				newArray.push(element);
-			});
-		});
-	}
-	let arrayEle = _.orderBy(newArray, 'created_on', 'desc');
-	arrayEle = arrayEle.slice(offset, offset + limit);
-	var total_count = 0;
-	for (var i = 0; i < arrayEle.length; i++) {
-		if(arrayEle[i].Payment){
-			if((arrayEle[i].Payment.amount != null)&&(arrayEle[i].status == 1))
-			total_count = total_count + parseInt(arrayEle[i].Payment.amount);
 		}
-	}
-	results.rows = arrayEle;
-	results.total = total_count;
-	return results;
-} catch (error) {
+		if (type == 0 || type == 2) {
+			const featuredProductTable = 'FeaturedProduct';
+			await model[featuredProductTable].findAndCountAll({
+				where: queryObj2,
+				include: [{
+					model: model['Product'],
+					where:productQuery,
+					attributes: ['product_name', 'product_slug', 'id'],
+					include:{
+						model: model['Marketplace'],
+						attributes:['id']
+					}
+				}, {
+					model: model['Payment'],
+					attributes: ['id', 'amount'],
+					required: false
+				}],
+				attributes: ['id', 'position_homepage','feature_indefinitely', 'position_searchresult', 'position_profilepage', 'position_wholesale_landing', 'position_shop_landing', 'position_service_landing', 'position_subscription_landing', 'start_date', 'status', 'end_date', 'impression', 'clicks', 'created_by', 'created_on', 'last_updated_by', 'last_updated_on']
+			}).then(function(response) {
+				results.count = results.count + response.count;
+				var arrayItem = JSON.parse(JSON.stringify(response.rows));
+				_.forOwn(arrayItem, function(element) {
+					element.type = 2;
+					element.product_name = element.Product.product_name;
+					newArray.push(element);
+				});
+			});
+		}
+		let arrayEle = _.orderBy(newArray, 'created_on', 'desc');
+		arrayEle = arrayEle.slice(offset, offset + limit);
+		var total_count = 0;
+		for (var i = 0; i < arrayEle.length; i++) {
+			if(arrayEle[i].Payment){
+				if((arrayEle[i].Payment.amount != null)&&(arrayEle[i].status == 1))
+				total_count = total_count + parseInt(arrayEle[i].Payment.amount);
+			}
+		}
+		results.rows = arrayEle;
+		results.total = total_count;
+		return results;
+	} catch (error) {
 		console.log("Error::",error)
 		done(error);
 	}
 }
+
 function paymentInEscrowApi(vendorID,queryObj){
 	var queryResult = `SELECT SUM(order_vendor.final_price) AS amount
 					   FROM order_vendor LEFT OUTER JOIN order_vendor_payout 

@@ -344,8 +344,8 @@
 															<td><a href="../my-order/order/{{this.order_id}}">{{this.order_id}}</a></td>
 															<td>{{this.total_price}}</td>
 															<td>{{this.shipping_cost}}</td>
-															<td>{{this.gtc_fees_percent}}</td>
-															<td>{{this.gtc_fees}}</td>
+															<td>{{this.plan_fees_percent}}</td>
+															<td>{{this.plan_fees}}</td>
 														</tr>
 													{{/each}}
 												</tbody>
@@ -449,10 +449,10 @@
 												<tbody>
 													{{#each gtcPayFee.rows}}
 													<tr>
-														<td><a href="../my-order/order/{{this.order_id}}">{{this.order_id}}</a></td>
-														<td>{{this.total_price}}</td>
-														<td>{{this.shipping_cost}}</td>
-														<td>{{this.gtc_fees_percent}}</td>
+														<td><a href="../my-order/order/{{this.OrderVendor.order_id}}">{{this.OrderVendor.order_id}}</a></td>
+														<td>{{this.OrderVendor.total_price}}</td>
+														<td>{{this.OrderVendor.shipping_cost}}</td>
+														<td>{{this.Payment.amount}}</td>
 													</tr>
 													{{/each}}
 												</tbody>

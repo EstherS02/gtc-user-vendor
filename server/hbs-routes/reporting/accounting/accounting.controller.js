@@ -15,6 +15,7 @@ const cartService = require('../../../api/cart/cart.service');
 const marketplace = require('../../../config/marketplace');
 const notifictionService = require('../../../api/notification/notification.service');
 var categoryModel = "Category";
+var orderVendorModel = 'OrderVendor'
 
 export function accounting(req, res) {
 	var queryParams = {};
@@ -74,6 +75,7 @@ export function accounting(req, res) {
 			var accountingQueryParams = {};
 			accountingQueryParams['start_date'] = new Date(queryParams['start_date']);
 			accountingQueryParams['end_date'] = new Date(queryParams['end_date']);
+
 			reportsService.AccountingReport(req.user.Vendor.id, accountingQueryParams)
 				.then((response) => {
 					return callback(null, response);
@@ -307,14 +309,13 @@ export function processing(req, res) {
 		},
 		processingFee: function(callback) {
 			var queryObj = {};
-			var OrderVendorModelName = 'OrderVendor'
 			queryObj['vendor_id'] = req.user.Vendor.id;
 
 			let includeArr = [{
 				model: model['Vendor'],
 			}]
 
-			service.findRows(OrderVendorModelName, queryObj, offset, limit, field, order, includeArr)
+			service.findRows(orderVendorModel, queryObj, offset, limit, field, order, includeArr)
 				.then(function(rows) {
 					return callback(null, rows);
 				}).catch(function(error) {
@@ -413,14 +414,13 @@ export function subscription(req, res) {
 		},
 		subscriptionFee: function(callback) {
 			var queryObj = {};
-			var OrderVendorModelName = 'OrderVendor'
 			queryObj['vendor_id'] = req.user.Vendor.id;
 
 			let includeArr = [{
 				model: model['Vendor'],
 			}]
 
-			service.findRows(OrderVendorModelName, queryObj, offset, limit, field, order, includeArr)
+			service.findRows(orderVendorModel, queryObj, offset, limit, field, order, includeArr)
 				.then(function(rows) {
 					return callback(null, rows);
 				}).catch(function(error) {
@@ -470,7 +470,7 @@ export function gtcpay(req, res) {
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
 	delete req.query.page;
-	field = req.query.field ? req.query.field : "id";
+	field = req.query.field ? req.query.field : "created_on";
 	delete req.query.field;
 			
 	offset = (page - 1) * limit;
@@ -516,27 +516,28 @@ export function gtcpay(req, res) {
 					return callback(null);
 				});
 		},
-		gtcPayFee: function(callback) {
+		gtcPayFee: function(callback){
 			var queryObj = {};
-			var OrderVendorModelName = 'OrderVendor'
-			queryObj['vendor_id'] = req.user.Vendor.id;
 
-			let includeArr=[{
-				model: model['Vendor']
+			var includeArr =[{
+				model: model['OrderVendor'],
+				where: {
+					vendor_id: req.user.Vendor.id
+				},
+				include: [{
+					model: model['Vendor']
+				}]
 			},{
-				model:model['OrderVendorPayout']
-			},{
-				model:model['Payment']
+				model: model['Payment']
 			}]
 
-
-			service.findRows(OrderVendorModelName, queryObj, offset, limit, field, order, includeArr)
-				.then(function(rows) {
+			service.findRows('OrderVendorPayout', queryObj, offset, limit, field, order, includeArr)
+				.then(function(rows){
 					return callback(null, rows);
-				}).catch(function(error) {
-					console.log('Error :::', error);
+				}).catch(function(error){
+					console.log('Error::',error);
 					return callback(error);
-				});
+				})
 		}
 	}, function(error, results) {
 		queryPaginationObj['maxSize'] = 5;
@@ -650,7 +651,6 @@ export function membership(req, res) {
 				vendor_id: LoggedInUser.Vendor.id,
 				payment_id: {
 					$ne: null
-
 				}
 			}
 
