@@ -111,18 +111,33 @@
 															{{/ifCond}}
 														</td>												
 														<td>{{formatTime this.start_date "MMM DD, YYYY"}}</td>
-														<td>{{formatTime this.end_date "MMM DD, YYYY"}}</td>
-														{{#if this.impression}}
-															<td>{{this.impression}}</td>
-														{{else}}
-															<td>0</td>
-														{{/if}}
-														{{#if this.clicks}}
-															<td>{{this.clicks}}</td>
-														{{else}}
-															<td>0</td>
-														{{/if}}
-														<td>-</td>
+														<td>
+															{{#if this.feature_indefinitely}}
+																Indefinite
+															{{else}}
+																{{formatTime this.end_date "MMM DD, YYYY"}}
+															{{/if}}
+														</td>
+														<td>
+															{{#if this.impression}}
+																{{this.impression}}
+															{{else}}
+																0
+															{{/if}}
+														</td>
+														<td>
+															{{#if this.clicks}}
+																{{this.clicks}}
+															{{else}}
+																0
+															{{/if}}
+														</td>
+														<td>
+															{{#ifCond this.impression '&&' this.clicks}}
+																(this.clicks/this.impression)*100)
+															{{else}}0
+															{{/ifCond}}
+														</td>
 														<td>{{this.Payment.amount}}</td>
 													</tr>
 													{{/each}}
