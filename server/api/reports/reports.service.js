@@ -5,12 +5,10 @@ var _ = require('lodash');
 const service = require('../service');
 const status = require('../../config/status');
 const SequelizeInstance = require('../../sqldb/index');
-
 const model = require('../../sqldb/model-connect');
 const sequelize = require('sequelize');
 
 export async function AccountingReport(vendorID, queryParams) {
-
 	var accounting = {};
 	accounting['membership'] = 0;
 	accounting['featured_product'] = 0;
@@ -21,16 +19,13 @@ export async function AccountingReport(vendorID, queryParams) {
 
 	var queryObj = {}, vendorId = {};
 	queryObj.created_on = {};
-	
-	var adminQueryObj = {};
 
-	try {
+	try{
+
 		if (vendorID) {
 			queryObj.vendor_id = vendorID;
-			adminQueryObj.vendor_id = vendorID;
 			vendorId.vendor_id = vendorID;
 		}
-
 		if (queryParams.start_date && queryParams.end_date) {
 			queryObj.created_on['$gte'] = queryParams.start_date;
 			queryObj.created_on['$lte'] = queryParams.end_date;
@@ -50,10 +45,11 @@ export async function AccountingReport(vendorID, queryParams) {
 		const memberShipExpensive = await JSON.parse(JSON.stringify(memberShipExpensiveResponse));
 		accounting['membership'] = await parseFloat(_.sumBy(memberShipExpensive, 'Payment.amount'));
 
+
 		const featuredProductExpensiveResponse = await model['FeaturedProduct'].findAll({
 			include: [{
 				model: model['Product'],
-				where: adminQueryObj,
+				where: vendorId,
 				attributes: []
 			}, {
 				model: model['Payment'],
@@ -69,8 +65,8 @@ export async function AccountingReport(vendorID, queryParams) {
 		});
 		const featuredProductExpensive = await JSON.parse(JSON.stringify(featuredProductExpensiveResponse));
 		accounting['featured_product'] = await parseFloat(_.sumBy(featuredProductExpensive, 'Payment.amount'));
-		
-		adminQueryObj.created_on = queryObj.created_on;
+
+
 		const productAdSettingsExpensiveResponse = await model['ProductAdsSetting'].findAll({
 			include: [ {
 				model: model['Payment'],
@@ -79,14 +75,13 @@ export async function AccountingReport(vendorID, queryParams) {
 				},
 				attributes: ['id', 'amount']
 			}],
-			where:adminQueryObj ,
+			where:queryObj ,
 			attributes: ['id', 'product_id', 'payment_id']
 		});
-		delete adminQueryObj.created_on;
 		const productAdSettingsExpensive = await JSON.parse(JSON.stringify(productAdSettingsExpensiveResponse));
-
 		accounting['featured_product'] = accounting['featured_product'] + await parseFloat(_.sumBy(productAdSettingsExpensive, 'Payment.amount'));
-		
+
+
 		const processingFees = await model['OrderVendor'].findAll({
 			raw: true,
 			where: queryObj,
@@ -96,6 +91,7 @@ export async function AccountingReport(vendorID, queryParams) {
 		});
 		if ( processingFees.length > 0 )
 			accounting['processing_fees'] = processingFees[0].amount != null ? parseFloat(processingFees[0].amount) : 0;
+
 		
 		const subscriptionFees = await model['OrderVendor'].findAll({
 			raw: true,
@@ -106,50 +102,22 @@ export async function AccountingReport(vendorID, queryParams) {
 		});
 		if (subscriptionFees.length > 0) 
 			accounting['subscription_fees'] = subscriptionFees[0].amount != null ? parseFloat(subscriptionFees[0].amount) : 0;
-		
-		const paymentInEscrow = await paymentInEscrowApi(vendorID,queryParams);
-		
 
-		/* model['OrderVendor'].findAll({
-		 	raw: true,
-		 	where: queryObj,
-		 	include:[{
-		 		model:model['OrderVendorPayout'],
-		 		where:{
-		 			order_vendor_id:{
-		 				$eq:null
-		 			}
-		 		},
-		 		required:false
-		 	}],
-		 	attributes: [
-		 		[sequelize.fn('sum', sequelize.col('final_price')), 'amount']
-		 	],
-		 	required:false
-		 });*/
+
+		const paymentInEscrow = await paymentInEscrowApi(vendorID,queryParams);
 		if (paymentInEscrow.length > 0)
 			accounting['payment_in_escrow'] = paymentInEscrow[0].amount != null ? parseFloat(paymentInEscrow[0].amount) : 0;
-// SELECT order_vendor.id,order_vendor_payout.id AS payout_id FROM order_vendor LEFT OUTER JOIN order_vendor_payout ON order_vendor.id=order_vendor_payout.order_vendor_id WHERE order_vendor_payout.order_vendor_id IS NULL
 
-		/*const gtcPaymentEscrow = await model['OrderVendor'].findAll({
-			raw: true,
-			where: queryObj,
-			attributes: [
-				[sequelize.fn('sum', sequelize.col('gtc_fees')), 'amount']
-			]
-		});
-		accounting['gtc_pay_escrow_fees'] = gtcPaymentEscrow.length > 0 ? gtcPaymentEscrow[0].amount : 0;*/
 
-		adminQueryObj.created_on = queryObj.created_on;
-		delete adminQueryObj.vendor_id;
-		
 		const gtcPaymentEscrow = await model['OrderVendor'].findAll({
 			raw: true,
 			where: vendorId,
 			attributes: [],
 			include: [{
 				model: model['OrderVendorPayout'],
-				where: adminQueryObj,
+				where:  {
+					created_on: queryObj.created_on
+				},
 				attributes: [],
 				include: [{
 					model: model['Payment'],
@@ -158,16 +126,14 @@ export async function AccountingReport(vendorID, queryParams) {
 				}]
 			}]
 		});	
-		
 		if(!_.isUndefined(gtcPaymentEscrow[0]['OrderVendorPayouts.Payment.amount']))
 			accounting['gtc_pay_escrow'] = parseFloat(gtcPaymentEscrow[0]['OrderVendorPayouts.Payment.amount'])?parseFloat(gtcPaymentEscrow[0]['OrderVendorPayouts.Payment.amount']):0;	
 
-		//accounting['total'] = _.sum(Object.values(accounting));
-		accounting['total'] = accounting['membership'] + accounting['featured_product'] + accounting['processing_fees'] + accounting['subscription_fees'];
-		delete adminQueryObj.created_on;
 		
+		accounting['total'] = accounting['membership'] + accounting['featured_product'] + accounting['processing_fees'] + accounting['subscription_fees'];
 		return accounting;
-	} catch (error) {
+
+	}catch (error) {
 		return error;
 	}
 }
@@ -350,9 +316,7 @@ function paymentInEscrowApi(vendorID,queryObj){
 	}
 	if(vendorID){
 		queryResult = queryResult+` AND order_vendor.vendor_id =`+ vendorID;	
-	}
-// sum('final_price') AS amount
-    
+	} 
     return new Promise((resolve, reject) => {
         SequelizeInstance.query(queryResult, {
             type: sequelize.QueryTypes.SELECT

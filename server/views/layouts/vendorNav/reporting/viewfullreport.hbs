@@ -17,7 +17,8 @@
 		}
 		return urlParams;
 	}
-</script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+</script> 
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 {{#ifCond selectedPage "==" 'revenue'}}
 	<div class="wrapper-content bg-gray">
 		<div class="gtc-container">
@@ -282,6 +283,7 @@
 				</div>
 			</div>
 		</div>
+	</div>
 {{/ifCond}}
 {{#ifCond selectedPage "==" 'subscription'}}
 	<div class="wrapper-content bg-gray">
@@ -635,3 +637,4 @@
 		</div>
 	</div>
 {{/ifCond}}
+{{> footer/bottom-footer}}

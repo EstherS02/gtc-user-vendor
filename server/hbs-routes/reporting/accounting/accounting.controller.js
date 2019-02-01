@@ -14,12 +14,12 @@ const vendorPlan = require('../../../config/gtc-plan');
 const cartService = require('../../../api/cart/cart.service');
 const marketplace = require('../../../config/marketplace');
 const notifictionService = require('../../../api/notification/notification.service');
+var categoryModel = "Category";
 
 export function accounting(req, res) {
 	var queryParams = {};
 	var bottomCategory = {};
 	var LoggedInUser = req.user;
-	var categoryModel = "Category";
 	const dateRangeOptions = [{
 		"column": "Today",
 		"value": 1
@@ -144,7 +144,7 @@ export function accounting(req, res) {
 export function revenue(req, res) {
 	var queryPaginationObj = {};
 	var offset, limit, order, page;
-	var queryURI = {};
+	var queryURI = {},bottomCategory = {};
 	var originalUrl = req.originalUrl.split('?')[0];
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
@@ -184,6 +184,27 @@ export function revenue(req, res) {
 					return callback(null);
 				});
 		},
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 		vendorRevenue: function(callback) {
 			req.query.vendorID = req.user.Vendor.id;
 			req.query.limit=limit;
@@ -210,14 +231,16 @@ export function revenue(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				queryParamsString: querystring.stringify(queryURI),
-				originalUrl:originalUrl
+				originalUrl:originalUrl,
+				categories: results.categories,
+				bottomCategory: bottomCategory
 			});
 		}
 	})
 }
 
 export function processing(req, res) {
-	var queryPaginationObj = {};
+	var queryPaginationObj = {},bottomCategory = {};
 	var offset, limit, order, page,field;
 	var queryURI = {};
 	var originalUrl = req.originalUrl.split('?')[0];
@@ -250,6 +273,27 @@ export function processing(req, res) {
 				.then((cartResult) => {
 					return callback(null, cartResult);
 				}).catch((error) => {
+					return callback(null);
+				});
+		},
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
@@ -292,14 +336,16 @@ export function processing(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				queryParamsString: querystring.stringify(queryURI),
-				originalUrl:originalUrl
+				originalUrl:originalUrl,
+				categories: results.categories,
+				bottomCategory: bottomCategory
 			});
 		}
 	})
 }
 
 export function subscription(req, res) {
-	var queryPaginationObj = {};
+	var queryPaginationObj = {},bottomCategory = {};
 	var offset, limit, order, page,field;
 	var queryURI = {};
 	var originalUrl = req.originalUrl.split('?')[0];
@@ -334,6 +380,27 @@ export function subscription(req, res) {
 					return callback(null, cartResult);
 				}).catch((error) => {
 					return callback(error);
+				});
+		},
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
 				});
 		},
 		unreadCounts: function(callback) {
@@ -375,14 +442,16 @@ export function subscription(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				queryParamsString: querystring.stringify(queryURI),
-				originalUrl:originalUrl
+				originalUrl:originalUrl,
+				categories: results.categories,
+				bottomCategory: bottomCategory
 			});
 		}
 	})
 }
 
 export function gtcpay(req, res) {
-	var queryPaginationObj = {};
+	var queryPaginationObj = {},bottomCategory = {};
 	var offset, limit, order, page,field;
 	var queryURI = {};
 	var originalUrl = req.originalUrl.split('?')[0];
@@ -416,6 +485,27 @@ export function gtcpay(req, res) {
 					return callback(null, cartResult);
 				}).catch((error) => {
 					return callback(error);
+				});
+		},
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
 				});
 		},
 		unreadCounts: function(callback) {
@@ -462,14 +552,16 @@ export function gtcpay(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				queryParamsString: querystring.stringify(queryURI),
-				originalUrl:originalUrl
+				originalUrl:originalUrl,
+				categories: results.categories,
+				bottomCategory: bottomCategory
 			});
 		}
 	})
 }
 
 export function membership(req, res) {
-	var queryPaginationObj = {};
+	var queryPaginationObj = {},bottomCategory = {};
 	var offset, limit, order, page,field;
 	var queryURI = {};
 	var originalUrl = req.originalUrl.split('?')[0];
@@ -501,6 +593,27 @@ export function membership(req, res) {
 					return callback(null, cartResult);
 				}).catch((error) => {
 					return callback(error);
+				});
+		},
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
 				});
 		},
 		unreadCounts: function(callback) {
@@ -564,7 +677,9 @@ export function membership(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				queryParamsString: querystring.stringify(queryURI),
-				originalUrl:originalUrl
+				originalUrl:originalUrl,
+				categories: results.categories,
+				bottomCategory: bottomCategory
 			});
 		}
 	})
