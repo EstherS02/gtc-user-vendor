@@ -1130,6 +1130,9 @@ export function vendorTrail(req, res) {
 
 export function accounting(req, res) {
 
+
+	console.log("===========REQUEST QUERYYYYYY===============================", req.query)
+
 	var accountingQueryParams = {};
 	if (req.query.start_date) {
 		accountingQueryParams['start_date'] = new Date(parseInt(req.query.start_date));
@@ -1141,6 +1144,7 @@ export function accounting(req, res) {
 	}
 	reportsService.AccountingReport(0, accountingQueryParams)
 		.then((response) => {
+			console.log("=========Response=====================",response);
 
 			return res.status(200).send(response);
 		})

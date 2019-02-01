@@ -602,9 +602,10 @@ export function sendOrderMail(orderIdStore, req) { // export function sendOrderM
 							var body;
 							var total = 0;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
-							body = body.replace(/%Path%/g, 'https://gtc.ibcpods.com'); // req.protocol + '://' + req.get('host'));
+							body = body.replace(/%Path%/g, config.baseUrl); // req.protocol + '://' + req.get('host'));
 							body = body.replace(/%currency%/g, '$');
-							body = body.replace('%UserName%', user.first_name)
+							body = body.replace('%UserName%', user.first_name);
+							body = body.replace(/%URL%/g,config.baseUrl);
 							_.forOwn(OrderList.rows, function(orders) {
 								_.forOwn(orders.OrderItems,function(orderEle){
 								orderEle.final_price = numeral(orderEle.final_price).format('$' + '0,0.00');
@@ -669,7 +670,7 @@ function sendVendorEmail(order, user) {
 				var body;
 				body = response.body.replace('%ORDER_TYPE%', 'New Order');
 				body = body.replace(/%currency%/g, '$');
-				body = body.replace(/%Path%/g, 'https://gtc.ibcpods.com'); //req.protocol + '://' + req.get('host'));
+				body = body.replace(/%Path%/g, config.baseUrl); //req.protocol + '://' + req.get('host'));
 				body = body.replace('%VendorName%', order.OrderItems[0].Product.Vendor.vendor_name);
 				_.forOwn(order.OrderItems, function(orders) {
 					body = body.replace('%placed_on%', moment(new Date()).format('MMM D, Y'));
@@ -730,9 +731,9 @@ function usernotification(order, user) {
 			var bodyParams = {};
 			_.forOwn(order.rows, function(orders) {
 				if (orderEle.length > 0) {
-					orderEle = `, <a href="https://gtc.ibcpods.com/order-history/"` + orders.id + `>#` + orders.id + `</a>`;
+					orderEle = `, <a href="`+config.baseUrl+`/order-history/"` + orders.id + `>#` + orders.id + `</a>`;
 				}
-				orderEle = `<a href="https://gtc.ibcpods.com/order-history/"` + orders.id + `>#` + orders.id + `</a>`;
+				orderEle = `<a href="`+config.baseUrl+`/order-history/"` + orders.id + `>#` + orders.id + `</a>`;
 			});
 			bodyParams.user_id = user.id;
 			bodyParams.description = response.description
