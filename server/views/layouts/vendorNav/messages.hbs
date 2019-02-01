@@ -1,393 +1,403 @@
 <script type="text/javascript">
-  var userInfo = {{{ DisplayJSON LoggedInUser}}};
-  var messenger = {{{ DisplayJSON messenger }}};
-  var message_count = {{{ DisplayJSON messages_count }}};
+	var userInfo = {{{ DisplayJSON LoggedInUser }}};
+	var messenger = {{{ DisplayJSON messenger }}};
+	var message_count = {{{ DisplayJSON messages_count }}};
 
-  var threadId;
-  var to_id = null;
-  var onlineUsers = null;
-  
-  function getConversations(e) {
-    threadId = e;
-    var socketChat = {
-      "id": e,
-      "user": userInfo.id
-    };
+	var threadId;
+	var to_id = null;
+	var onlineUsers = null;
 
-    socket.emit('chat:join', socketChat);
-    var formData = {};
-    formData.thread_id = e;
-    $("#count" + e).hide();
-    $.ajax({
-      type: 'POST',
-      url: '/api/gtc-talk/chat-conversation',
-      data: formData,
-      success: function (res) {
-        to_id = res.thread_user;
-        console.log("to_id..................",to_id);
-        if (res.talkThread) {
-          chatPage(res.talkThread);
-        } else {
-          $('#comment_text' + e).notify("Please enter the valid data", "error");
-        }
-      },
-      error: function (request, status, error) {
-        console.log('status', status);
-        console.log('error', error);
-      }
-    });
-  }
+	function getConversations(e) {
+		threadId = e;
+		var socketChat = {
+			"id": e,
+			"user": userInfo.id
+		};
 
-  function chatPage(result) {
-    var domElement = '';
-    var time = '';
-    socket.emit('chat:count', userInfo.id);
-    var domElementUserName = '';
+		socket.emit('chat:join', socketChat);
+		var formData = {};
+		formData.thread_id = e;
+		$("#count" + e).hide();
+		$.ajax({
+			type: 'POST',
+			url: '/api/gtc-talk/chat-conversation',
+			data: formData,
+			success: function(res) {
+				to_id = res.thread_user;
+				if (res.talkThread) {
+					chatPage(res.talkThread);
+				} else {
+					$('#comment_text' + e).notify("Please enter the valid data", "error");
+				}
+			},
+			error: function(request, status, error) {
+				console.log('status', status);
+				console.log('error', error);
+			}
+		});
+	}
 
-    domElementUserName = domElementUserName + ` <div class="row">
+	function chatPage(result) {
+		var domElement = '';
+		var time = '';
+		socket.emit('chat:count', userInfo.id);
+		var domElementUserName = '';
+
+		domElementUserName = domElementUserName + ` <div class="row">
                                 <div class="col-2 avatar"> 
-                                    <img src="` +userProfile(to_id) +`" alt="User Avatar" style="width: 60px; margin-left: 30px;">
+                                    <img src="` + userProfile(to_id) + `" alt="User Avatar" style="width: 60px; margin-left: 30px;">
                                 </div>
                                 <div class="col-8">
-                                  <strong><p>`+ to_id.first_name +` </h4></p></strong>
+                                  <strong><p>`+ to_id.first_name + ` </h4></p></strong>
                                   <small id="on-off"></small>
                                 </div>
                               </div>`;
-    document.getElementById('chatUserName').innerHTML = domElementUserName;
-    if(onlineUsers.indexOf(to_id.id) > -1) {
-      document.getElementById('on-off').innerHTML = '<p style="color: green">online</p>';
-      $("#init-btn-video-call").show();
-    } else {
-      document.getElementById('on-off').innerHTML = '<p>offline</p>';
-      $("#init-btn-video-call").hide();
-    }
-    result.forEach(function (element) {
-      console.log("element",element);
-      if (element.from_id == userInfo.id) {
-        time = 'pull-right';
-        domElement = domElement + `<li class="left clearfix">
+		document.getElementById('chatUserName').innerHTML = domElementUserName;
+		if (onlineUsers.indexOf(to_id.id) > -1) {
+			document.getElementById('on-off').innerHTML = '<p style="color: green">online</p>';
+			$("#init-btn-video-call").show();
+		} else {
+			document.getElementById('on-off').innerHTML = '<p>offline</p>';
+			$("#init-btn-video-call").hide();
+		}
+		result.forEach(function(element) {
+			console.log("element", element);
+			if (element.from_id == userInfo.id) {
+				time = 'pull-right';
+				domElement = domElement + `<li class="left clearfix">
       			<div class="chat-body clearfix">
       				<div class="header">
       					<small class="text-muted ` + time + `"><i class="fa fa-clock-o">` + FormatDate(element.created_on) + `</i> </small>
       				</div>
-      				<p>` + element.message +`</p>
+      				<p>` + element.message + `</p>
       			</div>
       		  </li>`;
-      } else {
-        userInformation = element;
-        time = 'pull-left';
-        domElement = domElement + `<li class="right clearfix" >
+			} else {
+				userInformation = element;
+				time = 'pull-left';
+				domElement = domElement + `<li class="right clearfix" >
       			<div class="chat-body clearfix">																		
       				<div class="header m-b-xs">		
-      					<small class=" text-muted ` +time + `"><i class="fa fa-clock-o"></i>` + FormatDate(element.created_on) +`</small>
+      					<small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(element.created_on) + `</small>
       				</div>
-      				<p>` + element.message +`</p>
+      				<p>` + element.message + `</p>
       			</div>
 		     </li>`;
-      }
-    });
-    $('.chats').attr('id', threadId);        
-    $("#"+threadId).show();
-    document.getElementById(threadId).innerHTML = domElement;
-    var element = document.querySelector('#scrollMessage');
-    element.scrollTop = element.scrollHeight - element.clientHeight;
-    $('#replayBox').show();
-  }
+			}
+		});
+		$('.chats').attr('id', threadId);
+		$("#" + threadId).show();
+		document.getElementById(threadId).innerHTML = domElement;
+		var element = document.querySelector('#scrollMessage');
+		element.scrollTop = element.scrollHeight - element.clientHeight;
+		$('#replayBox').show();
+	}
 
-  function lastname(name) {
-    if (name != '' && name != null && name != 'null')
-      return name;
+	function lastname(name) {
+		if (name != '' && name != null && name != 'null')
+			return name;
 
-    return '';
-  }
+		return '';
+	}
 
-  function FormatDate(testDate) {
-    return moment(testDate).format("LT")
-  }
+	function FormatDate(testDate) {
+		return moment(testDate).format("LT")
+	}
 
-  function userProfile(context) {
-    if (context && context.user_pic_url)
-      return context.user_pic_url;
+	function userProfile(context) {
+		if (context && context.user_pic_url)
+			return context.user_pic_url;
 
-    return '/img/avatar.png'
-  }
+		return '/img/avatar.png'
+	}
 
-  function send() {
-    var chat = $("#btn-input").val();
-    //var socket = io();
-    if (chat == "") {
-      alert("Enter message");
-    } else {
-      var sendSocket = {
-        'from_id': userInfo.id,
-        'from_name':userInfo.first_name,
-        'talk_thread_id': threadId,
-        'to_id': to_id.id,
-        'message': chat,
-      }
-      //console.log("chat:send", sendSocket);
-      //emitSocket.chatSend(sendSocket);
-      socket.emit('chat:send', sendSocket);
-      $('#btn-input').val('');
-    }
-  }
+	function send() {
+		var chat = $("#btn-input").val();
+		//var socket = io();
+		if (chat == "") {
+			alert("Enter message");
+		} else {
+			var sendSocket = {
+				'from_id': userInfo.id,
+				'from_name': userInfo.first_name,
+				'talk_thread_id': threadId,
+				'to_id': to_id.id,
+				'message': chat,
+			}
+			//console.log("chat:send", sendSocket);
+			//emitSocket.chatSend(sendSocket);
+			socket.emit('chat:send', sendSocket);
+			$('#btn-input').val('');
+		}
+	}
 
-  $(document).ready(function () {
-   
-    messenger.forEach(function(element) {
-      message_count.forEach(function(msgCount) {
-        if (element.thread_id == msgCount.talk_thread_id && element.user_id != userInfo.id) {
-          document.getElementById("count" + element.thread_id).innerHTML =
-            `<strong><p class="count"> ` + msgCount.count + `</p></strong>`;
-        }
-      })
-    })
+	$(document).ready(function() {
+
+		messenger.forEach(function(element) {
+			message_count.forEach(function(msgCount) {
+				if (element.thread_id == msgCount.talk_thread_id && element.user_id != userInfo.id) {
+					document.getElementById("count" + element.thread_id).innerHTML =
+						`<strong><p class="count"> ` + msgCount.count + `</p></strong>`;
+				}
+			})
+		})
 
 
 
-    socket.on('user:online', function (users) {
-      onlineUsers = users;
-      if(to_id && to_id.id != null) {
-        if (users.indexOf(to_id.id) > -1) {
-          document.getElementById('on-off').innerHTML = '<p style="color: green">online</p>';
-          $("#init-btn-video-call").show();
-        } else {
-          document.getElementById('on-off').innerHTML = '<p>offline</p>';
-          $("#init-btn-video-call").hide();
-        }
-      }
-      
-      messenger.forEach(function (element) {
-        if (users.indexOf(element.User.id) != -1) {
-          document.getElementById("online" + element.User.id).innerHTML =
-            `<i class="on b-white top" style="border: green"></i>`;
-        } else {
-          document.getElementById("online" + element.User.id).innerHTML =
-            `<i class="off b-white top" style="border: white"></i>`;
-        }
-      })
+		socket.on('user:online', function(users) {
+			onlineUsers = users;
+			if (to_id && to_id.id != null) {
+				if (users.indexOf(to_id.id) > -1) {
+					document.getElementById('on-off').innerHTML = '<p style="color: green">online</p>';
+					$("#init-btn-video-call").show();
+				} else {
+					document.getElementById('on-off').innerHTML = '<p>offline</p>';
+					$("#init-btn-video-call").hide();
+				}
+			}
 
-    })
+			messenger.forEach(function(element) {
+				if (users.indexOf(element.User.id) != -1) {
+					document.getElementById("online" + element.User.id).innerHTML =
+						`<i class="on b-white top" style="border: green"></i>`;
+				} else {
+					document.getElementById("online" + element.User.id).innerHTML =
+						`<i class="off b-white top" style="border: white"></i>`;
+				}
+			})
 
-    var commonInfo, base, base1, time;
-    
-  
-    socket.on('chat:receive', function(data) {
+		})
 
-        messenger.forEach(function (element) {
-          if ([data.from_id, data.to_id].indexOf(element.User.id) > -1) {
-           // console.log("its coming in receive");
-            if(data.from_id == userInfo.id) {
-              document.getElementById("lastMsg" + element.User.id).innerHTML = data.message ;              
-            } else {
-              document.getElementById("lastMsg" + element.User.id).innerHTML = `<strong> `+ data.message +`<strong>` ;
-               document.getElementById("count" + element.thread_id).innerHTML =
-                `<strong><p class="msg-receive">  New Message </p></strong>`;
-            }
-          }
-        })
+		var commonInfo, base, base1, time;
 
-        if (data.from_id == userInfo.id) {
-          base = "pull-left"
-          base1 = "left"
-          time = 'pull-right';
-         // commonInfo = userInformation;
-      //    console.log("commonInfo User Info", commonInfo);
-        //  console.log("base sent", base);
-        } else {
-          
-          base = "pull-right"
-          base1 = "right";
-          time = 'pull-left';
-         // commonInfo = vendorInformation;
-          //console.log("commonInfo", commonInfo);
-          //console.log("base receive", base);
-        }
 
-        var body = `<li class="` + base1 + ` clearfix" >
-                     
-                      <div class="chat-body clearfix">
+		socket.on('chat:receive', function(data) {
+
+			messenger.forEach(function(element) {
+				if ([data.from_id, data.to_id].indexOf(element.User.id) > -1) {
+					// console.log("its coming in receive");
+					if (data.from_id == userInfo.id) {
+						document.getElementById("lastMsg" + element.User.id).innerHTML = data.message;
+					} else {
+						document.getElementById("lastMsg" + element.User.id).innerHTML = `<strong> ` + data.message + `<strong>`;
+						document.getElementById("count" + element.thread_id).innerHTML =
+							`<strong><p class="msg-receive">  New Message </p></strong>`;
+					}
+				}
+			})
+
+			if (data.from_id == userInfo.id) {
+				base = "pull-left"
+				base1 = "left"
+				time = 'pull-right';
+				// commonInfo = userInformation;
+				//    console.log("commonInfo User Info", commonInfo);
+				//  console.log("base sent", base);
+			} else {
+
+				base = "pull-right"
+				base1 = "right";
+				time = 'pull-left';
+				// commonInfo = vendorInformation;
+				//console.log("commonInfo", commonInfo);
+				//console.log("base receive", base);
+			}
+
+			var body = `<li class="` + base1 + ` clearfix" >
+                    <div class="chat-body clearfix">
                         <div class="header m-b-xs">
-                          
-                              <small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(data.created_on) +
-                      `</small>
+                          	<small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(data.created_on) +
+							`</small>
                         </div>
                         <p>` + data.message + `</p>
                       </div>
                     </li>`;
-                    `<li class="left clearfix">
-                  <div class="chat-body clearfix">
-                    <div class="header">
-                      <small class="text-muted ` + base + `"></small>
-                    </div>
-                    <p>` + data.message + `</p>
-                  </div>
-                </li>`;
+					`<li class="left clearfix">
+						<div class="chat-body clearfix">
+							<div class="header">
+							<small class="text-muted ` + base + `"></small>
+							</div>
+							<p>` + data.message + `</p>
+						</div>
+					</li>`;
 
-                
-                //$('.chats').attr('id', data.talk_thread_id);
-        $(body).appendTo("#"+data.talk_thread_id);
-        //document.getElementById("message").innerHTML = body;
-        var element = document.querySelector('#scrollMessage');
-        element.scrollTop = element.scrollHeight - element.clientHeight;
-        $("#"+data.talk_thread_id).animate({
-          scrollTop: $("#"+data.talk_thread_id)[0].scrollHeight - $("#"+data.talk_thread_id)[0].clientHeight
-        }, 'slow');
-        
-     /* }
-    })*/
+			//$('.chats').attr('id', data.talk_thread_id);
+			$(body).appendTo("#" + data.talk_thread_id);
+			//document.getElementById("message").innerHTML = body;
+			var element = document.querySelector('#scrollMessage');
+			element.scrollTop = element.scrollHeight - element.clientHeight;
+			$("#" + data.talk_thread_id).animate({
+				scrollTop: $("#" + data.talk_thread_id)[0].scrollHeight - $("#" + data.talk_thread_id)[0].clientHeight
+			}, 'slow');
 
-  });
+			/* }
+		   })*/
 
-    $("#btn-chat").click(function () {
-      send();
-    });
+		});
 
-    $('#btn-input').keypress(function (e) {
-      if (e.which == 13) {
-        send()
-      }
-    });
+		$("#btn-chat").click(function() {
+			send();
+		});
 
-    function getUserName(user) {
-      if (user.first_name && user.last_name) {
-        return `${user.first_name} ${user.last_name}`;
-      } else if (user.first_name) {
-        return `${user.first_name}`;
-      }
-    }
+		$('#btn-input').keypress(function(e) {
+			if (e.which == 13) {
+				send()
+			}
+		});
 
-    $('#init-btn-video-call').click(function() {
-      let callBtn = document.querySelector('#init-btn-video-call');
-      callBtn.disabled = true;
-      let callObj = {
-        callFrom: userInfo.id,
-        callTo: to_id.id,
-        callerName: getUserName(userInfo),
-        calleeName: getUserName(to_id),
-        location: window.location.href
-      };
-      socket.emit('call:preinit', callObj);
-    });
+		function getUserName(user) {
+			if (user.first_name && user.last_name) {
+				return `${user.first_name} ${user.last_name}`;
+			} else if (user.first_name) {
+				return `${user.first_name}`;
+			}
+		}
 
-    $('#message').hide();
-    $('#replayBox').hide();
-    socket.emit('user:get_online_users');
-  });
+		$('#init-btn-video-call').click(function() {
+			let callBtn = document.querySelector('#init-btn-video-call');
+			callBtn.disabled = true;
+			let callObj = {
+				callFrom: userInfo.id,
+				callTo: to_id.id,
+				callerName: getUserName(userInfo),
+				calleeName: getUserName(to_id),
+				location: window.location.href
+			};
+			socket.emit('call:preinit', callObj);
+		});
 
-</script>
+		$('#message').hide();
+		$('#replayBox').hide();
+		socket.emit('user:get_online_users');
+	});
+
+	function noProfilePic(image) {
+		image.onerror = "";
+		image.src = "/img/avatar.png";
+		return true;
+	}
+
+</script> 
+
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-
 <div class="wrapper-content bg-gray">
-  <div class="gtc-container">
-    <div class="row">
-      <div class="col-sm-2">
-        {{> vendor/vendor-side-navbar}}
-      </div>
-      <div class="col-sm-10">
-        <div class="ibox">
-          <div class="ibox-content">
-            <div class="ibox-title">
-              <h6>MY MESSAGES {{!-- {{messenger.length}} --}}</h6>
-            </div>
-            <div class="content-body">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h6>{{!-- {{messenger.length}} --}}</h6>
+						</div>
+						<div class="content-body">
 
-              <!--message-->
-              <div class="row" ng-show="messages">
-                <div class="col-md-12">
-                  <div class="panel panel-default t-b-nopadding">
-                    <hr class="cartHead dash m-b-none"> {{#ifCond messenger.length ">" 0}}
-                    <div class="bootstrap snippet hidden-xs" ng-show="totalMessengers>0">
-                      <div class="row">
-                        <div class="col-md-4 bg-white">
-                          <!-- =============================================================== -->
-                          <!-- member list -->
-                          <ul class="messager-list">
-                            {{#each messenger}}
-                            <li class="bounceInDown">
-                              <a href="javascript:;" onclick="getConversations({{this.thread_id}})" class="clearfix msg-a">
-                                <span class="avatar">
-                                  <img src="/img/avatar.png" alt="" class="img-circle m-r-sm">
-                                </span>
-                                <div class="messager-name" style="display: flex">
-                                  <strong>{{this.User.first_name}} {{#if this.User.last_name}}{{this.User.last_name}} {{/if}}</strong>
-                                   <span><small id="count{{this.thread_id}}"></small></span>
-                                  <span
-                                    class="m-l-sm"></span>
-                                </div>
-                                <div class="last-messager text-muted" id="lastMsg{{this.User.id}}">
-                                  {{#if this.TalkThread.Talks}}
-                                      {{#ifCond this.TalkThread.Talks.[0].is_read "==" 0 }}
-                                          {{#ifCond this.TalkThread.Talks.[0].from_id "==" ../LoggedInUser.id}}
-                                            <p>{{this.TalkThread.Talks.[0].message}}</p>
-                                          {{else}}
-                                            <p><strong>{{this.TalkThread.Talks.[0].message}}</strong></p>
-                                          {{/ifCond}} 
-                                        {{else}}
-                                        <p>{{this.TalkThread.Talks.[0].message}}</p>
-                                      {{/ifCond}}
-                                  {{/if}}
+							<!--message-->
+							<div class="row" ng-show="messages">
+								<div class="col-md-12">
+									<div class="panel panel-default t-b-nopadding">
+										<hr class="cartHead dash m-b-none">
+										{{#ifCond messenger.length ">" 0}}
+											<div class="bootstrap snippet hidden-xs" ng-show="totalMessengers>0">
+												<div class="row">
+													<div class="col-md-4 bg-white">
+														<!-- =============================================================== -->
+														<!-- member list -->
+														<ul class="messager-list">
+															{{#each messenger}}
+																<li class="bounceInDown">
+																	<a href="javascript:;" onclick="getConversations({{this.thread_id}})" class="clearfix msg-a">
+																		<span class="avatar">
+																			<img src="{{this.User.user_pic_url}}" onError="noProfilePic(this)" class="img-circle m-r-sm">
+																		</span>
+																		<div class="messager-name" style="display: flex">
+																			<strong>{{this.User.first_name}}
+																				{{#if this.User.last_name}}{{this.User.last_name}} {{/if}}
+																			</strong>
+																			<span>
+																				<small id="count{{this.thread_id}}"></small>
+																			</span>
+																			<span class="m-l-sm"></span>
+																		</div>
+																		<div class="last-messager text-muted" id="lastMsg{{this.User.id}}">
+																			{{#if this.TalkThread.Talks}}
+																				{{#ifCond this.TalkThread.Talks.[0].is_read "==" 0 }}
+																					{{#ifCond this.TalkThread.Talks.[0].from_id "==" ../LoggedInUser.id}}
+																						<p>{{this.TalkThread.Talks.[0].message}}</p>
+																			{{else}}
+																				<p>
+																					<strong>{{this.TalkThread.Talks.[0].message}}</strong>
+																				</p>
+																					{{/ifCond}}
+																			{{else}}
+																				<p>{{this.TalkThread.Talks.[0].message}}</p>
+																				{{/ifCond}}
+																			{{/if}}
 
-                                </div>
-                                <small class="time text-muted">{{#if this.TalkThread.Talks}}{{formatTime this.TalkThread.Talks.[0].created_on "LT"}}{{/if}}</small>
-                               
-                                
-                                <small class="chat-alert online" id="online{{this.User.id}}">
-                                </small>
-                              </a>
-                            </li>
-                            {{/each}}
-                          </ul>
-                        </div>
-                        <!--=========================================================-->
-                        <!-- selected chat -->
-                        <div class="col-md-8 bg-white">
-                          <div class="chat-name col-md-12" id="chatUserName"></div>
-                          <div class="chats-messager chat-content-body" id="scrollMessage">
-                            <ul class="chats" id="message">
-                                
+																		</div>
+																		<small class="time text-muted">
+																			{{#if this.TalkThread.Talks}}{{formatTime this.TalkThread.Talks.[0].created_on "LT"}}{{/if}}
+																		</small>
 
-                            </ul>
-                          </div>
-                          <div class="chat-box bg-white" id="replayBox">
-                            <form class="input-group">
-                              <textarea id="btn-input" class="form-control border no-shadow no-rounded" ng-model="message" placeholder="Type your message here"
-                                style="height: 37px"></textarea>
-                              <span class="input-group-btn">
-                                <button class="btn btn-info btn-color" id="init-btn-video-call" style="background-color: #4178bb">
-                                    <i class="fas fa-video" style="padding-right:2px;"></i>Call</button>
-                                <button id="btn-chat" class="btn btn-danger no-rounded" type="button" style="margin-left: 0px !important;
+
+																		<small class="chat-alert online" id="online{{this.User.id}}">
+																		</small>
+																	</a>
+																</li>
+															{{/each}}
+														</ul>
+													</div>
+													<!--=========================================================-->
+													<!-- selected chat -->
+													<div class="col-md-8 bg-white">
+														<div class="chat-name col-md-12" id="chatUserName"></div>
+														<div class="chats-messager chat-content-body" id="scrollMessage">
+															<ul class="chats" id="message">
+
+
+															</ul>
+														</div>
+														<div class="chat-box bg-white" id="replayBox">
+															<form class="input-group">
+																<textarea id="btn-input" class="form-control border no-shadow no-rounded" ng-model="message" placeholder="Type your message here"
+																 style="height: 37px"></textarea>
+																<span class="input-group-btn">
+																	<button class="btn btn-info btn-color" id="init-btn-video-call" style="background-color: #4178bb">
+																		<i class="fas fa-video" style="padding-right:2px;"></i>Call</button>
+																	<button id="btn-chat" class="btn btn-danger no-rounded" type="button" style="margin-left: 0px !important;
 																margin-right: 15px !important;">Send</button>
-                              </span>
-                            </form>
-                            <!-- /input-group -->
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+																</span>
+															</form>
+															<!-- /input-group -->
+														</div>
+													</div>
+												</div>
+											</div>
 
-                    {{else}}
-                    <div class="wrapper-sm" ng-show="totalMessengers==0">
-                      <div class="row m-t-md">
-                        <div class="col-md-12 text-center inline">
-                          <span class="h6 text-muted block m-t-md m-b-md" style="line-height: inherit;">
-                            There is no conversations.
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+											{{else}}
+												<div class="wrapper-sm" ng-show="totalMessengers==0">
+													<div class="row m-t-md">
+														<div class="col-md-12 text-center inline">
+															<span class="h6 text-muted block m-t-md m-b-md" style="line-height: inherit;">
+																There is no conversations.
+															</span>
+														</div>
+													</div>
+												</div>
 
-                    {{/ifCond}}
-                  </div>
-                </div>
-              </div>
-              <!--end message-->
+										{{/ifCond}}
+									</div>
+								</div>
+							</div>
+							<!--end message-->
 
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 {{> footer/bottom-footer}}
