@@ -334,7 +334,7 @@ export function productPerformanceChangescsv(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
-	var limit, offset, compare;
+	var limit, offset, compare, vendorId;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
@@ -347,8 +347,10 @@ export function productPerformanceChangescsv(req, res) {
 		}
 	}
 
-	if (req.user.role == 2)
+	if (req.user.role == 2){
 		queryObj.vendor_id = req.user.Vendor.id;
+		vendorId = req.user.Vendor.id;
+	}
 	else
 		queryObj.vendor_id = null;
 	if (req.query.compare) {
@@ -368,17 +370,24 @@ export function productPerformanceChangescsv(req, res) {
 	ReportService.productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
 		var finalresults = [];
 		for (let value of results.lhs_result) {
-			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
 
-			delete value.product_id;
-			delete value.product_slug;
-			delete value.marketplace_id;
-			delete value.owner_name;
-			delete value.type;
+			var result = {};
 
-			finalresults.push(value);
+			result.product = value.product_name;
+			result.type = value.marketplace_name;
+			result.sales = value.sales;
+			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+
+			if(vendorId){
+				result.gtc_processing_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+				result.vendor_revenue = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+			}else{
+				result.vendor = value.vendor_name
+				result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+				result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			}
+
+			finalresults.push(result);
 		}
 
 		/*var fields = [];
@@ -458,7 +467,7 @@ export function compareMarketPlacePerformancecsv(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
-	var limit, offset, compare;
+	var limit, offset, compare, vendorId;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
@@ -471,9 +480,10 @@ export function compareMarketPlacePerformancecsv(req, res) {
 		}
 	}
 
-	if (req.user.role == 2)
+	if (req.user.role == 2){
 		queryObj.vendor_id = req.user.Vendor.id;
-	else
+		vendorId = req.user.Vendor.id;
+	}else
 		queryObj.vendor_id = null;
 	if (req.query.compare) {
 		queryObj.compare = req.query.compare ? req.query.compare : 'false';
@@ -493,11 +503,22 @@ export function compareMarketPlacePerformancecsv(req, res) {
 
 		var finalresults = [];
 		for (let value of results.lhs_result) {
-			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-			delete value.marketplace_id;
-			finalresults.push(value);
+
+			var result = {};
+
+			result.marketplace = value.marketplace_name;
+			result.sales = value.sales;
+			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+			
+			if(vendorId){
+				result.gtc_processing_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+				result.vendor_revenue = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+			}else{
+				result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+				result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			}
+
+			finalresults.push(result);
 		}
 		const parser = new Json2csvParser(finalresults);
 		const csv = parser.parse(finalresults);
@@ -514,7 +535,7 @@ export function compareCityPerformancecsv(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
-	var limit, offset, compare;
+	var limit, offset, compare, vendorId;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
@@ -527,9 +548,10 @@ export function compareCityPerformancecsv(req, res) {
 		}
 	}
 
-	if (req.user.role == 2)
+	if (req.user.role == 2){
 		queryObj.vendor_id = req.user.Vendor.id;
-	else
+		vendorId = req.user.Vendor.id;
+	}else
 		queryObj.vendor_id = null;
 	if (req.query.compare) {
 		queryObj.compare = req.query.compare ? req.query.compare : 'false';
@@ -548,11 +570,22 @@ export function compareCityPerformancecsv(req, res) {
 	ReportService.cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
 		var finalresults = [];
 		for (let value of results.lhs_result) {
-			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+
+			var result = {};
+			result.city = value['Product.city'];
+
+			result.sales = value.sales;
+			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+
+			if(vendorId){
+				result.gtc_processing_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+				result.vendor_revenue = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+			}else{
+				result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+				result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			}
 			
-			finalresults.push(value);
+			finalresults.push(result);
 		}
 		const parser = new Json2csvParser(finalresults);
 		const csv = parser.parse(finalresults);
@@ -569,7 +602,7 @@ export function compareCountriesPerformancecsv(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
-	var limit, offset, compare;
+	var limit, offset, compare, vendorId;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
@@ -582,9 +615,10 @@ export function compareCountriesPerformancecsv(req, res) {
 		}
 	}
 
-	if (req.user.role == 2)
+	if (req.user.role == 2){
 		queryObj.vendor_id = req.user.Vendor.id;
-	else
+		vendorId = req.user.Vendor.id;
+	}else
 		queryObj.vendor_id = null;
 	if (req.query.compare) {
 		queryObj.compare = req.query.compare ? req.query.compare : 'false';
@@ -603,12 +637,21 @@ export function compareCountriesPerformancecsv(req, res) {
 	ReportService.countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
 		var finalresults = [];
 		for (let value of results.lhs_result) {
-			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-			
-			delete value['Product.Country.id'];
-			finalresults.push(value);
+
+			var result = {};
+			result.country = value['Product.Country.name'];
+			result.sales = value.sales;
+			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+
+			if(vendorId){
+				result.gtc_processing_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+				result.vendor_revenue = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+			}else{
+				result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+				result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			}
+
+			finalresults.push(result);
 		}
 		const parser = new Json2csvParser(finalresults);
 		const csv = parser.parse(finalresults);
