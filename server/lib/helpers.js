@@ -738,12 +738,12 @@ Handlebars.registerHelper('marketplacePerformance', function(marketplace, compar
 			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.total_fees)+`(`+ calculatePercentage(marketplace.total_fees, matchedObj.total_fees)+`) </span>
 		</td>
 		<td>
-			`+currencyFormat(marketplace.vendor_fees)+`<span class = "` + getTextColor(marketplace.vendor_fees, matchedObj.vendor_fees) + `">`+currencyFormat(marketplace.vendor_fees-matchedObj.vendor_fees)+`</span>
-			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(marketplace.vendor_fees, matchedObj.vendor_fees)+`) </span>
-		</td>
-		<td>
 			`+currencyFormat(marketplace.gtc_fees)+`<span class = "` + getTextColor(marketplace.gtc_fees, matchedObj.gtc_fees) + `">`+currencyFormat(marketplace.gtc_fees-matchedObj.gtc_fees)+`</span>
 			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.gtc_fees)+`(`+ calculatePercentage(marketplace.gtc_fees, matchedObj.gtc_fees)+`) </span>
+		</td>
+		<td>
+			`+currencyFormat(marketplace.vendor_fees)+`<span class = "` + getTextColor(marketplace.vendor_fees, matchedObj.vendor_fees) + `">`+currencyFormat(marketplace.vendor_fees-matchedObj.vendor_fees)+`</span>
+			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(marketplace.vendor_fees, matchedObj.vendor_fees)+`) </span>
 		</td>`;		
 	} else {
 		domElement = `<td>
@@ -762,10 +762,10 @@ Handlebars.registerHelper('marketplacePerformance', function(marketplace, compar
 			`+currencyFormat(marketplace.total_fees)+`
 		</td>
 		<td>
-			`+currencyFormat(marketplace.vendor_fees)+`
+			`+currencyFormat(marketplace.gtc_fees)+`
 		</td>
 		<td>
-			`+currencyFormat(marketplace.gtc_fees)+`
+			`+currencyFormat(marketplace.vendor_fees)+`
 		</td>`;	
 	}
 	return new Handlebars.SafeString(domElement);

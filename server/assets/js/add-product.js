@@ -723,8 +723,8 @@ $(document).ready(function() {
 				if($('#end_date').val()){
 	
 					featureEndDate = $('#end_date').val();
-					from = moment(featureStartDate, 'YYYY-MM-DD'); 
-					to = moment(featureEndDate, 'YYYY-MM-DD');
+					from = moment(featureStartDate, 'MM/DD/YYYY'); 
+					to = moment(featureEndDate, 'MM/DD/YYYY');
 					featureDuration = to.diff(from, 'days');
 	
 					amount = $("#totalFees").html();
@@ -841,7 +841,7 @@ $(document).ready(function() {
 	//EXCLUSIVE SALES FUNCTIONALITY
 
 	$("#exclusive_start_date, #exclusive_end_date").datetimepicker({
-        dateFormat: 'yy-mm-dd',
+        dateFormat: 'mm-dd-yy',
         timeFormat: 'HH:mm:ss'
 	}); 
 	  

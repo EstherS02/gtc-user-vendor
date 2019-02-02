@@ -4,77 +4,86 @@
 	var params = {{{ DisplayJSON queryURIString }}};
 	var metrics = {{{ DisplayJSON selectedMetrics }}};
 	var range = 7;
-	function downloadCSV(args) {
+
+	function exportCsv(args) {
+		var queryObj = {
+			vendor_id: $('#login_vendoruserid').val()
+		}
 		if (metrics == 'products'){
 			$.ajax({
-				type: 'POST',
-				url: '/api/export-csv/reportperformancecsv',
-				data: { "vendor_id": $('#login_vendoruserid').val() },
+				type: 'GET',
+				url: '/api/export-csv/export-product-performance',
+				data: queryObj,
 				success: function(data) {
-					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
-					var csvURL = null;
-					if (navigator.msSaveBlob) {
-						csvURL = navigator.msSaveBlob(csvData, 'Report.csv');
-					} else {
-						csvURL = window.URL.createObjectURL(csvData);
-					}
-					var tempLink = document.createElement('a');
-					tempLink.href = csvURL;
-					tempLink.setAttribute('download', 'Report.csv');
-					tempLink.click();
+					exportSuccessFn(data);
 				},
 				error: function(request, status, error) {
-					console.log('request', request);
-					console.log('status', status);
+					console.log('Error::', error);
 				}
 			});
-		} else if (metrics == 'marketplace'){
+		}else if (metrics == 'marketplaces'){
 			$.ajax({
-				type: 'POST',
-				url: '/api/export-csv/reportmarketplacecsv',
-				data: { "vendor_id": $('#login_vendoruserid').val() },
+				type: 'GET',
+				url: '/api/export-csv/export-marketplace-performance',
+				data: queryObj,
 				success: function(data) {
-					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
-					var csvURL = null;
-					if (navigator.msSaveBlob) {
-						csvURL = navigator.msSaveBlob(csvData, 'Report.csv');
-					} else {
-						csvURL = window.URL.createObjectURL(csvData);
-					}
-					var tempLink = document.createElement('a');
-					tempLink.href = csvURL;
-					tempLink.setAttribute('download', 'Report.csv');
-					tempLink.click();
+					exportSuccessFn(data);
 				},
 				error: function(request, status, error) {
-					console.log('request', request);
-					console.log('status', status);
+					console.log('Error::', error);
 				}
 			});
-		} else if (metrics == 'city'){
+		}else if (metrics == 'countries'){
 			$.ajax({
-				type: 'POST',
-				url: '/api/export-csv/reportcitycsv',
-				data: { "vendor_id": $('#login_vendoruserid').val() },
+				type: 'GET',
+				url: '/api/export-csv/export-country-performance',
+				data: queryObj,
 				success: function(data) {
-					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
-					var csvURL = null;
-					if (navigator.msSaveBlob) {
-						csvURL = navigator.msSaveBlob(csvData, 'Report.csv');
-					} else {
-						csvURL = window.URL.createObjectURL(csvData);
-					}
-					var tempLink = document.createElement('a');
-					tempLink.href = csvURL;
-					tempLink.setAttribute('download', 'Report.csv');
-					tempLink.click();
+					exportSuccessFn(data);
 				},
 				error: function(request, status, error) {
-					console.log('request', request);
-					console.log('status', status);
+					console.log('Error::', error);
 				}
 			});
+		}else if (metrics == 'cities'){
+			$.ajax({
+				type: 'GET',
+				url: '/api/export-csv/export-city-performance',
+				data: queryObj,
+				success: function(data) {
+					exportSuccessFn(data);
+				},
+				error: function(request, status, error) {
+					console.log('Error::', error);
+				}
+			});
+		}else if (metrics == 'buyers'){
+			$.ajax({
+				type: 'GET',
+				url: '/api/export-csv/export-user-performance',
+				data: queryObj,
+				success: function(data) {
+					exportSuccessFn(data);
+				},
+				error: function(request, status, error) {
+					console.log('Error::', error);
+				}
+			});
+		}	
+	}
+
+	function exportSuccessFn(data){
+		var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+		var csvURL = null;
+		if (navigator.msSaveBlob) {
+			csvURL = navigator.msSaveBlob(csvData, 'Report.csv');
+		} else {
+			csvURL = window.URL.createObjectURL(csvData);
 		}
+		var tempLink = document.createElement('a');
+		tempLink.href = csvURL;
+		tempLink.setAttribute('download', 'Report.csv');
+		tempLink.click();
 	}
 
 	function limit(size){
@@ -362,12 +371,11 @@
 										<form class="form-inline pull-right m-t-md">
 											<div class="form-group m-r">
 												{{#if topItems.lhs_result}}
-													<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
-													<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
+													<button type="button" class="btn btn-md btn-muted" onclick='exportCsv({ filename: "stock-data.csv" });'>EXPORT</button>
 												{{else}}
-													<button type="button" class="btn btn-md btn-muted" disabled='disabled' onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
-													<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
+													<button type="button" class="btn btn-md btn-muted" disabled='disabled' onclick='exportCsv({ filename: "stock-data.csv" });'>EXPORT</button>
 												{{/if}}
+												<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
 											</div>
 										</form>
 									</div>
