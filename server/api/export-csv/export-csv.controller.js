@@ -19,8 +19,6 @@ const async = require('async');
 const Json2csvParser = require('json2csv').Parser;
 const orderStatus = require('../../config/order_status');
 
-
-// starts export csv Ad-revenue //
 exports.exportcsv = function(req, res) {
 	var adType = {
 		"type1": "AD",
@@ -61,13 +59,9 @@ exports.exportcsv = function(req, res) {
 			res.write(csv);
 			res.end();
 			return;
-
 		})
 }
-// ends export csv Ad-revenue //
 
-
-// starts export csv personal-order-history//
 exports.orderHistoryexportcsv = function(req, res) {
 
 	if (req.body.id != 0) {
@@ -137,15 +131,10 @@ exports.orderHistoryexportcsv = function(req, res) {
 				res.status(500).send("Internal server error");
 				return
 			});
-
-
 	}
 
 };
-// ends export csv personal-order-history //
 
-
-// starts export csv my-order-history//
 exports.myOrderHistoryexportcsv = function(req, res) {
 
 	if (req.body.id != 0) {
@@ -188,7 +177,6 @@ exports.myOrderHistoryexportcsv = function(req, res) {
 							if (value.status == status[key]) {
 								var val1 = key.toLowerCase();
 								var val = val1.charAt(0).toUpperCase() + val1.slice(1);
-								//val = val.replace("order", " "); //Order
 								value.Status = val;
 							}
 						});
@@ -217,8 +205,7 @@ exports.myOrderHistoryexportcsv = function(req, res) {
 	}
 
 };
-// ends export csv my-order-history//
-//starts export csv sales-history//
+
 exports.salesHistoryexportcsv = function(req, res) {
 
 	if (req.body.id != 0) {
@@ -261,14 +248,11 @@ exports.salesHistoryexportcsv = function(req, res) {
 							if (value.status == status[key]) {
 								var val1 = key.toLowerCase();
 								var val = val1.charAt(0).toUpperCase() + val1.slice(1);
-								//val = val.replace("order", " "); //Order
 								value.Status = val;
 							}
 						});
 					}
-
 				}
-
 				var fields = [];
 				fields = _.map(rows.rows.columns, 'columnName');
 				fields.push('invoice', 'Date', 'Method', 'Status', 'Amount');
@@ -285,234 +269,9 @@ exports.salesHistoryexportcsv = function(req, res) {
 				res.status(500).send("Internal server error");
 				return
 			});
-
-
 	}
-
-};
-//starts export csv report-performance//
-exports.reportperformanceexportcsv = function(req, res) {
-	var offset, limit, field, order;
-	var queryObj = {};
-	var LoggedInUser = {};
-	var bottomCategory = {};
-	var categoryModel = "Category";
-	var lhsBetween = [];
-	var rhsBetween = [];
-	var queryURI = {};
-
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	limit = req.query.limit ? parseInt(req.query.limit) : 25;
-	field = 'id';
-	order = 'asc';
-
-	if (req.user)
-		LoggedInUser = req.user;
-
-	let user_id = LoggedInUser.id;
-
-	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("MM/DD/YYYY"), moment(req.query.lhs_to).format("MM/DD/YYYY"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
-	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("MM/DD/YYYY"), moment(req.query.rhs_to).format("MM/DD/YYYY"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
-	}
-
-	queryURI['offset'] = offset;
-	queryURI['limit'] = limit;
-	queryURI['lhs_from'] = lhsBetween[0];
-	queryURI['lhs_to'] = lhsBetween[1];
-	queryURI['rhs_from'] = rhsBetween[0];
-	queryURI['rhs_to'] = rhsBetween[1];
-	queryURI['compare'] = 'true';
-	let performanceQueryObj = {};
-	performanceQueryObj.vendor_id = req.body.vendor_id;
-
-	if (req.query.compare) {
-		performanceQueryObj.compare = req.query.compare;
-		queryURI['compare'] = req.query.compare;
-	}
-
-	ReportService.exportperformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset).then(function(results) {
-		var finalresults = [];
-		for (let value of results.lhs_result) {
-			value.total_sales = ((value.total_sales) > 0) ? (parseFloat(value.total_sales)).toFixed(2) : 0;
-			value.vendor_fee = ((value.vendor_fee) > 0) ? (parseFloat(value.vendor_fee)).toFixed(2) : 0;
-			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-			finalresults.push(value);
-		}
-		var fields = [];
-		fields = _.map(finalresults, 'columnName');
-		fields.push('product_name', 'marketplace_name', 'total_sales', 'vendor_fee', 'gtc_fees');
-		const opts = {
-			fields
-		};
-		const parser = new Json2csvParser(finalresults);
-		const csv = parser.parse(finalresults);
-		res.write(csv);
-		res.end();
-		return;
-	}).catch((err) => {
-		console.log('performance err', err);
-		res.status(500).send("Internal server error");
-		return
-	});
-
-};
-// ends export csv report-performance//
-
-exports.reportmarketplaceexportcsv = function(req, res) {
-	var offset, limit, field, order;
-	var queryObj = {};
-	var LoggedInUser = {};
-	var bottomCategory = {};
-	var categoryModel = "Category";
-	var lhsBetween = [];
-	var rhsBetween = [];
-	var queryURI = {};
-
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	limit = req.query.limit ? parseInt(req.query.limit) : 25;
-	field = 'id';
-	order = 'asc';
-
-	if (req.user)
-		LoggedInUser = req.user;
-
-	let user_id = LoggedInUser.id;
-
-	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("MM/DD/YYYY"), moment(req.query.lhs_to).format("MM/DD/YYYY"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
-	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("MM/DD/YYYY"), moment(req.query.rhs_to).format("MM/DD/YYYY"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
-	}
-
-	queryURI['offset'] = offset;
-	queryURI['limit'] = limit;
-	queryURI['lhs_from'] = lhsBetween[0];
-	queryURI['lhs_to'] = lhsBetween[1];
-	queryURI['rhs_from'] = rhsBetween[0];
-	queryURI['rhs_to'] = rhsBetween[1];
-	queryURI['compare'] = 'true';
-	let performanceQueryObj = {};
-	performanceQueryObj.vendor_id = req.body.vendor_id;
-
-	if (req.query.compare) {
-		performanceQueryObj.compare = req.query.compare;
-		queryURI['compare'] = req.query.compare;
-	}
-
-	ReportService.marketplacePerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset).then(function(results) {
-		var finalresults = [];
-		for (let value of results.lhs_result) {
-			value.total_sales = ((value.total_sales) > 0) ? (parseFloat(value.total_sales)).toFixed(2) : 0;
-			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-			finalresults.push(value);
-		}
-		var fields = [];
-		fields = _.map(finalresults, 'columnName');
-		fields.push('marketplace_name', 'sales', 'total_sales', 'vendor_fee', 'gtc_fees');
-		const opts = {
-			fields
-		};
-		const parser = new Json2csvParser(finalresults);
-		const csv = parser.parse(finalresults);
-		res.write(csv);
-		res.end();
-		return;
-	}).catch((err) => {
-		console.log('performance err', err);
-		res.status(500).send("Internal server error");
-		return
-	});
-
 };
 
-
-exports.reportcityexportcsv = function(req, res) {
-	var offset, limit, field, order;
-	var queryObj = {};
-	var LoggedInUser = {};
-	var bottomCategory = {};
-	var categoryModel = "Category";
-	var lhsBetween = [];
-	var rhsBetween = [];
-	var queryURI = {};
-
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	limit = req.query.limit ? parseInt(req.query.limit) : 25;
-	field = 'id';
-	order = 'asc';
-
-	if (req.user)
-		LoggedInUser = req.user;
-
-	let user_id = LoggedInUser.id;
-
-	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("MM/DD/YYYY"), moment(req.query.lhs_to).format("MM/DD/YYYY"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
-	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("MM/DD/YYYY"), moment(req.query.rhs_to).format("MM/DD/YYYY"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
-	}
-
-	queryURI['offset'] = offset;
-	queryURI['limit'] = limit;
-	queryURI['lhs_from'] = lhsBetween[0];
-	queryURI['lhs_to'] = lhsBetween[1];
-	queryURI['rhs_from'] = rhsBetween[0];
-	queryURI['rhs_to'] = rhsBetween[1];
-	queryURI['compare'] = 'true';
-	let performanceQueryObj = {};
-	performanceQueryObj.vendor_id = req.body.vendor_id;
-
-	if (req.query.compare) {
-		performanceQueryObj.compare = req.query.compare;
-		queryURI['compare'] = req.query.compare;
-	}
-
-	ReportService.cityPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset).then(function(results) {
-		var finalresults = [];
-		for (let value of results.lhs_result) {
-			value.total_sales = ((value.total_sales) > 0) ? (parseFloat(value.total_sales)).toFixed(2) : 0;
-			value.vendor_fee = ((value.vendor_fee) > 0) ? (parseFloat(value.vendor_fee)).toFixed(2) : 0;
-			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-			finalresults.push(value);
-		}
-		var fields = [];
-		fields = _.map(finalresults, 'columnName');
-		fields.push('city_name', 'sales', 'total_sales', 'vendor_fee', 'gtc_fees');
-		const opts = {
-			fields
-		};
-		const parser = new Json2csvParser(finalresults);
-		const csv = parser.parse(finalresults);
-		res.write(csv);
-		res.end();
-		return;
-	}).catch((err) => {
-		console.log('performance err', err);
-		res.status(500).send("Internal server error");
-		return
-	});
-
-};
-
-//starts export csv top vendors
 export function vendorPerformancecsv(req, res) {
 	var queryObj = {};
 	var lhsBetween = [], rhsBetween = [];
@@ -556,14 +315,9 @@ export function vendorPerformancecsv(req, res) {
 			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
 			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
 			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			delete value.vendor_id;
 			finalresults.push(value);
 		}
-		var fields = [];
-		fields = _.map(finalresults, 'columnName');
-		fields.push('vendor_id', 'vendor_name', 'owner_name', 'type', 'sales', 'total_fees', 'vendor_fees', 'gtc_fees');
-		const opts = {
-			fields
-		};
 		const parser = new Json2csvParser(finalresults);
 		const csv = parser.parse(finalresults);
 		res.write(csv);
@@ -574,10 +328,9 @@ export function vendorPerformancecsv(req, res) {
 		return res.status(500).send(err);
 	});
 }
-//ends export csv top vendors
 
-//starts export csv top products
 export function productPerformanceChangescsv(req, res) {
+
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -618,14 +371,23 @@ export function productPerformanceChangescsv(req, res) {
 			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
 			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
 			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+
+			delete value.product_id;
+			delete value.product_slug;
+			delete value.marketplace_id;
+			delete value.owner_name;
+			delete value.type;
+
 			finalresults.push(value);
 		}
-		var fields = [];
+
+		/*var fields = [];
 		fields = _.map(finalresults, 'columnName');
-		fields.push('product_name', 'marketplace_name', 'vendor_name', 'owner_name', 'type', 'sales', 'total_fees', 'vendor_fees', 'gtc_fees');
+		fields.push('product_name', 'marketplace_name', 'vendor_name', 'sales', 'total_fees', 'vendor_fees', 'gtc_fees');
 		const opts = {
 			fields
-		};
+		};*/
+
 		const parser = new Json2csvParser(finalresults);
 		const csv = parser.parse(finalresults);
 		res.write(csv);
@@ -636,9 +398,7 @@ export function productPerformanceChangescsv(req, res) {
 		return res.status(500).send(err);
 	});
 }
-//ends export csv top products
 
-//starts export csv top selling categories
 export function compareCategoryPerformancecsv(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
@@ -680,30 +440,21 @@ export function compareCategoryPerformancecsv(req, res) {
 			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
 			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
 			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			delete value.category_id;
 			finalresults.push(value);
-		}
-		var fields = [];
-		fields = _.map(finalresults, 'columnName');
-		fields.push('category_name', 'sales', 'total_fees', 'vendor_fees', 'gtc_fees');
-		const opts = {
-			fields
-		};
+		}		
 		const parser = new Json2csvParser(finalresults);
 		const csv = parser.parse(finalresults);
 		res.write(csv);
 		res.end();
 		return;
-		//return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('comparePerformance err', err);
 		return res.status(500).send(err);
 	});
 }
-//ends export csv top selling categories
 
-//starts export top selling marketplace
 export function compareMarketPlacePerformancecsv(req, res) {
-	console.log("------------------------compareMarketPlacePerformancecsv", req.user.Vendor.id)
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -740,21 +491,14 @@ export function compareMarketPlacePerformancecsv(req, res) {
 
 	ReportService.marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
 
-		//return res.status(200).send(results);
-		console.log("results:::" + JSON.stringify(results));
 		var finalresults = [];
 		for (let value of results.lhs_result) {
 			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
 			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
 			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			delete value.marketplace_id;
 			finalresults.push(value);
 		}
-		var fields = [];
-		fields = _.map(finalresults, 'columnName');
-		fields.push('marketplace_name', 'sales', 'total_fees', 'vendor_fees', 'gtc_fees');
-		const opts = {
-			fields
-		};
 		const parser = new Json2csvParser(finalresults);
 		const csv = parser.parse(finalresults);
 		res.write(csv);
@@ -765,9 +509,7 @@ export function compareMarketPlacePerformancecsv(req, res) {
 		return res.status(500).send(err);
 	});
 }
-//ends export top selling marketplace
 
-//starts export top selling city 
 export function compareCityPerformancecsv(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
@@ -804,22 +546,14 @@ export function compareCityPerformancecsv(req, res) {
 	}
 
 	ReportService.cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-
-		//return res.status(200).send(results);
-		console.log("results:::" + JSON.stringify(results));
 		var finalresults = [];
 		for (let value of results.lhs_result) {
 			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
 			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
 			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			
 			finalresults.push(value);
 		}
-		var fields = [];
-		fields = _.map(finalresults, 'columnName');
-		fields.push('total_fees', 'vendor_fees', 'sales', 'gtc_fees', 'Product.city');
-		const opts = {
-			fields
-		};
 		const parser = new Json2csvParser(finalresults);
 		const csv = parser.parse(finalresults);
 		res.write(csv);
@@ -830,9 +564,7 @@ export function compareCityPerformancecsv(req, res) {
 		return res.status(500).send(err);
 	});
 }
-//ends export top selling city
 
-//starts export top selling countries
 export function compareCountriesPerformancecsv(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
@@ -874,28 +606,21 @@ export function compareCountriesPerformancecsv(req, res) {
 			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
 			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
 			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			
+			delete value['Product.Country.id'];
 			finalresults.push(value);
 		}
-		var fields = [];
-		fields = _.map(finalresults, 'columnName');
-		fields.push('total_fees', 'vendor_fees', 'sales', 'gtc_fees', 'Product.Country.name');
-		const opts = {
-			fields
-		};
 		const parser = new Json2csvParser(finalresults);
 		const csv = parser.parse(finalresults);
 		res.write(csv);
 		res.end();
 		return;
-		//return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('comparePerformance err', err);
 		return res.status(500).send(err);
 	});
 }
-//ends export top selling countries
 
-//starts export top top buyers
 export function compareUserPerformancecsv(req, res) {
 
 	var queryObj = {};
@@ -936,20 +661,17 @@ export function compareUserPerformancecsv(req, res) {
 	}
 
 	ReportService.userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-		console.log("resultss:::" + JSON.stringify(results));
 		var finalresults = [];
 		for (let value of results.lhs_result) {
 			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
 			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
 			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			delete value['Order.User.last_name'];
+			delete value['Order.user_id'];
+			delete value['Order.User.id'];
+			delete value['Order.id'];
 			finalresults.push(value);
 		}
-		var fields = [];
-		fields = _.map(finalresults, 'columnName');
-		fields.push('total_fees', 'vendor_fees', 'sales', 'gtc_fees', 'Product.Country.name');
-		const opts = {
-			fields
-		};
 		const parser = new Json2csvParser(finalresults);
 		const csv = parser.parse(finalresults);
 		res.write(csv);
@@ -961,4 +683,4 @@ export function compareUserPerformancecsv(req, res) {
 		return res.status(500).send(err);
 	});
 }
-//ends export top buyers
+
