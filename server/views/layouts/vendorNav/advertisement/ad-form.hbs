@@ -6,7 +6,7 @@
 	function appendImage() {
 		$('div.base_image').empty();
 		var domElement;
-		domElement = "<span class=\"pip\" id=\"base\">" + "<img class=\"imageThumb\" src=\"" + adImageArr[0].adImageUrl + "\"/></span>";
+		domElement = "<span class=\"pip\" id=\"base\">" + "<img src=\"" + adImageArr[0].adImageUrl + "\"/></span>";
 		$('div.base_image').append(domElement);
 	}
 
@@ -46,7 +46,7 @@
 							} else {
 								$('#adImage').attr('src', " ");
 								$('#adImage').val('')
-								alert("Uploaded image has valid Height and Width.");
+								alert("Selected image doesn't have valid height and width. Please upload the image of valid size.");
 								return false;
 							}
 						} else if (($("#position").val() == 2) || ($("#position").val() == 4) || ($("#position").val() == 5)) {
@@ -58,12 +58,12 @@
 							} else {
 								$('#adImage').attr('src', " ");
 								$('#adImage').val('')
-								alert("Uploaded image has valid Height and Width.");
+								alert("Selected image doesn't have valid height and width. Please upload the image of valid size.");
 								return false;
 							}
 						} else {
 							$('#adImage').value='';
-							alert("Select Position before Upload the Image .");
+							alert("Please select Ad position before uplaoding image.");
 						}
 					};
 				}
@@ -72,7 +72,7 @@
 		})
 		$("#position").change(function() {
 			console.log($("#position").val(), $('option:selected', this).attr('width'), $('optionalion:selected', this).attr('height'))
-			var message = "Artwork should be" + $('option:selected', this).attr('width') + 'x' + $('option:selected', this).attr('height')+'to fit the above placement';
+			var message = "Banner should have " + $('option:selected', this).attr('width') + ' px width & ' + $('option:selected', this).attr('height')+' px height';
 			document.getElementById("alert-text").innerHTML = message;
 		});
 
@@ -338,33 +338,37 @@
 								</div>
 								<div class="row">
 									<div class="col-lg-6">
-										<label class="label-control">Start Date
-											<span class="text-danger">*</span>
-										</label>
-										<div class="input-group ">
-											<input type="text" class="form-control-customized" name="start_date" placeholder="MM/DD/YYYY" id="startDate" value="{{ads.start_date}}"
-											 aria-describedby="basic-addon2">
-											<div class="input-group-append">
-												{{!-- <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span> --}}
+										<div class="form-group">
+											<label class="label-control">Start Date
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group">
+												<input type="text" class="form-control-customized" name="start_date" placeholder="MM/DD/YYYY" id="startDate" value="{{ads.start_date}}"
+												aria-describedby="basic-addon2">
+												<div class="input-group-append">
+													{{!-- <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span> --}}
+												</div>
 											</div>
 										</div>
 									</div>
 									<div class="col-lg-6">
-										<label class="label-control">End Date
-											<span class="text-danger">*</span>
-										</label>
-										<div class="input-group ">
-											<input type="text" class="form-control-customized" placeholder="MM/DD/YYYY" value="{{ads.end_date}}" id="endDate" name="end_date"
-											 aria-describedby="basic-addon2">
-											<div class="input-group-append">
-												{{!-- <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span> --}}
+										<div class="form-group">
+											<label class="label-control">End Date
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group ">
+												<input type="text" class="form-control-customized" placeholder="MM/DD/YYYY" value="{{ads.end_date}}" id="endDate" name="end_date"
+												aria-describedby="basic-addon2">
+												<div class="input-group-append">
+													{{!-- <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span> --}}
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-lg-4">
-										<div class="form-group input-append date form_datetime">
+										<div class="form-group">
 											<label class="label-control">Country</label>
 											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="country_id" id="country">
 												{{#select ads.country_id}}
@@ -395,7 +399,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="hr-line"></div>
+								<hr/>
 								<div class="row">
 									<div class="col-lg-12">
 										<div class="form-group">

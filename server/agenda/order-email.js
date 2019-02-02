@@ -12,6 +12,7 @@ const status = require('../config/status');
 const model = require('../sqldb/model-connect');
 
 module.exports = async function(job, done) {
+
 	const orderID = job.attrs.data.order;
 	const orderModelName = "Order";
 	var emailTemplateModel = 'EmailTemplate';
@@ -107,9 +108,12 @@ module.exports = async function(job, done) {
 				}]
 			}]
 		});
-		var orderVendors = await JSON.parse(JSON.stringify(orderVendorResponse));
 
+		var orderVendors = await JSON.parse(JSON.stringify(orderVendorResponse));
 		var userOrderSubject = userOrderEmailTemplate.subject;
+
+		userOrderEmailTemplate.body = userOrderEmailTemplate.body.replace(/%URL%/g,config.baseUrl);
+		userOrderEmailTemplate.body = userOrderEmailTemplate.body.replace('%ORDER_ID%',orderID);
 		var userOrderTemplate = Handlebars.compile(userOrderEmailTemplate.body);
 		userOrderResponse.ordered_date = moment(userOrderResponse.ordered_date).format('MMM D, Y');
 		var userOrderResult = userOrderTemplate(userOrderResponse);
