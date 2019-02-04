@@ -73,7 +73,7 @@
 														<th>Impressions </th>
 														<th>Clicks</th>
 														<th>CTR</th>
-														<th>Vendor Fees</th>
+														<th>Fees</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -134,7 +134,7 @@
 														</td>
 														<td>
 															{{#ifCond this.impression '&&' this.clicks}}
-																(this.clicks/this.impression)*100)
+																((this.clicks/this.impression)*100)
 															{{else}}0
 															{{/ifCond}}
 														</td>

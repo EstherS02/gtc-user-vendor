@@ -108,50 +108,30 @@
 			}
 		}
 	}
+	
 	function downloadCSV(args) {
-		var chkArray = [];
-		$(':checkbox:checked').each(function(i) {
-			if ($(this).val() != 'on') {
-				chkArray.push($(this).val())
-			}
-		});
-		if (chkArray != '') {
-			var selectedvalues = JSON.stringify(chkArray);
-			$.ajax({
-				type: 'POST',
-				url: '/api/export-csv/myordercsv',
-				contentType: 'application/json',
-				data: JSON.stringify({
-					id: selectedvalues
-				}),
-				success: function(data) {
-					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
-					var csvURL = null;
-					if (navigator.msSaveBlob) {
-						csvURL = navigator.msSaveBlob(csvData, 'orderhistory.csv');
-					} else {
-						csvURL = window.URL.createObjectURL(csvData);
-					}
-					var tempLink = document.createElement('a');
-					tempLink.href = csvURL;
-					tempLink.setAttribute('download', 'orderhistory.csv');
-					tempLink.click();
-
-				},
-				error: function(request, status, error) {
-					console.log('request', request);
-					console.log('status', status);
+		$.ajax({
+			type: 'GET',
+			url: '/api/export-csv/orders-csv',
+			contentType: 'application/json',
+			success: function(data) {
+				var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+				var csvURL = null;
+				if (navigator.msSaveBlob) {
+					csvURL = navigator.msSaveBlob(csvData, 'orderhistory.csv');
+				} else {
+					csvURL = window.URL.createObjectURL(csvData);
 				}
-			});
-		}
-		else {
-			$("#gtc-form-alert").show();
-			$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-			$('#gtc-form-alert .form-message').text("Please select the orders");
-			$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
-				$("#gtc-form-alert").slideUp(500);
-			});
-		}
+				var tempLink = document.createElement('a');
+				tempLink.href = csvURL;
+				tempLink.setAttribute('download', 'orderhistory.csv');
+				tempLink.click();
+
+			},
+			error: function(request, status, error) {
+				console.log('Error::',error);
+			}
+		});		
 	}
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
@@ -270,9 +250,12 @@
 														<td>{{formatTime this.created_on "MMM D, Y"}}</td>
 														<td>Stripe</td>
 														<td>
-															{{#if this.status}} Active {{else}}Failed {{/if}}
+															{{#if this.status}} 
+																<span class="text_green_color">Active</span> 
+															{{else}}
+																<span class="text_red_color">Failed</span> 
+															{{/if}}
 														</td>
-														{{!-- <td><a href="../order-track/{{this.Order.id}}">Track Order</a></td> --}}
 														<td>{{currency this.total_price '$'}} CAD</td>
 													</tr>
 												{{/each}}

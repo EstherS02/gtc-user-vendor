@@ -109,49 +109,30 @@
 		}
 	}
 
-	function downloadCSV(args) {
-		var chkArray = [];
-		$(':checkbox:checked').each(function(i) {
-			if ($(this).val() != 'on') {
-				chkArray.push($(this).val())
-			}
-		});
-		if (chkArray != '') {
-			var selectedvalues = JSON.stringify(chkArray);
-			$.ajax({
-				type: 'POST',
-				url: '/api/export-csv/orderhistorycsv',
-				contentType: 'application/json',
-				data: JSON.stringify({
-					id: selectedvalues
-				}),
-				success: function(data) {
-					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
-					var csvURL = null;
-					if (navigator.msSaveBlob) {
-						csvURL = navigator.msSaveBlob(csvData, 'orderhistory.csv');
-					} else {
-						csvURL = window.URL.createObjectURL(csvData);
-					}
-					var tempLink = document.createElement('a');
-					tempLink.href = csvURL;
-					tempLink.setAttribute('download', 'orderhistory.csv');
-					tempLink.click();
-
-				},
-				error: function(request, status, error) {
-					console.log('request', request);
-					console.log('status', status);
+	function downloadCSV() {
+		$.ajax({
+			type: 'GET',
+			url: '/api/export-csv/personal-orders-csv',
+			contentType: 'application/json',
+			success: function(data) {
+				var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+				var csvURL = null;
+				if (navigator.msSaveBlob) {
+					csvURL = navigator.msSaveBlob(csvData, 'orderhistory.csv');
+				} else {
+					csvURL = window.URL.createObjectURL(csvData);
 				}
-			});
-		}else {
-			$("#gtc-form-alert").show();
-			$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-			$('#gtc-form-alert .form-message').text("Please select the orders");
-			$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
-				$("#gtc-form-alert").slideUp(500);
-			});
-		}
+				var tempLink = document.createElement('a');
+				tempLink.href = csvURL;
+				tempLink.setAttribute('download', 'orderhistory.csv');
+				tempLink.click();
+
+			},
+			error: function(request, status, error) {
+				console.log('request', request);
+				console.log('status', status);
+			}
+		});	
 	}
 
 </script> 
@@ -209,7 +190,7 @@
 									</form>
 									<form class="form-inline pull-right m-t-md" name="search_order_history_form" id="searchOrderHistoryForm">
 										<div class="form-group m-r">
-											<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
+											<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV()'>EXPORT</button>
 											<input type="hidden" name="user_id" id="loginuserid" value= {{LoggedInUser.id}}>
 
 										</div>

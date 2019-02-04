@@ -17,7 +17,7 @@ router.get('/sales-history', auth.hasRole(roles['VENDOR']), saleshistoryCtrl.sal
 router.get('/sales-history/:id', auth.hasRole(roles['VENDOR']), saleshistoryCtrl.orderView);
 router.get('/accounting', auth.hasRole(roles['VENDOR']), accountingCtrl.accounting);
 router.get('/tax', auth.hasRole(roles['VENDOR']), taxCtrl.tax);
-router.get('/order', auth.hasRole(roles['VENDOR']), saleshistoryCtrl.salesHistory);
+router.get('/order', auth.hasRole(roles['VENDOR']), saleshistoryCtrl.myOrder);
 router.get('/order/:id', auth.hasRole(roles['VENDOR']), saleshistoryCtrl.orderView);
 router.get('/revenue', auth.hasRole(roles['VENDOR']), accountingCtrl.revenue);
 router.get('/processing', auth.hasRole(roles['VENDOR']), accountingCtrl.processing);
