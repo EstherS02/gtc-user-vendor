@@ -371,7 +371,8 @@
 										<form class="form-inline pull-right m-t-md">
 											<div class="form-group m-r">
 												{{#if topItems.lhs_result}}
-													<button type="button" class="btn btn-md btn-muted" onclick='exportCsv({ filename: "stock-data.csv" });'>EXPORT</button>
+													<button type="button" class="btn btn-md btn-muted" onclick='exportCsv({ filename: "stock-data.csv" });' {{#ifCond topItems.lhs_result.length "==" 0}}
+													disabled="true" {{/ifCond}}>EXPORT</button>
 												{{else}}
 													<button type="button" class="btn btn-md btn-muted" disabled='disabled' onclick='exportCsv({ filename: "stock-data.csv" });'>EXPORT</button>
 												{{/if}}

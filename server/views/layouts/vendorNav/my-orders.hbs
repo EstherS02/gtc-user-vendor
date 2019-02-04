@@ -185,7 +185,8 @@
 										</form>
 										<form class="form-inline pull-right m-t-md" name="search_order_history_form" id="searchOrderHistoryForm">
 											<div class="form-group m-r">
-												<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
+												<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV({ filename: "stock-data.csv" });' {{#ifCond orders.rows.length "==" 0}}
+													disabled="true" {{/ifCond}}>EXPORT</button>
 											</div>
 											<div class="form-group">
 												<div class="input-group gtc-rounded">

@@ -190,7 +190,8 @@
 									</form>
 									<form class="form-inline pull-right m-t-md" name="search_order_history_form" id="searchOrderHistoryForm">
 										<div class="form-group m-r">
-											<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV()'>EXPORT</button>
+											<button type="button" class="btn btn-md btn-muted" onclick='downloadCSV()' {{#ifCond orders.rows.length "==" 0}}
+												disabled="true" {{/ifCond}}>EXPORT</button>
 											<input type="hidden" name="user_id" id="loginuserid" value= {{LoggedInUser.id}}>
 
 										</div>

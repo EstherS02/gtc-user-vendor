@@ -5,7 +5,7 @@
 				<nav class="navbar navbar-expand-sm vendor-menu">
 					<a class="navbar-brand" href="/vendor/{{LoggedInUser.Vendor.id}}">
 						{{#if this.LoggedInUser.Vendor.vendor_profile_pic_url}}
-							<img src="{{LoggedInUser.Vendor.vendor_profile_pic_url}}" width="60" height="40" class="d-inline-block object-fit" alt="">
+							<img src="{{LoggedInUser.Vendor.vendor_profile_pic_url}}" width="60" height="40" onError="UserImgError(this)" class="d-inline-block object-fit" alt="">
 						{{else}}
 							<img src="gtc-assets/img/test-user.png" width="60" height="40" class="d-inline-block object-fit" alt="">
 						{{/if}}
@@ -21,13 +21,17 @@
 						<ul class="navbar-nav vendor-nav">
 							<li class="nav-item">
 								<a href="javascript:;" class="nav-link" style="cursor:default">
-									<b>Current Plan:
+									<b>Current Plan: 
 										{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.STARTER_SELLER}} Starter Seller 
 										{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.SERVICE_PROVIDER}} Service Provider
 										{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.LIFESTYLE_PROVIDER}} Lifestyle Provider 
-										{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.PUBLIC_SELLER}} Retailer 
+										{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.PUBLIC_SELLER}} Retailer
 										{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}} Bulk buyer 
 										{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}} Wholesaler
+										{{/ifCond}}
+										{{#ifCond LoggedInUser.UserPlans.plan_id '==' vendorPlan.BULK_BUYER}} 
+										,<br/>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bulk Buyer
 										{{/ifCond}}
 									</b>
 								</a>
@@ -36,13 +40,9 @@
 								<li class="nav-item">
 									<a href="listings/wholesale" class="nav-link">Wholesale</a>
 								</li>
-								{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}}
-								<li class="nav-item">
-									<a href="listings/wholesale" class="nav-link">Wholesale</a>
-								</li>
 							{{/ifCond}}
 							<li class="nav-item">
-								<a href="/gtc-mail/inbox" class="nav-link">Inbox
+								<a href="/gtc-mail/inbox" class="nav-link">Inbox{{LoggedInUser.UserPlans.plan_id}}{{vendorPlan.BULKBUYER}}
 									<b class="notification-badge">{{unreadCounts.mailCount}}</b>
 								</a>
 							</li>
@@ -93,7 +93,7 @@
 								<li class="nav-item">
 									<a href="javascript:;" class="nav-link" style="cursor:default">
 										<b>Current Plan:
-											{{#ifCond LoggedInUser.UserPlans.plan_id '==' vendorPlan.BULKBUYER}} Bulk Buyer
+											{{#ifCond LoggedInUser.UserPlans.plan_id '==' vendorPlan.BULK_BUYER}} Bulk Buyer
 											{{/ifCond}}
 										</b>
 									</a>
