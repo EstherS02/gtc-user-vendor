@@ -1,10 +1,8 @@
 'use strict';
 
 const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
-const RawQueries = require('../../raw-queries/sql-queries');
+//const RawQueries = require('../../raw-queries/sql-queries');
 const Sequelize_Instance = require('../../sqldb/index');
 const reportsService = require('../../api/reports/reports.service');
 const service = require('../../api/service');

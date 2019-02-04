@@ -11,7 +11,6 @@ const roles = require('../../config/roles');
 const Sequelize = require('sequelize');
 const service = require('../service');
 
-
 export function index(req, res) {
 
     var result = {},
@@ -35,7 +34,8 @@ export function index(req, res) {
         queryObj['status'] = {
             '$ne': status["DELETED"]
         }
-    }
+	}
+	
     userQueryObj['role'] = roles['ADMIN'];
 
     if (req.query.text) {
@@ -50,7 +50,8 @@ export function index(req, res) {
         model: model["User"],
         attributes: ['id', 'first_name', 'last_name', 'email', 'status'],
         where: userQueryObj
-    }];
+	}];
+	
     service.findRows('Admin', queryObj, offset, limit, field, order, includeArr)
     .then(function(products){
         return res.status(200).send(products);
@@ -65,20 +66,16 @@ export function index(req, res) {
 
 export function deleteAdmin(req, res) {
 
-    var existsTable = [];
-    var deleteTable = [];
-    var userTable = [];
-    var adminModel = 'Admin';
-    var userModel = 'User';
+	var existsTable = [], deleteTable = [], userTable = [], returnResponse = [];
+	var userQueryObj = {}, queryObj = {};
+    var adminModel = 'Admin', userModel = 'User';
     var ids = JSON.parse(req.body.ids);
-    var returnResponse = [];
-    var userQueryObj = {};
-    var queryObj = {};
-
+   
     for (let i = 0; i < ids.length; i++) {
         queryObj['id'] = ids[i];
         existsTable.push(service.findOneRow(adminModel, queryObj, []))
-    }
+	}
+	
     Promise.all(existsTable).then((response) => {
         if (response.length > 0) {
 
@@ -98,15 +95,16 @@ export function deleteAdmin(req, res) {
 
             Promise.all(deleteTable).then((response) => {
                 returnResponse.push(response);
-            });
+			});
+			
             Promise.all(userTable).then((response) => {
                 returnResponse.push(response);
                 returnResponse.push(response);
-            });
+			});
+			
             return res.status(200).send(returnResponse);
-
         } else {
-             return res.status(500).send("No data found.");
+            return res.status(500).send("No data found.");
         }
     });
 }
@@ -162,58 +160,57 @@ export async function create(req, res) {
                 const parsedFile = path.parse(userProfilePicture.originalFilename);
                 const timeInMilliSeconds = new Date().getTime();
                 const uploadPath = config.images_base_path + "/user/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
-
-                const userProfilePictureUpload = await move(userProfilePicture.path, uploadPath);
+				const userProfilePictureUpload = await move(userProfilePicture.path, uploadPath);
                 if (userProfilePictureUpload) {
                     bodyParams['user_pic_url'] = config.imageUrlRewritePath.base + "user/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
                 }
 			}
 
             model['User'].create(bodyParams)
-                .then(function(user) {
-                    if (user) {
-                        var rspUser = user.toJSON();
-                        var adminBodyParams = {};
+			.then(function(user) {
+				if (user) {
+					var rspUser = user.toJSON();
+					var adminBodyParams = {};
 
-                        adminBodyParams['user_id'] = rspUser.id;
-                        adminBodyParams['status'] = status["ACTIVE"];
-                        adminBodyParams['created_on'] = new Date();
+					adminBodyParams['user_id'] = rspUser.id;
+					adminBodyParams['status'] = status["ACTIVE"];
+					adminBodyParams['created_on'] = new Date();
 
-                        model['Admin'].create(adminBodyParams)
-                            .then(function(admin) {
-                                if (admin) {	
-                                    delete rspUser.salt;
-                                    delete rspUser.hashed_pwd;
-                                    return res.status(201).send({
-										"message": "Success",
-										"messageDetails": "Admin Created Successfully."
-									});
-                                } else {
-                                    return res.status(404).send({
-										"message": "Error",
-										"messageDetails": "Admin Not Found."
-									});
-                                }
-                            }).catch(function(error) {
-                                console.log('Error :::', error);
-                                return res.status(500).send({
-									"message": "Error",
-									"messageDetails": "Internal Server Error"
+					model['Admin'].create(adminBodyParams)
+						.then(function(admin) {
+							if (admin) {	
+								delete rspUser.salt;
+								delete rspUser.hashed_pwd;
+								return res.status(201).send({
+									"message": "Success",
+									"messageDetails": "Admin Created Successfully."
 								});
-                            });
-                    } else {
-                        return res.status(404).send({
-							"message": "Error",
-							"messageDetails": "Admin Not Found."
+							} else {
+								return res.status(404).send({
+									"message": "Error",
+									"messageDetails": "Admin Not Found."
+								});
+							}
+						}).catch(function(error) {
+							console.log('Error :::', error);
+							return res.status(500).send({
+								"message": "Error",
+								"messageDetails": "Internal Server Error"
+							});
 						});
-                    }
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-					return res.status(500).send({
+				} else {
+					return res.status(404).send({
 						"message": "Error",
-						"messageDetails": "Internal Server Error"
+						"messageDetails": "Admin Not Found."
 					});
-                });
+				}
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return res.status(500).send({
+					"message": "Error",
+					"messageDetails": "Internal Server Error"
+				});
+			});
         }
     }).catch(function(error) {
         console.log('Error :::', error);

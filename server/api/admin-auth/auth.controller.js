@@ -4,7 +4,6 @@ const url = require("url");
 const request = require('request');
 const cryptography = require('../../auth/encrypt-decrypt');
 const config = require('../../config/environment');
-const path = require('path');
 const model = require('../../sqldb/model-connect');
 
 export function login(req, res) {

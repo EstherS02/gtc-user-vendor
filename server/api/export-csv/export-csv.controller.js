@@ -312,11 +312,35 @@ export function vendorPerformancecsv(req, res) {
 	ReportService.vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
 		var finalresults = [];
 		for (let value of results.lhs_result) {
-			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-			delete value.vendor_id;
-			finalresults.push(value);
+
+			var result = {};
+			result.vendor_name = value.vendor_name;
+			result.owner_name = value.owner_name;
+			switch (value.type) {
+				case 1:
+					result.type = 'Starter Seller';
+					break;
+				case 2:
+					result.type = 'Service Provider';
+					break;
+				case 3:
+					result.type = 'Lifestyle Provider';
+					break;
+				case 4:
+					result.type = 'Retailer';
+					break;
+				case 6:
+					result.type = 'Wholesaler'
+				default:
+					result.type = '-';
+					break;
+			}
+			result.sales = value.sales;
+			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+			result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+			result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+
+			finalresults.push(result);
 		}
 		const parser = new Json2csvParser(finalresults);
 		const csv = parser.parse(finalresults);
@@ -669,7 +693,7 @@ export function compareUserPerformancecsv(req, res) {
 	var queryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
-	var limit, offset, compare;
+	var limit, offset, compare, vendorId;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
@@ -682,9 +706,10 @@ export function compareUserPerformancecsv(req, res) {
 		}
 	}
 
-	if (req.user.role == 2)
+	if (req.user.role == 2){
 		queryObj.vendor_id = req.user.Vendor.id;
-	else
+		vendorId = req.user.Vendor.id;
+	}else
 		queryObj.vendor_id = null;
 
 	if (req.query.compare) {
@@ -706,14 +731,20 @@ export function compareUserPerformancecsv(req, res) {
 	ReportService.userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
 		var finalresults = [];
 		for (let value of results.lhs_result) {
-			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-			delete value['Order.User.last_name'];
-			delete value['Order.user_id'];
-			delete value['Order.User.id'];
-			delete value['Order.id'];
-			finalresults.push(value);
+
+			var result = {};
+			result.buyer = value['Order.User.first_name'];
+			result.total_purchase = value.sales;
+			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+
+			if(vendorId){
+				result.gtc_processing_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+				result.vendor_revenue = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+			}else{
+				result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+				result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			}
+			finalresults.push(result);
 		}
 		const parser = new Json2csvParser(finalresults);
 		const csv = parser.parse(finalresults);
