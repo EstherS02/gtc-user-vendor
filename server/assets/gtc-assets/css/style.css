@@ -3320,3 +3320,16 @@ p.address-info{
 	color:#fff;
 	background-color:#3bb802;
 }
+
+@media screen and (max-width: 1375px) and (min-width: 1281px){
+	.privacy-policy-landing {
+		margin: 0 150px;
+	}
+}
+
+@media screen and (max-width: 1375px) and (min-width: 1281px){
+	.privacy-policy-content {
+		margin: 0 50px;
+	}
+}
+

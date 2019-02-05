@@ -94,7 +94,7 @@ export default function(app) {
     app.use('/order-checkout', require('./hbs-routes/checkout'));
     app.use('/user-join', require('./hbs-routes/user-join'));
     app.use('/web-rtc', require('./hbs-routes/web-rtc'));
-	app.use('/faq', require('./hbs-routes/faq'));
+	app.use('/privacy-policy', require('./hbs-routes/privacy-policy'));
 	app.use('/support', require('./hbs-routes/support'));
 
     app.use('/:vendorType(directories|sellers|wholesalers|retailers|services-providers|subscription-providers)', require('./hbs-routes/vendor-search-result'));

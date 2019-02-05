@@ -1,18 +1,18 @@
 'use strict';
 
-const statusCode = require('../../../config/status');
-const service = require('../../../api/service');
-const cartService = require('../../../api/cart/cart.service');
+const statusCode = require('../../config/status');
+const service = require('../../api/service');
+const cartService = require('../../api/cart/cart.service');
 const async = require('async');
-const notifictionService = require('../../../api/notification/notification.service');
-const vendorPlan = require('../../../config/gtc-plan');
 
-export function faq(req, res) {
+export function privacyPolicy(req, res) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
-	if (req.user)
-		LoggedInUser = req.user;
 	
+	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
+		LoggedInUser = req.gtcGlobalUserObj;
+	}
+
 	async.series({
 		cartInfo: function(callback) {
 			if (LoggedInUser.id) {
@@ -25,14 +25,6 @@ export function faq(req, res) {
 			} else {
 				return callback(null);
 			}
-		},
-		unreadCounts: function(callback) {
-			notifictionService.notificationCounts(LoggedInUser.id)
-				.then(function(counts) {
-					return callback(null, counts);
-				}).catch(function(error) {
-					return callback(null);
-				});
 		},
 		categories: function(callback) {
 			var includeArr = [];
@@ -59,17 +51,17 @@ export function faq(req, res) {
 		}
 	}, function(err, results) {
 		if (!err) {
-			res.render('vendorNav/support/faq', {
+			res.render('privacy-policy', {
 				title: "Global Trade Connect",
-				unreadCounts: results.unreadCounts,
 				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser,
 				bottomCategory: bottomCategory,
-				categories: results.categories,
-				vendorPlan:vendorPlan
+				categories: results.categories
 			});
 		} else {
-			res.render('vendorNav/support/faq', err);
+			res.render('privacy-policy', err);
 		}
 	});
 }
+
+
