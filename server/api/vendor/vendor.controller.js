@@ -119,9 +119,10 @@ export async function createStarterSeller(req, res) {
 		}
 	} catch (error) {
 		console.log("Error:::", error);
-		return res.status(500).send(error);
+		return res.status(500).send("Internal Server Error.");
 	}
 }
+
 export async function createVendor(req, res) {
 	var queryObj = {};
 	var bodyParams = {};

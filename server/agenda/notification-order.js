@@ -27,7 +27,6 @@ module.exports = async function(job, done) {
 	const discussionBoardPostLikeModelName = "DiscussionBoardPostLike";
 	const emailTemplateModelName = "EmailTemplate";
 
-	console.log("..................order notification............");
 	try {
 
 		// vendor new order notification

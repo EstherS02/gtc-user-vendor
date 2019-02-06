@@ -13,6 +13,8 @@ const model = require('../sqldb/model-connect');
 
 module.exports = async function(job, done) {
 
+	console.log("**********COMMING TO AGENTA**********************")
+
 	const orderID = job.attrs.data.order;
 	const orderModelName = "Order";
 	var emailTemplateModel = 'EmailTemplate';
@@ -74,7 +76,11 @@ module.exports = async function(job, done) {
 			attributes: ['id', 'order_id', 'vendor_id', 'status'],
 			include: [{
 				model: model['Vendor'],
-				attributes: ['id', 'vendor_name', 'contact_email']
+				attributes: ['id', 'vendor_name', 'contact_email'],
+				include: [{
+					model:model['User'],
+					attributes:['id','user_contact_email']
+				}]
 			}, {
 				model: model['Order'],
 				attributes: ['id', 'ordered_date'],
@@ -123,12 +129,16 @@ module.exports = async function(job, done) {
 				return parseFloat(o.price);
 			});
 			var orderVendorSubject = orderVendorEmailTemplate.subject;
+
+			orderVendorEmailTemplate.body = orderVendorEmailTemplate.body.replace(/%URL%/g,config.baseUrl);
+			orderVendorEmailTemplate.body = orderVendorEmailTemplate.body.replace('%ORDER_ID%',orderID);
 			var orderVendorTemplate = Handlebars.compile(orderVendorEmailTemplate.body);
 			orderVendor.Order.ordered_date = moment(orderVendor.Order.ordered_date).format('MMM D, Y');
 			var orderVendorResult = orderVendorTemplate(orderVendor.Order);
-			if (orderVendor.Vendor.contact_email) {
+
+			if (orderVendor.Vendor.User.user_contact_email) {
 				await sendEmail({
-					to: orderVendor.Vendor.contact_email,
+					to: orderVendor.Vendor.User.user_contact_email,
 					subject: orderVendorSubject,
 					html: orderVendorResult
 				});
