@@ -711,6 +711,7 @@ export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
 		$between: rhsBetween
 	};
 
+	
 	pastRange['$or'] = currentRange['$or'] = [{
 			order_item_status: orderItemStatus['ORDER_INITIATED']
 		}, {
@@ -972,6 +973,9 @@ export function categoryPerformanceChanges(queryObj, lhsBetween, rhsBetween, lim
 }
 
 export function marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
+
+	console.log("****************************",queryObj, lhsBetween, rhsBetween )
+
 	const pastRange = _.assign({}, queryObj);
 	pastRange.from = lhsBetween[0];
 	pastRange.to = lhsBetween[1];
@@ -1125,6 +1129,7 @@ export function cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, 
 }
 
 export function vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
+
 	const pastRange = _.assign({}, queryObj);
 	pastRange.from = lhsBetween[0];
 	pastRange.to = lhsBetween[1];

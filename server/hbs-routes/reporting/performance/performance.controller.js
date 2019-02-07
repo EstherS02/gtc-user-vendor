@@ -39,10 +39,12 @@ export function performance(req, res) {
 	}, {
 		"column": "Last Month",
 		"value": 6
-	}, {
-		"column": "Custom Range",
-		"value": 7
-	}];
+	}
+	// , {
+	// 	"column": "Custom Range",
+	// 	"value": 7
+	// }
+	];
 
 	selectedMetrics = req.query.top ? req.query.top : "products";
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
@@ -59,7 +61,7 @@ export function performance(req, res) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"));
 		queryURI['range'] = 7;
 	}else{
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1,'days').format("YYYY/MM/DD"));
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 		queryURI['range'] = 4;
 	}
 

@@ -167,7 +167,7 @@
 				var startDate = new Date();
 				var endDate = new Date();
 				startDate.setDate(startDate.getDate() - 7);
-				endDate.setDate(endDate.getDate() - 1);
+				endDate.setDate(endDate.getDate());
 
 				$("#lhs_from").datepicker("setDate", startDate);
 				$("#lhs_to").datepicker("setDate", endDate);
@@ -177,7 +177,7 @@
 				var startDate = new Date();
 				var endDate = new Date();
 				startDate.setDate(startDate.getDate() - 30);
-				endDate.setDate(endDate.getDate() - 1);
+				endDate.setDate(endDate.getDate());
 
 				$("#lhs_from").datepicker("setDate", startDate);
 				$("#lhs_to").datepicker("setDate", endDate);
@@ -198,9 +198,10 @@
 				$("#lhs_from").datepicker("setDate", startDate);
 				$("#lhs_to").datepicker("setDate", endDate);
 				
-			} else {
+			} 
+			/*else {
 				range =7;
-			}
+			}*/
 		});
 
 		$('#lhs_from,#lhs_to,#rhs_from,#rhs_to,#compare').change(function(e){

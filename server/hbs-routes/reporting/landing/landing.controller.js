@@ -52,7 +52,7 @@ export function reporting(req, res) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"));
 		queryURI['range'] = 7;
 	}else{
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1,'days').format("YYYY/MM/DD"));	
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));	
 		queryURI['range'] = 4;
 	}
 	
@@ -124,15 +124,6 @@ export function reporting(req, res) {
 				return callback(err);
 			});
 		},
-	/*	revenueChanges: function(callback) {
-
-			ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
-				return callback(null, results);
-			}).catch((err) => {
-				console.log('revenueChanges err', err);
-				return callback(err);
-			});
-		},*/
 		revenueCounts: function(callback) {
 			ReportService.revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 				return callback(null, results);

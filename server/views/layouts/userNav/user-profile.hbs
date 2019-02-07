@@ -3,7 +3,6 @@ $(document).ready(function() {
 
 	$("#gtc-profile-alert").hide();
 	$("#gtc-pwdreset-alert").hide();
-	$("#gtc-alert").hide();
 	$('.billing_required_field').hide();
 	$('.shipping_required_field').hide();
 
@@ -216,6 +215,15 @@ $(document).ready(function() {
 					},
 					error: function(error) {
 						console.log("Error", error);
+						$('#gtc-profile-alert').prop('disabled', false);
+						if (error) {
+							$('#gtc-profile-alert').removeClass('alert-success').addClass('alert-danger');
+							$('#gtc-profile-alert .profile-message').text("Failed !!!")
+							$("#gtc-profile-alert").fadeTo(7000, 500).slideUp(500, function() {
+								$("#gtc-profile-alert").slideUp(500);
+							});
+							location.reload(true);
+						}
 					}
 				});
 			}
@@ -324,19 +332,19 @@ $(document).ready(function() {
 			url: "/api/users/resend",
 			data: {},
 			success: function(res) {
-				$('#gtc-alert').removeClass('alert-danger').addClass('alert-success');
-				$('#gtc-alert .pwdreset-message').text("Resend email Successfully")
-				$("#gtc-alert").fadeTo(7000, 500).slideUp(500, function() {
-					$("#gtc-alert").slideUp(500);
+				$('#gtc-profile-alert').removeClass('alert-danger').addClass('alert-success');
+				$('#gtc-profile-alert .profile-message').text("Resend email Successfully")
+				$("#gtc-profile-alert").fadeTo(7000, 500).slideUp(500, function() {
+					$("#gtc-profile-alert").slideUp(500);
 				});
 			},
 			error: function(error) {
-				$('#gtc-alert').prop('disabled', false);
+				$('#gtc-profile-alert').prop('disabled', false);
 				if (error) {
-					$('#gtc-alert').removeClass('alert-success').addClass('alert-danger');
-					$('#gtc-alert .pwdreset-message').text("Failed !!!")
-					$("#gtc-alert").fadeTo(7000, 500).slideUp(500, function() {
-						$("#gtc-alert").slideUp(500);
+					$('#gtc-profile-alert').removeClass('alert-success').addClass('alert-danger');
+					$('#gtc-profile-alert .profile-message').text("Failed !!!")
+					$("#gtc-profile-alert").fadeTo(7000, 500).slideUp(500, function() {
+						$("#gtc-profile-alert").slideUp(500);
 					});
 					location.reload(true);
 				}
@@ -382,12 +390,6 @@ aria-hidden="true">
 			<div class="col-sm-10">
 				<div class="ibox">
 					<div class="ibox-content">
-						<div class="alert" id="gtc-alert">
-							<button type="button" class="close" data-dismiss="alert">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="pwdreset-message"></span>
-						</div>
 						<div class="ibox-title">
 							<h2>Profile Settings</h2>
 						</div>
