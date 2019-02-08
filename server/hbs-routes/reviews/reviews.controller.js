@@ -12,8 +12,7 @@ const vendorPlan = require('../../config/gtc-plan');
 const notifictionService = require('../../api/notification/notification.service');
 
 export function reviews(req, res) {
-	var LoggedInUser = {};
-	var bottomCategory = {};
+	var LoggedInUser = {}, bottomCategory = {};
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -23,8 +22,6 @@ export function reviews(req, res) {
 	var queryURI = {};
 	var vendorId;
 
-	// queryURI['vendor_id']=req.query.vendor_id;
-
 	if (req.query.sort == 'rating') {
 		var field = req.query.sort;
 		queryPaginationObj["field"] = field;
@@ -33,7 +30,7 @@ export function reviews(req, res) {
 		queryPaginationObj["field"] = req.query.sort;
 	}
 
-	var order = "desc"; //"asc"
+	var order = "desc"; 
 	var offset = 0;
 	var limit;
 
@@ -44,7 +41,6 @@ export function reviews(req, res) {
 		user_id: user_id,
 	};
 
-	//pagination 
 	var page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
@@ -60,7 +56,7 @@ export function reviews(req, res) {
 
 	offset = (page - 1) * limit;
 	var maxSize;
-	// End pagination
+
 	async.series({
 			cartInfo: function(callback) {
 				if (LoggedInUser.id) {
@@ -117,9 +113,15 @@ export function reviews(req, res) {
 			},
 			Rating: function(callback) {
 				model['Review'].findAndCountAll({
-					where: queryObj,
+					//where: queryObj,
 					// offset:0,
 					// limit:4,
+					include:[{
+						model: model['Product'],
+						where:{
+							vendor_id: LoggedInUser.Vendor.id
+						}
+					}],
 					attributes: [
 						'rating', 'title', 'comment', 'created_on', 'id', [sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
 					],
@@ -183,14 +185,17 @@ export function reviews(req, res) {
 			},
 			userReviews: function(callback) {
 				model['Review'].findAndCountAll({
-					where: queryObj,
+					//where: queryObj,
 					include: [{
 						model: model['User'],
 						attributes: {
 							exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
 						}
 					}, {
-						model: model['Product']
+						model: model['Product'],
+						where:{
+							vendor_id: LoggedInUser.Vendor.id
+						}
 					}],
 					offset: offset,
 					limit: limit,
@@ -227,13 +232,11 @@ export function reviews(req, res) {
 					cart: results.cartInfo,
 					marketPlace: marketplace,
 					bottomCategory: bottomCategory,
-					// pagination
 					page: page,
 					pageSize: limit,
 					queryPaginationObj: queryPaginationObj,
 					collectionSize: results.Reviews.count,
 					selectedPage: 'reviews',
-					// End pagination
 					vendorPlan: vendorPlan,
 					queryURI: queryURI,
 					userReviews: results.userReviews,

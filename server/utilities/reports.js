@@ -11,7 +11,6 @@ const _ = require('lodash');
 const Op = sequelize.Op;
 
 function sumofPrice(modelName, queryObj) {
-
 	return new Promise((resolve, reject) => {
 		let total;
 		return model[modelName].findAll({
@@ -266,7 +265,6 @@ function getAllUserPerformance(queryObj, limit, offset, attributes, groupBy, inc
 function getAllCityPerformance(queryObj, limit, offset, attributes, groupBy, includeArr) {
 
 	var productQueryObj = {};
-
 	let queryObject = {
 		created_on: {
 			$between: [queryObj.from, queryObj.to]
@@ -283,7 +281,6 @@ function getAllCityPerformance(queryObj, limit, offset, attributes, groupBy, inc
 			order_item_status: orderItemStatus['COMPLETED']
 		}],
 	};
-
 
 	if(queryObj.vendor_id){
 		productQueryObj['vendor_id'] = queryObj.vendor_id;
@@ -710,7 +707,6 @@ export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
 	currentRange.item_created_on = {
 		$between: rhsBetween
 	};
-
 	
 	pastRange['$or'] = currentRange['$or'] = [{
 			order_item_status: orderItemStatus['ORDER_INITIATED']
@@ -974,8 +970,6 @@ export function categoryPerformanceChanges(queryObj, lhsBetween, rhsBetween, lim
 
 export function marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
 
-	console.log("****************************",queryObj, lhsBetween, rhsBetween )
-
 	const pastRange = _.assign({}, queryObj);
 	pastRange.from = lhsBetween[0];
 	pastRange.to = lhsBetween[1];
@@ -1156,8 +1150,6 @@ export function vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit
 		});
 	});
 }
-
-//PERFORMANCE EXPORT FUNCTIONALITY
 
 export function exportperformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
 	const pastRange = _.assign({}, queryObj);

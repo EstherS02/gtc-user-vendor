@@ -531,7 +531,7 @@
 																{{#each productRecentReview.rows}}
 																	<div class="feed-element b-b-none">
 																		<a class="float-left" href="javascript:;">
-																			<img alt="image" onError="imgError(this)" class="rounded-circle" src="{{this.User.user_pic_url}}">
+																			<img alt="image" onError="UserImgError(this)" class="rounded-circle" src="{{this.User.user_pic_url}}">
 																		</a>
 																		<div class="media-body">
 																			<h4 class="review-title">{{this.title}}</h4>
@@ -738,10 +738,8 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
-							<b>Close</button>
-						<button type="submit" class="btn btn-small btn-primary">
-							<strong>Submit</strong>
+						<button type="button" class="btn btn-md btn-muted m-t" data-dismiss="modal">CANCEL</button>
+						<button type="submit" class="btn btn-md update-btn m-t">SUBMIT
 							<i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i>
 						</button>
 					</div>
