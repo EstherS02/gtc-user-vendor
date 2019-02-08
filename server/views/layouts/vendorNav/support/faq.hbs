@@ -1,3 +1,23 @@
+<script>
+	$(document).ready(function(){
+    $("#filter").keyup(function(){
+		
+        var filter = $(this).val(), count = 0;
+       $(".commentlist li").each(function(){
+            if ($(this).find('.card-question').text().search(new RegExp(filter, "i")) < 0) {
+                $(this).hide();
+            } else {
+                $(this).show();
+                count++;
+            }
+        });
+        var numberItems = count;
+        $("#filter-count").text("Number of Comments = "+count);
+		
+    });
+});
+</script>
+
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -17,7 +37,7 @@
 								<div class="col-md-8">
 									<div class="form-group">
 										<div class="input-group gtc-rounded">
-											<input type="text" placeholder="Search in FAQs..." class="form-control form-control-sm"  name="name" >
+											<input type="text" id="filter" placeholder="Search in FAQs..." class="form-control form-control-sm"  name="name" >
 											<button type="submit" class="btn btn-sm btn-gtc">
 												<i class="fa fa-search"></i>
 											</button>
@@ -27,716 +47,823 @@
 							</div><br/>
 							<div class="row">
 								<div class="col-md-12">
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question1" aria-expanded="false" aria-controls="question1">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Is there a membership fee?</span>
-									</div>
-									<div class="collapse bg-gray" id="question1">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">GlobalTradeConnect.com has free and paid access.</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question2" aria-expanded="false" aria-controls="question2">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Forgot password / How to retrieve account?</span>
-									</div>
-									<div class="collapse bg-gray" id="question2">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">You can reset password on the main login page of GlobalTradeConnect.com.</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question3" aria-expanded="false" aria-controls="question3">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What are the grounds that my account will be temporarily suspended or permanently disabled?</span>
-									</div>
-									<div class="collapse bg-gray" id="question3">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">There are various reasons GlobalTradeConnect may limit, suspend or disable your account.  Please review our Terms of Service and Acceptance of Terms Agreement to see the reasons. Further, if we determine that you have abused returns on GlobalTradeConnect or the GTC Protection Guarantee, you may be subject to a range of actions, including limits on buying and selling privileges, suspension, or be banned.</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question4" aria-expanded="false" aria-controls="question4">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What actions does GlobalTradeConnect take if a buyer is misusing refunds?</span>
-									</div>
-									<div class="collapse bg-gray" id="question4">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">If we determine that a buyer has misused or abused returns on GTC Protection Guarantee, you may be subject to a  variety of actions, including suspension, limits on buying and selling or being banned from using GTC.
-												Some reasons we may take action include:
-												Returning items in an unacceptable condition and disregarding product conditions required for return
-												Requesting an excessive amount of returns
-												Selecting an inaccurate reason for return
-
-												As a seller, if you encounter a buyer that is not willing to follow your return policy and you have tried to work with the buyer to find a resolution satisfactory to both parties, do report the buyer to us.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question5" aria-expanded="false" aria-controls="question5">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What should I include in my Return Policy?</span>
-									</div>
-									<div class="collapse bg-gray" id="question5">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Globaltradeconnect.com encourage our sellers to offer a buyer friendly return policy.  A comprehensive return policy can help you get better ratings, attract more buyers and better solve customer concerns. If a seller chooses “no returns accepted”, the buyer will still be able to return the items if it does not match your item description. If you accept returns, a buyer should be able to return an item for any reason, even if they simply just change their mind, as long as the item returned meets your return requirements. Here are some tips: 
-												Be clear and specific in your terms- specify your return policy for domestic and international customers, provide a reasonable time for processing a return (typically no longer than 5 business days), be detailed about the condition the item will be accepted for a refund. 
-												If an item is defective, arrived damaged or if it was not as described in your listing; offer to refund all shipping costs associated with that transaction. Do not charge a restocking fee or if you choose to charge it, choose a reasonable amount and apply it to select instances where the item being returned is not in its original condition.
-												Provide details of item condition to provide a refund- For example; All returns must be in its original condition, unused and unaltered. Also include all original packaging such as bags, tags, boxes, and UPCs, accessories like cords and remote controls, certificates, manuals, warranty, and rebate cards, bonus items, and all items included in a bundle.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question6" aria-expanded="false" aria-controls="question6">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Is ordering online secure? / Is my personal information kept private?</span>
-									</div>
-									<div class="collapse bg-gray" id="question6">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Yes. We take the utmost care with the information that you provide us when placing an order on our website. All of the information you provide during the ordering process is restricted and confidential. We take data security seriously and employ various security measures to protect your data.</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question7" aria-expanded="false" aria-controls="question7">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How do I track my orders?</span>
-									</div>
-									<div class="collapse bg-gray" id="question7">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">After a successful transaction, you will see an Order ID and an email notifying you that orders have been shipped. To track your order, click the link on the uppermost part of the homepage. It will require you to enter your Order ID and the email. Click the "Track" button. For more information, please contact the supplier, since the shipping has been arranged by the supplier.</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question8" aria-expanded="false" aria-controls="question8">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How can I connect my account with PayPal and Stripe?</span>
-									</div>
-									<div class="collapse bg-gray" id="question8">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">After your Store Setup, you will see Payment Setup on the Seller’s Dashboard.  Sell more with PayPal and Stripe and give customers the ability to use their payment gateway of choice. 
-												Step 1: First put your PayPal email details in. If you don’t have a PayPal account please visit 
-												http://www.paypal.com 
-												Step 2: Connect your stripe account by clicking the connect with stripe button. If you don’t have an account click the connect with stripe button or visit http://www.stripe.com. It’s Free.
-												Step 3: If you wish you can skip this step and enter details later. However, you will not be able to sell products if you don’t setup at least 1 payment gateway.  You can also access payment settings via the Dashboard.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question9" aria-expanded="false" aria-controls="question9">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Is there a mobile app?</span>
-									</div>
-									<div class="collapse bg-gray" id="question9">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">GlobalTradeConnect.com will be available of the App Store and Google Play in 2017. 
-												The App name is GlobalTradePass.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question10" aria-expanded="false" aria-controls="question10">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Will there be any additional charges for the item to be listed on the featured products?</span>
-									</div>
-									<div class="collapse bg-gray" id="question10">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">You can request to have Featured Products by emailing sales@globaltradeconnect.com.  One of our sales support team members will get back to you with options.</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question11" aria-expanded="false" aria-controls="question11">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How do I place my order?</span>
-									</div>
-									<div class="collapse bg-gray" id="question11">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Once you have finished adding items to your shopping cart and are ready to complete your transaction, move your cursor to the upper-right corner of the screen and click on the SHOPPING BAG icon and click either View Cart or Checkout from the dropdown.
-												If you have a coupon code, you may enter it on the box intended and click the "Update Cart" button in order to have it applied to your order.
-												Once you have decided how to proceed, click "Checkout" and you will be brought to a screen that provides an order summary. You will be prompted to enter your billing information and the name and address of the intended recipient of your shipment (i.e. your delivery information)
-												You will also need to enter your payment details.  . Once you are ready to complete your order, click on the "Place order" button to the lower right of your screen.  You will receive an on-screen order confirmation, as well as a second confirmation via e-mail.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question12" aria-expanded="false" aria-controls="question12">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How can I create a Coupon Code?</span>
-									</div>
-									<div class="collapse bg-gray" id="question12">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Under the Seller Dashboard→Coupons, you can edit and create a custom coupon for your store.</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question13" aria-expanded="false" aria-controls="question13">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How do I view what’s in my shopping cart?</span>
-									</div>
-									<div class="collapse bg-gray" id="question13">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">To view the contents of your cart, click on the “View cart” icon in the upper-right corner of your computer screen. Once you click on this icon, you can easily change the quantity you want to purchase of a particular item in your cart by updating the quantity listed and then clicking the “Update cart” link. You can also delete any item in your cart by clicking the “x” button at the left side of that item and then updating your cart with the "Update cart" link.</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question14" aria-expanded="false" aria-controls="question14">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How do I add items to my cart?</span>
-									</div>
-									<div class="collapse bg-gray" id="question14">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">To add an item to your cart, navigate to the page of the item you are interested in and then choose your desired version of that item and click "Add to Cart". Once you had completed you order, click the “View Cart” link, you will be brought to your "Shopping cart" page where you can then enter the quantity of the item that you would like to order using the "Qty".</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question15" aria-expanded="false" aria-controls="question15">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How do I remove items from my cart?</span>
-									</div>
-									<div class="collapse bg-gray" id="question15">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">First, click on the “View cart” link in the upper-right corner of your computer screen. This will allow you to view all items currently in your cart. Once you have identified the item that you would like to remove, click the “x” at the left side of the item and then click "Update cart" in the lower-right corner to have your changes reflected.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question16" aria-expanded="false" aria-controls="question16">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How do I change the quantity of a particular item in my cart?</span>
-									</div>
-									<div class="collapse bg-gray" id="question16">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">First, click on the “View cart” link in the upper-right corner of your computer screen. 
-												This will allow you to view all items currently in your cart, as well as the quantities that you have chosen for each item. To change the quantity of an item in your cart, move your cursor to the box that appears under the "Qty" header for this item and type in the quantity desired and then click the “Update cart” link. Once you do this, the quantity and associated dollar amount (if applicable) will automatically change and reflect the correct amounts for both the quantity and the cost.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question17" aria-expanded="false" aria-controls="question17">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How will I know that you have received my order?</span>
-									</div>
-									<div class="collapse bg-gray" id="question17">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">After you complete the checkout process, it will direct you to the on-screen order confirmation. The order ID will appear on your screen detailing your final order including shipping charges, your billing address, and the items that are being sent to your shipping address. Please keep this information for your reference. You will also receive confirmation via e-mail that we have received your order. (Please be sure to enter your e-mail address correctly on the order form so that we can be sure to deliver your confirmation to you.)
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question18" aria-expanded="false" aria-controls="question18">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What are your shipping and handling rates?</span>
-									</div>
-									<div class="collapse bg-gray" id="question18">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Shipping and handling rates are set by each seller. Shipping and handling rates also vary depending on the destination of the order and are based on the total cost of the order.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question19" aria-expanded="false" aria-controls="question19">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What is your return policy?</span>
-									</div>
-									<div class="collapse bg-gray" id="question19">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Each seller has their own return/refund/exchange policy. We encourage you to read the seller’s return policy prior to making a purchase.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question20" aria-expanded="false" aria-controls="question20">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What if I have received a defective item?</span>
-									</div>
-									<div class="collapse bg-gray" id="question20">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">You contact the supplier and submit replacement/exchange/refund request. GlobalTradeConnect.com will step in if a seller and buyer cannot reach a satisfactory solution.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question21" aria-expanded="false" aria-controls="question21">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How long after placing my order should I expect to receive my shipment?</span>
-									</div>
-									<div class="collapse bg-gray" id="question21">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">We encourage sellers to provide estimates of delivery time. Please check with the supplier for tracking and other shipment details.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question22" aria-expanded="false" aria-controls="question22">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How do I select items to purchase?</span>
-									</div>
-									<div class="collapse bg-gray" id="question22">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">As you browse through the GTC Online Store, click on the "add to shopping cart" button beneath the items that you wish to purchase.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question23" aria-expanded="false" aria-controls="question23">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How do I know if an item is in stock?</span>
-									</div>
-									<div class="collapse bg-gray" id="question23">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">All items are in stock unless "Out of stock" is indicated.  
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question24" aria-expanded="false" aria-controls="question24">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Can I deliver to another address, other than my card billing address?</span>
-									</div>
-									<div class="collapse bg-gray" id="question24">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Yes, it is possible if the delivery address is in the listed countries. If your country of choice is not listed, do inquire with the Seller. 
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question25" aria-expanded="false" aria-controls="question25">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Cancellation policy or if a customer wants to change order after it has been checked out.</span>
-									</div>
-									<div class="collapse bg-gray" id="question25">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Contact the seller immediately via a support ticket on the Dashboard. 
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question26" aria-expanded="false" aria-controls="question26">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What if there are missing or wrong items when I receive my order?</span>
-									</div>
-									<div class="collapse bg-gray" id="question26">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">You should contact the seller and have them rectify the situation.  Sellers will have policies when they send any items that maybe wrong or missing. 
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question27" aria-expanded="false" aria-controls="question27">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center"> Is there a minimum order quantity?
-									</div>
-									<div class="collapse bg-gray" id="question27">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Some sellers may choose to implement a Minimum Order Quantity (MOQ). 
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question28" aria-expanded="false" aria-controls="question28">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What if I was charged twice?</span>
-									</div>
-									<div class="collapse bg-gray" id="question28">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">If you have accidentally doubled up on an item while checking out you should contact the seller immediately. The seller will be able to remove the identical order.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question29" aria-expanded="false" aria-controls="question29">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Getting an error message when entering the shipping and billing</span>
-									</div>
-									<div class="collapse bg-gray" id="question29">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Start by refreshing your browser.  If the error persists, delete the cookies on your browser and refresh the browser again.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question30" aria-expanded="false" aria-controls="question30">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">My Order Won’t Go Through. What Should I Do?</span>
-									</div>
-									<div class="collapse bg-gray" id="question30">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Refresh and try again. If the problem persists then contact support.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question31" aria-expanded="false" aria-controls="question31">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Unsure about the size or have a fit question (applies to apparels / shoes)</span>
-									</div>
-									<div class="collapse bg-gray" id="question31">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Prior to making a purchase we ask you direct all questions to the seller. 
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question32" aria-expanded="false" aria-controls="question32">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Delivery charges and fees</span>
-									</div>
-									<div class="collapse bg-gray" id="question32">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">We encourage sellers to be reasonable while charging for shipping and restocking fees when appropriate.  GlobalTradeConnect.com is not affiliated with any additional fees charged by the seller.  As a buyer you can negotiate with a seller.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question33" aria-expanded="false" aria-controls="question33">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center"> If sent internationally, will there be additional fees?</span>
-									</div>
-									<div class="collapse bg-gray" id="question33">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Most likely there will be additional shipping charges.  Each seller sets their own fee structure. You should check with the seller if you have questions specific to fees.  GlobalTradeConnect.com charges a standard 3.5% on the overall transaction.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question34" aria-expanded="false" aria-controls="question34">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How can I change my shipping address?</span>
-									</div>
-									<div class="collapse bg-gray" id="question34">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">You can edit your shipping and billing addresses on the dashboard. Currently, our system only accepts shipping addresses in English.  If your shipping address is not in English, please translate your shipping address into English and fill it in the system.  Please also contact the supplier and provide them with your non-English address. 
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question35" aria-expanded="false" aria-controls="question35">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Is there a check out limit?
-									</div>
-									<div class="collapse bg-gray" id="question35">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">No you do not have a check out limit
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question36" aria-expanded="false" aria-controls="question36">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How are the orders shipped (courier / freight services)</span>
-									</div>
-									<div class="collapse bg-gray" id="question36">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Shipping methods are based on the supplier.  Please check with the supplier.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question37" aria-expanded="false" aria-controls="question37">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Can I do a reservation on my desired item? </span>
-									</div>
-									<div class="collapse bg-gray" id="question37">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">You can add it to your Wishlist, however, by doing so it does not reserve the item.  Currently, you cannot reserve an item on the website.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question38" aria-expanded="false" aria-controls="question38">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Can I learn enough about the product I want to buy?</span>
-									</div>
-									<div class="collapse bg-gray" id="question38">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">You can view the description details of an item at the lower part of the item photo along with the reviews and seller's information.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question39" aria-expanded="false" aria-controls="question39">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How will I know if it's a legitimate seller and not a scam?</span>
-									</div>
-									<div class="collapse bg-gray" id="question39">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">GlobalTradeConnect does its best to verify sellers on the platform.  We encourage buyers to purchase from high rated sellers (5 or more) and read reviews on the seller and their products.   As with the purchase of a product or service through any medium we strongly suggest you use your best judgment.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question40" aria-expanded="false" aria-controls="question40">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Why should I sell on GlobalTradeConnect.com?</span>
-									</div>
-									<div class="collapse bg-gray" id="question40">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">GlobalTradeConnect.com is the fastest growing marketplace, providing a platform to sell and deliver products globally.  GlobalTradeConnect.com offers its members unique features that help increase sales, allows for real time data analysis and reach to a global audience.  All this and more while providing a platform that is tailored to be easy and streamlined.  
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question41" aria-expanded="false" aria-controls="question41">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How do I register myself as a seller on GlobalTradeConnect.com? </span>
-									</div>
-									<div class="collapse bg-gray" id="question41">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">To register, please fill a simple registration form on the website.  It’s instant! Once you complete your profile and get verified, you can start selling.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question42" aria-expanded="false" aria-controls="question42">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Are there charges to sell on GlobalTradeConnect.com?</span>
-									</div>
-									<div class="collapse bg-gray" id="question42">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Listing products on GlobalTradeConnect.com is free. Review our plans to see what suits your needs best.  
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question43" aria-expanded="false" aria-controls="question43">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Are there any fees associated when I purchase on GlobalTradeConnect.com?</span>
-									</div>
-									<div class="collapse bg-gray" id="question43">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">As a buyer you can find amazing deals from our sellers and buyer accounts are absolutely free.  GlobalTradeConnect.com charges a 3.5% transaction fee on the overall transaction.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question44" aria-expanded="false" aria-controls="question44">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Who can sell on GlobalTradeConnect.com? </span>
-									</div>
-									<div class="collapse bg-gray" id="question44">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">If you are a manufacturer, wholesaler, retailer or distributor of products, services and commodities you can qualify to sell on GlobalTradeConnect.com
-												We require our sellers to sell genuine products, offer buyers a return policy, and be a legal business entity.   There are some exceptions for which you may contact us.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question45" aria-expanded="false" aria-controls="question45">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What products can I sell on GlobalTradeConnect.com?</span>
-									</div>
-									<div class="collapse bg-gray" id="question45">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">We have over 500 categories that are on our home page.  We are always updating our sub categories to accommodate all businesses.  Please contact us if you are not able to find a category for your business.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question46" aria-expanded="false" aria-controls="question46">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">I don't have a website, can I still sell on GlobalTradeConnect.com? </span>
-									</div>
-									<div class="collapse bg-gray" id="question46">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">You do not need a website to start selling on GlobalTradeConnect.com.  After registration you can start listing your products for free.  Further, we are the bridge for companies that do not have their own websites. We do all the work for you without the charges of having to pay any IT staff.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question47" aria-expanded="false" aria-controls="question47">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How does selling on GlobalTradeConnect.com work? </span>
-									</div>
-									<div class="collapse bg-gray" id="question47">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Selling on GlobalTradeConnect.com is easy. First you list the products that you want to sell on GlobalTradeConnect.com. Once buyers make the purchase you will receive a notification to ship the product. You deliver the product to the customer and confirm shipment. You receive funds into your Paypal account or through Stripe.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question48" aria-expanded="false" aria-controls="question48">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How can I increase my sales?</span>
-									</div>
-									<div class="collapse bg-gray" id="question48">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">We encourage our sellers to provide excellent customer service, comprehensive return policies and also provide a good variety of high quality products.  Implementing these will surely give you happy returning customers and higher sales. Also, by allowing buyers to pay with PayPal and Stripe you can have increased sales. 
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question49" aria-expanded="false" aria-controls="question49">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What should I include in my return policy?</span>
-									</div>
-									<div class="collapse bg-gray" id="question49">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">GlobalTradeConnect.com requires sellers to have a clear return policy in place.  Please review tips on how to create a good return policy that will attract more buyers. We do require for sellers to offer full refunds on an item being returned if it didn’t match the listing description.  
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question50" aria-expanded="false" aria-controls="question50">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Can I buy from a seller offline?</span>
-									</div>
-									<div class="collapse bg-gray" id="question50">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">You can make purchases offline, however, this is not recommended.  Purchases made offline will not be considered an authorized purchase/sale of GlobalTradeConnect.com and as such GlobalTradeConnect.com will not provide security in case there is a dispute.  
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question51" aria-expanded="false" aria-controls="question51">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What documents I require to start selling on GlobalTradeConnect.com? </span>
-									</div>
-									<div class="collapse bg-gray" id="question51">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">To start selling, you need to have the following:
-												Business Registration, Business License
-												Tax ID (optional)
-												Bank Account Information matching registered business, Bill with matching address as ID
-												Government Issued Identification 
-												Social Profile Accounts (optional)
-												In some circumstances we may require more documentation to verify your account 
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question52" aria-expanded="false" aria-controls="question52">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How do I list my products on GlobalTradeConnect.com? </span>
-									</div>
-									<div class="collapse bg-gray" id="question52">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Once the registration process is complete and your account is verified you can start listing products via your dashboard and list your products.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question53" aria-expanded="false" aria-controls="question53">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Can I sell immediately after registering?</span>
-									</div>
-									<div class="collapse bg-gray" id="question53">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">After you complete registration you will be required to upload business verification documents.  Once these are received and verified you will be able to start listing your products and services on GlobalTradeConnet.com.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question54" aria-expanded="false" aria-controls="question54">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How will I get paid? </span>
-									</div>
-									<div class="collapse bg-gray" id="question54">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Payments are credited directly into the seller’s account through Paypal and/or Stripe.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question55" aria-expanded="false" aria-controls="question55">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Are there different ways to pay?</span>
-									</div>
-									<div class="collapse bg-gray" id="question55">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">PayPal and Stripe are methods of payment on GlobalTradeConnect.com.  PayPal and Stripe provide higher rate of security to protect buyers.  All processing is done through your Paypal account or pay with credit card through Paypal and Stripe. 
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question56" aria-expanded="false" aria-controls="question56">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How do I keep track of sales and orders?</span>
-									</div>
-									<div class="collapse bg-gray" id="question56">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">GlobalTradeConnect.com’s unique seller dashboard allows you to streamline orders and manage sales. The easy to use platform then takes your sales and creates analytics allowing you to understand data and grow your business.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question57" aria-expanded="false" aria-controls="question57">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">After payment, when do I receive the product? </span>
-									</div>
-									<div class="collapse bg-gray" id="question57">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">For more approximate shipping times, please contact the supplier directly, since logistics is arranged by the supplier.  GlobalTradeConnect.com is a platform for buyers and sellers to conduct trade and as such we will not be involved with any trading process such as shipping.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question58" aria-expanded="false" aria-controls="question58">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">How do I calculate customs costs?</span>
-									</div>
-									<div class="collapse bg-gray" id="question58">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">GlobalTradeConnect.com is a platform for buyers and suppliers to conduct trade. For custom’s fees, please consult the supplier or the customs authorities directly.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question59" aria-expanded="false" aria-controls="question59">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">Am I able to cancel for my purchased subscription on GlobalTradeConnect.com?</span>
-									</div>
-									<div class="collapse bg-gray" id="question59">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">Once you buy a subscription on GlobalTradeConnect.com you have made a minimum commitment of 6 months.  This is a legally binding contract between you and GlobalTradeConnect.com.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question60" aria-expanded="false" aria-controls="question60">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">If I list my products on GlobalTradeConnect.com, will the customer know that they
-											are purchasing from my business on GlobalTradeConnect.com? </span>
-									</div>
-									<div class="collapse bg-gray" id="question60">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">All sellers on GlobalTradeConnect.com maintain their brand on their products and services.  GlobalTradeConnect.com is a platform and we do not brand ourselves on products sold unless, they are from a GlobalTradeConnect store.    
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question61" aria-expanded="false" aria-controls="question61">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What is FOB?</span>
-									</div>
-									<div class="collapse bg-gray" id="question61">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">FOB is Free On Board or Freight On Board. FOB specifies which party (buyer or seller) pays for shipment and loading costs, and/or where responsibility for the goods is transferred. 
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question62" aria-expanded="false" aria-controls="question62">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What is an Export License? </span>
-									</div>
-									<div class="collapse bg-gray" id="question62">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">An Export License is a document secured from a government, authorizing a shipper to export a specific quantity of a particular commodity to a certain country. An export license is often required when a government places restrictions upon exports. It's necessary to have the export license if you want to export out of your own country.
-											</span>
-										</div>
-									</div>
-									<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question63" aria-expanded="false" aria-controls="question63">
-										<span class="float-left m-r symbol-q">Q</span>
-										<span class="float-right card-text justify-content-center align-self-center">What is CPT?</span>
-									</div>
-									<div class="collapse bg-gray" id="question63">
-										<div class="card-body d-flex">
-											<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
-											<span class="float-right card-text">CPT is Carriage paid to. The seller delivers the goods to a carrier or to another person nominated by the seller, at a place mutually agreed upon by the buyer and seller.  The seller pays the freight charges to transport the goods to the specified destination. The risk of damage or loss to the goods being transported is transferred from the seller to the buyer as soon as the goods have been delivered to the carrier. The seller is responsible only for arranging freight to the destination, and not for insuring the goods shipment when it is being transported. 
-											</span>
-										</div>
-									</div>
+									<ul style="list-style-type:none;" class="commentlist">
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question1" aria-expanded="false" aria-controls="question1">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Is there a membership fee?</span>
+											</div>
+											<div class="collapse bg-gray" id="question1">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">GlobalTradeConnect.com has free and paid access.</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question2" aria-expanded="false" aria-controls="question2">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Forgot password / How to retrieve account?</span>
+											</div>
+											<div class="collapse bg-gray" id="question2">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">You can reset password on the main login page of GlobalTradeConnect.com.</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question3" aria-expanded="false" aria-controls="question3">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What are the grounds that my account will be temporarily suspended or permanently disabled?</span>
+											</div>
+											<div class="collapse bg-gray" id="question3">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">There are various reasons GlobalTradeConnect may limit, suspend or disable your account.  Please review our Terms of Service and Acceptance of Terms Agreement to see the reasons. Further, if we determine that you have abused returns on GlobalTradeConnect or the GTC Protection Guarantee, you may be subject to a range of actions, including limits on buying and selling privileges, suspension, or be banned.</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question4" aria-expanded="false" aria-controls="question4">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What actions does GlobalTradeConnect take if a buyer is misusing refunds?</span>
+											</div>
+											<div class="collapse bg-gray" id="question4">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">If we determine that a buyer has misused or abused returns on GTC Protection Guarantee, you may be subject to a  variety of actions, including suspension, limits on buying and selling or being banned from using GTC.
+														Some reasons we may take action include:
+														Returning items in an unacceptable condition and disregarding product conditions required for return
+														Requesting an excessive amount of returns
+														Selecting an inaccurate reason for return
+														As a seller, if you encounter a buyer that is not willing to follow your return policy and you have tried to work with the buyer to find a resolution satisfactory to both parties, do report the buyer to us.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question5" aria-expanded="false" aria-controls="question5">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What should I include in my Return Policy?</span>
+											</div>
+											<div class="collapse bg-gray" id="question5">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Globaltradeconnect.com encourage our sellers to offer a buyer friendly return policy.  A comprehensive return policy can help you get better ratings, attract more buyers and better solve customer concerns. If a seller chooses “no returns accepted”, the buyer will still be able to return the items if it does not match your item description. If you accept returns, a buyer should be able to return an item for any reason, even if they simply just change their mind, as long as the item returned meets your return requirements. Here are some tips: 
+														Be clear and specific in your terms- specify your return policy for domestic and international customers, provide a reasonable time for processing a return (typically no longer than 5 business days), be detailed about the condition the item will be accepted for a refund. 
+														If an item is defective, arrived damaged or if it was not as described in your listing; offer to refund all shipping costs associated with that transaction. Do not charge a restocking fee or if you choose to charge it, choose a reasonable amount and apply it to select instances where the item being returned is not in its original condition.
+														Provide details of item condition to provide a refund- For example; All returns must be in its original condition, unused and unaltered. Also include all original packaging such as bags, tags, boxes, and UPCs, accessories like cords and remote controls, certificates, manuals, warranty, and rebate cards, bonus items, and all items included in a bundle.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question6" aria-expanded="false" aria-controls="question6">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Is ordering online secure? / Is my personal information kept private?</span>
+											</div>
+											<div class="collapse bg-gray" id="question6">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Yes. We take the utmost care with the information that you provide us when placing an order on our website. All of the information you provide during the ordering process is restricted and confidential. We take data security seriously and employ various security measures to protect your data.</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question7" aria-expanded="false" aria-controls="question7">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How do I track my orders?</span>
+											</div>
+											<div class="collapse bg-gray" id="question7">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">After a successful transaction, you will see an Order ID and an email notifying you that orders have been shipped. To track your order, click the link on the uppermost part of the homepage. It will require you to enter your Order ID and the email. Click the "Track" button. For more information, please contact the supplier, since the shipping has been arranged by the supplier.</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question8" aria-expanded="false" aria-controls="question8">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How can I connect my account with PayPal and Stripe?</span>
+											</div>
+											<div class="collapse bg-gray" id="question8">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">After your Store Setup, you will see Payment Setup on the Seller’s Dashboard.  Sell more with PayPal and Stripe and give customers the ability to use their payment gateway of choice. 
+														Step 1: First put your PayPal email details in. If you don’t have a PayPal account please visit 
+														http://www.paypal.com 
+														Step 2: Connect your stripe account by clicking the connect with stripe button. If you don’t have an account click the connect with stripe button or visit http://www.stripe.com. It’s Free.
+														Step 3: If you wish you can skip this step and enter details later. However, you will not be able to sell products if you don’t setup at least 1 payment gateway.  You can also access payment settings via the Dashboard.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question9" aria-expanded="false" aria-controls="question9">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Do you have an app?</span>
+											</div>
+											<div class="collapse bg-gray" id="question9">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">2019 will be the launch of the Global Trade Pass app available on iTunes and Google Play Store. 
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question10" aria-expanded="false" aria-controls="question10">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Will there be any additional charges for the item to be listed on the featured products?</span>
+											</div>
+											<div class="collapse bg-gray" id="question10">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">You can request to have Featured Products by emailing sales@globaltradeconnect.com.  One of our sales support team members will get back to you with options.</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question11" aria-expanded="false" aria-controls="question11">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How do I place my order?</span>
+											</div>
+											<div class="collapse bg-gray" id="question11">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Once you have finished adding items to your shopping cart and are ready to complete your transaction, move your cursor to the upper-right corner of the screen and click on the SHOPPING BAG icon and click either View Cart or Checkout from the dropdown.
+														If you have a coupon code, you may enter it on the box intended and click the "Update Cart" button in order to have it applied to your order.
+														Once you have decided how to proceed, click "Checkout" and you will be brought to a screen that provides an order summary. You will be prompted to enter your billing information and the name and address of the intended recipient of your shipment (i.e. your delivery information)
+														You will also need to enter your payment details.  . Once you are ready to complete your order, click on the "Place order" button to the lower right of your screen.  You will receive an on-screen order confirmation, as well as a second confirmation via e-mail.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question12" aria-expanded="false" aria-controls="question12">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How can I create a Coupon Code?</span>
+											</div>
+											<div class="collapse bg-gray" id="question12">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Under the Seller Dashboard→Coupons, you can edit and create a custom coupon for your store.</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question13" aria-expanded="false" aria-controls="question13">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How do I view what’s in my shopping cart?</span>
+											</div>
+											<div class="collapse bg-gray" id="question13">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">To view the contents of your cart, click on the “View cart” icon in the upper-right corner of your computer screen. Once you click on this icon, you can easily change the quantity you want to purchase of a particular item in your cart by updating the quantity listed and then clicking the “Update cart” link. You can also delete any item in your cart by clicking the “x” button at the left side of that item and then updating your cart with the "Update cart" link.</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question14" aria-expanded="false" aria-controls="question14">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How do I add items to my cart?</span>
+											</div>
+											<div class="collapse bg-gray" id="question14">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">To add an item to your cart, navigate to the page of the item you are interested in and then choose your desired version of that item and click "Add to Cart". Once you had completed you order, click the “View Cart” link, you will be brought to your "Shopping cart" page where you can then enter the quantity of the item that you would like to order using the "Qty".</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question15" aria-expanded="false" aria-controls="question15">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How do I remove items from my cart?</span>
+											</div>
+											<div class="collapse bg-gray" id="question15">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">First, click on the “View cart” link in the upper-right corner of your computer screen. This will allow you to view all items currently in your cart. Once you have identified the item that you would like to remove, click the “x” at the left side of the item and then click "Update cart" in the lower-right corner to have your changes reflected.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question16" aria-expanded="false" aria-controls="question16">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How do I change the quantity of a particular item in my cart?</span>
+											</div>
+											<div class="collapse bg-gray" id="question16">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">First, click on the “View cart” link in the upper-right corner of your computer screen. 
+														This will allow you to view all items currently in your cart, as well as the quantities that you have chosen for each item. To change the quantity of an item in your cart, move your cursor to the box that appears under the "Qty" header for this item and type in the quantity desired and then click the “Update cart” link. Once you do this, the quantity and associated dollar amount (if applicable) will automatically change and reflect the correct amounts for both the quantity and the cost.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question17" aria-expanded="false" aria-controls="question17">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How will I know that you have received my order?</span>
+											</div>
+											<div class="collapse bg-gray" id="question17">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">After you complete the checkout process, it will direct you to the on-screen order confirmation. The order ID will appear on your screen detailing your final order including shipping charges, your billing address, and the items that are being sent to your shipping address. Please keep this information for your reference. You will also receive confirmation via e-mail that we have received your order. (Please be sure to enter your e-mail address correctly on the order form so that we can be sure to deliver your confirmation to you.)
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question18" aria-expanded="false" aria-controls="question18">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What are your shipping and handling rates?</span>
+											</div>
+											<div class="collapse bg-gray" id="question18">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Shipping and handling rates are set by each seller. Shipping and handling rates also vary depending on the destination of the order and are based on the total cost of the order.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question19" aria-expanded="false" aria-controls="question19">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What is your return policy?</span>
+											</div>
+											<div class="collapse bg-gray" id="question19">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Each seller has their own return/refund/exchange policy. We encourage you to read the seller’s return policy prior to making a purchase.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question20" aria-expanded="false" aria-controls="question20">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What if I have received a defective item?</span>
+											</div>
+											<div class="collapse bg-gray" id="question20">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">You contact the supplier and submit replacement/exchange/refund request. GlobalTradeConnect.com will step in if a seller and buyer cannot reach a satisfactory solution.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question21" aria-expanded="false" aria-controls="question21">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How long after placing my order should I expect to receive my shipment?</span>
+											</div>
+											<div class="collapse bg-gray" id="question21">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">We encourage sellers to provide estimates of delivery time. Please check with the supplier for tracking and other shipment details.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question22" aria-expanded="false" aria-controls="question22">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How do I select items to purchase?</span>
+											</div>
+											<div class="collapse bg-gray" id="question22">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">As you browse through the GTC Online Store, click on the "add to shopping cart" button beneath the items that you wish to purchase.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question23" aria-expanded="false" aria-controls="question23">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How do I know if an item is in stock?</span>
+											</div>
+											<div class="collapse bg-gray" id="question23">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">All items are in stock unless "Out of stock" is indicated.  
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question24" aria-expanded="false" aria-controls="question24">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Can I deliver to another address, other than my card billing address?</span>
+											</div>
+											<div class="collapse bg-gray" id="question24">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Yes, it is possible if the delivery address is in the listed countries. If your country of choice is not listed, do inquire with the Seller. 
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question25" aria-expanded="false" aria-controls="question25">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Cancellation policy or if a customer wants to change order after it has been checked out.</span>
+											</div>
+											<div class="collapse bg-gray" id="question25">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Contact the seller immediately via a support ticket on the Dashboard. 
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question26" aria-expanded="false" aria-controls="question26">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What if there are missing or wrong items when I receive my order?</span>
+											</div>
+											<div class="collapse bg-gray" id="question26">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">You should contact the seller and have them rectify the situation.  Sellers will have policies when they send any items that maybe wrong or missing. 
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question27" aria-expanded="false" aria-controls="question27">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question"> Is there a minimum order quantity?
+											</div>
+											<div class="collapse bg-gray" id="question27">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Some sellers may choose to implement a Minimum Order Quantity (MOQ). 
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question28" aria-expanded="false" aria-controls="question28">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What if I was charged twice?</span>
+											</div>
+											<div class="collapse bg-gray" id="question28">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">If you have accidentally doubled up on an item while checking out you should contact the seller immediately. The seller will be able to remove the identical order.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question29" aria-expanded="false" aria-controls="question29">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Getting an error message when entering the shipping and billing</span>
+											</div>
+											<div class="collapse bg-gray" id="question29">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Start by refreshing your browser.  If the error persists, delete the cookies on your browser and refresh the browser again.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question30" aria-expanded="false" aria-controls="question30">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">My Order Won’t Go Through. What Should I Do?</span>
+											</div>
+											<div class="collapse bg-gray" id="question30">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Refresh and try again. If the problem persists then contact support.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question31" aria-expanded="false" aria-controls="question31">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Unsure about the size or have a fit question (applies to apparels / shoes)</span>
+											</div>
+											<div class="collapse bg-gray" id="question31">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Prior to making a purchase we ask you direct all questions to the seller. 
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question32" aria-expanded="false" aria-controls="question32">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Delivery charges and fees</span>
+											</div>
+											<div class="collapse bg-gray" id="question32">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">We encourage sellers to be reasonable while charging for shipping and restocking fees when appropriate.  GlobalTradeConnect.com is not affiliated with any additional fees charged by the seller.  As a buyer you can negotiate with a seller.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question33" aria-expanded="false" aria-controls="question33">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question"> If sent internationally, will there be additional fees?</span>
+											</div>
+											<div class="collapse bg-gray" id="question33">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Most likely there will be additional shipping charges.  Each seller sets their own fee structure. You should check with the seller if you have questions specific to fees.  GlobalTradeConnect.com charges a standard 3.5% on the overall transaction.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question34" aria-expanded="false" aria-controls="question34">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How can I change my shipping address?</span>
+											</div>
+											<div class="collapse bg-gray" id="question34">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">You can edit your shipping and billing addresses on the dashboard. Currently, our system only accepts shipping addresses in English.  If your shipping address is not in English, please translate your shipping address into English and fill it in the system.  Please also contact the supplier and provide them with your non-English address. 
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question35" aria-expanded="false" aria-controls="question35">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Is there a check out limit?
+											</div>
+											<div class="collapse bg-gray" id="question35">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">No you do not have a check out limit
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question36" aria-expanded="false" aria-controls="question36">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How are the orders shipped (courier / freight services)</span>
+											</div>
+											<div class="collapse bg-gray" id="question36">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Shipping methods are based on the supplier.  Please check with the supplier.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question37" aria-expanded="false" aria-controls="question37">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Can I do a reservation on my desired item? </span>
+											</div>
+											<div class="collapse bg-gray" id="question37">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">You can add it to your Wishlist, however, by doing so it does not reserve the item.  Currently, you cannot reserve an item on the website.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question38" aria-expanded="false" aria-controls="question38">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Can I learn enough about the product I want to buy?</span>
+											</div>
+											<div class="collapse bg-gray" id="question38">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">You can view the description details of an item at the lower part of the item photo along with the reviews and seller's information.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question39" aria-expanded="false" aria-controls="question39">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How will I know if it's a legitimate seller and not a scam?</span>
+											</div>
+											<div class="collapse bg-gray" id="question39">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">GlobalTradeConnect does its best to verify sellers on the platform.  We encourage buyers to purchase from high rated sellers (5 or more) and read reviews on the seller and their products.   As with the purchase of a product or service through any medium we strongly suggest you use your best judgment.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question40" aria-expanded="false" aria-controls="question40">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center">Why should I sell on GlobalTradeConnect.com?</span>
+											</div>
+											<div class="collapse bg-gray" id="question40">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center card-question">A</span>
+													<span class="float-right card-text">GlobalTradeConnect.com is the fastest growing marketplace, providing a platform to sell and deliver products globally.  GlobalTradeConnect.com offers its members unique features that help increase sales, allows for real time data analysis and reach to a global audience.  All this and more while providing a platform that is tailored to be easy and streamlined.  
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question41" aria-expanded="false" aria-controls="question41">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How do I register myself as a seller on GlobalTradeConnect.com? </span>
+											</div>
+											<div class="collapse bg-gray" id="question41">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">To register, please fill a simple registration form on the website.  It’s instant! Once you complete your profile and get verified, you can start selling.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question42" aria-expanded="false" aria-controls="question42">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Are there charges to sell on GlobalTradeConnect.com?</span>
+											</div>
+											<div class="collapse bg-gray" id="question42">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Listing products on GlobalTradeConnect.com is free. Review our plans to see what suits your needs best.  
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question43" aria-expanded="false" aria-controls="question43">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Are there any fees associated when I purchase on GlobalTradeConnect.com?</span>
+											</div>
+											<div class="collapse bg-gray" id="question43">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">As a buyer you can find amazing deals from our sellers and buyer accounts are absolutely free.  GlobalTradeConnect.com charges a 3.5% transaction fee on the overall transaction.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question44" aria-expanded="false" aria-controls="question44">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Who can sell on GlobalTradeConnect.com? </span>
+											</div>
+											<div class="collapse bg-gray" id="question44">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">If you are a manufacturer, wholesaler, retailer or distributor of products, services and commodities you can qualify to sell on GlobalTradeConnect.com
+														We require our sellers to sell genuine products, offer buyers a return policy, and be a legal business entity.   There are some exceptions for which you may contact us.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question45" aria-expanded="false" aria-controls="question45">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What products can I sell on GlobalTradeConnect.com?</span>
+											</div>
+											<div class="collapse bg-gray" id="question45">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">We have over 500 categories that are on our home page.  We are always updating our sub categories to accommodate all businesses.  Please contact us if you are not able to find a category for your business.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question46" aria-expanded="false" aria-controls="question46">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">I don't have a website, can I still sell on GlobalTradeConnect.com? </span>
+											</div>
+											<div class="collapse bg-gray" id="question46">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">You do not need a website to start selling on GlobalTradeConnect.com.  After registration you can start listing your products for free.  Further, we are the bridge for companies that do not have their own websites. We do all the work for you without the charges of having to pay any IT staff.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question47" aria-expanded="false" aria-controls="question47">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How does selling on GlobalTradeConnect.com work? </span>
+											</div>
+											<div class="collapse bg-gray" id="question47">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Selling on GlobalTradeConnect.com is easy. First you list the products that you want to sell on GlobalTradeConnect.com. Once buyers make the purchase you will receive a notification to ship the product. You deliver the product to the customer and confirm shipment. You receive funds into your Paypal account or through Stripe.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question48" aria-expanded="false" aria-controls="question48">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How can I increase my sales?</span>
+											</div>
+											<div class="collapse bg-gray" id="question48">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">We encourage our sellers to provide excellent customer service, comprehensive return policies and also provide a good variety of high quality products.  Implementing these will surely give you happy returning customers and higher sales. Also, by allowing buyers to pay with PayPal and Stripe you can have increased sales. 
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question49" aria-expanded="false" aria-controls="question49">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What should I include in my return policy?</span>
+											</div>
+											<div class="collapse bg-gray" id="question49">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">GlobalTradeConnect.com requires sellers to have a clear return policy in place.  Please review tips on how to create a good return policy that will attract more buyers. We do require for sellers to offer full refunds on an item being returned if it didn’t match the listing description.  
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question50" aria-expanded="false" aria-controls="question50">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Can I buy from a seller offline?</span>
+											</div>
+											<div class="collapse bg-gray" id="question50">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">You can make purchases offline, however, this is not recommended.  Purchases made offline will not be considered an authorized purchase/sale of GlobalTradeConnect.com and as such GlobalTradeConnect.com will not provide security in case there is a dispute.  
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question52" aria-expanded="false" aria-controls="question52">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How do I list my products on GlobalTradeConnect.com? </span>
+											</div>
+											<div class="collapse bg-gray" id="question52">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Once the registration process is complete and your account is verified you can start listing products via your dashboard and list your products.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question53" aria-expanded="false" aria-controls="question53">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Can I sell immediately after registering?</span>
+											</div>
+											<div class="collapse bg-gray" id="question53">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">After you complete registration you will be required to upload business verification documents.  Once these are received and verified you will be able to start listing your products and services on GlobalTradeConnet.com.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question54" aria-expanded="false" aria-controls="question54">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How will I get paid? </span>
+											</div>
+											<div class="collapse bg-gray" id="question54">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Payments are credited directly into the seller’s account through Paypal and/or Stripe.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question55" aria-expanded="false" aria-controls="question55">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Are there different ways to pay?</span>
+											</div>
+											<div class="collapse bg-gray" id="question55">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">PayPal and Stripe are methods of payment on GlobalTradeConnect.com.  PayPal and Stripe provide higher rate of security to protect buyers.  All processing is done through your Paypal account or pay with credit card through Paypal and Stripe. 
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question56" aria-expanded="false" aria-controls="question56">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How do I keep track of sales and orders?</span>
+											</div>
+											<div class="collapse bg-gray" id="question56">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">GlobalTradeConnect.com’s unique seller dashboard allows you to streamline orders and manage sales. The easy to use platform then takes your sales and creates analytics allowing you to understand data and grow your business.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question57" aria-expanded="false" aria-controls="question57">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">After payment, when do I receive the product? </span>
+											</div>
+											<div class="collapse bg-gray" id="question57">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">For more approximate shipping times, please contact the supplier directly, since logistics is arranged by the supplier.  GlobalTradeConnect.com is a platform for buyers and sellers to conduct trade and as such we will not be involved with any trading process such as shipping.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question58" aria-expanded="false" aria-controls="question58">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">How do I calculate customs costs?</span>
+											</div>
+											<div class="collapse bg-gray" id="question58">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">GlobalTradeConnect.com is a platform for buyers and suppliers to conduct trade. For custom’s fees, please consult the supplier or the customs authorities directly.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question59" aria-expanded="false" aria-controls="question59">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">Am I able to cancel for my purchased subscription on GlobalTradeConnect.com?</span>
+											</div>
+											<div class="collapse bg-gray" id="question59">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">Once you buy a subscription on GlobalTradeConnect.com you have made a minimum commitment of 6 months.  This is a legally binding contract between you and GlobalTradeConnect.com.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question60" aria-expanded="false" aria-controls="question60">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">If I list my products on GlobalTradeConnect.com, will the customer know that they
+													are purchasing from my business on GlobalTradeConnect.com? </span>
+											</div>
+											<div class="collapse bg-gray" id="question60">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">All sellers on GlobalTradeConnect.com maintain their brand on their products and services.  GlobalTradeConnect.com is a platform and we do not brand ourselves on products sold unless, they are from a GlobalTradeConnect store.    
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question61" aria-expanded="false" aria-controls="question61">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What is FOB?</span>
+											</div>
+											<div class="collapse bg-gray" id="question61">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">FOB is Free On Board or Freight On Board. FOB specifies which party (buyer or seller) pays for shipment and loading costs, and/or where responsibility for the goods is transferred. 
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question62" aria-expanded="false" aria-controls="question62">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What is an Export License? </span>
+											</div>
+											<div class="collapse bg-gray" id="question62">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">An Export License is a document secured from a government, authorizing a shipper to export a specific quantity of a particular commodity to a certain country. An export license is often required when a government places restrictions upon exports. It's necessary to have the export license if you want to export out of your own country.
+													</span>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question63" aria-expanded="false" aria-controls="question63">
+												<span class="float-left m-r symbol-q">Q</span>
+												<span class="float-right card-text justify-content-center align-self-center card-question">What is CPT?</span>
+											</div>
+											<div class="collapse bg-gray" id="question63">
+												<div class="card-body d-flex">
+													<span class="float-left m-r symbol-a justify-content-center align-self-center">A</span>
+													<span class="float-right card-text">CPT is Carriage paid to. The seller delivers the goods to a carrier or to another person nominated by the seller, at a place mutually agreed upon by the buyer and seller.  The seller pays the freight charges to transport the goods to the specified destination. The risk of damage or loss to the goods being transported is transferred from the seller to the buyer as soon as the goods have been delivered to the carrier. The seller is responsible only for arranging freight to the destination, and not for insuring the goods shipment when it is being transported. 
+													</span>
+												</div>
+											</div>
+										</li>
+									</ul>
 								</div>
 							</div>
 						</div>
