@@ -54,6 +54,7 @@ module.exports = async function(job, done) {
 				const currency = config.order.currency;
 				const orderId = item.order_id;
 				var vendorResponse, paymentMethodType;
+
 				if (item.Vendor.vendor_payout_stripe_id != null) {
 					paymentMethodType = paymentMethod['STRIPE'];
 					vendorResponse = await stripe.vendorStripePayout(vendorAmt, currency, item.Vendor.vendor_payout_stripe_id, orderId)
@@ -63,9 +64,10 @@ module.exports = async function(job, done) {
 				}
 
 				if (vendorResponse) {
+
 					const newPayment = await service.createRow(paymentModelName, {
-						date: new Date(vendorResponse.created * 1000),
-						amount: vendorResponse.amount / 100.0,
+						date: new Date(),
+						amount: vendorAmt / 100.0,
 						payment_method: paymentMethodType,
 						status: status['ACTIVE'],
 						payment_response: JSON.stringify(vendorResponse),
