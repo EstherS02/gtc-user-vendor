@@ -197,6 +197,7 @@ function isLoggedIn() {
 }
 
 function hasRole(roleRequired) {
+
 	if (!roleRequired) throw new Error('Required role needs to be set');
 	const vendorIncludeArray = [{
 		model: model["Country"],
@@ -280,6 +281,7 @@ function hasRole(roleRequired) {
 								req.user['Admin'] = result;
 								return next();
 							} else {
+
 								return res.status(403).send("Forbidden");
 							}
 						}).catch(function(error) {

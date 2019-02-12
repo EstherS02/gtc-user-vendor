@@ -4,7 +4,6 @@ const _ = require('lodash');
 const moment = require('moment');
 const sequelize = require('sequelize');
 const Handlebars = require('handlebars');
-
 const sendEmail = require('./send-email');
 const service = require('../api/service');
 const config = require('../config/environment');
@@ -13,13 +12,13 @@ const model = require('../sqldb/model-connect');
 
 module.exports = async function(job, done) {
 
-	console.log("**********COMMING TO AGENTA**********************")
-
 	const orderID = job.attrs.data.order;
 	const orderModelName = "Order";
 	var emailTemplateModel = 'EmailTemplate';
 	const orderVendorModelName = "OrderVendor";
 	const orderItemModelName = "OrderItem";
+	const vendorNotificationSettingModel = 'VendorNotificationSetting';
+	const vendorNotificationModelName = 'VendorNotification';
 
 	const includeOrderArray = [{
 		model: model['User'],
@@ -124,7 +123,7 @@ module.exports = async function(job, done) {
 		userOrderResponse.ordered_date = moment(userOrderResponse.ordered_date).format('MMM D, Y');
 		var userOrderResult = userOrderTemplate(userOrderResponse);
 
-		await Promise.all(orderVendors.map(async (orderVendor, i) => {
+		await Promise.all(orderVendors.map(async (orderVendor, i) => {	
 			orderVendors[i].Order.total_price = await _.sumBy(orderVendor.Order.OrderItems, function(o) {
 				return parseFloat(o.price);
 			});
@@ -136,13 +135,26 @@ module.exports = async function(job, done) {
 			orderVendor.Order.ordered_date = moment(orderVendor.Order.ordered_date).format('MMM D, Y');
 			var orderVendorResult = orderVendorTemplate(orderVendor.Order);
 
-			if (orderVendor.Vendor.User.user_contact_email) {
-				await sendEmail({
-					to: orderVendor.Vendor.User.user_contact_email,
-					subject: orderVendorSubject,
-					html: orderVendorResult
-				});
-			}
+			const VendorNotificationResponse = await service.findRow(vendorNotificationModelName, {
+				code: config.notification.templates.vendorNewOrder
+			});
+
+			if (VendorNotificationResponse) {
+				const vendorNotificationRes = await service.findOneRow(vendorNotificationSettingModel, {
+					vendor_id: orderVendor.Vendor.id,
+					vendor_notification_id: VendorNotificationResponse.id
+				}, []);
+	
+				if(!vendorNotificationRes){
+					if (orderVendor.Vendor.User.user_contact_email) {
+						await sendEmail({
+							to: orderVendor.Vendor.User.user_contact_email,
+							subject: orderVendorSubject,
+							html: orderVendorResult
+						});
+					}
+				}	
+			}				
 		}));
 
 		if (userOrderResponse.User.email_verified && userOrderResponse.User.user_contact_email) {

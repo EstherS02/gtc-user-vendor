@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		utc_offset	: {
             type: DataTypes.STRING(8),
-            field: 'utc_offset	',
+            field: 'utc_offset',
             allowNull: false
 		},
 		utc_daylight_saving_offset: {

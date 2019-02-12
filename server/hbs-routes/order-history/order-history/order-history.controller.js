@@ -15,6 +15,7 @@ const vendorPlan = require('../../../config/gtc-plan');
 const notifictionService = require('../../../api/notification/notification.service');
 
 export function orderHistory(req, res) {
+	
 	var queryObj = {};
 	var queryParams = {};
 	var bottomCategory = {};

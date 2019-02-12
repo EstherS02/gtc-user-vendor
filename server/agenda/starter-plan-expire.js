@@ -23,7 +23,6 @@ export function starterPlanExpire(job, done) {
 
 	var planQueryObj = {}, planIncludeArr = [];
 	
-
 	planQueryObj['status'] = statusCode['ACTIVE'];
 	planQueryObj['end_date'] = {
 		'$lt': currentDate

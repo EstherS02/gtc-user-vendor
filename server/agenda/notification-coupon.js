@@ -54,17 +54,12 @@ module.exports = async function(job, done) {
 								await service.createBulkRow(notificationModelName, finalresults);
 							}
 							done();
-
 						})
 				}
 				else {
 					done();
 				}
-
 			})
-
-		// coupon code notification ends//
-
 	} catch (error) {
 		return error;
 	}
