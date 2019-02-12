@@ -19,12 +19,32 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-        },
+		},
+		coordinates:{
+			type: DataTypes.STRING(15),
+            field: 'coordinates',
+            allowNull: false
+		},
         timezone: {
             type: DataTypes.STRING(255),
             field: 'timezone',
             allowNull: false
-        },
+		},
+		timezone_name: {
+            type: DataTypes.STRING(8),
+            field: 'timezone_name',
+            allowNull: false
+		},
+		utc_offset	: {
+            type: DataTypes.STRING(8),
+            field: 'utc_offset	',
+            allowNull: false
+		},
+		utc_daylight_saving_offset: {
+            type: DataTypes.STRING(64),
+            field: 'utc_daylight_saving_offset',
+            allowNull: false
+		},
         timezone_abbreviation: {
             type: DataTypes.STRING(10),
             field: 'timezone_abbreviation',
