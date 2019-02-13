@@ -29,9 +29,12 @@ export function compare(req, res) {
 
 	async.series({
 		compareProducts: function(callback) {
-			productService.compareProducts(compareProductIDs)
+
+			if(compareProductIDs){
+				productService.compareProducts(compareProductIDs)
 				.then((response) => {
 					if (response.length > 0) {
+						
 						product_category_id = [];
 						_.forOwn(response, function(element) {
 							product_category_id.push(element.sub_category_id);
@@ -42,6 +45,9 @@ export function compare(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+			}else{
+				return callback(null);	
+			}		
 		},
 		productAttributes: function(callback) {
 			var offset = 0;
@@ -83,6 +89,7 @@ export function compare(req, res) {
 					$ne: marketplace['WHOLESALE']
 				}
 			};
+
 			if (product_category_id.length > 0) {
 				productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit)
 				.then(function(publicMarketplace) {
