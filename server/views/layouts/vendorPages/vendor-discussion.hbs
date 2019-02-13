@@ -12,11 +12,12 @@
 		var cropBoxData, canvasData, cropper, cropperInputImage;
 		var cropperOutputImage;
 		var fileDetails = {};
-		var imagesPreview = function(uploader, placeToInsertImagePreview) {
+		function imagesPreview(uploader) {
 			if (uploader.files && uploader.files[0]) {
 				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
 				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
-				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+				$('#uploaded-profile-picture').attr('src', 
+					window.URL.createObjectURL(uploader.files[0]));
 				cropperInputImage = document.getElementById('uploaded-profile-picture');
 				$('#profile-picture-modal').modal('show');
 			}
@@ -161,7 +162,7 @@
 			url: url,
 			data: data,
 			success: function(data, text) {
-				$("postComment"+e).prop("disabled",false);
+				$("postBlog").prop("disabled",false);
 				location.reload();
 
 			},

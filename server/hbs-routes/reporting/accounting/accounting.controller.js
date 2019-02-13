@@ -15,7 +15,7 @@ const cartService = require('../../../api/cart/cart.service');
 const marketplace = require('../../../config/marketplace');
 const notifictionService = require('../../../api/notification/notification.service');
 var categoryModel = "Category";
-var orderVendorModel = 'OrderVendor'
+var orderVendorModel = 'OrderVendor';
 
 export function accounting(req, res) {
 	var queryParams = {};
@@ -339,7 +339,7 @@ export function processing(req, res) {
 				queryParamsString: querystring.stringify(queryURI),
 				originalUrl:originalUrl,
 				categories: results.categories,
-				bottomCategory: bottomCategory
+				bottomCategory: bottomCategory,
 			});
 		}
 	})
