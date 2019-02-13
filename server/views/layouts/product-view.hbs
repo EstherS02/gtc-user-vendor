@@ -842,6 +842,8 @@
 		</div>
 	</div>
 	{{#ifCond VendorDetail.TalkSettings.[0].gtc_talk_enabled '!=' 0}}
+	{{#ifCond VendorDetail.User.id "!=" LoggedInUser.id}}
 		{{>chat}}
+	{{/ifCond}}
 	{{/ifCond}}
 {{> footer/bottom-footer}}

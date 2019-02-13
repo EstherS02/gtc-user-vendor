@@ -86,7 +86,7 @@ export function messages(req, res) {
 							attributes: ["id", "group_name", "status"],
 							include: [{
 								model: model['Talk'],
-								attributes: ['id', 'from_id', 'is_read', 'message', 'sent_at', 'talk_thread_id']
+								attributes: ['id', 'from_id', 'is_read', 'message', 'sent_at', 'talk_thread_id','created_on']
 							}]
 						}],
 						order: [
