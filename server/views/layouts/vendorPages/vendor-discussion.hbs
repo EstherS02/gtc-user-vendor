@@ -52,6 +52,8 @@
 		});
 
 		$('#postBlog').click(function() {
+			$("postBlog").prop("disabled",true);
+
 			var formData = {};
 			formData.post_message = $("#blog_text").val();
 			formData.vendor_id = vendorInfo.id;
@@ -100,15 +102,18 @@
 			readURL(this);
 		});
 
-	$(".newComment").change(function() {
-	var id = $(this).attr("data-commentid");
-		$("#comment_img-"+id).show();
-		readCommentURL(this);
-					
-	});
+		$(".newComment").change(function() {
+			var id = $(this).attr("data-commentid");
+			$("#comment_img-"+id).show();
+			readCommentURL(this);
+
+		});
 	});
 
 	function postComment(e) {
+		$("postComment"+e).prop("disabled",true);
+
+		
 		var formData = {};
 		formData.discussion_board_post_id = e;
 		formData.status = 1;
@@ -156,7 +161,9 @@
 			url: url,
 			data: data,
 			success: function(data, text) {
+				$("postComment"+e).prop("disabled",false);
 				location.reload();
+
 			},
 			error: function(request, status, error) {
 				console.log('status', status);
@@ -310,8 +317,8 @@ function removePic() {
 
 function readCommentURL(input) 
 {
-		var id = $(input).attr("data-commentid");
-		var url = $(".newComment").val();
+	var id = $(input).attr("data-commentid");
+	var url = $(".newComment").val();
 	if (input.files && input.files[0]) {
 		var reader = new FileReader();
 		reader.onload = function(e) {
@@ -329,6 +336,8 @@ function removeCommentPic(e) {
 }
 
 function userLike(e) {
+	
+	$("LikeCount"+e).prop("disabled",true);
 
 	if (userInfo.email) {
 		var dataInfo = {};
@@ -338,6 +347,7 @@ function userLike(e) {
 			url: "/api/vendor-info/blog-like",
 			data: dataInfo,
 			success: function(res) {
+				$("LikeCount"+e).prop("disabled",false);
 				document.getElementById("LikeCount" + e).innerHTML = "<p id='LikeCount'" + e + ">" + res.count + "Likes</p>";
 				document.getElementById("likeType" + e).innerHTML = "<a href='javascript:;' class='discussion_butt btn' onclick='userLike('" + e + "')' id='likeType'>" + res.type + "</a>";
 				console.log(res)
@@ -426,7 +436,11 @@ aria-hidden="true">
 									{{#each discussionBoard.rows}}
 									<div class="row">
 										<div class="col-md-2 col-2 discussion_para_bg">
+										{{#ifCond this.user_id '==' ../VendorDetail.user_id}}
+										<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{this.Vendor.vendor_profile_pic_url}}">
+										{{else}}
 											<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{this.User.user_pic_url}}">
+										{{/ifCond}}
 										</div>
 										<div class="col-md-10 col-10 discussion_para_bg">
 											<p class="discussion_para" ><span class="discussion_span">
@@ -434,7 +448,7 @@ aria-hidden="true">
 												{{else}}
 												{{this.User.first_name}}
 												{{/ifCond}}
-												</span>&nbsp;&nbsp;-&nbsp;{{this.post_message}}&nbsp;-&nbsp; <span style="color: #BDBDBD;">{{FormatDate this.created_on}}</span></p>
+											</span>&nbsp;&nbsp;-&nbsp;{{this.post_message}}&nbsp;-&nbsp; <span style="color: #BDBDBD;">{{FormatDate this.created_on}}</span></p>
 											{{#ifCond this.post_media_type "==" 2}}
 											<a class="image-popup-vertical-fit " href="{{this.post_media_url}}">
 												<img src="{{this.post_media_url}}" style="width:70%;height:200px;object-fit: contain">

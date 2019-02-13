@@ -42,7 +42,7 @@
 		var time = '';
 		socket.emit('chat:count', userInfo.id);
 		var domElementUserName = '';
-
+		if(to_id){
 		domElementUserName = domElementUserName + ` <div class="row">
                                 <div class="col-2 avatar"> 
                                     <img src="` + userProfile(to_id) + `" alt="User Avatar" style="width: 60px; margin-left: 30px;">
@@ -92,6 +92,7 @@
 		element.scrollTop = element.scrollHeight - element.clientHeight;
 		$('#replayBox').show();
 	}
+	}
 
 	function lastname(name) {
 		if (name != '' && name != null && name != 'null')
@@ -101,7 +102,9 @@
 	}
 
 	function FormatDate(testDate) {
-		return moment(testDate).format("LT")
+
+var gmtDateTime = moment.utc(testDate);
+	return gmtDateTime.local().format("L LT");
 	}
 
 	function userProfile(context) {
@@ -161,8 +164,14 @@
 					document.getElementById("online" + element.User.id).innerHTML =
 						`<i class="on b-white top" style="border: green"></i>`;
 				} else {
+					// console.log(element.TalkThread.Talks[0].from_id);
+					let fromId = element.TalkThread.Talks;
+					if(fromId.length>0) {
+					if(element.TalkThread.Talks[0].from_id != userInfo.id){
 					document.getElementById("online" + element.User.id).innerHTML =
 						`<i class="off b-white top" style="border: white"></i>`;
+					}
+					}
 				}
 			})
 
@@ -307,6 +316,8 @@
 														<!-- member list -->
 														<ul class="messager-list">
 															{{#each messenger}}
+															{{#if this.TalkThread.Talks}}
+															{{#ifCond this.TalkThread.Talks.[0].from_id "!=" ../LoggedInUser.id}}
 																<li class="bounceInDown">
 																	<a href="javascript:;" onclick="getConversations({{this.thread_id}})" class="clearfix msg-a">
 																		<span class="avatar">
@@ -326,18 +337,19 @@
 																				{{#ifCond this.TalkThread.Talks.[0].is_read "==" 0 }}
 																					{{#ifCond this.TalkThread.Talks.[0].from_id "==" ../LoggedInUser.id}}
 																						<p>{{this.TalkThread.Talks.[0].message}}</p>
-																			{{else}}
-																				<p>
-																					<strong>{{this.TalkThread.Talks.[0].message}}</strong>
-																				</p>
+																					{{else}}
+																						<p>
+																							<strong>{{this.TalkThread.Talks.[0].message}}</strong>
+																						</p>
 																					{{/ifCond}}
-																			{{else}}
-																				<p>{{this.TalkThread.Talks.[0].message}}</p>
+																				{{else}}
+																					<p>{{this.TalkThread.Talks.[0].message}}</p>
 																				{{/ifCond}}
 																			{{/if}}
 
 																		</div>
 																		<small class="time text-muted">
+
 																			{{#if this.TalkThread.Talks}}{{formatTime this.TalkThread.Talks.[0].created_on "LT"}}{{/if}}
 																		</small>
 
@@ -346,6 +358,8 @@
 																		</small>
 																	</a>
 																</li>
+																{{/ifCond}}
+																{{/if}}
 															{{/each}}
 														</ul>
 													</div>
