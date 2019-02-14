@@ -137,6 +137,13 @@ export function trackOrderItem(req, res) {
 					console.log("trackOrderItem Error:::", error);
 					return callback(error);
 				});
+		},unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(error, results) {
 		if (!error && results) {
@@ -148,7 +155,8 @@ export function trackOrderItem(req, res) {
 				cart: results.cartInfo,
 				item: results.trackOrderItem,
 				orderItemStatus: orderItemStatus,
-				carriersCode: carriersCode
+				carriersCode: carriersCode,
+				unreadCounts: results.unreadCounts
 			});
 		} else {
 			return res.return("order-item-track", error);
