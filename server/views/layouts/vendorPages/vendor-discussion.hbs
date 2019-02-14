@@ -426,7 +426,7 @@ aria-hidden="true">
 															<input type="file" id="selectedBlogFile" style="display: none;" name="comment_media_url" />
 														</span>
 													</div>
-													<button class="discussion_butt" id="postBlog">Post</button>
+													<button class="discussion_butt" id="postBlog" style="cursor: pointer;">Post</button>
 												</div>
 												<div id="blog_img" >
 													<img id="blah" src="#" height="35px" width="35px" alt="your image" />
@@ -471,7 +471,7 @@ aria-hidden="true">
 												<div class="col-md-2 col-4 common_padding1 discussion_lin">
 													<p id="LikeCount{{this.id}}">{{this.DiscussionBoardPostLikes.length}} Likes</p>
 												</div>
-												<div class="col-md-2 col-3  common_padding1 discussion_com "><a href="javascript:;" class="discussion_butt btn" onclick="userLike({{this.id}})" id="likeType{{this.id}}">{{#LikeUnlike this.DiscussionBoardPostLikes ../LoggedInUser}}Like{{/LikeUnlike}}</a></div>
+												<div class="col-md-2 col-3  common_padding1 discussion_com"><a href="javascript:;" class="discussion_butt btn" onclick="userLike({{this.id}})" id="likeType{{this.id}}">{{#LikeUnlike this.DiscussionBoardPostLikes ../LoggedInUser}}Like{{/LikeUnlike}}</a></div>
 											</div>
 											<hr>
 											<div id="DiscussionBoardPostComments-{{this.id}}">
@@ -544,7 +544,7 @@ aria-hidden="true">
 																	<input type="file" class="newComment" data-commentId="{{this.id}}" id="selectedFile{{this.id}}" style="display: none;" name="comment_media_url" />
 																</span>
 															</div>
-															<button class="discussion_butt" onclick="postComment({{this.id}})">Comment</button>
+															<button class="discussion_butt" onclick="postComment({{this.id}})" style="cursor: pointer;">Comment</button>
 															
 														</div>
 														<div class="comment-image" id="comment_img-{{this.id}}" >
