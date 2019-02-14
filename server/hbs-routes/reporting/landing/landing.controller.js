@@ -49,17 +49,18 @@ export function reporting(req, res) {
 	let user_id = LoggedInUser.id;
 	
 	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"));
+		lhsBetween.push(moment(req.query.lhs_from).toISOString(), moment(req.query.lhs_to).toISOString());
 		queryURI['range'] = 7;
 	}else{
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));	
+		let lhs_from = 
+		lhsBetween.push(moment().subtract(30,'days').toISOString(), moment().toISOString());	
 		queryURI['range'] = 4;
 	}
 	
 	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));		
+		rhsBetween.push(moment(req.query.rhs_from).toISOString(), moment(req.query.rhs_to).toISOString());		
 	}else{
-		rhsBetween.push(moment().subtract(61,'days').format("YYYY/MM/DD"), moment().subtract(31,'days').format("YYYY/MM/DD"));	
+		rhsBetween.push(moment().subtract(61,'days').toISOString(), moment().subtract(31,'days').toISOString());	
 	}
 
 	if (req.query.range) {
@@ -69,10 +70,10 @@ export function reporting(req, res) {
     if (req.user.role == 2)
         orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
-	queryURI['lhs_from'] = moment(lhsBetween[0]).format("MM/DD/YYYY");
-	queryURI['lhs_to'] = moment(lhsBetween[1]).format("MM/DD/YYYY");
-	queryURI['rhs_from'] = moment(rhsBetween[0]).format("MM/DD/YYYY");
-	queryURI['rhs_to'] = moment(rhsBetween[1]).format("MM/DD/YYYY");
+	queryURI['lhs_from'] = moment(lhsBetween[0]);
+	queryURI['lhs_to'] = moment(lhsBetween[1]);
+	queryURI['rhs_from'] = moment(rhsBetween[0]);
+	queryURI['rhs_to'] = moment(rhsBetween[1]);
 
     async.series({
 		cartInfo: function(callback) {
