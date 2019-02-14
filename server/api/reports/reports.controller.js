@@ -688,29 +688,31 @@ export function recentRevenueChanges(req, res) {
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
 		if (req.query.lhs_from && req.query.lhs_to) {
-			lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+			lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD HH:mm"), moment(req.query.lhs_to).format("YYYY/MM/DD HH:mm"))
 		} else {
-			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm"), moment().format("YYYY/MM/DD HH:mm"));
 		}
 		if (req.query.rhs_from && req.query.rhs_to) {
-			rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+			rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD HH:mm"), moment(req.query.rhs_to).format("YYYY/MM/DD HH:mm"));
 		} else {
-			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm"), moment().format("YYYY/MM/DD HH:mm"));
 		}
 	}
 
 	if (req.user.role != 2) {
+		console.log("===========================",req.query)
 		if (req.query.lhs_from && req.query.lhs_to) {
-			lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
+			lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD HH:mm:ss"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD HH:mm:ss"))
 		} else {
-			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm:ss"), moment().format("YYYY/MM/DD HH:mm:ss"));
 		}
 		if (req.query.rhs_from && req.query.rhs_to) {
-			rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD"));
+			rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD HH:mm:ss"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD HH:mm:ss"));
 		} else {
-			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm:ss"), moment().format("YYYY/MM/DD HH:mm:ss"));
 		}
 	}
+	console.log("-----------------------------------",lhsBetween,rhsBetween)
 	ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
@@ -734,6 +736,7 @@ export function revenueChangesCount(req, res) {
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
+	// console.log()
 	ReportService.revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {

@@ -697,6 +697,7 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
 }
 
 export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
+        console.log("==================ddd=========================", lhsBetween, rhsBetween);
 
 	const pastRange = _.assign({}, orderItemQueryObj);
 	pastRange.item_created_on = {
@@ -722,6 +723,8 @@ export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
 	];
 
 	return new Promise((resolve, reject) => {
+
+
 		var result = {};
 		model['OrderItemOverview'].findAll({
 			raw: true,

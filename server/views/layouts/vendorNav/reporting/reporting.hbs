@@ -5,19 +5,23 @@
 		$("#lhs_from").datepicker({
 			trigger: $("#lhs_fromRange"),
 			autoHide: true,
-			format: 'mm/dd/yyyy'
+			format: 'dd/mm/yyyy'
 		});
 		$("#lhs_to").datepicker({
 			trigger: $("#lhs_toRange"),
-			autoHide: true
+			autoHide: true,
+			format: 'dd/mm/yyyy'
+
 		});
 		$("#rhs_from").datepicker({
 			trigger: $("#rhs_fromRange"),
+			format: 'dd/mm/yyyy',
 			autoHide: true,
 		});
 		$("#rhs_to").datepicker({
 			trigger: $("#rhs_toRange"),
-			autoHide: true
+			autoHide: true,
+			format: 'dd/mm/yyyy'
 		});
 	});
 
@@ -39,31 +43,42 @@
 			Compare = $('#compare').is(":checked");
 		}else{
 
-			Cfrom = moment().subtract(61, 'days').format('YYYY/MM/DD');
-			Cto = moment().subtract(31, 'days').format('YYYY/MM/DD');
+			Cfrom = moment().toISOstring().subtract(61, 'days');
+			Cto = moment().toISOstring().subtract(31, 'days');
 			Compare = true;
 		}
-
+		
+// console.log(timeFrame.toISOString())
+		// var new_from =moment(parseInt(from)).format("YYYY/MM/DD HH:mm:ss");
+		// var new_to =moment(parseInt(to)).format("YYYY/MM/DD HH:mm:ss");
+		// var new_Cfrom =moment(parseInt(Cfrom)).format("YYYY/MM/DD HH:mm:ss");
+		// var new_Cto =moment(parseInt(Cto)).format("YYYY/MM/DD HH:mm:ss");
 		var dates = [from, to, Cfrom, Cto];
-		//dates.sort();
-
-		dates.sort(function(a,b){ return new Date(a) - new Date(b); });
-
+		var queryDate = [];
+		dates.forEach(function(key,element){
+			let time = moment().format("HH:mm:ss");
+			let dateAndTime = key + " "+ time;
+			let timeFrame = moment(dateAndTime, "DD/MM/YYYY HH:mm:ss")._d
+			queryDate[element] = timeFrame.toISOString();
+		});
+		dates.sort(function(a,b){
+			// moment(a, "DD/MM/YYYY").format("YYYY-MM-DD");
+			// moment(b, "DD/MM/YYYY").format("YYYY-MM-DD");
+		 return new Date(moment(a, "DD/MM/YYYY").format("YYYY-MM-DD")) - new Date(moment(b, "DD/MM/YYYY").format("YYYY-MM-DD")); 
+		});
 		var start = dates[0],
-			end = new Date(dates[dates.length - 1]),
-			currentDate = new Date(start),
+			end = new Date(moment(dates[dates.length - 1], "DD/MM/YYYY").format("YYYY-MM-DD")),
+			currentDate = new Date(moment(start, "DD/MM/YYYY").format("YYYY-MM-DD")),
 			between = [];
 
 		while (currentDate <= end) {
 			between.push($.datepicker.formatDate('M dd', new Date(currentDate)));
 			currentDate.setDate(currentDate.getDate() + 1);
 		}
-
 		$.ajax({
 			type: "GET",
-			url: "/api/reports/revenue-changes?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare,
+			url: "/api/reports/revenue-changes?lhs_from=" + queryDate[0] + "&lhs_to=" + queryDate[1] + "&rhs_from=" + queryDate[2] + "&rhs_to=" + queryDate[3] + "&compare=" + Compare,
 			success: function(data) {
-
 				between.forEach(function(aDate) {
 
 					var objA = _.find(data.past_range, function(pastDate) {
@@ -91,7 +106,7 @@
 					labels: between,
 					backgroundColor: "lightgray",
 					datasets: [{
-						label: $.datepicker.formatDate('M dd, yy', new Date(from)) + " - " + $.datepicker.formatDate('M dd, yy', new Date(to)),
+						label: $.datepicker.formatDate('M dd, yy', new Date(moment(from, "DD/MM/YYYY").format("YYYY-MM-DD"))) + " - " + $.datepicker.formatDate('M dd, yy', new Date(moment(to, "DD/MM/YYYY").format("YYYY-MM-DD"))),
 						data: lhsData,
 						backgroundColor: "green",
 						borderColor: "lightgreen",
@@ -99,7 +114,7 @@
 						lineTension: 0,
 						radius: 5
 					}, {
-						label: $.datepicker.formatDate('M dd, yy', new Date(Cfrom)) + " - " + $.datepicker.formatDate('M dd, yy', new Date(Cto)),
+						label: $.datepicker.formatDate('M dd, yy', new Date(moment(Cfrom, "DD/MM/YYYY").format("YYYY-MM-DD"))) + " - " + $.datepicker.formatDate('M dd, yy', new Date(moment(Cto, "DD/MM/YYYY").format("YYYY-MM-DD"))),
 						data: rhsData,
 						backgroundColor: "gray",
 						borderColor: "lightgray",
@@ -243,10 +258,20 @@
 				to = $('#lhs_to').val();
 				Cfrom = $('#rhs_from').val();
 				Cto = $('#rhs_to').val();
+				var dates = [from,to,Cfrom,Cto];
+				var queryDate = [];
+		dates.forEach(function(key,element){
+			let time = moment().format("HH:mm:ss");
+			let dateAndTime = key + " "+ time;
+			let timeFrame = moment(dateAndTime, "DD/MM/YYYY HH:mm:ss")._d
+			queryDate[element] = timeFrame.toISOString();
+		});
+
 				Compare = $('#compare').is(":checked");
-				location.href = "/store/reports?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare +"&range="+range;
+				location.href = "/store/reports?lhs_from=" + queryDate[0] + "&lhs_to=" + queryDate[1] + "&rhs_from=" + queryDate[2] + "&rhs_to=" + queryDate[3] + "&compare=" + Compare +"&range="+range;
 			}
 		});
+		
 
 		function calHoursAgo(datetime) {
 			var now = new Date();
@@ -490,7 +515,7 @@
 														</div>
 														<div class="form-group m-r">
 															<div class="input-group">
-																<input id="lhs_from" name="lhs_from" type="text" class="custom-form-control date_range_picker" value="{{queryURI.lhs_from}}"
+																<input id="lhs_from" name="lhs_from" type="text" class="custom-form-control date_range_picker" value="{{ISOFormat queryURI.lhs_from}}"
 																 placeholder="MM/DD/YYYY" aria-label="lhs_fromRange" aria-describedby="lhs_fromRange" required>
 																<div class="input-group-append cursor-pointer">
 																	<span class="input-group-text" id="lhs_fromRange">
@@ -504,7 +529,7 @@
 														</div>
 														<div class="form-group m-r">
 															<div class="input-group">
-																<input id="lhs_to" name="lhs_to" type="text" class="custom-form-control date_range_picker" value="{{queryURI.lhs_to}}" placeholder="MM/DD/YYYY"
+																<input id="lhs_to" name="lhs_to" type="text" class="custom-form-control date_range_picker" value="{{ISOFormat queryURI.lhs_to}}" placeholder="MM/DD/YYYY"
 																 aria-label="lhs_toRange" aria-describedby="lhs_toRange" required>
 																<div class="input-group-append cursor-pointer">
 																	<span class="input-group-text" id="lhs_toRange">
@@ -533,7 +558,7 @@
 														</div>
 														<div class="form-group m-r">
 															<div class="input-group">
-																<input id="rhs_from" name="rhs_from" type="text" class="custom-form-control date_range_picker" value="{{queryURI.rhs_from}}"
+																<input id="rhs_from" name="rhs_from" type="text" class="custom-form-control date_range_picker" value="{{ISOFormat queryURI.rhs_from}}"
 																 placeholder="MM/DD/YYYY" aria-label="rhs_fromRange" aria-describedby="rhs_fromRange" required>
 																<div class="input-group-append cursor-pointer">
 																	<span class="input-group-text" id="rhs_fromRange">
@@ -547,7 +572,7 @@
 														</div>
 														<div class="form-group m-r">
 															<div class="input-group">
-																<input id="rhs_to" name="rhs_to" type="text" class="custom-form-control date_range_picker" value="{{queryURI.rhs_to}}" placeholder="MM/DD/YYYY"
+																<input id="rhs_to" name="rhs_to" type="text" class="custom-form-control date_range_picker" value="{{ISOFormat queryURI.rhs_to}}" placeholder="MM/DD/YYYY"
 																 aria-label="rhs_toRange" aria-describedby="rhs_toRange" required>
 																<div class="input-group-append cursor-pointer">
 																	<span class="input-group-text" id="rhs_toRange">
