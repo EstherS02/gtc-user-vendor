@@ -215,10 +215,9 @@ export function vendorDiscussion(req, res) {
 		},
 	}, function(err, results) {
 		if (!err) {
-			// if (results.discussion) {
 			var maxSize = 5;
 			queryPaginationObj['maxSize'] = 5;
-			// }
+			
 			res.render('vendorPages/vendor-discussion', {
 				title: "Global Trade Connect",
 				discussionBoard: results.discussion,

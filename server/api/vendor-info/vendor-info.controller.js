@@ -41,9 +41,6 @@ export function blogLike(req, res) {
 			bodyParam.status = newStatus;
 			service.updateRow(modelName, bodyParam, result.id)
 				.then(function(response) {
-					console.log("##########COMMING HEREEEEEEEEE1################################");
-
-					console.log("***************************************",result );
 
 					agenda.now(config.jobs.orderNotification, {
 						discussionLikeId: result.id,
@@ -67,10 +64,7 @@ export function blogLike(req, res) {
 		} else {
 			bodyParam.created_on = new Date();
 			service.createRow(modelName, bodyParam).then(function(response) {
-
-				console.log("##########COMMING HEREEEEEEEEE222222222222################################");
 				discussion_board_post_id = response.discussion_board_post_id;
-				console.log("***************************************",response );
 
 				agenda.now(config.jobs.orderNotification, {
 					discussionLikeId: response.id,

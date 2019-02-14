@@ -409,7 +409,12 @@ aria-hidden="true">
 									{{!-- {{#ifCond LoggedInUser.Vendor.id "==" VendorDetail.id}} --}}
 									<div class="row">
 										<div class="col-md-2  discussion_para_bg">
-											<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{LoggedInUser.user_pic_url}}">
+											{{#ifCond LoggedInUser.id '==' VendorDetail.user_id}}
+												<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{VendorDetail.vendor_profile_pic_url}}">
+											{{else}}
+													<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{LoggedInUser.user_pic_url}}">
+											{{/ifCond}}
+											{{!-- <img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{LoggedInUser.user_pic_url}}"> --}}
 										</div>
 										<div class="col-md-10 col-9 discussion_para_bg " >
 											<div class="discussion_text">
@@ -475,7 +480,12 @@ aria-hidden="true">
 													{{#ifCond @index '<' 2}}
 													<div class="row" style="margin-bottom: 5px;" >
 														<div class="col-md-2 col-2">
-															<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
+															{{#ifCond this.user_id '==' ../../VendorDetail.user_id}}
+																<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{../../VendorDetail.vendor_profile_pic_url}}">
+															{{else}}
+																<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{this.User.user_pic_url}}">
+															{{/ifCond}}
+															{{!-- <img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}"> --}}
 														</div>
 														<div class="col-md-10 col-10">
 															<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{#if this.User.last_name}}{{this.User.last_name}}{{/if}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}<p>&nbsp;-&nbsp; <img src="{{this.comment_media_url}}" width="25%" height="25%">- <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
@@ -493,7 +503,13 @@ aria-hidden="true">
 														{{#ifCond @index '>' 1}}
 														<div class="row"  style="margin-bottom: 5px;" >
 															<div class="col-md-2 col-2">
-																<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
+																{{!-- {{../../VendorDetail.user_id}}aaa{{this.user_id}}bb{{this.id}} --}}
+																{{!-- <img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}"> --}}
+																{{#ifCond this.user_id '==' ../../VendorDetail.user_id}}
+																	<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{../../VendorDetail.vendor_profile_pic_url}}">
+																{{else}}
+																	<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{this.User.user_pic_url}}">
+																{{/ifCond}}
 															</div>
 															<div class="col-md-10 col-10">
 																<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{#if this.User.last_name}}{{this.User.last_name}}{{/if}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}&nbsp;-&nbsp;s<p><img src="{{this.comment_media_url}}" width="25%" height="25%">&nbsp;-&nbsp; <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
@@ -511,7 +527,12 @@ aria-hidden="true">
 											</div>
 											<div class="row">
 												<div class="col-md-2 col-2 ">
-													<img style="width: 40px;height:39px;margin-top: 5px;" onError="UserImgError(this)" class = "img-border-page"src="{{../LoggedInUser.user_pic_url}}">
+													{{!-- <img style="width: 40px;height:39px;margin-top: 5px;" onError="UserImgError(this)" class = "img-border-page"src="{{../LoggedInUser.user_pic_url}}"> --}}
+													{{#ifCond ../LoggedInUser.id '==' ../VendorDetail.user_id}}
+										<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{../VendorDetail.vendor_profile_pic_url}}">
+										{{else}}
+											<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{../LoggedInUser.user_pic_url}}">
+										{{/ifCond}}
 												</div>
 												<div class="col-md-10 col-10">
 													<div class="discussion_text">
