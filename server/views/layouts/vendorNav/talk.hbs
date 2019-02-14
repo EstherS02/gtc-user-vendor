@@ -7,6 +7,9 @@
 		$('input[type=radio][name=talk_profile_pic_url_radio]').change(function() {
 			$("#UpdateTalks").prop('disabled', false);
 		})
+		$('input[name=talk_profile_pic_url]').change(function(){
+			$("#UpdateTalks").prop('disabled', false);	
+		})
 		$('textarea[name=default_msg]').keyup(function() {
 			if ($('textarea[name=default_msg]').val() == '') {
 				$("#UpdateTalks").prop('disabled', true);
@@ -15,6 +18,7 @@
 				$("#UpdateTalks").prop('disabled', false);
 			}
 		});
+		
 		$("#hideNewTimeSlotForm").hide();
 		$("#addTimeSlotFormNew").hide();
 		$("#addNewTimeSlotForm").click(function() {
@@ -83,26 +87,41 @@
 				filename = filename.substring(lastIndex + 1);
 			}
 			$("#customfile").html(filename);
+		  readURL(this);
+
+		// $('#profile_pic').attr('src', this.value);
+
+		}
+		function readURL(input) {
+		    var reader = new FileReader();
+		    reader.onload = function(e) {
+		      $('#profile_pic').attr('src', e.target.result);
+		    }
+		    reader.readAsDataURL(input.files[0]);
 		}
 		// console.log($('input[name=gtc_talk_enabled]').is(':checked'))
 		$("#gtc-talk-alert").hide();
+
 		$("#UpdateTalks").click(function(e) {
 			$("#UpdateTalks").prop('disabled', true);
+			var imgVal = $('input[name=talk_profile_pic_url]').val();
 			var img = $('input[name=talk_profile_pic_url_radio]:checked').val();
+			var old_img = $('input[name=defaultVendor_profile_pic]').val();
 			var formData = {
 				'gtc_talk_enabled': $('input[name=gtc_talk_enabled]:checked').val(),
 				'talk_profile_pic_url_radio': $('input[name=talk_profile_pic_url_radio]:checked').val(),
 				'default_msg': $('textarea[name=default_msg]').val(),
 			};
-			if (img == "old") {
-				formData.talk_profile_pic_url = $('input[name=defaultVendor_profile_pic]').val();
+
+			if (img == "old"  && !imgVal) {
+				formData.talk_profile_pic_url = '';//$('input[name=defaultVendor_profile_pic]').val();
 				$.ajax({
 					type: 'POST',
 					url: '/api/gtc-talk/store',
 					data: formData,
 					success: function(data, text) {
 						outputPopup("Data Updated Successfully");
-						// location.reload();
+						location.reload();
 					},
 					error: function(request, status, error) {
 						outputPopupError(error);
@@ -111,10 +130,9 @@
 					}
 				});
 			}else {
-				var imgVal = $('input[name=talk_profile_pic_url]').val();
 				var form = new FormData();
 				form.append("file", $("#selectedFile")[0].files[0]);
-				if (imgVal) {
+				if (imgVal && img == 'new') {
 					$.ajax({
 						type: 'POST',
 						url: '/api/TalkSetting/upload',
@@ -130,8 +148,8 @@
 								url: '/api/gtc-talk/store',
 								data: formData,
 								success: function(data, text) {
-									//location.reload();
 									outputPopup("Data Inserted Successfully");
+									location.reload();
 								},
 								error: function(request, status, error) {
 									console.log('status', status);
@@ -142,22 +160,29 @@
 						},
 						error: function(error) {
 							console.log("Error", error);
+							outputPopupError(error);
 						}
 					});
-				} else {
-					$.ajax({
+				} else if(img == 'new' && old_img)
+					{
+						$.ajax({
 						type: 'POST',
 						url: '/api/gtc-talk/store',
 						data: formData,
 						success: function(data, text) {
+							outputPopup("Data Updated Successfully");
 							location.reload();
 						},
 						error: function(request, status, error) {
 							console.log('status', status);
 							console.log('error', error);
+							outputPopupError(error);
 						}
 					});
-				}
+					}else{
+						// console.log('status', 'Please select the image' );
+						outputPopupError("Please select profile picture and check Option");
+					}
 			}
 			var imgVal = $('input[name=talk_profile_pic_url]').val();
 		});
@@ -172,183 +197,187 @@
 				{{> vendor/vendor-side-navbar}}
 			</div>
 			{{#if LoggedInUser.Vendor.VendorPlans}}
-				<div class="col-sm-10">
-					<div class="ibox">
-						<div class="ibox-content">
-							<div class="ibox-title">
-								<h2>GTC Talk</h2>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>GTC Talk</h2>
+						</div>
+						<br/>
+						<div class="content-body">
+							<p>
+								<small>Chat directly with users who are interacting with your page via the chat module at the bottom right of your profile
+									screen.
+								</small>
+							</p>
+							<div class="alert" id="gtc-talk-alert">
+								<button type="button" class="close" data-dismiss="alert">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<span class="talk-message"></span>
+							</div>
+							<div class="row">
+								<div class="col-lg-12 ibox-title">
+									<h2>GTC Talk Enabled</h2>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-12" style="padding-left:35px;">
+									<small>
+										<input type="radio" name="gtc_talk_enabled" value="1" {{setChecked 1 talk.gtc_talk_enabled}}>
+										<span class="mgT-5">Yes</span>
+										<br/>
+										<input class="input-padding" type="radio" name="gtc_talk_enabled" value="0" {{setChecked 0 talk.gtc_talk_enabled}} />
+										<span class="mgT-5">No</span>
+									</small>
+								</div>
 							</div>
 							<br/>
-							<div class="content-body">
-								<p>
-									<small>Chat directly with users who are interacting with your page via the chat module at the bottom right of your profile
-										screen.
-									</small>
-								</p>
-								<div class="alert" id="gtc-talk-alert">
-									<button type="button" class="close" data-dismiss="alert">
-										<span aria-hidden="true">&times;</span>
-									</button>
-									<span class="talk-message"></span>
+							<div class="row">
+								<div class="col-lg-12 ibox-title">
+									<h2>GTC Talk Profile Pic</h2>
 								</div>
-								<div class="row">
-									<div class="col-lg-12 ibox-title">
-										<h2>GTC Talk Enabled</h2>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-lg-12" style="padding-left:35px;">
-										<small>
-											<input type="radio" name="gtc_talk_enabled" value="1" {{setChecked 1 talk.gtc_talk_enabled}}>
-											<span class="mgT-5">Yes</span>
-											<br/>
-											<input class="input-padding" type="radio" name="gtc_talk_enabled" value="0" {{setChecked 0 talk.gtc_talk_enabled}} />
-											<span class="mgT-5">No</span>
-										</small>
-									</div>
-								</div>
-								<br/>
-								<div class="row">
-									<div class="col-lg-12 ibox-title">
-										<h2>GTC Talk Profile Pic</h2>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-lg-12" style="padding-left:35px;">
-										<small>
-											{{#if talk.talk_profile_pic_url}}
-												<input type="radio" name="talk_profile_pic_url_radio" value="old" />
-												<span class="mgT-5">Store Profile Photo/Logo(default)</span>
+							</div>
+							<div class="row">
+								<div class="col-lg-12" style="padding-left:35px;">
+									<small>
+										{{#if talk.talk_profile_pic_url}}
+										<input type="radio" name="talk_profile_pic_url_radio" value="old" />
+										<span class="mgT-5">Store Profile Photo/Logo(default)</span>
 
-												<br/>
-												<input type="hidden" name="defaultVendor_profile_pic" id="defaultVendor_profile_pic" value="{{vendorDetail.vendor_profile_pic_url}}">
-												<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new" checked/> Custom
-											{{else}}
-												<input type="radio" name="talk_profile_pic_url_radio" value="old" checked/>
-												<span class="mgT-5">Store Profile Photo/Logo(default)</span>
-												<br/>
-												<input type="hidden" name="defaultVendor_profile_pic" id="defaultVendor_profile_pic" value="{{vendorDetail.vendor_profile_pic_url}}"
-												/>
-												<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new" /> Custom {{/if}}
-											<div class="custom-file">
-												<input type="text" value="talk_profile_pic_url" class="custom-file-input" id="talkProfile1">
-												<label class="custom-file-label customized-file-label" for="talkProfile" id="customfile">Browse...</label>
+										<br/>
+										<input type="hidden" name="defaultVendor_profile_pic" id="defaultVendor_profile_pic" value="{{vendorDetail.vendor_profile_pic_url}}">
+										<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new" checked/> Custom
+										{{else}}
+										<input type="radio" name="talk_profile_pic_url_radio" value="old" checked/>
+										<span class="mgT-5">Store Profile Photo/Logo(default)</span>
+										<br/>
+										<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new" /> Custom {{/if}}
+										<div class="custom-file">
+											<input type="text" value="talk_profile_pic_url" class="custom-file-input" id="talkProfile1">
+											<label class="custom-file-label customized-file-label" for="talkProfile" id="customfile">Browse...</label>
+										</div>
+										<input type="file" id="selectedFile" style="display: none;" name="talk_profile_pic_url" />
+										<input class="btn btn-md btn-muted" type="button" value="UPLOAD" onclick="document.getElementById('selectedFile').click();"/>
+
+									</small>
+									</div>
+									{{#if talk.talk_profile_pic_url}}
+									<img id="profile_pic" src="{{talk.talk_profile_pic_url}}" alt="your image" style="object-fit: contain; max-height:210px"
+									/> 
+									{{/if}}
+
+							</div>
+							<br/>
+							<div class="row">
+								<div class="col-lg-12 ibox-title">
+									<h2>Default Message</h2>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-5">
+									<textarea class="form-control-customized" name="default_msg" placeholder="Thank you for contacting us. A representative will respond to your message shortly."
+									rows="4">{{talk.default_msg}}</textarea>
+								</div>
+							</div>
+							<br/>
+							<div class="row">
+								<div class="col-lg-12 ibox-title">
+									<h2>Hours of Operation</h2>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-12">
+									<p>
+										<small>You can set a predefinted set of hours for someone to contact you each week.</small>
+									</p>
+									{{#each busiHours}}
+									<p>
+										<i class="fas fa-check-circle"></i>
+										<span class="gtc-talk">
+											{{#days this.from_day}}{{/days}} to
+											{{#days this.to_day}}{{/days}}, from {{this.start_time}}am to {{this.end_time}} pm {{this.Timezone.timezone_abbreviation}}
+										</span>
+									</p>
+									{{/each}}
+									<p id="addNewTimeSlotForm">
+										<i class="fas fa-plus-circle"></i>
+										<span class="gtc-talk">Add another time slot </span>
+									</p>
+									<p id="hideNewTimeSlotForm">
+										<i class="fas fa-minus-circle"></i>
+										<span class="gtc-talk">Add another time slot </span>
+									</p>
+								</div>
+							</div>
+							<div class="row" id="addTimeSlotFormNew">
+								<div class="col-lg-12">
+									<form>
+										<div class="row">
+											<label class="label-control" style="padding-left:20px;">From</label>
+											<div class="col-lg-2">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="from_day" name="from_day">
+													<option disabled selected>Choose Day</option>
+													{{#each dayCode}}
+													<option value="{{this}}">{{@key}}</option>
+													{{/each}}
+												</select>
 											</div>
-											<input type="file" id="selectedFile" style="display: none;" name="talk_profile_pic_url" />
-											<input class="btn btn-md btn-muted" type="button" value="UPLOAD" onclick="document.getElementById('selectedFile').click();"/>
-										</small>
-									</div>
-								</div>
-								<br/>
-								<div class="row">
-									<div class="col-lg-12 ibox-title">
-										<h2>Default Message</h2>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-lg-5">
-										<textarea class="form-control-customized" name="default_msg" placeholder="Thank you for contacting us. A representative will respond to your message shortly."
-										 rows="4">{{talk.default_msg}}</textarea>
-									</div>
-								</div>
-								<br/>
-								<div class="row">
-									<div class="col-lg-12 ibox-title">
-										<h2>Hours of Operation</h2>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-lg-12">
-										<p>
-											<small>You can set a predefinted set of hours for someone to contact you each week.</small>
-										</p>
-										{{#each busiHours}}
-											<p>
-												<i class="fas fa-check-circle"></i>
-												<span class="gtc-talk">
-													{{#days this.from_day}}{{/days}} to
-													{{#days this.to_day}}{{/days}}, from {{this.start_time}}am to {{this.end_time}} pm {{this.Timezone.timezone_abbreviation}}
-												</span>
-											</p>
-										{{/each}}
-										<p id="addNewTimeSlotForm">
-											<i class="fas fa-plus-circle"></i>
-											<span class="gtc-talk">Add another time slot </span>
-										</p>
-										<p id="hideNewTimeSlotForm">
-											<i class="fas fa-minus-circle"></i>
-											<span class="gtc-talk">Add another time slot </span>
-										</p>
-									</div>
-								</div>
-								<div class="row" id="addTimeSlotFormNew">
-									<div class="col-lg-12">
-										<form>
-											<div class="row">
-												<label class="label-control" style="padding-left:20px;">From</label>
-												<div class="col-lg-2">
-													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="from_day" name="from_day">
-														<option disabled selected>Choose Day</option>
-														{{#each dayCode}}
-															<option value="{{this}}">{{@key}}</option>
-														{{/each}}
-													</select>
-												</div>
-												<label class="label-control">to</label>
-												<div class="col-lg-2">
-													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="to_day" name="to_day">
-														<option disabled selected>Choose Day</option>
-														{{#each dayCode}}
-															<option value="{{this}}">{{@key}}</option>
-														{{/each}}
-													</select>
-												</div>
-												<label class="label-control">Time</label>
-												<div class="col-lg-1">
-													<input type="time" name="start_time" class="classic required" id="start_time">
-												</div>
-												<label class="label-control" style="padding-left:20px;">to</label>
-												<div class="col-lg-1">
-													<input type="time" name="end_time" class="classic required" id="end_time">
-												</div>
-												{{!-- <label class="label-control" style="padding-left:20px;">Time Zone</label> --}}
-												<div class="col-lg-2" style="padding-left:20px;">
-													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="time_zone">
-														<option disabled selected>Time Zone</option>
-														{{#each this.timeZone}}
-															<option value= {{this.id}}>{{this.timezone}}</option>
-														{{/each}}
-													</select>
-												</div>
-												<div class="col-lg-1">
-													<button class="ladda-button btn btn-md btn-muted" id="uploadOperationHours" type="submit" data-style="expand-left">
-														<span class="ladda-label">SUBMIT</span>
-														<span class="ladda-spinner"></span>
-													</button>
-												</div>
+											<label class="label-control">to</label>
+											<div class="col-lg-2">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="to_day" name="to_day">
+													<option disabled selected>Choose Day</option>
+													{{#each dayCode}}
+													<option value="{{this}}">{{@key}}</option>
+													{{/each}}
+												</select>
 											</div>
-										</form>
-									</div>
+											<label class="label-control">Time</label>
+											<div class="col-lg-1">
+												<input type="time" name="start_time" class="classic required" id="start_time">
+											</div>
+											<label class="label-control" style="padding-left:20px;">to</label>
+											<div class="col-lg-1">
+												<input type="time" name="end_time" class="classic required" id="end_time">
+											</div>
+											{{!-- <label class="label-control" style="padding-left:20px;">Time Zone</label> --}}
+											<div class="col-lg-2" style="padding-left:20px;">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="time_zone">
+													<option disabled selected>Time Zone</option>
+													{{#each this.timeZone}}
+													<option value= {{this.id}}>{{this.timezone}}</option>
+													{{/each}}
+												</select>
+											</div>
+											<div class="col-lg-1">
+												<button class="ladda-button btn btn-md btn-muted" id="uploadOperationHours" type="submit" data-style="expand-left">
+													<span class="ladda-label">SUBMIT</span>
+													<span class="ladda-spinner"></span>
+												</button>
+											</div>
+										</div>
+									</form>
 								</div>
-								<hr/>
-								<div class="row">
-									<div class="col-md-12">
-										<button class="ladda-button btn btn-md update-btn m-t" id="UpdateTalks" type="submit" data-style="expand-left">
-											<span class="ladda-label">UPDATE</span>
-											<span class="ladda-spinner"></span>
-										</button>
-										<button class="ladda-button btn btn-md btn-muted m-t" type="reset" data-style="expand-left">
-											<span class="ladda-label">CANCEL</span>
-											<span class="ladda-spinner"></span>
-										</button>
-									</div>
+							</div>
+							<hr/>
+							<div class="row">
+								<div class="col-md-12">
+									<button class="ladda-button btn btn-md update-btn m-t" id="UpdateTalks" type="submit" data-style="expand-left">
+										<span class="ladda-label">UPDATE</span>
+										<span class="ladda-spinner"></span>
+									</button>
+									<button class="ladda-button btn btn-md btn-muted m-t" type="reset" data-style="expand-left">
+										<span class="ladda-label">CANCEL</span>
+										<span class="ladda-spinner"></span>
+									</button>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+			</div>
 			{{else}}
-				{{> plan-inactive}}
+			{{> plan-inactive}}
 			{{/if}}
 		</div>
 	</div>

@@ -3320,6 +3320,10 @@ p.address-info{
 	color:#fff;
 	background-color:#3bb802;
 }
+.advertisement>a>img{
+	max-height: 210px !important;
+	object-fit: contain;
+}
 
 @media screen and (max-width: 1375px) and (min-width: 1281px){
 	.privacy-policy-landing {
