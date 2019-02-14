@@ -12,18 +12,20 @@
 		var cropBoxData, canvasData, cropper, cropperInputImage;
 		var cropperOutputImage;
 		var fileDetails = {};
+
 		function imagesPreview(uploader) {
 			if (uploader.files && uploader.files[0]) {
 				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
 				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
-				$('#uploaded-profile-picture').attr('src', 
+				$('#uploaded-post-picture').attr('src', 
 					window.URL.createObjectURL(uploader.files[0]));
-				cropperInputImage = document.getElementById('uploaded-profile-picture');
-				$('#profile-picture-modal').modal('show');
+				cropperInputImage = document.getElementById('uploaded-post-picture');
+				$('#post-picture-model').modal('show');
 			}
 		};
-		$('#profile-picture-modal').on('shown.bs.modal', function() {
+		$('#post-picture-model').on('shown.bs.modal', function() {
 			cropper = new Cropper(cropperInputImage, {
+				
 				aspectRatio: NaN,//16 / 16,
 				// minCropBoxHeight: 280,
 				// minCropBoxWidth: 1264,
@@ -38,14 +40,14 @@
 			canvasData = cropper.getCanvasData();
 			cropper.destroy();
 		});
-		$('#crop-profile-image').click(function() {
+		$('#crop-post-image').click(function() {
 			cropper.getCroppedCanvas().toBlob(function(blob) {
 				cropperOutputImage = blob;
 				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
 				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
 			});
 			$('#selectedBlogFile').attr('src', cropper.getCroppedCanvas().toDataURL());
-			$('#profile-picture-modal').modal('hide');
+			$('#post-picture-model').modal('hide');
 		})
 
 		$("#selectedBlogFile").change(function() {
@@ -368,24 +370,24 @@ function userLike(e) {
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
-<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
+<div class="modal fade" id="post-picture-model" tabindex="-1" role="dialog" aria-labelledby="post-picture-modelLabel"
 aria-hidden="true">
 <div class="modal-dialog modal-lg" role="document">
 	<div class="modal-content">
 		<div class="modal-header">
-			<h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+			<h5 class="modal-title" id="post-picture-modelLabel">Crop Profile Avatar</h5>
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
 		</div>
 		<div class="modal-body" style="margin-right:35px">
 			<div class="container">
-				<img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+				<img src="" style="max-width: 100% !important;" id="uploaded-post-picture" alt="Profile Picture">
 			</div>
 		</div>
 		<div class="modal-footer">
 			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+			<button type="button" class="btn btn-primary" id="crop-post-image">Crop Image</button>
 		</div>
 	</div>
 </div>
