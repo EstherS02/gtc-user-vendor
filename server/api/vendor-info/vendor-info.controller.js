@@ -41,8 +41,9 @@ export function blogLike(req, res) {
 			bodyParam.status = newStatus;
 			service.updateRow(modelName, bodyParam, result.id)
 				.then(function(response) {
+
 					agenda.now(config.jobs.orderNotification, {
-						discussionLikeId: response.id,
+						discussionLikeId: result.id,
 						code: config.notification.templates.likesComments
 					});
 					LikeCount(req, res, function(err, obj) {
@@ -64,6 +65,7 @@ export function blogLike(req, res) {
 			bodyParam.created_on = new Date();
 			service.createRow(modelName, bodyParam).then(function(response) {
 				discussion_board_post_id = response.discussion_board_post_id;
+
 				agenda.now(config.jobs.orderNotification, {
 					discussionLikeId: response.id,
 					code: config.notification.templates.likesComments

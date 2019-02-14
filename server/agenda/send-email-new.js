@@ -18,9 +18,16 @@ var transporter = nodemailer.createTransport(smtpTransport({
 module.exports = function(email, done) {
 	const arr = email.attrs.data.mailArray;
 	arr.forEach(function(emailObj) {
+
+		if (config.env === 'development') {
+			emailObj.from = config.smtpTransport.from;
+		} else if (config.env === 'production' || config.env === 'test') {
+			emailObj.from = config.sesTransporter.from;
+		}
+
 		transporter.sendMail(emailObj, function(error, response) {
 			if (error) {
-				console.log("Error:::", error);
+				console.log("Error here:::", error);
 				} else {
 				console.log("response", response);
 			}

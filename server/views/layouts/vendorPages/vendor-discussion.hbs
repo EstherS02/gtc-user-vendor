@@ -12,11 +12,12 @@
 		var cropBoxData, canvasData, cropper, cropperInputImage;
 		var cropperOutputImage;
 		var fileDetails = {};
-		var imagesPreview = function(uploader, placeToInsertImagePreview) {
+		function imagesPreview(uploader) {
 			if (uploader.files && uploader.files[0]) {
 				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
 				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
-				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+				$('#uploaded-profile-picture').attr('src', 
+					window.URL.createObjectURL(uploader.files[0]));
 				cropperInputImage = document.getElementById('uploaded-profile-picture');
 				$('#profile-picture-modal').modal('show');
 			}
@@ -161,7 +162,7 @@
 			url: url,
 			data: data,
 			success: function(data, text) {
-				$("postComment"+e).prop("disabled",false);
+				$("postBlog").prop("disabled",false);
 				location.reload();
 
 			},
@@ -408,7 +409,12 @@ aria-hidden="true">
 									{{!-- {{#ifCond LoggedInUser.Vendor.id "==" VendorDetail.id}} --}}
 									<div class="row">
 										<div class="col-md-2  discussion_para_bg">
-											<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{LoggedInUser.user_pic_url}}">
+											{{#ifCond LoggedInUser.id '==' VendorDetail.user_id}}
+												<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{VendorDetail.vendor_profile_pic_url}}">
+											{{else}}
+													<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{LoggedInUser.user_pic_url}}">
+											{{/ifCond}}
+											{{!-- <img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{LoggedInUser.user_pic_url}}"> --}}
 										</div>
 										<div class="col-md-10 col-9 discussion_para_bg " >
 											<div class="discussion_text">
@@ -420,7 +426,7 @@ aria-hidden="true">
 															<input type="file" id="selectedBlogFile" style="display: none;" name="comment_media_url" />
 														</span>
 													</div>
-													<button class="discussion_butt" id="postBlog">Post</button>
+													<button class="discussion_butt" id="postBlog" style="cursor: pointer;">Post</button>
 												</div>
 												<div id="blog_img" >
 													<img id="blah" src="#" height="35px" width="35px" alt="your image" />
@@ -465,7 +471,7 @@ aria-hidden="true">
 												<div class="col-md-2 col-4 common_padding1 discussion_lin">
 													<p id="LikeCount{{this.id}}">{{this.DiscussionBoardPostLikes.length}} Likes</p>
 												</div>
-												<div class="col-md-2 col-3  common_padding1 discussion_com "><a href="javascript:;" class="discussion_butt btn" onclick="userLike({{this.id}})" id="likeType{{this.id}}">{{#LikeUnlike this.DiscussionBoardPostLikes ../LoggedInUser}}Like{{/LikeUnlike}}</a></div>
+												<div class="col-md-2 col-3  common_padding1 discussion_com"><a href="javascript:;" class="discussion_butt btn" onclick="userLike({{this.id}})" id="likeType{{this.id}}">{{#LikeUnlike this.DiscussionBoardPostLikes ../LoggedInUser}}Like{{/LikeUnlike}}</a></div>
 											</div>
 											<hr>
 											<div id="DiscussionBoardPostComments-{{this.id}}">
@@ -474,7 +480,12 @@ aria-hidden="true">
 													{{#ifCond @index '<' 2}}
 													<div class="row" style="margin-bottom: 5px;" >
 														<div class="col-md-2 col-2">
-															<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
+															{{#ifCond this.user_id '==' ../../VendorDetail.user_id}}
+																<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{../../VendorDetail.vendor_profile_pic_url}}">
+															{{else}}
+																<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{this.User.user_pic_url}}">
+															{{/ifCond}}
+															{{!-- <img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}"> --}}
 														</div>
 														<div class="col-md-10 col-10">
 															<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{#if this.User.last_name}}{{this.User.last_name}}{{/if}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}<p>&nbsp;-&nbsp; <img src="{{this.comment_media_url}}" width="25%" height="25%">- <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
@@ -492,7 +503,13 @@ aria-hidden="true">
 														{{#ifCond @index '>' 1}}
 														<div class="row"  style="margin-bottom: 5px;" >
 															<div class="col-md-2 col-2">
-																<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
+																{{!-- {{../../VendorDetail.user_id}}aaa{{this.user_id}}bb{{this.id}} --}}
+																{{!-- <img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}"> --}}
+																{{#ifCond this.user_id '==' ../../VendorDetail.user_id}}
+																	<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{../../VendorDetail.vendor_profile_pic_url}}">
+																{{else}}
+																	<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{this.User.user_pic_url}}">
+																{{/ifCond}}
 															</div>
 															<div class="col-md-10 col-10">
 																<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{#if this.User.last_name}}{{this.User.last_name}}{{/if}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}&nbsp;-&nbsp;s<p><img src="{{this.comment_media_url}}" width="25%" height="25%">&nbsp;-&nbsp; <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
@@ -510,7 +527,12 @@ aria-hidden="true">
 											</div>
 											<div class="row">
 												<div class="col-md-2 col-2 ">
-													<img style="width: 40px;height:39px;margin-top: 5px;" onError="UserImgError(this)" class = "img-border-page"src="{{../LoggedInUser.user_pic_url}}">
+													{{!-- <img style="width: 40px;height:39px;margin-top: 5px;" onError="UserImgError(this)" class = "img-border-page"src="{{../LoggedInUser.user_pic_url}}"> --}}
+													{{#ifCond ../LoggedInUser.id '==' ../VendorDetail.user_id}}
+										<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{../VendorDetail.vendor_profile_pic_url}}">
+										{{else}}
+											<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{../LoggedInUser.user_pic_url}}">
+										{{/ifCond}}
 												</div>
 												<div class="col-md-10 col-10">
 													<div class="discussion_text">
@@ -522,7 +544,7 @@ aria-hidden="true">
 																	<input type="file" class="newComment" data-commentId="{{this.id}}" id="selectedFile{{this.id}}" style="display: none;" name="comment_media_url" />
 																</span>
 															</div>
-															<button class="discussion_butt" onclick="postComment({{this.id}})">Comment</button>
+															<button class="discussion_butt" onclick="postComment({{this.id}})" style="cursor: pointer;">Comment</button>
 															
 														</div>
 														<div class="comment-image" id="comment_img-{{this.id}}" >

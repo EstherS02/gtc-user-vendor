@@ -88,8 +88,9 @@ export async function createAd(req, res) {
 			}).catch(function(error) {
 				console.log("Error::", error);
 				return res.status(500).send({
-					"message": "Success",
-					"messageDetails": "Internal Server Error."
+					"message": "Error",
+					"messageDetails": "Internal Server Error.",
+					"error": error
 				});
 			})
 	}
@@ -174,6 +175,7 @@ export async function editAd(req, res) {
 		});
 	}
 }
+
 // pls dont delete
 // export function index(req,res){
 // 		return new Promise((resolve, reject) => {
@@ -186,15 +188,13 @@ export async function editAd(req, res) {
 // 				result.count = results.lenght;
 // 				result.rows = results;
 // 				return res.status(200).send(result);
-
 // 			}).catch(function(error) {
 // 				return res.status(500).send(error);
-
 // 			});
 // 	// }
 // 	});
-
 // }
+
 export function  index(req, res) {
 	reportsService.adFeaturedRevenue(req, res)
 		.then((response) => {

@@ -28,7 +28,7 @@ module.exports = async function(job, done) {
 	const emailTemplateModelName = "EmailTemplate";
 
 	try {
-
+		
 		// vendor new order notification
 		if (code == config.notification.templates.vendorNewOrder) {
 			const orderId = job.attrs.data.order;
@@ -110,6 +110,7 @@ module.exports = async function(job, done) {
 
 		// order cancelled notification and email
 		if (code == config.notification.templates.orderItemCancelled) {
+
 			const itemId = job.attrs.data.itemId;
 			const orderItemResponse = await model[orderItemModelName].findOne({
 				where: {
@@ -149,6 +150,7 @@ module.exports = async function(job, done) {
 			});
 			if (orderItem && VendorNotificationResponse) {
 				if (orderItem.order_item_status == oredrItemStatus['CANCELED']) {
+
 					const vendorNotificationSettingsRes = await service.findRow(vendorNotificationSettingsModelName, {
 						vendor_id: orderItem.Product.vendor_id,
 						vendor_notification_id: VendorNotificationResponse.id
@@ -173,29 +175,7 @@ module.exports = async function(job, done) {
 							bodyParams.created_by = "Administrator";
 							const notificationResponse = await service.createRow(notificationModelName, bodyParams);
 						}
-
-						const orderItemEmailTemplate = await service.findOneRow(emailTemplateModelName, {
-							name: "ITEM-CANCEL-BY-VENDOR-MAIL"
-						});
-
-						if(orderItemEmailTemplate) {
-							let orderStatusSubject = orderItemEmailTemplate.subject;
-							let orderStatusBody = orderItemEmailTemplate.body;
-							orderItem.Order.ordered_date = moment(orderItem.Order.ordered_date).format('MMM D, Y');
-							orderStatusBody = orderStatusBody.replace('%status%', 'canceled');
-							let template = Handlebars.compile(orderStatusBody);
-							let result = template(orderItem);
-							if (orderItem.Product.Vendor.User.user_contact_email) {
-								await sendEmail({
-									to: orderItem.Product.Vendor.User.user_contact_email,
-									subject: orderStatusSubject,
-									html: result
-								});
-							}
-						}
 					}
-
-
 				} else if (orderItem.order_item_status == oredrItemStatus['VENDOR_CANCELED']) {
 					const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
 						code: code
@@ -514,111 +494,74 @@ module.exports = async function(job, done) {
 
 		// product review notification
 		if (code == config.notification.templates.productReview) {
-			const reviewId = job.attrs.data.reviewId;
-			const reviewResponse = await model[reviewModelName].findOne({
-				where: {
-					id: reviewId,
-				},
-				attributes: ['id', 'product_id', 'user_id', 'status'],
-				include: [{
-					model: model['Product'],
-					attributes: ['id', 'vendor_id', 'product_slug', 'product_name'],
+
+			const VendorNotificationResponse = await service.findRow(vendorNotificationModelName, {
+				code: code
+			});
+			if (VendorNotificationResponse) {
+				const reviewId = job.attrs.data.reviewId;
+				const reviewResponse = await model[reviewModelName].findOne({
+					where: {
+						id: reviewId,
+					},
+					attributes: ['id', 'product_id', 'user_id', 'status'],
 					include: [{
-						model: model['Vendor'],
-						attributes: ['id', 'user_id'],
+						model: model['Product'],
+						attributes: ['id', 'vendor_id', 'product_slug', 'product_name'],
 						include: [{
-							model: model['User'],
-							attributes: ['first_name', 'id']
+							model: model['Vendor'],
+							attributes: ['id', 'user_id'],
+							include: [{
+								model: model['User'],
+								attributes: ['first_name', 'id']
+							}]
 						}]
 					}]
-				}]
-			});
-
-			const review = await JSON.parse(JSON.stringify(reviewResponse));
-			if(review) {
-				const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
-					code: code
 				});
-				if (notificationSettingResponse) {
-					var bodyParams = {};
-					bodyParams.user_id = review.Product.Vendor.user_id;
-					bodyParams.description = notificationSettingResponse.description;
-					bodyParams.description = bodyParams.description.replace('%VendorFirstname%', review.Product.Vendor.User.first_name);
-					bodyParams.description = bodyParams.description.replace('%productName%', review.Product.product_name);
-					bodyParams.description = bodyParams.description.replace('%path%', '/shop/' + review.Product.product_slug + '/' + review.product_id);
-					bodyParams.description = bodyParams.description.replace('%#path%', '/shop/' + review.Product.product_slug + '/' + review.product_id +'/reviews');
-					bodyParams.name = notificationSettingResponse.name;
-					bodyParams.code = notificationSettingResponse.code;
-					bodyParams.is_read = 0;
-					bodyParams.status = 1;
-					bodyParams.created_on = new Date();
-					bodyParams.created_by = "Administrator";
-					const notificationResponse = await service.createRow(notificationModelName, bodyParams);
+
+				const review = await JSON.parse(JSON.stringify(reviewResponse));
+				if(review) {
+					const vendorNotificationSettingsRes = await service.findRow(vendorNotificationSettingsModelName, {
+						vendor_id: review.Product.Vendor.id,
+						vendor_notification_id: VendorNotificationResponse.id
+					});
+					if (vendorNotificationSettingsRes == null) {
+						const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
+							code: code
+						});
+						if (notificationSettingResponse) {
+							var bodyParams = {};
+							bodyParams.user_id = review.Product.Vendor.user_id;
+							bodyParams.description = notificationSettingResponse.description;
+							bodyParams.description = bodyParams.description.replace('%VendorFirstname%', review.Product.Vendor.User.first_name);
+							bodyParams.description = bodyParams.description.replace('%productName%', review.Product.product_name);
+							bodyParams.description = bodyParams.description.replace('%path%', '/shop/' + review.Product.product_slug + '/' + review.product_id);
+							bodyParams.description = bodyParams.description.replace('%#path%', '/shop/' + review.Product.product_slug + '/' + review.product_id +'/reviews');
+							bodyParams.name = notificationSettingResponse.name;
+							bodyParams.code = notificationSettingResponse.code;
+							bodyParams.is_read = 0;
+							bodyParams.status = 1;
+							bodyParams.created_on = new Date();
+							bodyParams.created_by = "Administrator";
+							const notificationResponse = await service.createRow(notificationModelName, bodyParams);
+						}
+					}
 				}
 			}
 		}
 
 		// new post notification for buyer dashboard 
 		if (code == config.notification.templates.newPostFromBuyerOnYourDB) {
+
 			const discussionBoardPostId = job.attrs.data.discussionId;
-			const discussionBoardPostResponse = await model[discussionBoardPostModelName].findOne({
-				where: {
-					id: discussionBoardPostId,
-				},
-				attributes: ['id', 'vendor_id', 'user_id', 'status'],
-				include: [{
-					model: model['Vendor'],
-					attributes: ['id', 'user_id'],
-					include: [{
-						model: model['User'],
-						attributes: ['first_name', 'id']
-					}]
-				}, {
-					model: model['User'],
-					attributes: ['first_name', 'id']
-				}]
+			const VendorNotificationResponse = await service.findRow(vendorNotificationModelName, {
+				code: code
 			});
-
-			const discussion = await JSON.parse(JSON.stringify(discussionBoardPostResponse));
-			if (discussion) {
-				const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
-					code: code
-				});
-				if (notificationSettingResponse) {
-					var bodyParams = {};
-					bodyParams.user_id = discussion.Vendor.user_id;
-					bodyParams.description = notificationSettingResponse.description;
-					bodyParams.description = bodyParams.description.replace('%VendorFirstname%', discussion.Vendor.User.first_name);
-					bodyParams.description = bodyParams.description.replace('%User%', discussion.User.first_name);
-					bodyParams.description = bodyParams.description.replace('%postId%', '/vendor/discussion-board/' + discussion.Vendor.id);
-					bodyParams.name = notificationSettingResponse.name;
-					bodyParams.code = notificationSettingResponse.code;
-					bodyParams.is_read = 0;
-					bodyParams.status = 1;
-					bodyParams.created_on = new Date();
-					bodyParams.created_by = "Administrator";
-					const notificationResponse = await service.createRow(notificationModelName, bodyParams);
-				}
-			}
-		}
-
-		// likes and comment notification
-		if (code == config.notification.templates.likesComments) {
-			var modelName, id;
-			if (job.attrs.data.discussionCommentId) {
-				modelName = discussionBoardPostCommentModelName;
-				id = job.attrs.data.discussionCommentId;
-			} else {
-				modelName = discussionBoardPostLikeModelName;
-				id = job.attrs.data.discussionLikeId;
-			}
-			const discussionBoardCommentAndLikeRes = await model[discussionBoardPostCommentModelName].findOne({
-				where: {
-					id: job.attrs.data.discussionCommentId
-				},
-				attributes: ['id', 'discussion_board_post_id', 'user_id', 'status'],
-				include: [{
-					model: model['DiscussionBoardPost'],
+			if (VendorNotificationResponse) {
+				const discussionBoardPostResponse = await model[discussionBoardPostModelName].findOne({
+					where: {
+						id: discussionBoardPostId,
+					},
 					attributes: ['id', 'vendor_id', 'user_id', 'status'],
 					include: [{
 						model: model['Vendor'],
@@ -627,32 +570,108 @@ module.exports = async function(job, done) {
 							model: model['User'],
 							attributes: ['first_name', 'id']
 						}]
+					}, {
+						model: model['User'],
+						attributes: ['first_name', 'id']
 					}]
-				}, {
-					model: model['User'],
-					attributes: ['first_name', 'id']
-				}]
-			});
-
-			const discussionBoardCommentAndLike = await JSON.parse(JSON.stringify(discussionBoardCommentAndLikeRes));
-			if (discussionBoardCommentAndLike) {
-				const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
-					code: code
 				});
-				if (notificationSettingResponse) {
-					var bodyParams = {};
-					bodyParams.user_id = discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.user_id;
-					bodyParams.description = notificationSettingResponse.description;
-					bodyParams.description = bodyParams.description.replace('%VendorFirstname%', discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.User.first_name);
-					bodyParams.description = bodyParams.description.replace('%User%', discussionBoardCommentAndLike.User.first_name);
-					bodyParams.description = bodyParams.description.replace('%PostId%', '/vendor/discussion-board/' + discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.id);
-					bodyParams.name = notificationSettingResponse.name;
-					bodyParams.code = notificationSettingResponse.code;
-					bodyParams.is_read = 0;
-					bodyParams.status = 1;
-					bodyParams.created_on = new Date();
-					bodyParams.created_by = "Administrator";
-					const notificationResponse = await service.createRow(notificationModelName, bodyParams);
+
+				const discussion = await JSON.parse(JSON.stringify(discussionBoardPostResponse));
+				if (discussion) {
+
+					const vendorNotificationSettingsRes = await service.findRow(vendorNotificationSettingsModelName, {
+						vendor_id: discussion.Vendor.id,
+						vendor_notification_id: VendorNotificationResponse.id
+					});
+					if (vendorNotificationSettingsRes == null) {
+						const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
+							code: code
+						});
+						if (notificationSettingResponse) {
+							var bodyParams = {};
+							bodyParams.user_id = discussion.Vendor.user_id;
+							bodyParams.description = notificationSettingResponse.description;
+							bodyParams.description = bodyParams.description.replace('%VendorFirstname%', discussion.Vendor.User.first_name);
+							bodyParams.description = bodyParams.description.replace('%User%', discussion.User.first_name);
+							bodyParams.description = bodyParams.description.replace('%postId%', '/vendor/discussion-board/' + discussion.Vendor.id);
+							bodyParams.name = notificationSettingResponse.name;
+							bodyParams.code = notificationSettingResponse.code;
+							bodyParams.is_read = 0;
+							bodyParams.status = 1;
+							bodyParams.created_on = new Date();
+							bodyParams.created_by = "Administrator";
+							const notificationResponse = await service.createRow(notificationModelName, bodyParams);
+						}
+					}
+				}
+			}
+		}
+
+		// likes and comment notification
+		if (code == config.notification.templates.likesComments) {
+			var modelName, id;
+			const VendorNotificationResponse = await service.findRow(vendorNotificationModelName, {
+				code: code
+			});
+			if (VendorNotificationResponse) {
+				if (job.attrs.data.discussionCommentId) {
+					modelName = discussionBoardPostCommentModelName;
+					id = job.attrs.data.discussionCommentId;
+				} else {
+					modelName = discussionBoardPostLikeModelName;
+					id = job.attrs.data.discussionLikeId;
+				}
+				const discussionBoardCommentAndLikeRes = await model[modelName].findOne({
+					where: {
+						id: id
+					},
+					attributes: ['id', 'discussion_board_post_id', 'user_id', 'status'],
+					include: [{
+						model: model['DiscussionBoardPost'],
+						attributes: ['id', 'vendor_id', 'user_id', 'status'],
+						include: [{
+							model: model['Vendor'],
+							attributes: ['id', 'user_id'],
+							include: [{
+								model: model['User'],
+								attributes: ['first_name', 'id']
+							}]
+						}]
+					}, {
+						model: model['User'],
+						attributes: ['first_name', 'id']
+					}]
+				});
+				const discussionBoardCommentAndLike = await JSON.parse(JSON.stringify(discussionBoardCommentAndLikeRes));
+				
+				if (discussionBoardCommentAndLike) {
+	
+					const vendorNotificationSettingsRes = await service.findRow(vendorNotificationSettingsModelName, {
+						vendor_id: discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.id,
+						vendor_notification_id: VendorNotificationResponse.id
+					});
+					
+					if (vendorNotificationSettingsRes == null) {
+
+						const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
+							code: code
+						});
+						if (notificationSettingResponse) {
+							var bodyParams = {};
+							bodyParams.user_id = discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.user_id;
+							bodyParams.description = notificationSettingResponse.description;
+							bodyParams.description = bodyParams.description.replace('%VendorFirstname%', discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.User.first_name);
+							bodyParams.description = bodyParams.description.replace('%User%', discussionBoardCommentAndLike.User.first_name);
+							bodyParams.description = bodyParams.description.replace('%PostId%', '/vendor/discussion-board/' + discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.id);
+							bodyParams.name = notificationSettingResponse.name;
+							bodyParams.code = notificationSettingResponse.code;
+							bodyParams.is_read = 0;
+							bodyParams.status = 1;
+							bodyParams.created_on = new Date();
+							bodyParams.created_by = "Administrator";
+							const notificationResponse = await service.createRow(notificationModelName, bodyParams);
+						}
+					}
 				}
 			}
 		}

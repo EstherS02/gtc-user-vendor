@@ -145,28 +145,26 @@
 											</table>
 										</div>
 									</div>
-									{{#ifCond vendorRevenue.count '>' queryPaginationObj.limit}}
-										<div class="row m-t-sm">
-											<div class="col-md-12">
-												{{#pagination vendorRevenue.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+									{{#ifCond vendorRevenue.count '>' queryURI.limit}}
+										<div class="row">
+											<div class="col-md-12 align-self-center">
+												{{#pagination products.count queryURI.page queryURI.limit 2}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
-																<li class="page-item-prev" style="margin-left:-391px;">
-																	<a href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(DiffFloat ../../queryPaginationObj.page 1) limit=../../queryPaginationObj.limit) 'null'}}">
-																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous
-																	</a>
+																<li class="justify-content-center align-self-center">
+																	<a href="/store/revenue?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">
+																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 																</li>
 															{{/unless}}
-
 															{{#each pages}}
 																<li class="page-item {{#if isCurrent}} active {{/if}}">
-																	<a class="page-link" href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																	<a class="page-link" href="/store/revenue?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryURI.limit)}}">{{page}}</a>
 																</li>
 															{{/each}}
 															{{#unless endAtLastPage}}
-																<li class="page-item-next" style="margin-right:-391px;">
-																	<a href="{{../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
+																<li class="justify-content-center align-self-center">
+																	<a href="/store/revenue?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">Next&nbsp;
 																		<i class="fa fa-angle-double-right"></i>
 																	</a>
 																</li>
@@ -240,7 +238,7 @@
 														<th>Order Total</th>
 														<th>Shipping Cost</th>
 														<th>GTC Fee(%)</th>
-														<th>GTC Fee</th>
+														<th>GTC Fee{{processingFee.count}}</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -250,33 +248,33 @@
 															<td>{{this.total_price}}</td>
 															<td>{{this.shipping_cost}}</td>
 															<td>{{this.gtc_fees_percent}}</td>
-															<td>{{this.gtc_fees}}</td>
+															<td>{{this.gtc_fees}} </td>
 														</tr>
 													{{/each}}
 												</tbody>
 											</table>
 										</div>
 									</div>
-									{{#ifCond processingFee.count '>' queryPaginationObj.limit}}
-										<div class="row m-t-sm">
-											<div class="col-md-12">
-												{{#pagination processingFee.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+									{{#ifCond processingFee.count '>' queryURI.limit}}
+										<div class="row">
+											<div class="col-md-12 align-self-center">
+												{{#pagination products.count queryURI.page queryURI.limit 2}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
-																<li class="page-item-prev" style="margin-left:-391px;">
-																	<a href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(DiffFloat ../../queryPaginationObj.page 1) limit=../../queryPaginationObj.limit) 'null'}}">
+																<li class="justify-content-center align-self-center">
+																	<a href="/store/processing?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">
 																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 																</li>
 															{{/unless}}
 															{{#each pages}}
 																<li class="page-item {{#if isCurrent}} active {{/if}}">
-																	<a class="page-link" href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																	<a class="page-link" href="/store/processing?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryURI.limit)}}">{{page}}</a>
 																</li>
 															{{/each}}
 															{{#unless endAtLastPage}}
-																<li class="page-item-next" style="margin-right:-391px;">
-																	<a href="{{../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
+																<li class="justify-content-center align-self-center">
+																	<a href="/store/processing?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">Next&nbsp;
 																		<i class="fa fa-angle-double-right"></i>
 																	</a>
 																</li>
@@ -367,26 +365,26 @@
 											</table>
 										</div>
 									</div>
-									{{#ifCond subscriptionFee.count '>' queryPaginationObj.limit}}
-										<div class="row m-t-sm">
-											<div class="col-md-12">
-												{{#pagination subscriptionFee.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+									{{#ifCond subscriptionFee.count '>' queryURI.limit}}
+										<div class="row">
+											<div class="col-md-12 align-self-center">
+												{{#pagination products.count queryURI.page queryURI.limit 2}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
-																<li class="page-item-prev" style="margin-left:-391px;">
-																	<a href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(DiffFloat ../../queryPaginationObj.page 1) limit=../../queryPaginationObj.limit) 'null'}}">
+																<li class="justify-content-center align-self-center">
+																	<a href="/store/plan-fees?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">
 																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 																</li>
 															{{/unless}}
 															{{#each pages}}
 																<li class="page-item {{#if isCurrent}} active {{/if}}">
-																	<a class="page-link" href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																	<a class="page-link" href="/store/plan-fees?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryURI.limit)}}">{{page}}</a>
 																</li>
 															{{/each}}
 															{{#unless endAtLastPage}}
-																<li class="page-item-next" style="margin-right:-391px;">
-																	<a href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
+																<li class="justify-content-center align-self-center">
+																	<a href="/store/plan-fees?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">Next&nbsp;
 																		<i class="fa fa-angle-double-right"></i>
 																	</a>
 																</li>
@@ -474,26 +472,26 @@
 											</table>
 										</div>
 									</div>
-									{{#ifCond gtcPayFee.count '>' queryPaginationObj.limit}}
-										<div class="row m-t-sm">
-											<div class="col-md-12">
-												{{#pagination gtcPayFee.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+									{{#ifCond gtcPayFee.count '>' queryURI.limit}}
+										<div class="row">
+											<div class="col-md-12 align-self-center">
+												{{#pagination products.count queryURI.page queryURI.limit 2}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
-																<li class="page-item-prev" style="margin-left:-391px;">
-																	<a href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(DiffFloat ../../queryPaginationObj.page 1) limit=../../queryPaginationObj.limit) 'null'}}">
+																<li class="justify-content-center align-self-center">
+																	<a href="/store/gtcpay?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">
 																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 																</li>
 															{{/unless}}
 															{{#each pages}}
 																<li class="page-item {{#if isCurrent}} active {{/if}}">
-																	<a class="page-link" href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																	<a class="page-link" href="/store/gtcpay?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryURI.limit)}}">{{page}}</a>
 																</li>
 															{{/each}}
 															{{#unless endAtLastPage}}
-																<li class="page-item-next" style="margin-right:-391px;">
-																	<a href="{{../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
+																<li class="justify-content-center align-self-center">
+																	<a href="/store/gtcpay?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">Next&nbsp;
 																		<i class="fa fa-angle-double-right"></i>
 																	</a>
 																</li>
@@ -611,26 +609,26 @@
 											{{/ifCond}}
 										</div>
 									</div>
-									{{#ifCond membershipDetails.count '>' queryParams.limit}}
+									{{#ifCond membershipDetails.count '>' queryURI.limit}}
 										<div class="row">
 											<div class="col-md-12 align-self-center">
-												{{#pagination orders.count queryParams.page queryParams.limit 2}}
+												{{#pagination products.count queryURI.page queryURI.limit 2}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
-																<li class="page-item-prev" style="margin-left:-391px;">
-																	<a href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(DiffFloat ../../queryPaginationObj.page 1) limit=../../queryPaginationObj.limit) 'null'}}">
+																<li class="justify-content-center align-self-center">
+																	<a href="/store/membership?{{paginationParams @root.queryParamsString (FrameObject page=(DiffFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">
 																		<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
 																</li>
 															{{/unless}}
 															{{#each pages}}
 																<li class="page-item {{#if isCurrent}} active {{/if}}">
-																	<a class="page-link" href="{{../../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																	<a class="page-link" href="/store/membership?{{paginationParams @root.queryParamsString (FrameObject page=page limit=@root.queryURI.limit)}}">{{page}}</a>
 																</li>
 															{{/each}}
 															{{#unless endAtLastPage}}
-																<li class="page-item-next" style="margin-right:-391px;">
-																	<a href="{{../originalUrl}}?{{QueryParams ../../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
+																<li class="justify-content-center align-self-center">
+																	<a href="/store/membership?{{paginationParams @root.queryParamsString (FrameObject page=(SUMFloat @root.queryURI.page 1) limit=@root.queryURI.limit)}}">Next&nbsp;
 																		<i class="fa fa-angle-double-right"></i>
 																	</a>
 																</li>

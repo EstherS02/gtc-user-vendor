@@ -62,8 +62,14 @@ module.exports = async function(job, done) {
 			}]
 		});
 		const cancelItems = JSON.parse(JSON.stringify(response));
+
 		await Promise.all(cancelItems.map(async (item) => {
-			const refundAmt = Math.round(item.price);
+			
+			var refundAmt = Math.round(item.price);
+			if(item.coupon_amount){
+				refundAmt = refundAmt - Math.round(item.coupon_amount);
+			}
+
 			const chargedPaymentRes = await JSON.parse(item.Order.Payment.payment_response);
 			const refundResponse = await stripe.refundCustomerCard(chargedPaymentRes.id, refundAmt);
 
