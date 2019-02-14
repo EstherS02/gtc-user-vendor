@@ -109,6 +109,10 @@
 				}).serializeArray();
 
 				adFormInput.forEach(function(obj) {
+					// if(obj.name == 'target_url'){
+					// 	obj.value = obj.value.replace('http://', '')
+					// 	obj.value = obj.value.replace('https://', '')
+					// }
 					formData.append(obj.name, obj.value);
 				});
 
@@ -306,7 +310,7 @@
 									<div class="col-lg-8">
 										<div class="form-group">
 											<label class="label-control">Target URL
-												<span class="text-danger">*</span>
+												<span class="text-danger">*</span> &nbsp; <span style="color:grey">http://www.example.com</span>
 											</label>
 											<input type="text" value="{{ads.target_url}}" name="target_url" id="target_url" class="form-control-customized form-control-sm"
 											 required="true">

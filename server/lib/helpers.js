@@ -128,6 +128,9 @@ Handlebars.registerHelper('formatTime', function(date, format) {
 	var gmtDateTime = moment.utc(date);
 	return gmtDateTime.local().format(format);
 });
+Handlebars.registerHelper('ISOFormat',function(date){
+	return moment(date).format("DD/MM/YYYY");
+});
 
 Handlebars.registerHelper('progressBar', function(value, total) {
 	var rating = 0;
