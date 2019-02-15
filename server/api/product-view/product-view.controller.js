@@ -116,7 +116,7 @@ export function vendorQuestion(req, res) {
 						agenda.now(config.jobs.email, {
 							mailArray: mailArray
 						});
-					return res.status(200).send("Your Question sent to this vendor");
+					return res.status(200).send("Your question sent to this vendor");
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return res.status(500).send("Internal Server Error");
@@ -145,12 +145,12 @@ export function AddToCompare(req, res) {
 		}
 		result = {
 			message: "SUCCESS",
-			message_details: "The One Product Added to your compare list",
+			message_details: "Product added to your compare list.",
 		}
 	} else {
 		result = {
 			message: "ERROR",
-			message_details: "Product Already in your compare list",
+			message_details: "Product already exist in your compare list.",
 		}
 	}
 	req.session['compare'] = compare;

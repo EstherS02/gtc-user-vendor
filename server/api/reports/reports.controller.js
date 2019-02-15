@@ -72,9 +72,8 @@ export function topSellingCities(req, res) {
 
 	if (req.user.role == 2)
 		productQueryObj.vendor_id = req.user.Vendor.id;
-
 	
-	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm"), moment().format("YYYY/MM/DD HH:mm"));
+	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm:ss"), moment().format("YYYY/MM/DD HH:mm:ss"));
 
 	queryObj['$or'] = [{
 		order_item_status: orderItemStatus['ORDER_INITIATED']
@@ -135,7 +134,7 @@ export function topSellingCountries(req, res) {
 	if (req.user.role == 2)
 		productQueryObj.vendor_id = req.user.Vendor.id;
 
-	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm:ss"), moment().format("YYYY/MM/DD HH:mm:ss"));
 
 	queryObj['$or'] = [{
 		order_item_status: orderItemStatus['ORDER_INITIATED']
@@ -513,7 +512,7 @@ export function topBuyers(req, res) {
 	delete req.query.limit;
 	delete req.query.offset;
 
-	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm"), moment().format("YYYY/MM/DD HH:mm"));
+	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm:ss"), moment().format("YYYY/MM/DD HH:mm:ss"));
 
 	queryObj['$or'] = [{
 		order_item_status: orderItemStatus['ORDER_INITIATED']
@@ -578,7 +577,7 @@ export function topVendors(req, res) {
 	delete req.query.limit;
 	delete req.query.offset;
 
-	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm:ss"), moment().format("YYYY/MM/DD HH:mm:ss"));
 
 	queryObj['$or'] = [{
 		order_item_status: orderItemStatus['ORDER_INITIATED']
@@ -701,7 +700,6 @@ export function recentRevenueChanges(req, res) {
 	}
 
 	if (req.user.role != 2) {
-		console.log("===========================",req.query)
 		if (req.query.lhs_from && req.query.lhs_to) {
 			lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD HH:mm:ss"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD HH:mm:ss"))
 		} else {
@@ -713,7 +711,6 @@ export function recentRevenueChanges(req, res) {
 			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm:ss"), moment().format("YYYY/MM/DD HH:mm:ss"));
 		}
 	}
-	console.log("-----------------------------------",lhsBetween,rhsBetween)
 	ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {

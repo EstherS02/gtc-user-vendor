@@ -3,7 +3,7 @@ var socket;
 $(function(){
 
   socket = io({
-    transports: ['websocket'],
+    transports: ['websocket','polling'],
     forceNew: true
   });
     socket.on('connect', () => {

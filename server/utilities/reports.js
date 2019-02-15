@@ -533,7 +533,8 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
 			where: orderItemQueryObj,
 			attributes: ['marketplace_id', 'marketplace_name', [sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
 				[sequelize.fn('count', sequelize.col('quantity')), 'sales'],
-				[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees']],
+				[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees))'), 'gtc_fees'],
+				[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees)+ SUM(final_price))'), 'revenue']],
 			group: ['marketplace_id'],
 			order: [
 				[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
@@ -660,7 +661,8 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
 		model['OrderItemOverview'].findAll({
 			raw: true,
 			where: orderItemQueryObj,
-			attributes: ['category_name', [sequelize.fn('sum', sequelize.col('final_price')), 'amount']],
+			attributes: ['category_name', [sequelize.fn('sum', sequelize.col('final_price')), 'amount'],
+				[sequelize.literal('(SUM(gtc_fees) + SUM(plan_fees)+ SUM(final_price))'), 'revenue']],
 			group: ['category_id'],
 			order: [
 				[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
@@ -697,7 +699,6 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
 }
 
 export function revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween) {
-        console.log("==================ddd=========================", lhsBetween, rhsBetween);
 
 	const pastRange = _.assign({}, orderItemQueryObj);
 	pastRange.item_created_on = {
