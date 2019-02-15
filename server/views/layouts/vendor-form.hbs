@@ -154,14 +154,18 @@
 			});
 		});
 
-		$('#state').change(function(){
-			var countryName, stateName, city, address;
+		$('#city, #address, #state, #country').change(function() {
+
+			var countryName, stateName, city, addressLine, address;
 			countryName = $('option:selected', '#country').data('countryname');
 			stateName = $('option:selected', '#state').data('statename');
+			cityName = $('#city').val();
+			addressLine = $('#address').val();
 
-			address = countryName+','+ stateName;
-
-			codeAddress(address);
+			if (countryName && stateName && cityName && addressLine) {
+				address = addressLine + ',' + cityName + ',' + stateName + ',' + countryName;
+				codeAddress(address);
+			}			
 		})
 
 		$("#vendorForm").validate({
@@ -195,7 +199,7 @@
 			center: latlng
 		}
 		map = new google.maps.Map(document.getElementById('map'), mapOptions);
-		google.maps.event.addListener(map, 'click', function( event ){
+		/*google.maps.event.addListener(map, 'click', function( event ){
 			if (marker && marker.setMap) {
     			marker.setMap(null);
   			}
@@ -210,7 +214,7 @@
 
 			$("#latitude").val(latitude);
 			$("#longitude").val(longitude);
-		});
+		});*/
 	}
 
 	function codeAddress(address) {
@@ -218,6 +222,23 @@
 			if (status == 'OK') {
 				$('.hidden').show();
 				map.setCenter(results[0].geometry.location);
+				if (marker) {
+    				marker.setMap(null);
+  				}
+				marker = new google.maps.Marker({
+					map: map,
+					position: results[0].geometry.location 
+				});
+
+				var tempLat = results[0].geometry.location.lat();
+				var tempLong = results[0].geometry.location.lng();
+
+				latitude = toTrunc(tempLat,6);
+				longitude = toTrunc(tempLong,6);
+
+				$("#latitude").val(latitude);
+				$("#longitude").val(longitude);
+
 			} else {
 				alert('Geocode was not successful for the following reason: ' + status);
 			}
@@ -289,7 +310,7 @@
 											<label class="label-control">Address
 												<span class="text-danger">*</span>
 											</label>
-											<input type="text" name="address" class="form-control-customized form-control-sm" required/>
+											<input type="text" id="address" name="address" class="form-control-customized form-control-sm" required/>
 										</div>
 									</div>
 								</div>
@@ -328,7 +349,7 @@
 											<label class="label-control">City
 												<span class="text-danger">*</span>
 											</label>
-											<input type="text" name="city" class="form-control-customized form-control-sm" required>
+											<input type="text" id="city" name="city" class="form-control-customized form-control-sm" required>
 										</div>
 									</div>
 								</div>
@@ -416,8 +437,8 @@
 								<div class="row hidden">
 									<div class="col-lg-12">
 										<div class="form-group">
-											<label class="label-control">Please locate your shop in the map
-												<span class="text-danger">*</span>
+											<label class="label-control">Geo locate for the your address
+												{{!-- <span class="text-danger">*</span> --}}
 											</label>
 											<div class="input-group">
 												<input type="text" id="latitude" name="latitude" hidden>
