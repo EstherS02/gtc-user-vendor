@@ -110,6 +110,18 @@
 		var Cto = $('#rhs_to').val();
 		Compare = $('#compare').is(":checked");
 
+		var dates = [from,to,Cfrom,Cto];
+		console.log("dates",dates)
+		var queryDate = [null,null,'',''];
+		dates.forEach(function(key,element){
+			if(key){
+			let time = moment().format("HH:mm:ss");
+			let dateAndTime = key + " "+ time;
+			let timeFrame = moment(dateAndTime, "MM/DD/YYYY HH:mm:ss")._d;
+			queryDate[element] = timeFrame.toISOString();
+			}
+		});
+
 		if ($("#inputTop").val() == 1) {
 			metrics = "products";
 		} else if ($("#inputTop").val() == 2) {
@@ -122,7 +134,7 @@
 			metrics = "buyers"
 		}
 
-		location.href = "/store/performance?top=" + metrics + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare +"&range="+range;
+		location.href = "/store/performance?top=" + metrics + "&lhs_from=" + queryDate[0] + "&lhs_to=" + queryDate[1] + "&rhs_from=" + queryDate[2] + "&rhs_to=" + queryDate[3] + "&compare=" + Compare +"&range="+range;
 	}
 
 	$(function(){
@@ -256,6 +268,17 @@
 				var Cto = $('#rhs_to').val();
 				Compare = $('#compare').is(":checked");
 
+				var dates = [from,to,Cfrom,Cto];
+				var queryDate = [null,null,'',''];
+				dates.forEach(function(key,element){
+					if(key){
+					let time = moment().format("HH:mm:ss");
+					let dateAndTime = key + " "+ time;
+					let timeFrame = moment(dateAndTime, "MM/DD/YYYY HH:mm:ss")._d;
+					queryDate[element] = timeFrame.toISOString();
+					}
+				});
+
 				if ($("#inputTop").val() == 1) {
 					metrics = "products";
 				} else if ($("#inputTop").val() == 2) {
@@ -268,7 +291,7 @@
 					metrics = "buyers"
 				}
 
-				location.href = "/store/performance?top=" + metrics + "&lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + true +"&range="+range;;
+				location.href = "/store/performance?top=" + metrics + "&lhs_from=" + queryDate[0] + "&lhs_to=" + queryDate[1] + "&rhs_from=" + queryDate[2] + "&rhs_to=" + queryDate[3] + "&compare=" + Compare +"&range="+range;
 			}
 		})
 	});

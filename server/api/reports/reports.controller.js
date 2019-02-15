@@ -73,7 +73,8 @@ export function topSellingCities(req, res) {
 	if (req.user.role == 2)
 		productQueryObj.vendor_id = req.user.Vendor.id;
 
-	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	
+	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm"), moment().format("YYYY/MM/DD HH:mm"));
 
 	queryObj['$or'] = [{
 		order_item_status: orderItemStatus['ORDER_INITIATED']
@@ -512,7 +513,7 @@ export function topBuyers(req, res) {
 	delete req.query.limit;
 	delete req.query.offset;
 
-	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().subtract(1, 'days').format("YYYY/MM/DD"));
+	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm"), moment().format("YYYY/MM/DD HH:mm"));
 
 	queryObj['$or'] = [{
 		order_item_status: orderItemStatus['ORDER_INITIATED']

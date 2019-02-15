@@ -48,11 +48,6 @@
 			Compare = true;
 		}
 		
-// console.log(timeFrame.toISOString())
-		// var new_from =moment(parseInt(from)).format("YYYY/MM/DD HH:mm:ss");
-		// var new_to =moment(parseInt(to)).format("YYYY/MM/DD HH:mm:ss");
-		// var new_Cfrom =moment(parseInt(Cfrom)).format("YYYY/MM/DD HH:mm:ss");
-		// var new_Cto =moment(parseInt(Cto)).format("YYYY/MM/DD HH:mm:ss");
 		var dates = [from, to, Cfrom, Cto];
 		var queryDate = [];
 		dates.forEach(function(key,element){
@@ -62,10 +57,9 @@
 			queryDate[element] = timeFrame.toISOString();
 		});
 		dates.sort(function(a,b){
-			// moment(a, "DD/MM/YYYY").format("YYYY-MM-DD");
-			// moment(b, "DD/MM/YYYY").format("YYYY-MM-DD");
-		 return new Date(moment(a, "DD/MM/YYYY").format("YYYY-MM-DD")) - new Date(moment(b, "DD/MM/YYYY").format("YYYY-MM-DD")); 
+			 return new Date(moment(a, "DD/MM/YYYY").format("YYYY-MM-DD")) - new Date(moment(b, "DD/MM/YYYY").format("YYYY-MM-DD")); 
 		});
+
 		var start = dates[0],
 			end = new Date(moment(dates[dates.length - 1], "DD/MM/YYYY").format("YYYY-MM-DD")),
 			currentDate = new Date(moment(start, "DD/MM/YYYY").format("YYYY-MM-DD")),
@@ -260,19 +254,18 @@
 				Cto = $('#rhs_to').val();
 				var dates = [from,to,Cfrom,Cto];
 				var queryDate = [];
-		dates.forEach(function(key,element){
-			let time = moment().format("HH:mm:ss");
-			let dateAndTime = key + " "+ time;
-			let timeFrame = moment(dateAndTime, "DD/MM/YYYY HH:mm:ss")._d
-			queryDate[element] = timeFrame.toISOString();
-		});
+				dates.forEach(function(key,element){
+					let time = moment().format("HH:mm:ss");
+					let dateAndTime = key + " "+ time;
+					let timeFrame = moment(dateAndTime, "DD/MM/YYYY HH:mm:ss")._d
+					queryDate[element] = timeFrame.toISOString();
+				});
 
 				Compare = $('#compare').is(":checked");
 				location.href = "/store/reports?lhs_from=" + queryDate[0] + "&lhs_to=" + queryDate[1] + "&rhs_from=" + queryDate[2] + "&rhs_to=" + queryDate[3] + "&compare=" + Compare +"&range="+range;
 			}
 		});
 		
-
 		function calHoursAgo(datetime) {
 			var now = new Date();
 			var createdAt = new Date(datetime);

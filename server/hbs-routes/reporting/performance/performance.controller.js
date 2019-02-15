@@ -22,28 +22,24 @@ export function performance(req, res) {
 	var queryURI = {};
 	var selectedMetrics;
 	const dateRangeOptions = [{
-		"column": "Today",
-		"value": 1
-	}, {
-		"column": "Yesterday",
-		"value": 2
-	}, {
-		"column": "Last 7 Days",
-		"value": 3
-	}, {
-		"column": "Last 30 Days",
-		"value": 4
-	}, {
-		"column": "This Month",
-		"value": 5
-	}, {
-		"column": "Last Month",
-		"value": 6
-	}
-	// , {
-	// 	"column": "Custom Range",
-	// 	"value": 7
-	// }
+			"column": "Today",
+			"value": 1
+		}, {
+			"column": "Yesterday",
+			"value": 2
+		}, {
+			"column": "Last 7 Days",
+			"value": 3
+		}, {
+			"column": "Last 30 Days",
+			"value": 4
+		}, {
+			"column": "This Month",
+			"value": 5
+		}, {
+			"column": "Last Month",
+			"value": 6
+		}
 	];
 
 	selectedMetrics = req.query.top ? req.query.top : "products";
@@ -58,15 +54,15 @@ export function performance(req, res) {
 	let user_id = LoggedInUser.id;
 
 	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"));
+		lhsBetween.push(moment(req.query.lhs_from).toISOString(), moment(req.query.lhs_to).toISOString());
 		queryURI['range'] = 7;
 	}else{
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		lhsBetween.push(moment().subtract(30, 'days').toISOString(), moment().toISOString());
 		queryURI['range'] = 4;
 	}
 
 	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+		rhsBetween.push(moment(req.query.rhs_from).toISOString(), moment(req.query.rhs_to).toISOString());
 		queryURI['rhs_from'] = moment(rhsBetween[0]).format("MM/DD/YYYY");
 		queryURI['rhs_to'] = moment(rhsBetween[1]).format("MM/DD/YYYY");
 	}

@@ -70,10 +70,10 @@ export function reporting(req, res) {
     if (req.user.role == 2)
         orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
-	queryURI['lhs_from'] = moment(lhsBetween[0]);
-	queryURI['lhs_to'] = moment(lhsBetween[1]);
-	queryURI['rhs_from'] = moment(rhsBetween[0]);
-	queryURI['rhs_to'] = moment(rhsBetween[1]);
+	queryURI['lhs_from'] = moment(lhsBetween[0]).format("MM/DD/YYYY");
+	queryURI['lhs_to'] = moment(lhsBetween[1]).format("MM/DD/YYYY");
+	queryURI['rhs_from'] = moment(rhsBetween[0]).format("MM/DD/YYYY");
+	queryURI['rhs_to'] = moment(rhsBetween[1]).format("MM/DD/YYYY");
 
     async.series({
 		cartInfo: function(callback) {
