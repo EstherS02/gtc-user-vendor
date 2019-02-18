@@ -28,7 +28,6 @@ function sumofPrice(modelName, queryObj) {
 		}).catch(function(err) {
 			reject(err);
 		});
-
 	});
 }
 
@@ -227,7 +226,6 @@ function getAllUserPerformance(queryObj, limit, offset, attributes, groupBy, inc
 
 	let includeArray = includeArr ? includeArr : [];
 	return new Promise((resolve, reject) => {
-
 		model['OrderItem'].findAll({
 			raw: true,
 			where: queryObject,

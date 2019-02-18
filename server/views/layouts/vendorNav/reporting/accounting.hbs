@@ -11,6 +11,7 @@
 	});
 
 	$(document).ready(function() {
+		var queryDate =[];
 		if ($("#inputDateRange").val() == 1) {
 			$("#inputFromDate").datepicker("setDate", new Date());
 			$("#inputToDate").datepicker("setDate", new Date());
@@ -26,7 +27,6 @@
 			var startDate = new Date();
 			var endDate = new Date();
 			startDate.setDate(startDate.getDate() - 7);
-			endDate.setDate(endDate.getDate() - 1);
 
 			$("#inputFromDate").datepicker("setDate", startDate);
 			$("#inputToDate").datepicker("setDate", endDate);
@@ -34,7 +34,6 @@
 			var startDate = new Date();
 			var endDate = new Date();
 			startDate.setDate(startDate.getDate() - 30);
-			endDate.setDate(endDate.getDate() - 1);
 
 			$("#inputFromDate").datepicker("setDate", startDate);
 			$("#inputToDate").datepicker("setDate", endDate);
@@ -59,11 +58,27 @@
 			}
 		}
 
+		function fromToDate() {
+			var from, to, date = [];
+			queryDate.length = 0;
+			from = $("#inputFromDate").val();
+				to = $("#inputToDate").val();
+				dates = [from,to];
+				dates.forEach(function(key,element){
+					let time = moment().format("HH:mm:ss");
+					let dateAndTime = key + " "+ time;
+					let timeFrame = moment(dateAndTime, "MM/DD/YYYY HH:mm:ss")._d
+					queryDate[element] = timeFrame.toISOString();
+				});
+		}
+
 		$('#inputDateRange').on('change', function() {
+			
 			if ($("#inputDateRange").val() == 1) {
 				$("#inputFromDate").datepicker("setDate", new Date());
 				$("#inputToDate").datepicker("setDate", new Date());
-				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+				fromToDate();
+				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + queryDate[0] + "&end_date=" + queryDate[1];
 			} else if ($("#inputDateRange").val() == 2) {
 				var startDate = new Date();
 				var endDate = new Date();
@@ -72,39 +87,42 @@
 
 				$("#inputFromDate").datepicker("setDate", startDate);
 				$("#inputToDate").datepicker("setDate", startDate);
-				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+				fromToDate();
+				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + queryDate[0] + "&end_date=" + queryDate[1];
 			} else if ($("#inputDateRange").val() == 3) {
 				var startDate = new Date();
 				var endDate = new Date();
 				startDate.setDate(startDate.getDate() - 7);
-				endDate.setDate(endDate.getDate() - 1);
 
 				$("#inputFromDate").datepicker("setDate", startDate);
 				$("#inputToDate").datepicker("setDate", endDate);
-				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+				fromToDate();
+				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + queryDate[0] + "&end_date=" + queryDate[1];
 			} else if ($("#inputDateRange").val() == 4) {
 				var startDate = new Date();
 				var endDate = new Date();
 				startDate.setDate(startDate.getDate() - 30);
-				endDate.setDate(endDate.getDate() - 1);
 
 				$("#inputFromDate").datepicker("setDate", startDate);
 				$("#inputToDate").datepicker("setDate", endDate);
-				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+				fromToDate();
+				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + queryDate[0] + "&end_date=" + queryDate[1];
 			} else if ($("#inputDateRange").val() == 5) {
 				var startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 				var endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
 
 				$("#inputFromDate").datepicker("setDate", startDate);
 				$("#inputToDate").datepicker("setDate", endDate);
-				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+				fromToDate();
+				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + queryDate[0] + "&end_date=" + queryDate[1];
 			} else if ($("#inputDateRange").val() == 6) {
 				var startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
 				var endDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1 + 1, 0);
 
 				$("#inputFromDate").datepicker("setDate", startDate);
 				$("#inputToDate").datepicker("setDate", endDate);
-				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+				fromToDate();
+				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + queryDate[0] + "&end_date=" + queryDate[1];
 			} else {
 				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val();
 			}
@@ -113,7 +131,8 @@
 		$("#inputFromDate").change(function(e) {
 			if (isDate($("#inputFromDate").val())) {
 				if ($("#inputToDate").val()) {
-					window.location.href = "/store/accounting?range=" + 7 + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+					fromToDate();
+					window.location.href = "/store/accounting?range=" + 7 + "&start_date=" + queryDate[0] + "&end_date=" + queryDate[1];
 				}
 			} else {
 				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val();
@@ -124,7 +143,8 @@
 		$("#inputToDate").change(function(e) {
 			if (isDate($("#inputToDate").val())) {
 				if ($("#inputFromDate").val()) {
-					window.location.href = "/store/accounting?range=" + 7 + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+					fromToDate();
+					window.location.href = "/store/accounting?range=" + 7 + "&start_date=" + queryDate[0] + "&end_date=" + queryDate[1];
 				}
 			} else {
 				window.location.href = "/store/accounting?range=" + $("#inputDateRange").val();

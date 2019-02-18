@@ -51,8 +51,8 @@ export function accounting(req, res) {
 	}
 
 	if (queryParams['range'] == 4) {
-		queryParams['start_date'] = moment().subtract(30, 'days').format('MM/DD/YYYY');
-		queryParams['end_date'] = moment().subtract(1, 'days').format('MM/DD/YYYY');
+		queryParams['start_date'] = moment().subtract(30, 'days').toISOString();
+		queryParams['end_date'] = moment().toISOString();
 	} else {
 		if (req.query.start_date) {
 			queryParams['start_date'] = req.query.start_date;

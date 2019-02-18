@@ -9,6 +9,7 @@ const model = require('../../sqldb/model-connect');
 const sequelize = require('sequelize');
 
 export async function AccountingReport(vendorID, queryParams) {
+
 	var accounting = {};
 	accounting['membership'] = 0;
 	accounting['featured_product'] = 0;
@@ -44,7 +45,6 @@ export async function AccountingReport(vendorID, queryParams) {
 		});
 		const memberShipExpensive = await JSON.parse(JSON.stringify(memberShipExpensiveResponse));
 		accounting['membership'] = await parseFloat(_.sumBy(memberShipExpensive, 'Payment.amount'));
-
 
 		const featuredProductExpensiveResponse = await model['FeaturedProduct'].findAll({
 			include: [{
