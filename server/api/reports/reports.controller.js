@@ -662,8 +662,6 @@ export function recentRevenueChanges(req, res) {
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
 	}
 
-	console.log("***********************************",req.query);
-
 	if (req.query.lhs_from && req.query.lhs_to) {
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD HH:mm"), moment(req.query.lhs_to).format("YYYY/MM/DD HH:mm"))
 	} else {
@@ -750,15 +748,6 @@ export function vendorPerformance(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
-
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
 	else
@@ -796,15 +785,6 @@ export function productPerformanceChanges(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
-
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
 	else
@@ -839,15 +819,6 @@ export function compareCategoryPerformance(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
-
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
 	else
@@ -881,15 +852,6 @@ export function compareMarketPlacePerformance(req, res) {
 	var limit, offset, compare;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
-
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
 
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
@@ -926,15 +888,6 @@ export function compareCityPerformance(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
-
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
 	else
@@ -968,15 +921,6 @@ export function compareCountriesPerformance(req, res) {
 	var limit, offset, compare;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
-
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
 
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
@@ -1013,15 +957,6 @@ export function compareUserPerformance(req, res) {
 	var limit, offset, compare;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
-
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
 
 	if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;
@@ -1097,11 +1032,11 @@ export function accounting(req, res) {
 
 	var accountingQueryParams = {};
 	if (req.query.start_date) {
-		accountingQueryParams['start_date'] = new Date(parseInt(req.query.start_date));
-		accountingQueryParams['end_date'] = new Date(parseInt(req.query.end_date));
+		accountingQueryParams['start_date'] = new Date(req.query.start_date);
+		accountingQueryParams['end_date'] = new Date(req.query.end_date);
 	} else {
 		accountingQueryParams['start_date'] = moment().subtract(30, 'days').format('YYYY-MM-DD');
-		accountingQueryParams['end_date'] = moment().subtract(1, 'days').format('YYYY-MM-DD');
+		accountingQueryParams['end_date'] = moment().format('YYYY-MM-DD');
 
 	}
 	reportsService.AccountingReport(0, accountingQueryParams)
