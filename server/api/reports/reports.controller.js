@@ -436,7 +436,6 @@ export function topProducts(req, res){
 }
 
 export function topMarketPlace(req, res) {
-
 	var orderItemQueryObj = {};
 	var lhsBetween = [];
 	var rhsBetween = [];
@@ -460,32 +459,19 @@ export function topMarketPlace(req, res) {
 
 	if (req.user.role == 2) {
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
-
-		if (req.query.lhs_from && req.query.lhs_to) {
-			lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-		} else {
-			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-		}
-		if (req.query.rhs_from && req.query.rhs_to) {
-			rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-		} else {
-			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-		}
 	}
 
-	if (req.user.role != 2) {
-		if (req.query.lhs_from && req.query.lhs_to) {
-			lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
-		} else {
-			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-		}
-		if (req.query.rhs_from && req.query.rhs_to) {
-			rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD"));
-		} else {
-			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-		}
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	
 	ReportService.topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
@@ -515,16 +501,16 @@ export function topBuyers(req, res) {
 	createdBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm:ss"), moment().format("YYYY/MM/DD HH:mm:ss"));
 
 	queryObj['$or'] = [{
-		order_item_status: orderItemStatus['ORDER_INITIATED']
-	}, {
-		order_item_status: orderItemStatus['CONFIRMED']
-	}, {
-		order_item_status: orderItemStatus['SHIPPED']
-	}, {
-		order_item_status: orderItemStatus['DELIVERED']
-	}, {
-		order_item_status: orderItemStatus['COMPLETED']
-	}
+			order_item_status: orderItemStatus['ORDER_INITIATED']
+		}, {
+			order_item_status: orderItemStatus['CONFIRMED']
+		}, {
+			order_item_status: orderItemStatus['SHIPPED']
+		}, {
+			order_item_status: orderItemStatus['DELIVERED']
+		}, {
+			order_item_status: orderItemStatus['COMPLETED']
+		}
 	];
 
 	queryObj['created_on'] = {
@@ -643,34 +629,22 @@ export function topCategories(req, res) {
 	}, {
 		order_item_status: orderItemStatus['COMPLETED']
 	}];
+
 	if (req.user.role == 2) {
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
-
-		if (req.query.lhs_from && req.query.lhs_to) {
-			lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-		} else {
-			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-		}
-		if (req.query.rhs_from && req.query.rhs_to) {
-			rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-		} else {
-			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-		}
 	}
 
-	if (req.user.role != 2) {
-		if (req.query.lhs_from && req.query.lhs_to) {
-			lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD"))
-		} else {
-			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-		}
-		if (req.query.rhs_from && req.query.rhs_to) {
-			rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD"));
-		} else {
-			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-		}
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+	}
+	
 	ReportService.topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
@@ -686,31 +660,21 @@ export function recentRevenueChanges(req, res) {
 
 	if (req.user.role == 2) {
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
-
-		if (req.query.lhs_from && req.query.lhs_to) {
-			lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD HH:mm"), moment(req.query.lhs_to).format("YYYY/MM/DD HH:mm"))
-		} else {
-			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm"), moment().format("YYYY/MM/DD HH:mm"));
-		}
-		if (req.query.rhs_from && req.query.rhs_to) {
-			rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD HH:mm"), moment(req.query.rhs_to).format("YYYY/MM/DD HH:mm"));
-		} else {
-			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm"), moment().format("YYYY/MM/DD HH:mm"));
-		}
 	}
 
-	if (req.user.role != 2) {
-		if (req.query.lhs_from && req.query.lhs_to) {
-			lhsBetween.push(moment(parseInt(req.query.lhs_from)).format("YYYY/MM/DD HH:mm:ss"), moment(parseInt(req.query.lhs_to)).format("YYYY/MM/DD HH:mm:ss"))
-		} else {
-			lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm:ss"), moment().format("YYYY/MM/DD HH:mm:ss"));
-		}
-		if (req.query.rhs_from && req.query.rhs_to) {
-			rhsBetween.push(moment(parseInt(req.query.rhs_from)).format("YYYY/MM/DD HH:mm:ss"), moment(parseInt(req.query.rhs_to)).format("YYYY/MM/DD HH:mm:ss"));
-		} else {
-			rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm:ss"), moment().format("YYYY/MM/DD HH:mm:ss"));
-		}
+	console.log("***********************************",req.query);
+
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD HH:mm"), moment(req.query.lhs_to).format("YYYY/MM/DD HH:mm"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm"), moment().format("YYYY/MM/DD HH:mm"));
 	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD HH:mm"), moment(req.query.rhs_to).format("YYYY/MM/DD HH:mm"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD HH:mm"), moment().format("YYYY/MM/DD HH:mm"));
+	}
+
 	ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
