@@ -116,68 +116,81 @@
 								{{/ifCond}}
 							</div>
 							<div class="row m-t-md">
-								<div class="col-md-6 offset-md-6">
+								{{#if item.reason_for_cancel}}
+								<div class="col-md-5">
+									<p><small><strong>Reason for cancelation:</strong> </small></p>
+									<p>
+										<small class="text-muted font-weight-light m-b-sm">
+											{{item.reason_for_cancel}}
+										</small>
+									</p>
+								</div>
+								<div class="col-md-1"></div>
+								<div class="col-md-6">
+								{{else}}
+									<div class="col-md-6 offset-md-6">
+								{{/if}}
 									<div class="card">
 										<div class="card-header-xs bg1 text-md">SHIPMENT DETAILS</div>
-									<div class="card-body bg-gray">
-										{{#if item.last_updated_on}}
-										<p class="m-b-none">Last update: {{formatTime item.last_updated_on "dddd, D MMM, HH:MM a"}}</p>
-										{{else}}
-										<p class="m-b-none">Last update: {{formatTime item.created_on "dddd, D MMM  HH:MM a"}}</p>
-										{{/if}}
+										<div class="card-body bg-gray">
+											{{#if item.last_updated_on}}
+											<p class="m-b-none">Last update: {{formatTime item.last_updated_on "dddd, D MMM, HH:MM a"}}</p>
+											{{else}}
+											<p class="m-b-none">Last update: {{formatTime item.created_on "dddd, D MMM  HH:MM a"}}</p>
+											{{/if}}
+										</div>
 									</div>
-								</div>
-								<div class="col-md-12 m-t">
-									<div class="row">
-										<div class="col-md-10">
-											<p class="font-weigh-normal text-black m-b-none">Your package was
-											{{#ifCond item.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}	
-										 		placed.
-										 	{{/ifCond}}
-										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.CONFIRMED}}	
-										 		confirmed.
-										 	{{/ifCond}}
-										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.SHIPPED}}	
-										 		dispatched.
-										 	{{/ifCond}}
-											{{#ifCond item.order_item_status '==' @root.orderItemStatus.DELIVERED}}	
-										 		delivered.
-										 	{{/ifCond}}
-										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.CANCELED}}	
-										 		canceled.
-										 	{{/ifCond}}
-										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}	
-										 		canceled by vendor.
-										 	{{/ifCond}}
-										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.AUTO_CANCELED}}	
-										 		canceled by Administrator.
-										 	{{/ifCond}}
+									<div class="col-md-12 m-t">
+										<div class="row">
+											<div class="col-md-10">
+												<p class="font-weigh-normal text-black m-b-none">Your package was
+												{{#ifCond item.order_item_status '==' @root.orderItemStatus.ORDER_INITIATED}}	
+													placed.
+												{{/ifCond}}
+												{{#ifCond item.order_item_status '==' @root.orderItemStatus.CONFIRMED}}	
+													confirmed.
+												{{/ifCond}}
+												{{#ifCond item.order_item_status '==' @root.orderItemStatus.SHIPPED}}	
+													dispatched.
+												{{/ifCond}}
+												{{#ifCond item.order_item_status '==' @root.orderItemStatus.DELIVERED}}	
+													delivered.
+												{{/ifCond}}
+												{{#ifCond item.order_item_status '==' @root.orderItemStatus.CANCELED}}	
+													canceled.
+												{{/ifCond}}
+												{{#ifCond item.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}	
+													canceled by vendor. Refund gets credited in your account within 5-6 business days.
+												{{/ifCond}}
+												{{#ifCond item.order_item_status '==' @root.orderItemStatus.AUTO_CANCELED}}	
+													canceled by Administrator.
+												{{/ifCond}}
 
-										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.REQUEST_FOR_RETURN}}	
-										 		request for return.
-										 	{{/ifCond}}
-										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.APPROVED_REQUEST_FOR_RETURN}}	
-										 		approve request for return.
-										 	{{/ifCond}}
-										 	{{#ifCond item.order_item_status '==' @root.orderItemStatus.RETURN_RECIVED}}	
-										 		return received.
-										 	{{/ifCond}}
-											</p>
-											{{#ifCond item.order_item_status '==' @root.orderItemStatus.SHIPPED}}
-											<div class="d-block">
-												<small class="font-weight-light d-inline-block m-r-md">Carrier</small>
-												<small class="font-weight-light m-l-sm">{{objectKey carriersCode item.Order.OrderVendors.[0].Shipping.provider_name}}</small>
-											</div>
-											<div class="d-block">
-												<small class="font-weight-light d-inline-block">Tracking #</small>
-												<small class="font-weight-light m-l-sm">{{item.Order.OrderVendors.[0].Shipping.tracking_id}}</small>
-											</div>
-											{{/ifCond}}
-											<div class="d-block">
-												<small class="font-weight-normal">
-													<a href="/order-history/{{item.order_id}}">View Order Details</a>
-												</small>
-											</div>
+												{{#ifCond item.order_item_status '==' @root.orderItemStatus.REQUEST_FOR_RETURN}}	
+													request for return.
+												{{/ifCond}}
+												{{#ifCond item.order_item_status '==' @root.orderItemStatus.APPROVED_REQUEST_FOR_RETURN}}	
+													approve request for return.
+												{{/ifCond}}
+												{{#ifCond item.order_item_status '==' @root.orderItemStatus.RETURN_RECIVED}}	
+													return received.
+												{{/ifCond}}
+												</p>
+												{{#ifCond item.order_item_status '==' @root.orderItemStatus.SHIPPED}}
+												<div class="d-block">
+													<small class="font-weight-light d-inline-block m-r-md">Carrier</small>
+													<small class="font-weight-light m-l-sm">{{objectKey carriersCode item.Order.OrderVendors.[0].Shipping.provider_name}}</small>
+												</div>
+												<div class="d-block">
+													<small class="font-weight-light d-inline-block">Tracking #</small>
+													<small class="font-weight-light m-l-sm">{{item.Order.OrderVendors.[0].Shipping.tracking_id}}</small>
+												</div>
+												{{/ifCond}}
+												<div class="d-block">
+													<small class="font-weight-normal">
+														<a href="/order-history/{{item.order_id}}">View Order Details</a>
+													</small>
+												</div>
 											</div>
 										</div>
 									</div>

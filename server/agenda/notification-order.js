@@ -129,7 +129,7 @@ module.exports = async function(job, done) {
 					attributes: ['id', 'vendor_id', 'product_name'],
 					include: [{
 						model: model['Vendor'],
-						attributes: ['id', 'user_id'],
+						attributes: ['id', 'user_id', 'vendor_name'],
 						include: [{
 							model: model['User'],
 							attributes: ['id', 'first_name', 'user_contact_email']
@@ -163,10 +163,12 @@ module.exports = async function(job, done) {
 							var bodyParams = {};
 							bodyParams.user_id = orderItem.Product.Vendor.user_id;
 							bodyParams.description = notificationSettingResponse.description;
-							bodyParams.description = bodyParams.description.replace('%VendorFirstname%', orderItem.Product.Vendor.User.first_name);
-							bodyParams.description = bodyParams.description.replace('%orderId%', orderItem.order_id);
-							bodyParams.description = bodyParams.description.replace('%Cancend_by%', orderItem.last_updated_by);
-							bodyParams.description = bodyParams.description.replace('%#path%', '/my-order/order/' + orderItem.order_id);
+							bodyParams.description = bodyParams.description.replace('%VENDOR_NAME%', orderItem.Product.Vendor.vendor_name);
+							bodyParams.description = bodyParams.description.replace('%ORDER_ID%', orderItem.order_id);
+							bodyParams.description = bodyParams.description.replace('%BUYER_NAME%', orderItem.last_updated_by);
+							bodyParams.description = bodyParams.description.replace('%PATH%', '/my-order/order/' + orderItem.order_id);
+							bodyParams.description = bodyParams.description.replace('%REASON_FOR_CANCELATION%', orderItem.reason_for_cancel);
+							bodyParams.description = bodyParams.description.replace('%PRODUCT_NAME%', orderItem.Product.product_name);
 							bodyParams.name = notificationSettingResponse.name;
 							bodyParams.code = notificationSettingResponse.code;
 							bodyParams.is_read = 0;

@@ -43,11 +43,8 @@
 					type: 'POST',
 					data: cancelObj,
 					success: function(result) {
-						$('#cancel-alert').removeClass('alert-danger').addClass('alert-success');
-						$('#cancel-alert .cancel-message').text("Cancel Item Successfully")
-						$('#cancel-alert').fadeTo(7000, 500).slideUp(500, function() {
-							$('#cancel-alert').slideUp(500);
-						});
+						$('#itemCancelModal').modal('hide');
+						$('#itemCancelled').modal('show');
 						setTimeout(function() {
 							location.reload(true);
 						}, 3000);
@@ -739,3 +736,22 @@
 		</div>
 	</div>
 </div>
+<div class="modal fade" id="itemCancelled" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Success:</h5>
+				</div>
+				<div class="modal-body">
+					<div class="container">
+						<p>Item cancelled successfully and refund initiated. Refund gets credited in your account within 5-6 business days.</p>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>OK</b>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
