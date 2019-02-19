@@ -46,6 +46,7 @@ module.exports = async function(job, done) {
 						attributes: ['id', 'vendor_name', 'contact_email', 'user_id']
 					}]
 				});
+
 				var orderVendors = await JSON.parse(JSON.stringify(orderVendorResponse));
 				await Promise.all(orderVendorResponse.map(async (orderVendor, i) => {
 					const vendorNotificationSettingsRes = await service.findRow(vendorNotificationSettingsModelName, {
@@ -57,15 +58,19 @@ module.exports = async function(job, done) {
 							code: code
 						});
 						if (notificationSettingResponse) {
+
 							var bodyParams = {};
 							bodyParams.user_id = orderVendor.Vendor.user_id;
-							bodyParams.description = notificationSettingResponse.description.replace('%#Order%', '/my-order/order/' + orderVendor.order_id);
+							bodyParams.description = notificationSettingResponse.description.replace('%PATH%', '/my-order/order/' + orderVendor.order_id);
+							bodyParams.description = bodyParams.description.replace('%VENDOR_NAME%', orderVendor.Vendor.vendor_name);
+							bodyParams.description = bodyParams.description.replace('%ORDER_ID%', orderVendor.order_id);
 							bodyParams.name = notificationSettingResponse.name;
 							bodyParams.code = notificationSettingResponse.code;
 							bodyParams.is_read = 0;
 							bodyParams.status = 1;
 							bodyParams.created_on = new Date();
 							bodyParams.created_by = "Administrator";
+
 							const notificationResponse = await service.createRow(notificationModelName, bodyParams);
 						}
 					}
@@ -95,8 +100,9 @@ module.exports = async function(job, done) {
 					var bodyParams = {};
 					bodyParams.user_id = order.user_id;
 					bodyParams.description = notificationSettingResponse.description;
-					bodyParams.description = bodyParams.description.replace('%Firstname%', order.User.first_name);
-					bodyParams.description = bodyParams.description.replace('%#Order%', '/order-history/' + order.id);
+					bodyParams.description = bodyParams.description.replace('%FIRST_NAME%', order.User.first_name);
+					bodyParams.description = bodyParams.description.replace('%PATH%', '/order-history/' + order.id);
+					bodyParams.description = bodyParams.description.replace('%ORDER_ID%', order.id);
 					bodyParams.name = notificationSettingResponse.name;
 					bodyParams.code = notificationSettingResponse.code;
 					bodyParams.is_read = 0;

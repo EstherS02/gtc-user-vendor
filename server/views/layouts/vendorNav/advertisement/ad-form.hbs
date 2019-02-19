@@ -109,10 +109,6 @@
 				}).serializeArray();
 
 				adFormInput.forEach(function(obj) {
-					// if(obj.name == 'target_url'){
-					// 	obj.value = obj.value.replace('http://', '')
-					// 	obj.value = obj.value.replace('https://', '')
-					// }
 					formData.append(obj.name, obj.value);
 				});
 
@@ -288,7 +284,7 @@
 										<div class="form-group">
 											<label class="label-control">Ad Image
 												<span class="text-danger">* </span>
-												<span class="text-danger" id="alert-text"><span>
+												<span class="text-danger" id="alert-text"></span>
 											</label>
 											<div class="input-group">
 												<div class="custom-file custom_error_message">

@@ -25,6 +25,7 @@ module.exports = {
 	"marketplaces": "Marketplace",
 	"marketplace-types": "MarketplaceType",
 	"marketplace-products": "MarketplaceProduct",
+	"notification-settings":"NotificationSetting",
 	"order-items": "OrderItem",
 	"order-payments": "OrderPayment",
 	"order-payment-escrows": "OrderPaymentEscrow",
