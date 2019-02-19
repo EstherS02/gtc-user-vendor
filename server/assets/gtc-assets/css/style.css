@@ -2610,6 +2610,19 @@ select.file-uploade:after {
 	height: 440px;
 	margin-top: 50px;
 }
+
+.starter_seller_pug {
+	background-color: #AB6C99;
+	color: #fff;
+	padding-top: 50px;
+	border-radius: 70px;
+	left: -136px;
+	width: 100%;
+	padding-left: 25px;
+	padding-right: 15px;
+	min-height: 450px;	
+}
+
 .public_seller_pg {
 	background-color: #4178BB;
 	color: #fff;
@@ -2622,6 +2635,34 @@ select.file-uploade:after {
 	padding-right: 15px;
 	min-height: 550px;
 }
+
+.public_wholesaler_pug {
+	background-color: #D88505;
+	color: #fff;
+	padding-top: 50px;
+	border-radius: 70px;
+	position: relative;
+	left: -200px;
+	width: 25%;
+	padding-left: 15px;
+	padding-right: 15px;
+	min-height: 580px;
+}
+
+.public_seller_pug {
+	background-color: #4178BB;
+	color: #fff;
+	padding-top: 50px;
+	border-top-left-radius: 70px;
+	border-bottom-left-radius: 70px;
+	position: relative;
+	left: -136px;
+	width: 25%;
+	padding-left: 15px;
+	padding-right: 78px;
+	min-height: 580px;
+}
+
 .price_signup {
 	margin: 11px 52px;
 	padding: 7px 18px;

@@ -149,6 +149,28 @@ export function upgradeplan(req, res) {
 				}).catch(function(error) {
 					return callback(null);
 				});
+		},
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			var categoryModel = "Category";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		}
 	}, function(err, results) {
 		if (!err) {
@@ -162,6 +184,8 @@ export function upgradeplan(req, res) {
 				carddetails: results.cards,
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
+				categories: results.categories,
+				bottomCategory: bottomCategory,
 				selectedPage: 'upgradeplan'
 			});
 		} else {
@@ -280,6 +304,36 @@ export function userBulkupgradePlan(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			var categoryModel = "Category";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		unreadCounts: function(callback) {
+			notifictionService.notificationCounts(LoggedInUser.id)
+				.then(function(counts) {
+					return callback(null, counts);
+				}).catch(function(error) {
+					return callback(null);
+				});
 		}
 	}, function(err, results) {
 		if (!err) {
@@ -291,6 +345,9 @@ export function userBulkupgradePlan(req, res) {
 				carddetails: results.cards,
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
+				categories: results.categories,
+				bottomCategory: bottomCategory,
+				unreadCounts: results.unreadCounts,	
 				selectedPage: 'user-bulkbuyerplan'
 			});
 		} else {
