@@ -104,7 +104,7 @@
 
 		$('#showDetails').click(function(e){
 			if($(this).text() == 'Show Details'){
-				$(this).text('Close Details');
+				$(this).text('Hide Details');
 			}
 			else{
 				$(this).text('Show Details');
@@ -120,9 +120,8 @@
 </script> 
 
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 
-<div class="wrapper-content bg-gray" id="planHide">
+<div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
 			<div class="col-sm-2">
@@ -135,90 +134,57 @@
 							<h2>Upgrade Plan</h2>
 						</div><br/>
 						<div class="content-body">
-							<div class="alert" id="gtc-form-alert">
-								<button type="button" class="close" data-dismiss="alert">
-									<span aria-hidden="true">&times;</span>
-								</button>
-								<span class="form-message"></span>
-							</div>
-							<form id="plandetailsform">
+							<form id="plandetailsform" class="form">
 								<div class="row">
-									<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-										Current Plan
-									</div>
-									<div class="col-md-4">
-										<div class="input-group mb-3">
-											<div class="input-group-prepend">
-											</div>
-											<span style="font-size:12px">{{planName PlanDetails.rows.[0].Plan.id}}</span>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-2 social_face" style="font-size:14px">
-										Select Plan
-									</div>
-									<div class="col-md-3">
+									<div class="col-lg-12">
 										<div class="form-group">
-											<div class="input-group">
-												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
-													required>
-													<option value='' selected="">Select Plan</option>
-													{{#ifCond PlanDetails.rows.[0].Plan.name '==' "WHOLESALE PRICING GUIDE"}}
-														<option value="6">Wholesaler</option>
-													{{else}}
-														<option value="2">Service Provider</option>
-														<option value="3">Lifestyle Provider</option>
-														<option value="4">Public Seller</option>
-														<option value="6">Wholesaler</option>
-													{{/ifCond}}
-												</select>
-											</div>
+											<label><b>Current plan:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{planName PlanDetails.rows.[0].Plan.id}}</b></label>
 										</div>
 									</div>
-									<div class="col-md-1">
-										<div class="text-nowrap" id="showDetails" style="color:#4078b0;cursor:pointer;">Show Details</div>
+								</div><br/>
+								<div class="row">
+									<div class="col-lg-2"><p>Change plan</p></div>
+									<div class="col-lg-3" style="padding-left:0px;">
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan" required>
+											<option disabled selected>Select...</option>
+											{{#ifCond PlanDetails.rows.[0].Plan.name '==' "WHOLESALE PRICING GUIDE"}}
+												<option value="6">Wholesaler</option>
+											{{else}}
+												<option value="2">Service Provider</option>
+												<option value="3">Lifestyle Provider</option>
+												<option value="4">Public Seller</option>
+												<option value="6">Wholesaler</option>
+											{{/ifCond}}
+										</select>
+									</div>
+									<div class="col-lg-3">
+										<div id="showDetails" style="color:#4078b0;cursor:pointer;">Show Details</div>
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-										Select card details
+									<div class="col-lg-2"><p>Payment card</p></div>
+									<div class="col-lg-3" style="padding-left:0px;">
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" id="selectcard_details" required>
+											{{#ifCond carddetails '!=' '' }}
+												{{#each carddetails}}
+													<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
+												{{/each}}
+											{{else}}
+												<option disabled="" selected="">Select...</option>
+											{{/ifCond}}
+										</select>
 									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<div class="input-group">
-												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" id="selectcard_details"
-													required>
-													{{#ifCond carddetails '!=' '' }}
-														{{#each carddetails}}
-															<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
-														{{/each}}
-													{{else}}
-														<option disabled="" selected="">Select card details</option>
-													{{/ifCond}}
-												</select>
-											</div>
-										</div>
-									</div>
-									<div class="col-md-1">
-										<div class="text-nowrap">
-											<a href="/billing-settings">Add Card</a>
-										</div>
+									<div class="col-lg-3">
+										<a href="/billing-settings">Add Card</a>
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-										Auto-Renewal
-									</div>
-									<div class="col-md-4">
-										<div class="input-group mb-3">
-											<div class="input-group-prepend">
-											</div>
-											<div class="customCheckbox">
-												<input type="checkbox" id="inputTerms"  name="autorenewalmail" class="customCheckboxInput">
-												<label class="checkbox-b" for="inputTerms"></label>
-											</div>
-										</div>
+									<div class="col-lg-2"><p>Auto-renew</p></div>
+									<div class="col-lg-3" style="padding-left:0px;">
+										<div class="customCheckbox">
+											<input type="checkbox" id="inputTerms"  name="autorenewalmail" class="customCheckboxInput">
+											<label class="checkbox-b" for="inputTerms"></label>
+										</div>&nbsp;&nbsp;&nbsp;&nbsp;Yes
 									</div>
 								</div>
 								{{#each carddetails}}
@@ -229,21 +195,23 @@
 								<input type="hidden" name="vendor_id" id="vendor_id" value="{{LoggedInUser.Vendor.id}}">
 								<input type="hidden" name="user_id" id="user_id" value="{{LoggedInUser.id}}">
 								<input type="hidden" name="plan_status" id="plan_status" value="{{PlanDetails.rows.[0].status}}">
-								<hr style="margin-top: 10px" />
+								<div class="hr-line"></div>
 								<div class="row">
-									<div class="col-md-12">
-										<button class="ladda-button btn btn-md update-btn m-t" id="userUpdateBtn" type="submit" data-style="expand-left">
-											<span class="ladda-label">UPGRADE</span>
-											<span class="ladda-spinner"></span>
-										</button>
-										<button class="ladda-button btn btn-md btn-muted m-t" type="reset" id="userCancelBtn" data-style="expand-left">
-											<span class="ladda-label">CANCEL</span>
-											<span class="ladda-spinner"></span>
-										</button>
+									<div class="col-lg-12">
+										<div class="form-group">
+											<button class="ladda-button btn btn-md update-btn m-t" id="userUpdateBtn" type="submit" data-style="expand-left">
+												<span class="ladda-label">UPGRADE</span>
+												<span class="ladda-spinner"></span>
+											</button>
+											<button class="ladda-button btn btn-md btn-muted m-t" type="reset" id="userCancelBtn" data-style="expand-left">
+												<span class="ladda-label">CANCEL</span>
+												<span class="ladda-spinner"></span>
+											</button>
+										</div>
 									</div>
 								</div>
 							</form>
-							<div id="planDetailShow">
+							<div id="planDetailShow" style="padding-left:30px;">
 								<h1 class="text-m2 text-center font-weight-normal">Which Package Should I Choose?</h1>
 								<p class="text-center font-weight-normal">We have a several options to get you started, or dive in with the our most robust offering.</p>
 								<div class="row">
