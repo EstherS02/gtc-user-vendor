@@ -64,7 +64,7 @@ agenda.on('ready', function() {
 	agenda.every('5 minutes', config.jobs.vendorPayouts);
 	agenda.every('12 hours', 'planRenewal');
 	agenda.every('12 hours', 'bulkUserPlanRenewal');
-	agenda.every('1 minutes', 'subscriptionAutoRenewal');
+	agenda.every('12 hours', 'subscriptionAutoRenewal');
 	agenda.every('12 hours', 'featureProductAutoRenewal');
 	agenda.every('12 hours', 'starterPlanExpire');
 	agenda.every('12 hours', 'featureProductExpire');
