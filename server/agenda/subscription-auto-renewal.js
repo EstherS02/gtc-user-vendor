@@ -1,4 +1,3 @@
-const sequelize = require('sequelize');
 const model = require('../sqldb/model-connect');
 const config = require('../config/environment');
 const statusCode = require('../config/status');
@@ -7,18 +6,17 @@ const moment = require('moment');
 const _ = require('lodash');
 const stripe = require('../payment/stripe.payment');
 const durationCode = require('../config/duration-unit');
-const orderStatusCode = require('../config/order_status');
+const orderStatusNew = require('../config/order-item-new-status');
 const paymentMethod = require('../config/payment-method');
-const orderPaymentType = require('../config/order-payment-type');
+const marketPlaceCode = require('../config/marketplace');
 const uuidv1 = require('uuid/v1');
-const numeral = require('numeral');
 
 const CURRENCY = 'usd';
 const current_date = new Date();
 
 export function subscriptionAutoRenewal(job, done) {
 
-    console.log('********************JOBS CALLED');
+	console.log('********************JOBS CALLED');
 	console.log('agenda for subscription orders..');
 
 	var offset, limit, field, order;
@@ -45,7 +43,7 @@ export function subscriptionAutoRenewal(job, done) {
 				},
 				attributes:['id', 'url']
 			}],
-			attributes: ['id','product_name', 'price', 'subscription_duration', 'subscription_duration_unit', 'shipping_cost'],
+			attributes: ['id','product_name', 'price', 'subscription_duration', 'subscription_duration_unit', 'shipping_cost', 'marketplace_id', 'vendor_id'],
 		},
 		{
 			"model": model['User'],
@@ -55,7 +53,7 @@ export function subscriptionAutoRenewal(job, done) {
 			attributes: ['id', 'first_name', 'user_contact_email'],
 		}
 	]
-
+	
 	service.findAllRows('Subscription', subscriptionIncludeArr, subscriptionQueryObj, offset, limit, field, order)
 		.then(function(subscriptionRows) {
 
@@ -77,8 +75,10 @@ export function subscriptionAutoRenewal(job, done) {
 
 function subscriptionOrder(eachSubscription) {
 
+
 	var subscribedProduct, subscriptionDuration, latestSubscriptionPlacedOn, subscriptionRenewOn, subscriptionTotalAmount, shippingTotal, finalPrice;
 	var subscriptionOrderQueryObj = {}, subscriptionCardDetails = {}, createdSubscription = {}, subscriptionOrderIncludeArr = [];
+	var agenda = require('../app').get('agenda');
 
 	subscribedProduct = eachSubscription.Product;
 	subscriptionOrderQueryObj = {
@@ -103,7 +103,7 @@ function subscriptionOrder(eachSubscription) {
 	} else if (subscribedProduct.subscription_duration_unit == durationCode['DAYS']) {
 		subscriptionDuration = subscribedProduct.subscription_duration;
 	}
-	
+
 	model['Order'].findOne({
 		where: subscriptionOrderQueryObj,
 		order: [ [ 'created_on', 'DESC' ]],
@@ -112,8 +112,8 @@ function subscriptionOrder(eachSubscription) {
 
 			latestSubscriptionPlacedOn = latestSubscriptionOrder.ordered_date;
 			subscriptionRenewOn = moment(latestSubscriptionPlacedOn, "YYYY-MM-DD").add(+subscriptionDuration, 'd');
-
-			if (subscriptionRenewOn < current_date) {
+			
+			if (subscriptionRenewOn <= current_date) {
 
 				var paymentSettingModel = 'PaymentSetting';
 				var cardQueryObj = {};
@@ -124,184 +124,157 @@ function subscriptionOrder(eachSubscription) {
 
 				return service.findRow(paymentSettingModel, cardQueryObj, [])
 					.then(function(cardDetails) {
+						if(cardDetails){
+							subscriptionCardDetails = cardDetails;
+							subscriptionTotalAmount = subscribedProduct.price * eachSubscription.quantity;
+							
+							var orderBodyParam = {};
 
-						subscriptionCardDetails = cardDetails;
+							var desc = 'Subscription Auto Renewal Order';
+							return stripe.chargeCustomerCard(subscriptionCardDetails.stripe_customer_id, subscriptionCardDetails.stripe_card_id, subscriptionTotalAmount, desc, CURRENCY);
+						}
+					}).then(charge => {	
+						if(charge){
+							var paymentModelObj = {
+								date: new Date(charge.created),
+								amount: charge.amount / 100.0,
+								payment_method: paymentMethod['STRIPE'],
+								status: statusCode['ACTIVE'],
+								payment_response: JSON.stringify(charge),
+								created_by: 'GTC Auto Subscription Order',
+								created_on: current_date
+							};
+							return service.createRow('Payment', paymentModelObj);
+						}	
+					}).then(function(paymentRow) {
+						if(paymentRow){
+							var orderBodyParam = {};
 
-						subscriptionTotalAmount = subscribedProduct.price * eachSubscription.quantity;
-						shippingTotal = eachSubscription.quantity * subscribedProduct.shipping_cost;
-						finalPrice = shippingTotal + subscriptionTotalAmount;
+							orderBodyParam['user_id'] = eachSubscription.user_id;
+							orderBodyParam['invoice_id'] = uuidv1();
+							orderBodyParam['purchase_order_id'] = 'PO-' + uuidv1();
+							orderBodyParam['po_number'] = null;
+							orderBodyParam['total_order_items'] = eachSubscription.quantity;
+							orderBodyParam['total_price'] = paymentRow.amount;
+							orderBodyParam['ordered_date'] = current_date;
+							orderBodyParam['payment_id'] = paymentRow.id;
+							orderBodyParam['shipping_id'] = null;						
+							orderBodyParam['shipping_address_id'] = latestSubscriptionOrder.shipping_address_id;
+							orderBodyParam['billing_address_id'] = latestSubscriptionOrder.billing_address_id;
+							orderBodyParam['status'] = statusCode['ACTIVE'];
+							orderBodyParam['created_by'] = eachSubscription.User.first_name;
+							orderBodyParam['created_on'] = current_date;
 
-						var orderBodyParam = {};
-
-						orderBodyParam['user_id'] = eachSubscription.user_id;
-						orderBodyParam['invoice_id'] = uuidv1();
-						orderBodyParam['purchase_order_id'] = 'PO-' + uuidv1();
-						orderBodyParam['ordered_date'] = current_date;
-						orderBodyParam['status'] = statusCode['ACTIVE'];
-						orderBodyParam['total_price'] = finalPrice;
-						orderBodyParam['gtc_fees'] = subscriptionTotalAmount * .01;
-						orderBodyParam['plan_fees'] = subscriptionTotalAmount * .1;
-						orderBodyParam['shipping_address_id'] = latestSubscriptionOrder.shipping_address_id;
-						orderBodyParam['billing_address_id'] = latestSubscriptionOrder.billing_address_id;
-						orderBodyParam['order_status'] = orderStatusCode['NEWORDER'];
-						orderBodyParam['vendor_pay'] = 1;
-						orderBodyParam['vendor_pay'] = 100;
-						orderBodyParam['created_by'] = eachSubscription.User.first_name;
-						orderBodyParam['created_on'] = current_date;
-
-						return service.createRow('Order', orderBodyParam);
-
+							return service.createRow('Order', orderBodyParam);
+						}
 					}).then(function(createdSubscriptionOrder) {
 
-						var orderItemBodyParam = {};
+						if(createdSubscriptionOrder){
+							var orderItemBodyParam = {};
 
-						createdSubscription = createdSubscriptionOrder;
+							createdSubscription = createdSubscriptionOrder;
 
-						orderItemBodyParam['order_id'] = createdSubscriptionOrder.id;
-						orderItemBodyParam['product_id'] = subscribedProduct.id;
-						orderItemBodyParam['quantity'] = eachSubscription.quantity;
-						orderItemBodyParam['shipping_total'] = shippingTotal;
-						orderItemBodyParam['subtotal'] = subscriptionTotalAmount;
-						orderItemBodyParam['final_price'] = finalPrice;
-						orderItemBodyParam['status'] = statusCode['ACTIVE'];
-						orderItemBodyParam['created_by'] = 'GTC Auto Subscription Order';
-						orderItemBodyParam['created_on'] = current_date;
+							orderItemBodyParam['order_id'] = createdSubscriptionOrder.id;
+							orderItemBodyParam['product_id'] = subscribedProduct.id;
+							orderItemBodyParam['quantity'] = eachSubscription.quantity;
+							orderItemBodyParam['price'] = subscriptionTotalAmount;
+							orderItemBodyParam['shipping_cost'] = 0;
+							orderItemBodyParam['gtc_fees'] = (subscriptionTotalAmount / 100 * config.order.gtc_fees).toFixed(2);
 
-						return service.createRow('OrderItem', orderItemBodyParam);
+							if (subscribedProduct.marketplace_id == marketPlaceCode['SERVICE']) {
+								orderItemBodyParam['plan_fees'] = (subscriptionTotalAmount / 100 * config.order.service_fee).toFixed(2);
+							} else if (subscribedProduct.marketplace_id == marketPlaceCode['LIFESTYLE']) {
+								orderItemBodyParam['plan_fees'] = (subscriptionTotalAmount / 100 * config.order.lifestyle_fee).toFixed(2);
+							} else {
+								orderItemBodyParam['plan_fees'] = 0;
+							}
+							orderItemBodyParam['coupon_amount'] = 0;
+							orderItemBodyParam['is_on_sale_item'] = 0;
+							orderItemBodyParam['final_price'] = (parseFloat(orderItemBodyParam['price']) - (parseFloat(orderItemBodyParam['gtc_fees']) + parseFloat(orderItemBodyParam['plan_fees']) + parseFloat(orderItemBodyParam['coupon_amount'])));
 
+							orderItemBodyParam['order_item_status'] = orderStatusNew['ORDER_INITIATED'];
+							orderItemBodyParam['is_coupon_applied'] = 0;
+							orderItemBodyParam['status'] = statusCode['ACTIVE'];
+							orderItemBodyParam['created_by'] = eachSubscription.User.first_name;
+							orderItemBodyParam['created_on'] = current_date;
+							
+							return service.createRow('OrderItem', orderItemBodyParam);
+						}					
 					}).then(function(subscriptionOrderItemRow) {
-
-						var desc = 'Subscription Auto Renewal Order';
-						return stripe.chargeCustomerCard(subscriptionCardDetails.stripe_customer_id, subscriptionCardDetails.stripe_card_id, subscriptionTotalAmount, desc, CURRENCY);
-
-					}).then(charge => {
-						
-						var paymentModelObj = {
-							date: new Date(charge.created),
-							amount: charge.amount / 100.0,
-							payment_method: paymentMethod['STRIPE'],
-							status: statusCode['ACTIVE'],
-							payment_response: JSON.stringify(charge),
-							created_by: 'GTC Auto Subscription Order',
-							created_on: current_date
-						};
-
-						return service.createRow('Payment', paymentModelObj);
-					}).then(function(paymentRow) {
-
-						var orderPaymentObj = {
-							order_id: createdSubscription.id,
-							payment_id: paymentRow.id,
-							order_payment_type: orderPaymentType['ORDER_PAYMENT'],
-							status: statusCode['ACTIVE'],
-							created_on: current_date,
-							created_by: 'GTC Auto Subscription Order'
-						};
-
-						return service.createRow('OrderPayment', orderPaymentObj);
-					}).then(function(orderPaymentRow) {
-
-						var orderStatusUpdateObj = {}
-						orderStatusUpdateObj['order_status'] = orderStatusCode['NEWORDER'];
-
-						return service.updateRow('Order', orderStatusUpdateObj, createdSubscription.id);
-					}).then(function(updatedOrderRow) {
-
-						subscriptionOrderMail(createdSubscription, eachSubscription);
-						return service.findIdRow('Product', subscribedProduct.id);
-
-					}).then(function(product){
-
-						let quantityUpdate = {};
-						let currentQuantity = product.quantity_available - eachSubscription.quantity;
-						quantityUpdate.quantity_available = currentQuantity;
-
-						if (currentQuantity == 0) {
-							quantityUpdate.status = statusCode['SOLDOUT'];
+						if(subscriptionOrderItemRow){
+							var orderVendorBodyParam = {
+								order_id: createdSubscription.id,
+								vendor_id: subscribedProduct.vendor_id,
+								total_price: parseFloat(subscriptionOrderItemRow['price']),
+								shipping_cost: parseFloat(subscriptionOrderItemRow['shipping_cost']),
+								gtc_fees: parseFloat(subscriptionOrderItemRow['gtc_fees']),
+								gtc_fees_percent: config.order.gtc_fees,
+								plan_fees: parseFloat(subscriptionOrderItemRow['plan_fees']),
+								plan_fees_percent: config.order.service_fee,
+								coupon_amount: parseFloat(subscriptionOrderItemRow['coupon_amount']),
+								final_price: parseFloat(subscriptionOrderItemRow['final_price']),
+								status: statusCode['ACTIVE'],
+								created_by: eachSubscription.User.first_name,
+								created_on: new Date()
+							};
+							return service.createRow('OrderVendor', orderVendorBodyParam);
 						}
+					}).then(function(orderVendorRow) {
+						if(orderVendorRow){
+							agenda.now(config.jobs.orderNotification, {
+								order: createdSubscription.id,
+								code: config.notification.templates.vendorNewOrder
+							});
+				
+							agenda.now(config.jobs.orderNotification, {
+								order: createdSubscription.id,
+								code: config.notification.templates.orderDetail
+							});
+				
+							agenda.now(config.jobs.orderEmail, {
+								order: createdSubscription.id
+							});
+							return service.findIdRow('Product', subscribedProduct.id);
+						}
+					}).then(function(product){
+						if(product){
+							let quantityUpdate = {};
+							let currentQuantity = product.quantity_available - eachSubscription.quantity;
+							quantityUpdate.quantity_available = currentQuantity;
 
-						return service.updateRow('Product', quantityUpdate, product.id);
-					
+							if (currentQuantity == 0) {
+								quantityUpdate.status = statusCode['SOLDOUT'];
+							}
+
+							return service.updateRow('Product', quantityUpdate, product.id);
+						}		
 					}).then(function(upadtedProductRow){
+						if(upadtedProductRow){
+							var nextSubscriptionRenewOn = moment(current_date, "YYYY-MM-DD").add(+subscriptionDuration, 'd');
 
-						var nextSubscriptionRenewOn = moment(current_date, "YYYY-MM-DD").add(+subscriptionDuration, 'd');
+							let subscriptionUpdate = {};
+							subscriptionUpdate.last_order_placed_on = current_date;
+							subscriptionUpdate.next_order_place_on = nextSubscriptionRenewOn;
+							subscriptionUpdate.last_updated_by = 'GTC Auto Subscription Order';
+							subscriptionUpdate.last_updated_on = current_date;
 
-						let subscriptionUpdate = {};
-						subscriptionUpdate.last_order_placed_on = current_date;
-						subscriptionUpdate.next_order_place_on = nextSubscriptionRenewOn;
-						subscriptionUpdate.last_updated_by = 'GTC Auto Subscription Order';
-						subscriptionUpdate.last_updated_on = current_date;
-
-						return service.updateRow('Subscription', subscriptionUpdate, eachSubscription.id);
-
+							return service.updateRow('Subscription', subscriptionUpdate, eachSubscription.id);
+						}
 					}).then(function(updatedSubscriptionRow){
-
-						console.log("updatedSubscriptionRow",updatedSubscriptionRow);
-						return Promise.resolve(updatedSubscriptionRow);
-						
+						if(updatedSubscriptionRow){
+							return Promise.resolve(updatedSubscriptionRow);
+						}else{
+							return Promise.resolve(null);
+						}				
 					}).catch(function(error) {
 						console.log("Error::", error);
-
-						var orderStatusUpdateObj = {}
-						orderStatusUpdateObj['order_status'] = orderStatusCode['FAILEDORDER'];
-
-						return service.updateRow('Order', orderStatusUpdateObj)
-							.then(function(updatedRow){
-								console.log("updatedRow",updatedRow);
-								return Promise.reject(error);
-							}).catch(function(error){
-								console.log("Error",error);
-								return Promise.reject(error);
-							})
-					});
-			} else {
-				return Promise.resolve(null);
+						return Promise.reject(error);
+					});		
 			}
 		}).catch(function(error) {
 			console.log("Error::", error);
 			return Promise.reject(error);
 		});
-}
+}	
 
-
-function subscriptionOrderMail(createdSubscription,eachSubscription) {
-
-	var emailTemplateQueryObj = {};
-	var mailArray = [];
-    emailTemplateQueryObj['name'] = config.email.templates.subscriptionAutoRenewalOrder;
-	var agenda = require('../app').get('agenda');
-
-	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
-		.then(function (response) {
-			if (response) {
-				var email = eachSubscription.User.user_contact_email;
-				
-                var subject = response.subject;
-                var body;
-				body = response.body.replace('%USER_NAME%', eachSubscription.User.first_name);
-				body = body.replace(/%PRODUCT_NAME%/g, eachSubscription.Product.product_name);
-				body = body.replace('%ORDER_ID%', createdSubscription.id);
-				body = body.replace('%QUANTITY%', eachSubscription.quantity);
-				body = body.replace(/%CURRENCY%/g,'$');
-				body = body.replace('%PRODUCT_PRICE%', eachSubscription.Product.price);
-				body = body.replace('%TOTAL_PRICE%',numeral(createdSubscription.total_price).format('0,0.00'));
-				body = body.replace('%PLACED_ON%',moment(createdSubscription.ordered_date).format('MMM D, Y'));
-				body = body.replace('%IMAGE_URL%',  eachSubscription.Product.ProductMedia[0].url);
-					
-				mailArray.push({
-					to: email,
-					subject: subject,
-					html: body
-				});
-				agenda.now(config.jobs.email, {
-					mailArray: mailArray
-				});
-				return;
-			}else{
-				return;
-			}
-		}).catch(function(error){
-			return;
-		})
-}
 

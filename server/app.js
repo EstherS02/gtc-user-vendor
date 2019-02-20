@@ -46,7 +46,7 @@ agenda.define(config.jobs.orderEmail, orderEmail);
 agenda.define(config.jobs.orderItemPayout, orderItemPayout);
 agenda.define(config.jobs.planRenewal, planRenewal);
 agenda.define(config.jobs.bulkUserPlanRenewal, bulkUserPlanRenewal);
-//agenda.define(config.jobs.subscriptionAutoRenewal, subscriptionAutoRenewal);
+agenda.define(config.jobs.subscriptionAutoRenewal, subscriptionAutoRenewal);
 agenda.define(config.jobs.featureProductAutoRenewal, featureProductAutoRenewal);
 agenda.define(config.jobs.starterPlanExpire, starterPlanExpire);
 agenda.define(config.jobs.featureProductExpire, featureProductExpire);
@@ -64,7 +64,7 @@ agenda.on('ready', function() {
 	agenda.every('5 minutes', config.jobs.vendorPayouts);
 	agenda.every('12 hours', 'planRenewal');
 	agenda.every('12 hours', 'bulkUserPlanRenewal');
-	//agenda.every('12 hours', 'subscriptionAutoRenewal');
+	agenda.every('1 minutes', 'subscriptionAutoRenewal');
 	agenda.every('12 hours', 'featureProductAutoRenewal');
 	agenda.every('12 hours', 'starterPlanExpire');
 	agenda.every('12 hours', 'featureProductExpire');
