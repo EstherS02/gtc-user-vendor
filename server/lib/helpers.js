@@ -1203,3 +1203,33 @@ Handlebars.registerHelper("default", function(options) {
         return options.fn(this);
     }
 });
+
+Handlebars.registerHelper('planName', function(plan_id) {
+	if (!plan_id)
+		return '';
+	let planName;
+	switch (plan_id) {
+		case 1:
+			planName = "Starter Seller";
+			break;
+		case 2:
+			planName = "Service Provider";
+			break;
+		case 3:
+			planName = "Lifestyle Provider";
+			break;
+		case 4:
+			planName = "Public Seller / Retailer";
+			break;
+		case 5:
+			planName = "Bulk Buyer";
+			break;
+		case 6:
+			planName = "Wholesaler";
+			break;
+		default:
+			planName = '';
+			break;
+	}
+	return planName;
+});

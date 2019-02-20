@@ -1,31 +1,45 @@
 <script type="text/javascript">
-	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	var plans = {{{ DisplayJSON PlanDetails }}}
-	$(function() {
-		$('#planHide').show();
-		$('#planDetailShow').hide();
-		$('#selectplan').change(function() {
-			if (document.getElementById("selectplan").value != '') {
-				if (document.getElementById("selectplan").value == '1') {
-					$('#usercarddetails').hide();
-				}
-				else {
-					$('#usercarddetails').show();
-				}
+	
+	function makePayment() {
+		var plan_id = document.getElementById("selectplan").value;
+		if ($('[type="checkbox"]').is(":checked")) {
+			var autoRenewalMail = 1;
+		}
+		$.ajax({
+			url: '/api/payment/planpay',
+			type: 'POST',
+			contentType: 'application/json',
+			dataType: "json",
+			data: JSON.stringify({
+				stripe_customer_id: $('input[name="stripe_customer_id"]').val(),
+				amount: $('input[name="amount"]').val(),
+				carddetailsid: $('input[name="carddetailsid"]').val(),
+				plan_id: plan_id,
+				user_id: $('input[name="user_id"]').val(),
+				vendor_id: $('input[name="vendor_id"]').val(),
+				autoRenewalMail: autoRenewalMail
+			}),
+			success: function(data) {
+				$('#myModal').hide();
+				setTimeout(function() {
+					$('#paymentSuccess').modal('show');
+					$('#paybtn').prop('disabled', true);
+				}, 1000);
+			},
+			error: function(error) {
+				$("#planPay_error").html(error);
+				$('#paybtn').prop('disabled', false);
+				$('#paybtn').css({
+					'cursor': "pointer"
+				});
 			}
 		});
-	});
-
-	function paymentSuccess() {
-		window.location = '/upgradeplan';
-	}
-
-	function showDetails() {
-        $('#planDetailShow').toggle();
 	}
 	
 	$(document).ready(function() {
-		$('#gtc-form-alert').css("display", "none")
+
+		$('#gtc-form-alert').hide();
+		$('#planDetailShow').hide();
 		$("#plandetailsform").validate({
 			rules: {
 				selectplan: {
@@ -87,43 +101,21 @@
 				});
 			}
 		}
-	});
 
-	function makePayment() {
-		var plan_id = document.getElementById("selectplan").value;
-		if ($('[type="checkbox"]').is(":checked")) {
-			var autoRenewalMail = 1;
-		}
-		$.ajax({
-			url: '/api/payment/planpay',
-			type: 'POST',
-			contentType: 'application/json',
-			dataType: "json",
-			data: JSON.stringify({
-				stripe_customer_id: $('input[name="stripe_customer_id"]').val(),
-				amount: $('input[name="amount"]').val(),
-				carddetailsid: $('input[name="carddetailsid"]').val(),
-				plan_id: plan_id,
-				user_id: $('input[name="user_id"]').val(),
-				vendor_id: $('input[name="vendor_id"]').val(),
-				autoRenewalMail: autoRenewalMail
-			}),
-			success: function(data) {
-				$('#myModal').hide();
-				setTimeout(function() {
-					$('#paymentSuccess').modal('show');
-					$('#paybtn').prop('disabled', true);
-				}, 1000);
-			},
-			error: function(error) {
-				$("#planPay_error").html(error);
-				$('#paybtn').prop('disabled', false);
-				$('#paybtn').css({
-					'cursor': "pointer"
-				});
+		$('#showDetails').click(function(e){
+			if($(this).text() == 'Show Details'){
+				$(this).text('Close Details');
 			}
-		});
-	}
+			else{
+				$(this).text('Show Details');
+			}
+			$('#planDetailShow').toggle();	
+		})
+
+		$('#paymentSuccessOk').click(function(e){
+			window.location = '/upgradeplan';
+		})
+	});
 
 </script> 
 
@@ -141,7 +133,7 @@
 					<div class="ibox-content">
 						<div class="ibox-title">
 							<h2>Upgrade Plan</h2>
-						</div>
+						</div><br/>
 						<div class="content-body">
 							<div class="alert" id="gtc-form-alert">
 								<button type="button" class="close" data-dismiss="alert">
@@ -149,7 +141,7 @@
 								</button>
 								<span class="form-message"></span>
 							</div>
-							<form id="plandetailsform" name="plandetailsform">
+							<form id="plandetailsform">
 								<div class="row">
 									<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
 										Current Plan
@@ -158,7 +150,7 @@
 										<div class="input-group mb-3">
 											<div class="input-group-prepend">
 											</div>
-											<span style="font-size:12px">{{PlanDetails.rows.[0].Plan.name}}</span>
+											<span style="font-size:12px">{{planName PlanDetails.rows.[0].Plan.id}}</span>
 										</div>
 									</div>
 								</div>
@@ -172,47 +164,20 @@
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
 													required>
 													<option value='' selected="">Select Plan</option>
-													{{#ifCond PlanDetails.rows.[0].Plan.name '==' "STARTER SELLER"}}
-														<option value="2">Service Provider</option>
-														<option value="3">Lifestyle Provider</option>
-														<option value="4">Public Seller Pricing Guide</option>
-														<option value="6">Wholesale Pricing Guide</option>
-													{{/ifCond}}
-													{{#ifCond PlanDetails.rows.[0].Plan.name '==' "SERVICE PROVIDER"}}
-														<option value="2">Service Provider</option>
-														<option value="3">Lifestyle Provider</option>
-														<option value="4">Public Seller Pricing Guide</option>
-														<option value="6">Wholesale Pricing Guide</option>
-													{{/ifCond}}
-													{{#ifCond PlanDetails.rows.[0].Plan.name '==' "LIFESTYLE PROVIDER"}}
-														<option value="2">Service Provider</option>
-														<option value="3">Lifestyle Provider</option>
-														<option value="4">Public Seller Pricing Guide</option>
-														<option value="6">Wholesale Pricing Guide</option>
-													{{/ifCond}}
-													{{#ifCond PlanDetails.rows.[0].Plan.name '==' "PUBLIC SELLER PRICING PROVIDER"}}
-														<option value="2">Service Provider</option>
-														<option value="3">Lifestyle Provider</option>
-														<option value="4">Public Seller Pricing Guide</option>
-														<option value="6">Wholesale Pricing Guide</option>
-													{{/ifCond}}
-													{{#ifCond PlanDetails.rows.[0].plan_id '==' "4"}}
-														<option value="2">Service Provider</option>
-														<option value="3">Lifestyle Provider</option>
-														<option value="4">Public Seller Pricing Guide</option>
-														<option value="6">Wholesale Pricing Guide</option>
-													{{/ifCond}}
 													{{#ifCond PlanDetails.rows.[0].Plan.name '==' "WHOLESALE PRICING GUIDE"}}
-														<option value="6">Wholesale Pricing Guide</option>
+														<option value="6">Wholesaler</option>
+													{{else}}
+														<option value="2">Service Provider</option>
+														<option value="3">Lifestyle Provider</option>
+														<option value="4">Public Seller</option>
+														<option value="6">Wholesaler</option>
 													{{/ifCond}}
 												</select>
 											</div>
 										</div>
 									</div>
 									<div class="col-md-1">
-										<div class="text-nowrap" onclick="showDetails()">
-											<a href="javascript:;">Show Details</a>
-										</div>
+										<div class="text-nowrap" id="showDetails" style="color:#4078b0;cursor:pointer;">Show Details</div>
 									</div>
 								</div>
 								<div class="row">
@@ -460,7 +425,7 @@
 				<p>Plan upgraded successfully</p>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-md btn-muted m-t" data-dismiss="modal" onclick="paymentSuccess()">OK</button>
+				<button type="button" class="btn btn-md btn-muted m-t" data-dismiss="modal" id="paymentSuccessOk">OK</button>
 			</div>
 		</div>
 	</div>
@@ -474,7 +439,7 @@
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<div class="modal-body">
-				<p>Your current plan not expired yet. Would you like to continue upgrading?</p>
+				<p>Your current plan not expired yet. Would you still like to continue upgrading?</p>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-md btn-muted m-t" id="contUpgrading" data-dismiss="modal">YES</button>
