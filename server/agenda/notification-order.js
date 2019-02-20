@@ -515,15 +515,18 @@ module.exports = async function(job, done) {
 					attributes: ['id', 'product_id', 'user_id', 'status'],
 					include: [{
 						model: model['Product'],
-						attributes: ['id', 'vendor_id', 'product_slug', 'product_name'],
+						attributes: ['id', 'vendor_id', 'product_slug', 'product_name', 'marketplace_id'],
 						include: [{
 							model: model['Vendor'],
-							attributes: ['id', 'user_id'],
+							attributes: ['id','vendor_name', 'user_id'],
 							include: [{
 								model: model['User'],
 								attributes: ['first_name', 'id']
 							}]
 						}]
+					},{
+						model: model['User'],
+						attributes: ['id', 'first_name'],
 					}]
 				});
 
@@ -539,12 +542,31 @@ module.exports = async function(job, done) {
 						});
 						if (notificationSettingResponse) {
 							var bodyParams = {};
+							var marketplace;
+							switch (review.Product.marketplace_id) {
+								case 1:
+									marketplace = "wholesale";
+									break;
+								case 2:
+									marketplace = "shop";
+									break;
+								case 3:
+									marketplace = "services";
+									break;
+								case 4:
+									marketplace = "lifestyle";
+									break;
+								default:
+									marketplace = 'shop';
+									break;
+							}
+
 							bodyParams.user_id = review.Product.Vendor.user_id;
 							bodyParams.description = notificationSettingResponse.description;
-							bodyParams.description = bodyParams.description.replace('%VendorFirstname%', review.Product.Vendor.User.first_name);
-							bodyParams.description = bodyParams.description.replace('%productName%', review.Product.product_name);
-							bodyParams.description = bodyParams.description.replace('%path%', '/shop/' + review.Product.product_slug + '/' + review.product_id);
-							bodyParams.description = bodyParams.description.replace('%#path%', '/shop/' + review.Product.product_slug + '/' + review.product_id +'/reviews');
+							bodyParams.description = bodyParams.description.replace('%VENDOR_NAME%', review.Product.Vendor.vendor_name);
+							bodyParams.description = bodyParams.description.replace('%USER_NAME%', review.User.first_name);
+							bodyParams.description = bodyParams.description.replace('%PRODUCT_NAME%', review.Product.product_name);
+							bodyParams.description = bodyParams.description.replace('%PATH%', '/'+ marketplace +'/' + review.Product.product_slug + '/' + review.product_id+'/reviews');
 							bodyParams.name = notificationSettingResponse.name;
 							bodyParams.code = notificationSettingResponse.code;
 							bodyParams.is_read = 0;
@@ -562,9 +584,11 @@ module.exports = async function(job, done) {
 		if (code == config.notification.templates.newPostFromBuyerOnYourDB) {
 
 			const discussionBoardPostId = job.attrs.data.discussionId;
+
 			const VendorNotificationResponse = await service.findRow(vendorNotificationModelName, {
 				code: code
 			});
+
 			if (VendorNotificationResponse) {
 				const discussionBoardPostResponse = await model[discussionBoardPostModelName].findOne({
 					where: {
@@ -573,7 +597,7 @@ module.exports = async function(job, done) {
 					attributes: ['id', 'vendor_id', 'user_id', 'status'],
 					include: [{
 						model: model['Vendor'],
-						attributes: ['id', 'user_id'],
+						attributes: ['id', 'vendor_name', 'user_id'],
 						include: [{
 							model: model['User'],
 							attributes: ['first_name', 'id']
@@ -595,13 +619,14 @@ module.exports = async function(job, done) {
 						const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
 							code: code
 						});
+
 						if (notificationSettingResponse) {
 							var bodyParams = {};
 							bodyParams.user_id = discussion.Vendor.user_id;
 							bodyParams.description = notificationSettingResponse.description;
-							bodyParams.description = bodyParams.description.replace('%VendorFirstname%', discussion.Vendor.User.first_name);
-							bodyParams.description = bodyParams.description.replace('%User%', discussion.User.first_name);
-							bodyParams.description = bodyParams.description.replace('%postId%', '/vendor/discussion-board/' + discussion.Vendor.id);
+							bodyParams.description = bodyParams.description.replace('%VENDOR_NAME%', discussion.Vendor.vendor_name);
+							bodyParams.description = bodyParams.description.replace('%USER_NAME%', discussion.User.first_name);
+							bodyParams.description = bodyParams.description.replace('%PATH%', '/vendor/discussion-board/' + discussion.Vendor.id);
 							bodyParams.name = notificationSettingResponse.name;
 							bodyParams.code = notificationSettingResponse.code;
 							bodyParams.is_read = 0;
@@ -621,6 +646,7 @@ module.exports = async function(job, done) {
 			const VendorNotificationResponse = await service.findRow(vendorNotificationModelName, {
 				code: code
 			});
+
 			if (VendorNotificationResponse) {
 				if (job.attrs.data.discussionCommentId) {
 					modelName = discussionBoardPostCommentModelName;
@@ -639,7 +665,7 @@ module.exports = async function(job, done) {
 						attributes: ['id', 'vendor_id', 'user_id', 'status'],
 						include: [{
 							model: model['Vendor'],
-							attributes: ['id', 'user_id'],
+							attributes: ['id','vendor_name', 'user_id'],
 							include: [{
 								model: model['User'],
 								attributes: ['first_name', 'id']
@@ -668,9 +694,9 @@ module.exports = async function(job, done) {
 							var bodyParams = {};
 							bodyParams.user_id = discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.user_id;
 							bodyParams.description = notificationSettingResponse.description;
-							bodyParams.description = bodyParams.description.replace('%VendorFirstname%', discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.User.first_name);
-							bodyParams.description = bodyParams.description.replace('%User%', discussionBoardCommentAndLike.User.first_name);
-							bodyParams.description = bodyParams.description.replace('%PostId%', '/vendor/discussion-board/' + discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.id);
+							bodyParams.description = bodyParams.description.replace('%VENDOR_NAME%', discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.vendor_name);
+							bodyParams.description = bodyParams.description.replace('%USER_NAME%', discussionBoardCommentAndLike.User.first_name);
+							bodyParams.description = bodyParams.description.replace('%PATH%', '/vendor/discussion-board/' + discussionBoardCommentAndLike.DiscussionBoardPost.Vendor.id);
 							bodyParams.name = notificationSettingResponse.name;
 							bodyParams.code = notificationSettingResponse.code;
 							bodyParams.is_read = 0;

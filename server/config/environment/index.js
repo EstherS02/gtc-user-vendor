@@ -107,7 +107,7 @@ var all = {
 			refundProcessing: 'REFUND_PROCESSING',
 			refundSuccessful: 'REFUND_SUCCESSFUL',
 			productReview: 'PRODUCT_REVIEW',
-			newPostFromBuyerOnYourDB: 'BUYER_POST_ON_DESCUSSION_BOARD',
+			newPostFromBuyerOnYourDB: 'BUYER_POST_ON_DISCUSSION_BOARD',
 			likesComments: 'LIKE_AND_COMMENT',
 			couponCode : 'COUPON_CODE'
 		}
