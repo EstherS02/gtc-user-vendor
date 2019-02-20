@@ -235,7 +235,8 @@ function hasRole(roleRequired) {
 			where: {
 				status: status['ACTIVE']
 			},
-			attributes: ['id', 'name', 'cost', 'description', 'duration', 'duration_unit', 'status']
+			attributes: ['id', 'name', 'cost', 'description', 'duration', 'duration_unit', 'status'],
+			required: false
 		}],
 		required: false
 	}, {

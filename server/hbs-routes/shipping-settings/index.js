@@ -7,7 +7,6 @@ var roles = require('../../config/roles');
 var permission = require('../../config/permission');
 var auth = require('../../auth/auth.service');
 
-/* Handlebars routes */
 var controller = require('./shipping-settings.controller');
 
 router.get('/', auth.hasRole(roles['VENDOR']), controller.shippingSettings);
