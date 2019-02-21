@@ -22,7 +22,7 @@ module.exports = function(email, done) {
 		if (config.env === 'development') {
 			emailObj.from = config.smtpTransport.from;
 		} else if (config.env === 'production' || config.env === 'test') {
-			emailObj.from = config.sesTransporter.from;
+			emailObj.from = config.smtpTransport.from;
 		}
 
 		transporter.sendMail(emailObj, function(error, response) {
