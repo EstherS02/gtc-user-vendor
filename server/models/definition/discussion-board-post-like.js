@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('DiscussionBoardPostComment', {
+    return sequelize.define('DiscussionBoardPostLike', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -30,21 +30,6 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-        },
-        comment_type: {
-            type: DataTypes.INTEGER,
-            field: 'comment_type',
-            allowNull: false
-        },
-        comment_media_url: {
-            type: DataTypes.TEXT,
-            field: 'comment_media_url',
-            allowNull: true
-        },
-        comment: {
-            type: DataTypes.TEXT,
-            field: 'comment',
-            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
@@ -77,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'discussion_board_post_comment',
+        tableName: 'discussion_board_post_like',
         timestamps: false
     });
 };
@@ -86,17 +71,17 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const DiscussionBoardPostComment = model.DiscussionBoardPostComment;
+    const DiscussionBoardPostLike = model.DiscussionBoardPostLike;
     const DiscussionBoardPost = model.DiscussionBoardPost;
     const User = model.User;
 
-    DiscussionBoardPostComment.belongsTo(DiscussionBoardPost, {
+    DiscussionBoardPostLike.belongsTo(DiscussionBoardPost, {
         foreignKey: 'discussion_board_post_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    DiscussionBoardPostComment.belongsTo(User, {
+    DiscussionBoardPostLike.belongsTo(User, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
