@@ -201,7 +201,8 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const Vendor = model.Vendor;
     const BusinessHour = model.BusinessHour;
-    const Coupon = model.Coupon;
+	const Coupon = model.Coupon;
+	const DiscussionBoard = model.DiscussionBoard;
     const DiscussionBoardPost = model.DiscussionBoardPost;
     const Product = model.Product;
     const ProductAdsSetting = model.ProductAdsSetting;
@@ -226,7 +227,14 @@ module.exports.initRelations = () => {
     const Payment = model.Payment;
     const VendorNotification = model.VendorNotification;
     const Order = model.Order;
-    const Plan = model.Plan;
+	const Plan = model.Plan;
+	
+
+	Vendor.hasMany(DiscussionBoard, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
 
     Vendor.hasMany(BusinessHour, {
         foreignKey: 'vendor_id',

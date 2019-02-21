@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('DiscussionBoardPostComment', {
+    return sequelize.define('DiscussionBoardDetail', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,41 +9,30 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        discussion_board_post_id: {
+        discussion_board_id: {
             type: DataTypes.BIGINT,
-            field: 'discussion_board_post_id',
+            field: 'discussion_board_id',
             allowNull: false,
             references: {
-                model: 'discussion_board_post',
+                model: 'discussion_board',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        user_id: {
-            type: DataTypes.BIGINT,
-            field: 'user_id',
-            allowNull: false,
-            references: {
-                model: 'users',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
-        comment_type: {
+        type: {
             type: DataTypes.INTEGER,
-            field: 'comment_type',
+            field: 'type',
             allowNull: false
         },
-        comment_media_url: {
+        comment_text: {
             type: DataTypes.TEXT,
-            field: 'comment_media_url',
+            field: 'comment_text',
             allowNull: true
         },
-        comment: {
+        comment_image_url: {
             type: DataTypes.TEXT,
-            field: 'comment',
+            field: 'comment_image_url',
             allowNull: true
         },
         status: {
@@ -59,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
         created_on: {
             type: DataTypes.DATE,
             field: 'created_on',
-            allowNull: false
+            allowNull: true
         },
         last_updated_by: {
             type: DataTypes.STRING(64),
@@ -77,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'discussion_board_post_comment',
+        tableName: 'discussion_board_details',
         timestamps: false
     });
 };
@@ -86,18 +75,11 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const DiscussionBoardPostComment = model.DiscussionBoardPostComment;
-    const DiscussionBoardPost = model.DiscussionBoardPost;
-    const User = model.User;
+    const DiscussionBoardDetail = model.DiscussionBoardDetail;
+    const DiscussionBoard = model.DiscussionBoard;
 
-    DiscussionBoardPostComment.belongsTo(DiscussionBoardPost, {
-        foreignKey: 'discussion_board_post_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    DiscussionBoardPostComment.belongsTo(User, {
-        foreignKey: 'user_id',
+    DiscussionBoardDetail.belongsTo(DiscussionBoard, {
+        foreignKey: 'discussion_board_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

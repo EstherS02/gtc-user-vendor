@@ -27,7 +27,9 @@ function init(sequelize) {
     model.CouponExcludedProduct = sequelize.import('./definition/coupon-excluded-product.js');
     model.CouponProduct = sequelize.import('./definition/coupon-product.js');
     model.Currency = sequelize.import('./definition/currency.js');
-    model.Discount = sequelize.import('./definition/discount.js');
+	model.Discount = sequelize.import('./definition/discount.js');
+	model.DiscussionBoard = sequelize.import('./definition/discussion-board.js');
+    model.DiscussionBoardDetail = sequelize.import('./definition/discussion-board-details.js');
     model.DiscussionBoardPost = sequelize.import('./definition/discussion-board-post.js');
     model.DiscussionBoardPostComment = sequelize.import('./definition/discussion-board-post-comment.js');
     model.DiscussionBoardPostLike = sequelize.import('./definition/discussion-board-post-like.js');
@@ -101,7 +103,9 @@ function init(sequelize) {
     require('./definition/coupon-excluded-product.js').initRelations();
     require('./definition/coupon-product.js').initRelations();
     require('./definition/currency.js').initRelations();
-    require('./definition/discount.js').initRelations();
+	require('./definition/discount.js').initRelations();
+	require('./definition/discussion-board.js').initRelations();
+    require('./definition/discussion-board-details.js').initRelations();
     require('./definition/discussion-board-post.js').initRelations();
     require('./definition/discussion-board-post-comment.js').initRelations();
     require('./definition/discussion-board-post-like.js').initRelations();

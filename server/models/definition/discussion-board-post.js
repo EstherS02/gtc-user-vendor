@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('DiscussionBoardPost', {
+    return sequelize.define('DiscussionBoardPostLike', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        vendor_id: {
+        discussion_board_post_id: {
             type: DataTypes.BIGINT,
-            field: 'vendor_id',
+            field: 'discussion_board_post_id',
             allowNull: false,
             references: {
-                model: 'vendor',
+                model: 'discussion_board_post',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -30,21 +30,6 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-        },
-        post_message: {
-            type: DataTypes.TEXT,
-            field: 'post_message',
-            allowNull: true
-        },
-        post_media_type: {
-            type: DataTypes.INTEGER,
-            field: 'post_media_type',
-            allowNull: true
-        },
-        post_media_url: {
-            type: DataTypes.TEXT,
-            field: 'post_media_url',
-            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
@@ -77,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'discussion_board_post',
+        tableName: 'discussion_board_post_like',
         timestamps: false
     });
 };
@@ -86,48 +71,18 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const DiscussionBoardPost = model.DiscussionBoardPost;
-    const DiscussionBoardPostComment = model.DiscussionBoardPostComment;
     const DiscussionBoardPostLike = model.DiscussionBoardPostLike;
-    const Vendor = model.Vendor;
+    const DiscussionBoardPost = model.DiscussionBoardPost;
     const User = model.User;
 
-    DiscussionBoardPost.hasMany(DiscussionBoardPostComment, {
+    DiscussionBoardPostLike.belongsTo(DiscussionBoardPost, {
         foreignKey: 'discussion_board_post_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    DiscussionBoardPost.hasMany(DiscussionBoardPostLike, {
-        foreignKey: 'discussion_board_post_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    DiscussionBoardPost.belongsTo(Vendor, {
-        foreignKey: 'vendor_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    DiscussionBoardPost.belongsTo(User, {
+    DiscussionBoardPostLike.belongsTo(User, {
         foreignKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    DiscussionBoardPost.belongsToMany(User, {
-        through: DiscussionBoardPostComment,
-        foreignKey: 'discussion_board_post_id',
-        otherKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    DiscussionBoardPost.belongsToMany(User, {
-        through: DiscussionBoardPostLike,
-        foreignKey: 'discussion_board_post_id',
-        otherKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
