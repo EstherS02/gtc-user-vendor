@@ -92,10 +92,10 @@ module.exports = async function(job, done) {
 					last_updated_on: new Date()
 				}, item.id);
 
-				agenda.now(config.jobs.orderNotification, {
+			/*	agenda.now(config.jobs.orderNotification, {
 					itemId: item.id,
 					code: config.notification.templates.orderItemCancelled,
-				});
+				});*/
 			}
 
 			const orderItemPayoutResponse = await service.createRow(orderItemPayoutModelName, {
