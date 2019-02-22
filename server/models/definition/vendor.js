@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
         vendor_profile_pic_url: {
             type: DataTypes.TEXT,
             field: 'vendor_profile_pic_url',
-            allowNull: false
+            allowNull: true
         },
         facebook_url: {
             type: DataTypes.TEXT,

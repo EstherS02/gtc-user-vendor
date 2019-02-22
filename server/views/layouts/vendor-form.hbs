@@ -176,7 +176,7 @@
 				province_id: "required",
 				city: "required",
 				currency_id: "required",
-				vendorIcon: "required"
+				//vendorIcon: "required"
 			},
 			messages: {
 				vendor_name: "Please enter vendor name",
@@ -185,7 +185,7 @@
 				province_id: "Please select province",
 				city: "Please enter city",
 				currency_id: "Please select currency",
-				vendorIcon: "Please choose vendor icon"
+				//vendorIcon: "Please choose vendor icon"
 			}
 		});
 	});
@@ -380,12 +380,12 @@
 									<div class="col-lg-8">
 										<div class="form-group">
 											<label class="label-control">Vendor Icon
-												<span class="text-danger">*</span>
+												{{!-- <span class="text-danger">*</span> --}}
 												<span class="text-danger"> ( Icon should be minimum 170px width & 170px height.)</span>
 											</label>
 											<div class="input-group">
 												<div class="custom-file custom_error_message">
-													<input type="file" class="custom-file-input" id="icon" name="vendorIcon" required>
+													<input type="file" class="custom-file-input" id="icon" name="vendorIcon">
 													<label class="custom-file-label customized-file-label" for="icon">Choose file</label>
 												</div>
 											</div>

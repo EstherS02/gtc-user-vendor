@@ -7,7 +7,7 @@
 						{{#if this.LoggedInUser.Vendor.vendor_profile_pic_url}}
 							<img src="{{LoggedInUser.Vendor.vendor_profile_pic_url}}" width="60" height="40" onError="UserImgError(this)" class="d-inline-block object-fit" alt="">
 						{{else}}
-							<img src="gtc-assets/img/test-user.png" width="60" height="40" class="d-inline-block object-fit" alt="">
+							<img src="img/avatar.png" width="60" height="40" class="d-inline-block object-fit" alt="">
 						{{/if}}
 						<a href="/vendor/{{LoggedInUser.Vendor.id}}">
 							<span class="vendor-name">{{LoggedInUser.Vendor.vendor_name}}</span>

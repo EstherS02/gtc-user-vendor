@@ -26,9 +26,9 @@ export async function createStarterSeller(req, res) {
 	var vendorModelName = "Vendor";
 	var vendorPlanModelName = "VendorPlan";
 
-	if (!req.files.vendor_profile_picture) {
+	/*if (!req.files.vendor_profile_picture) {
 		return res.status(400).send("Vendor profile picture missing.");
-	}
+	}*/
 
 	req.checkBody('vendor_name', 'Missing Query Param').notEmpty();
 	req.checkBody('address', 'Missing Query Param').notEmpty();
@@ -62,14 +62,16 @@ export async function createStarterSeller(req, res) {
 			const startSellerPlan = await service.findOneRow(PlanModelName, planQueryObj);
 
 			if (startSellerPlan) {
-				const vendorProfilePicture = req.files.vendor_profile_picture;
-				const parsedFile = path.parse(vendorProfilePicture.originalFilename);
-				const timeInMilliSeconds = new Date().getTime();
-				const uploadPath = config.images_base_path + "/vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+				if (req.files.vendor_profile_picture) {
+					const vendorProfilePicture = req.files.vendor_profile_picture;
+					const parsedFile = path.parse(vendorProfilePicture.originalFilename);
+					const timeInMilliSeconds = new Date().getTime();
+					const uploadPath = config.images_base_path + "/vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
 
-				const vendorProfilePictureUpload = await move(vendorProfilePicture.path, uploadPath);
-				if (vendorProfilePictureUpload) {
-					bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+					const vendorProfilePictureUpload = await move(vendorProfilePicture.path, uploadPath);
+					if (vendorProfilePictureUpload) {
+						bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+					}
 				}
 
 				if (req.files.vendor_cover_picture) {
