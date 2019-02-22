@@ -304,16 +304,17 @@ export async function cancelOrderItem(req, res) {
 		id: itemId
 	};
 
-	if (req.user.Vendor)
-		orderItemStatus = ORDER_ITEM_NEW_STATUS['VENDOR_CANCELED'];
-	else
-		orderItemStatus = ORDER_ITEM_NEW_STATUS['CANCELED'];
-
 	try {
 		const itemObj = await service.findRow('OrderItem', orderItemObj, includeArray);
 		if (itemObj) {
 			if ((itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['ORDER_INITIATED']) || 
 				(itemObj.order_item_status == ORDER_ITEM_NEW_STATUS['CONFIRMED'])) {
+
+				if (req.user.Vendor.id == itemObj.Product.vendor_id)
+					orderItemStatus = ORDER_ITEM_NEW_STATUS['VENDOR_CANCELED'];
+				else
+					orderItemStatus = ORDER_ITEM_NEW_STATUS['CANCELED'];
+
 				let updateOrderItem = {
 					order_item_status: orderItemStatus,
 					cancelled_on: new Date(),
