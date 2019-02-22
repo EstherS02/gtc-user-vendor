@@ -109,7 +109,9 @@ var all = {
 			productReview: 'PRODUCT_REVIEW',
 			newPostFromBuyerOnYourDB: 'BUYER_POST_ON_DISCUSSION_BOARD',
 			likesComments: 'LIKE_AND_COMMENT',
-			couponCode : 'COUPON_CODE'
+			couponCode : 'COUPON_CODE',
+			orderItemCancelledByVendor: 'ORDER_CANCELLED_BY_VENDOR',
+			orderItemCancelledByAdmin: 'ORDER_CANCELLED_BY_ADMIN'
 		}
 	},
 	jobs: {

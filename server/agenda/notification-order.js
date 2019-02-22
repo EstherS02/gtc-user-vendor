@@ -185,8 +185,9 @@ module.exports = async function(job, done) {
 						}
 					}
 				} else if (orderItem.order_item_status == oredrItemStatus['VENDOR_CANCELED']) {
+
 					const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
-						code: code
+						code: config.notification.templates.orderItemCancelledByVendor
 					});
 
 					const orderItemEmailTemplate = await service.findOneRow(emailTemplateModelName, {
@@ -213,10 +214,13 @@ module.exports = async function(job, done) {
 						var bodyParams = {};
 						bodyParams.user_id = orderItem.Order.user_id;
 						bodyParams.description = notificationSettingResponse.description;
-						bodyParams.description = bodyParams.description.replace('%VendorFirstname%', orderItem.Order.User.first_name);
-						bodyParams.description = bodyParams.description.replace('%orderId%', orderItem.order_id);
-						bodyParams.description = bodyParams.description.replace('%Cancend_by%', orderItem.last_updated_by);
-						bodyParams.description = bodyParams.description.replace('%#path%', '/order-history/' + orderItem.order_id);
+						bodyParams.description = bodyParams.description.replace('%FIRST_NAME%', orderItem.Order.User.first_name);
+						bodyParams.description = bodyParams.description.replace('%ORDER_ID%', orderItem.order_id);
+						bodyParams.description = bodyParams.description.replace('%REASON_FOR_CANCELATION%', orderItem.reason_for_cancel);
+						bodyParams.description = bodyParams.description.replace('%VENDOR_NAME%', orderItem.Product.Vendor.vendor_name);
+						bodyParams.description = bodyParams.description.replace('%PATH%', '/order-history/' + orderItem.order_id);
+						bodyParams.description = bodyParams.description.replace('%REASON_FOR_CANCELATION%', orderItem.reason_for_cancel);
+						bodyParams.description = bodyParams.description.replace('%PRODUCT_NAME%', orderItem.Product.product_name);
 						bodyParams.name = notificationSettingResponse.name;
 						bodyParams.code = notificationSettingResponse.code;
 						bodyParams.is_read = 0;
@@ -225,10 +229,11 @@ module.exports = async function(job, done) {
 						bodyParams.created_by = "Administrator";
 						const notificationResponse = await service.createRow(notificationModelName, bodyParams);
 					}
+				
 				} else if (orderItem.order_item_status == oredrItemStatus['AUTO_CANCELED']) {
 
 					const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
-						code: code
+						code: config.notification.templates.orderItemCancelledByAdmin
 					});
 
 					const orderItemEmailTemplate = await service.findOneRow(emailTemplateModelName, {
@@ -255,10 +260,10 @@ module.exports = async function(job, done) {
 						var bodyParams = {};
 						bodyParams.user_id = orderItem.Order.user_id;
 						bodyParams.description = notificationSettingResponse.description;
-						bodyParams.description = bodyParams.description.replace('%VendorFirstname%', orderItem.Order.User.first_name);
-						bodyParams.description = bodyParams.description.replace('%orderId%', orderItem.order_id);
-						bodyParams.description = bodyParams.description.replace('%Cancend_by%', orderItem.last_updated_by);
-						bodyParams.description = bodyParams.description.replace('%#path%', '/order-history/' + orderItem.order_id);
+						bodyParams.description = bodyParams.description.replace('%FIRST_NAME%', orderItem.Order.User.first_name);
+						bodyParams.description = bodyParams.description.replace('%ORDER_ID%', orderItem.order_id);
+						bodyParams.description = bodyParams.description.replace('%PRODUCT_NAME%', orderItem.Product.product_name);
+						bodyParams.description = bodyParams.description.replace('%VENDOR_NAME%', orderItem.Product.Vendor.vendor_name);
 						bodyParams.name = notificationSettingResponse.name;
 						bodyParams.code = notificationSettingResponse.code;
 						bodyParams.is_read = 0;
@@ -273,14 +278,19 @@ module.exports = async function(job, done) {
 						vendor_notification_id: VendorNotificationResponse.id
 					});
 					if (vendorNotificationSettingsRes == null) {
-						if (notificationSettingResponse) {
+						const adminCancelNotificationSettingResponse = await service.findRow(notificationSettingModelName, {
+							code: code
+						});
+						if (adminCancelNotificationSettingResponse) {
 							var bodyParams = {};
 							bodyParams.user_id = orderItem.Product.Vendor.user_id;
 							bodyParams.description = notificationSettingResponse.description;
-							bodyParams.description = bodyParams.description.replace('%VendorFirstname%', orderItem.Product.Vendor.User.first_name);
-							bodyParams.description = bodyParams.description.replace('%orderId%', orderItem.order_id);
-							bodyParams.description = bodyParams.description.replace('%Cancend_by%', orderItem.last_updated_by);
-							bodyParams.description = bodyParams.description.replace('%#path%', '/my-order/order/' + orderItem.order_id);
+							bodyParams.description = bodyParams.description.replace('%VENDOR_NAME%', orderItem.Product.Vendor.vendor_name);
+							bodyParams.description = bodyParams.description.replace('%ORDER_ID%', orderItem.order_id);
+							bodyParams.description = bodyParams.description.replace('%BUYER_NAME%', 'GTC Admin');
+							bodyParams.description = bodyParams.description.replace('%PATH%', '/my-order/order/' + orderItem.order_id);
+							bodyParams.description = bodyParams.description.replace('%REASON_FOR_CANCELATION%', 'No response from vendor');
+							bodyParams.description = bodyParams.description.replace('%PRODUCT_NAME%', orderItem.Product.product_name);
 							bodyParams.name = notificationSettingResponse.name;
 							bodyParams.code = notificationSettingResponse.code;
 							bodyParams.is_read = 0;

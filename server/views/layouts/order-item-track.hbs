@@ -160,7 +160,8 @@
 													canceled.
 												{{/ifCond}}
 												{{#ifCond item.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}	
-													canceled by vendor. Refund gets credited in your account within 5-6 business days.
+													canceled by vendor.<br/>
+													Refund gets credited in your account within 5-6 business days.
 												{{/ifCond}}
 												{{#ifCond item.order_item_status '==' @root.orderItemStatus.AUTO_CANCELED}}	
 													canceled by Administrator.
@@ -185,7 +186,7 @@
 													<small class="font-weight-light d-inline-block">Tracking #</small>
 													<small class="font-weight-light m-l-sm">{{item.Order.OrderVendors.[0].Shipping.tracking_id}}</small>
 												</div>
-												{{/ifCond}}
+												{{/ifCond}}<br/>
 												<div class="d-block">
 													<small class="font-weight-normal">
 														<a href="/order-history/{{item.order_id}}">View Order Details</a>
