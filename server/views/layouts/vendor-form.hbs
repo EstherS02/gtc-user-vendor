@@ -10,54 +10,74 @@
 		var cropperOutputImage;
 		var cropBoxData, canvasData, cropper, cropperInputImage, vendor_cover_name, vendor_profile_name, vendor_cover_pic_obj, vendor_profile_pic_obj;
 
-		$('#icon').on('change', function() {
-			if (icon.files && icon.files[0]) {
-				var reader = new FileReader();
-				reader.onload = function(e) {
-					var image = new Image();
-					image.src = e.target.result;
-					image.onload = function() {
-						var height = this.height;
-						var width = this.width;
-						if ((height >= 165 && height<= 175) || (width >= 165 && width<=175)) {
-							var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', e.target.result);
-							$('div.icon').html(temp);
-							return true;
-						} else {
-							$('#icon').attr('src', " ");
-							$('#icon').val('')
-							alert("Selected image doesn't have valid height and width. Please upload the image of valid size.");
-							return false;
-						}	
-					};
-				}
-				reader.readAsDataURL(icon.files[0]);
+		var imagesPreview = function(uploader, placeToInsertImagePreview) {
+			if (uploader.files && uploader.files[0]) {
+				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+				cropperInputImage = document.getElementById('uploaded-profile-picture');
+				$('#profile-picture-modal').modal('show');
 			}
+		};
+
+		$('#icon').on('change', function() {
+			imagesPreview(this);
+			test = 'div.icon';
 		});
 
 		$('#cover_pic').on('change', function() {
-			if (cover_pic.files && cover_pic.files[0]) {
-				var reader = new FileReader();
-				reader.onload = function(e) {
-					var image = new Image();
-					image.src = e.target.result;
-					image.onload = function() {
-						var height = this.height;
-						var width = this.width;
-						if ((height >= 224 && height<= 244) || (width >= 1501 && width<=1521)) {
-							var temp = $($.parseHTML('<img style="width:500px; height:200px;">')).attr('src', e.target.result);
-							$('div.cov_pic').html(temp);
-							return true;
-						} else {
-							$('#cover_pic').attr('src', " ");
-							$('#cover_pic').val('')
-							alert("Selected image doesn't have valid height and width. Please upload the image of valid size.");
-							return false;
-						}	
-					};
-				}
-				reader.readAsDataURL(cover_pic.files[0]);
+			imagesPreview(this);
+			test = 'div.cov_pic';
+		});
+
+		$('#profile-picture-modal').on('shown.bs.modal', function() {
+			if (test == 'div.icon') {
+				cropper = new Cropper(cropperInputImage, {
+					//aspectRatio: NaN,//16 / 16,
+					minCropBoxHeight: 170,
+					minCropBoxWidth: 170,
+					viewMode: 1,
+					ready: function() {
+						//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+					}
+				});
+			} else {
+				cropper = new Cropper(cropperInputImage, {
+					//aspectRatio: 16 / 9,
+					minCropBoxHeight: 230,
+					minCropBoxWidth: 1200,
+					viewMode: 1,
+					ready: function() {
+						//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+					}
+				});
 			}
+		}).on('hidden.bs.modal', function() {
+			cropBoxData = cropper.getCropBoxData();
+			canvasData = cropper.getCanvasData();
+			cropper.destroy();
+		});
+
+		$('#crop-profile-image').click(function() {
+			cropper.getCroppedCanvas().toBlob(function(blob) {
+				cropperOutputImage = blob;
+				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
+				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
+				if (test == 'div.icon') {
+					vendor_profile_pic_obj = cropperOutputImage;
+					vendor_profile_name = fileDetails["fileName"];
+				} else {
+					vendor_cover_pic_obj = cropperOutputImage;
+					vendor_cover_name = fileDetails["fileName"];
+				}
+			});
+			if (test == 'div.icon') {
+				var temp = $($.parseHTML('<img style="width:170px; height:170px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
+			} else {
+				var temp = $($.parseHTML('<img style="width:400px; height:230px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
+			}
+			$(test).html(temp);
+			$('#profile-picture-modal').modal('hide');
 		});
 
 		$("#vendorForm").submit(function(e) {
@@ -82,13 +102,13 @@
 				input.forEach(function(obj) {
 					formData.append(obj.name, obj.value);
 				});
-			
-				if (cover_pic.files && cover_pic.files[0]) {
-					formData.append('vendor_cover_picture', cover_pic.files[0], 'vendor_cover_name');
+
+				if (vendor_cover_pic_obj != {}) {
+					formData.append('vendor_cover_picture', vendor_cover_pic_obj, vendor_cover_name);
 				}
 
-				if (icon.files && icon.files[0]) {
-					formData.append('vendor_profile_picture', icon.files[0], 'vendor_profile_name');
+				if (vendor_profile_pic_obj != {}) {
+					formData.append('vendor_profile_picture', vendor_profile_pic_obj, vendor_profile_name);
 				}
 				
 				$.ajax({
@@ -216,6 +236,28 @@
 </script> 
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 {{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
+<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
+ aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" style="margin-right:35px">
+				<div class="container">
+					<img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+			</div>
+		</div>
+	</div>
+</div>
 <div class="wrapper-content bg-gray" >
 	<div class="gtc-container">
 		<div class="row">
@@ -339,7 +381,7 @@
 										<div class="form-group">
 											<label class="label-control">Vendor Icon
 												<span class="text-danger">*</span>
-												<span class="text-danger"> ( Icon should have 170 px width & 170 px height.)</span>
+												<span class="text-danger"> ( Icon should be minimum 170px width & 170px height.)</span>
 											</label>
 											<div class="input-group">
 												<div class="custom-file custom_error_message">
@@ -361,7 +403,7 @@
 									<div class="col-lg-8">
 										<div class="form-group">
 											<label class="label-control">Cover Picture
-												<span class="text-danger"> ( Banner should have 1511 px width & 233 px height.)</span>
+												<span class="text-danger"> ( Banner should be minimum 1200px width & 230px height.)</span>
 											</label>
 											<div class="input-group">
 												<div class="custom-file">
@@ -383,6 +425,7 @@
 									<div class="col-lg-12">
 										<div class="form-group">
 											<label class="label-control">Geo locate of your address:
+												{{!-- <span class="text-danger">*</span> --}}
 											</label>
 											<div class="input-group">
 												<input type="text" id="latitude" name="latitude" hidden>
