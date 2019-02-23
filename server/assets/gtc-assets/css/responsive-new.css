@@ -103,12 +103,13 @@
 	.home-bottom-banner-3 .coming-soon {
 		display: block;
 		margin-left: auto;
+		margin-left: auto;
 		margin-right: auto;
 		width: 50%;
 	}
 	.home-bottom-banner-2 .content {
 		padding: 30px;
-	}
+	}	
 	.starter_seller {
 		width: 100%;
 		left: 0px;
@@ -196,9 +197,6 @@
 	.home-bottom-banner-2 .home-ad {
 		height: 424px;
 		width: 100%;
-	}
-	.home-bottom-banner-3 .coming-soon {
-		float: right;
 	}
 	.home-bottom-banner-2 .content {
 		padding: 70px;
