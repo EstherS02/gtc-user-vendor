@@ -14,6 +14,7 @@ const cartService = require('../../../api/cart/cart.service');
 const cartObj = require('../../../api/cart/cart.controller');
 const populate = require('../../../utilities/populate');
 const notifictionService = require('../../../api/notification/notification.service');
+const vendorPlan = require('../../../config/gtc-plan');
 
 export function orderView(req, res) {
 	var queryObj = {};
@@ -156,7 +157,8 @@ export function trackOrderItem(req, res) {
 				item: results.trackOrderItem,
 				orderItemStatus: orderItemStatus,
 				carriersCode: carriersCode,
-				unreadCounts: results.unreadCounts
+				unreadCounts: results.unreadCounts,
+				vendorPlan: vendorPlan
 			});
 		} else {
 			return res.return("order-item-track", error);

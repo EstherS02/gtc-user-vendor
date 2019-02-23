@@ -153,9 +153,6 @@ export function addProduct(req, res) {
 			}
 		}
 
-		console.log("------********************------------------",dropDownUrl)
-
-
 		if (!err) {
 			res.render('vendorNav/listings/add-product', {
 				title: "Global Trade Connect",
