@@ -231,8 +231,8 @@
 		$('#profile-picture-modal').on('shown.bs.modal', function() {
 			cropper = new Cropper(cropperInputImage, {
 				aspectRatio: 1 / 1,
-				minCropBoxHeight: 280,
-				minCropBoxWidth: 1364,
+				//minCropBoxHeight: 280,
+				//minCropBoxWidth: 1364,
 				viewMode: 1,
 				ready: function() {}
 			});
@@ -306,7 +306,7 @@ $(document).on('click', '#navbardrop', function() {
 
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
