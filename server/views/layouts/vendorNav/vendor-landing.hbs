@@ -16,7 +16,7 @@
 			e.preventDefault();
 
 			var data = {}
-			$("#popupError p").remove();
+			$(".popupError p").remove();
 			$(':input[type="submit"]').prop('disabled', true);
 
 			if ($('#importAliExpressForm').valid()) {
@@ -41,9 +41,9 @@
 					},
 					error: function(response, status, error) {
 						$('#btnAliExpressFaSpinner').hide();
-						$('#popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+						$('.popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
 						setTimeout(function() {
-							$("#popupError p").remove();
+							$(".popupError p").remove();
 						}, 10000);
 					}
 				});
@@ -67,7 +67,7 @@
 			e.preventDefault();
 
 			var credentials = {};
-			$("#popupError p").remove();
+			$(".popupError p").remove();
 			$(':input[type="submit"]').prop('disabled', true);
 
 			if ($('#importWooCommerceForm').valid()) {
@@ -98,9 +98,9 @@
 					},
 					error: function(response, status, error) {
 						$('#btnFaSpinner').hide();
-						$('#popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+						$('.popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
 						setTimeout(function() {
-							$("#popupError p").remove();
+							$(".popupError p").remove();
 						}, 10000);
 					}
 				});
@@ -363,7 +363,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-lg-12" id="popupError"></div>
+						<div class="col-lg-12 popupError"></div>
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -433,7 +433,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-lg-12" id="popupError"></div>
+						<div class="col-lg-12 popupError"></div>
 					</div>
 				</div>
 				<div class="modal-footer">

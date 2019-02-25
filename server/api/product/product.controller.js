@@ -237,7 +237,7 @@ export async function create(req, res) {
 		}
 	} catch (error) {
 		console.log('create Product Error:::', error);
-		return res.status(500).send(error);
+		return res.status(500).send('Internal Server Error.');
 	}
 }
 
@@ -376,7 +376,7 @@ export async function edit(req, res) {
 		}
 	} catch (error) {
 		console.log('Edit Product Error:::', error);
-		return res.status(500).send(error);
+		return res.status(500).send('Internal Server Error');
 	}
 }
 
@@ -532,7 +532,7 @@ export async function discountProduct(req, res) {
 		}
 	} catch (error) {
 		console.log("discountProduct Error:::", error);
-		return res.status(500).send(error);
+		return res.status(500).send('Internal Server Error.');
 	}
 }
 
@@ -805,7 +805,7 @@ export async function importEbay(req, res) {
 		}
 	} catch (error) {
 		console.log("error", error);
-		return res.status(500).send(error);
+		return res.status(500).send('Internal Server Error');
 	}
 }
 
@@ -940,7 +940,7 @@ export function importWoocommerce(req, res) {
 			}
 		}).catch(function(error) {
 			console.log("Error::::", error);
-			return res.status(400).send(error);
+			return res.status(400).send('Invalid Credential');
 		});
 }
 
