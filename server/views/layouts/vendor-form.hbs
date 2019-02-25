@@ -35,9 +35,9 @@
 		$('#profile-picture-modal').on('shown.bs.modal', function() {
 			if (test == 'div.icon') {
 				cropper = new Cropper(cropperInputImage, {
-					//aspectRatio: NaN,//16 / 16,
-					minCropBoxHeight: 170,
-					minCropBoxWidth: 170,
+					aspectRatio: 1 / 1,
+					//minCropBoxHeight: 170,
+					//minCropBoxWidth: 170,
 					viewMode: 1,
 					ready: function() {
 						//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
@@ -45,9 +45,9 @@
 				});
 			} else {
 				cropper = new Cropper(cropperInputImage, {
-					//aspectRatio: 16 / 9,
-					minCropBoxHeight: 230,
-					minCropBoxWidth: 1200,
+					aspectRatio: 5 / 1,
+					//minCropBoxHeight: 230,
+					//minCropBoxWidth: 1200,
 					viewMode: 1,
 					ready: function() {
 						//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
