@@ -5562,6 +5562,10 @@ button.close {
   .modal-lg {
     max-width: 800px;
   }
+  .modal-md{
+	width: 500px;
+	height: 500px;
+  }
 }
 
 .tooltip {
