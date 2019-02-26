@@ -65,9 +65,9 @@ module.exports = async function(job, done) {
 
 		await Promise.all(cancelItems.map(async (item) => {
 			
-			var refundAmt = Math.round(item.price);
+			var refundAmt = item.price;
 			if(item.coupon_amount){
-				refundAmt = refundAmt - Math.round(item.coupon_amount);
+				refundAmt = refundAmt - item.coupon_amount;
 			}
 
 			const chargedPaymentRes = await JSON.parse(item.Order.Payment.payment_response);
