@@ -906,7 +906,7 @@ Handlebars.registerHelper('buyerPerformance', function(buyer, compareBuyer){
 			</div>
 		</td>
 		<td class="table-data">
-			`+buyer['Order.User.first_name']+` `+ buyer['Order.User.last_name']+`
+			`+buyer['Order.User.first_name']+` 
 		</td>
 		<td>
 			`+buyer.sales+`<span class = "` + getTextColor(buyer.sales, matchedObj.sales) + `"> +`+(buyer.sales-matchedObj.sales)+`</span>
@@ -932,7 +932,7 @@ Handlebars.registerHelper('buyerPerformance', function(buyer, compareBuyer){
 			</div>
 		</td>
 		<td class="table-data">
-			`+buyer['Order.User.first_name']+` `+ buyer['Order.User.last_name']+`
+			`+buyer['Order.User.first_name']+` 
 		</td>
 		<td>
 		`+buyer.sales+`

@@ -359,6 +359,9 @@ function getAllVendorPerformance(queryObj, limit, offset) {
 }
 function getAllProductPerformance(queryObj, limit, offset) {
 
+
+	console.log("********comes here*********************************");
+
 	var queryResult = `SELECT product.id AS product_id,
 			product.product_slug AS product_slug,
 			product.product_name,
@@ -395,8 +398,8 @@ function getAllProductPerformance(queryObj, limit, offset) {
 	return new Promise((resolve, reject) => {
 		SequelizeInstance.query(queryResult, {
 			replacements: {
-				from: moment(queryObj.from).format("YYYY-MM-DD"),
-				to: moment(queryObj.to).format("YYYY-MM-DD"),
+				from: queryObj.from,
+				to: queryObj.to,
 				limit: limit,
 				offset: offset,
 			},
