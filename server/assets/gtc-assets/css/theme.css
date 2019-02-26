@@ -689,6 +689,7 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 }
 .discount-price-flag {
 	color: #b12a2b !important;
+	margin-left: -1px;
 }
 .text-black {
 	color: #404041;
