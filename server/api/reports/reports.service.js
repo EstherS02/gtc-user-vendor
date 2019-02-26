@@ -308,18 +308,26 @@ export async function adFeaturedRevenue(req,res){
 }
 
 function paymentInEscrowApi(vendorID,queryObj){
+
 	var queryResult = `SELECT SUM(order_vendor.final_price) AS amount
 					   FROM order_vendor LEFT OUTER JOIN order_vendor_payout 
 					   ON order_vendor.id=order_vendor_payout.order_vendor_id 
-					   WHERE order_vendor_payout.order_vendor_id IS NULL`;
-	if(queryObj.start_date &&queryObj.end_date){
-		queryResult = queryResult+` AND order_vendor.created_on between '`+moment(queryObj.start_date).format('YYYY-MM-DD')+`' and '`+moment(queryObj.end_date).format('YYYY-MM-DD')+`'`;
-	}
+					   WHERE order_vendor.created_on between :from and :to
+					   AND order_vendor_payout.order_vendor_id IS NULL`;
+					   
+	/*if(queryObj.start_date &&queryObj.end_date){
+		queryResult = queryResult+` AND order_vendor.created_on between '`+queryObj.start_date+`' and '`+queryObj.end_date+`'`;
+	}*/
+
 	if(vendorID){
 		queryResult = queryResult+` AND order_vendor.vendor_id =`+ vendorID;	
 	} 
     return new Promise((resolve, reject) => {
         SequelizeInstance.query(queryResult, {
+			replacements: {
+				from: queryObj.start_date,
+				to: queryObj.end_date
+			},
             type: sequelize.QueryTypes.SELECT
         }).then(data => {
             resolve(data);

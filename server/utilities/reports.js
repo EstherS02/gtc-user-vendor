@@ -359,9 +359,6 @@ function getAllVendorPerformance(queryObj, limit, offset) {
 }
 function getAllProductPerformance(queryObj, limit, offset) {
 
-
-	console.log("********comes here*********************************");
-
 	var queryResult = `SELECT product.id AS product_id,
 			product.product_slug AS product_slug,
 			product.product_name,
