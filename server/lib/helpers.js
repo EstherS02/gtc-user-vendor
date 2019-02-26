@@ -655,12 +655,7 @@ Handlebars.registerHelper('productPerformance', function(product, compareProduct
 	}
 	
 	if (matchedObj) {
-		domElement = `<td>
-			<div class="customCheckbox">
-				<input type="checkbox" class="customCheckboxInput" name="selected">
-				<label class="checkbox-b"></label>
-			</div>
-		</td>
+		domElement = `<td></td>
 		<td class="table-data">
 			<a href="`+ marketPlace +`/`+product.product_slug+`/`+product.product_id+`" class="d-inline-block text-truncate" style="max-width: 150px;" title="`+product.product_name+`">
 				`+product.product_name+`
@@ -686,12 +681,7 @@ Handlebars.registerHelper('productPerformance', function(product, compareProduct
 			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(product.vendor_fees, matchedObj.vendor_fees)+`) </span>
 		</td>`;		
 	} else {
-		domElement = `<td>
-			<div class="customCheckbox">
-				<input type="checkbox" class="customCheckboxInput" name="selected">
-				<label class="checkbox-b"></label>
-			</div>
-		</td>
+		domElement = `<td></td>
 		<td class="table-data">
 			<a href="`+ marketPlace +`/`+product.product_slug+`/`+product.product_id+`" class="d-inline-block text-truncate" style="max-width: 250px;" title="`+product.product_name+`">
 				`+product.product_name+`
@@ -723,12 +713,7 @@ Handlebars.registerHelper('marketplacePerformance', function(marketplace, compar
 	});
 
 	if (matchedObj) {
-		domElement = `<td>
-				<div class="customCheckbox">
-					<input type="checkbox" class="customCheckboxInput" name="selected">
-					<label class="checkbox-b"></label>
-			</div>
-		</td>
+		domElement = `<td></td>
 		<td class="table-data">
 			`+marketplace.marketplace_name+`
 		</td>
@@ -749,12 +734,7 @@ Handlebars.registerHelper('marketplacePerformance', function(marketplace, compar
 			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(marketplace.vendor_fees, matchedObj.vendor_fees)+`) </span>
 		</td>`;		
 	} else {
-		domElement = `<td>
-				<div class="customCheckbox">
-					<input type="checkbox" class="customCheckboxInput" name="selected">
-					<label class="checkbox-b"></label>
-			</div>
-		</td>
+		domElement = `<td></td>
 		<td class="table-data">
 			`+marketplace.marketplace_name+`
 		</td>
@@ -781,12 +761,7 @@ Handlebars.registerHelper('cityPerformance', function(city, compareCity){
 	});
 
 	if (matchedObj) {
-		domElement = `<td>
-			<div class="customCheckbox">
-				<input type="checkbox" class="customCheckboxInput" name="selected">
-				<label class="checkbox-b"></label>
-			</div>
-		</td>
+		domElement = `<td></td>
 		<td class="table-data">
 			`+city['Product.city']+`
 		</td>
@@ -807,12 +782,7 @@ Handlebars.registerHelper('cityPerformance', function(city, compareCity){
 			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(city.vendor_fees, matchedObj.vendor_fees)+`) </span>
 		</td>`;		
 	} else {
-		domElement = `<td>
-			<div class="customCheckbox">
-				<input type="checkbox" class="customCheckboxInput" name="selected">
-				<label class="checkbox-b"></label>
-			</div>
-		</td>
+		domElement = `<td></td>
 		<td class="table-data">
 			`+city['Product.city']+`
 		</td>
@@ -840,12 +810,7 @@ Handlebars.registerHelper('countryPerformance', function(country, compareCountry
 	});
 
 	if (matchedObj) {
-		domElement = `<td>
-			<div class="customCheckbox">
-				<input type="checkbox" class="customCheckboxInput" name="selected">
-				<label class="checkbox-b"></label>
-			</div>
-		</td>
+		domElement = `<td></td>
 		<td class="table-data">
 			`+country['Product.Country.name']+`
 		</td>
@@ -866,12 +831,7 @@ Handlebars.registerHelper('countryPerformance', function(country, compareCountry
 			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(country.vendor_fees, matchedObj.vendor_fees)+`) </span>
 		</td>`;		
 	} else {
-		domElement = `<td>
-			<div class="customCheckbox">
-				<input type="checkbox" class="customCheckboxInput" name="selected">
-				<label class="checkbox-b"></label>
-			</div>
-		</td>
+		domElement = `<td></td>
 		<td class="table-data">
 			`+country['Product.Country.name']+`
 		</td>
@@ -899,12 +859,7 @@ Handlebars.registerHelper('buyerPerformance', function(buyer, compareBuyer){
 	});
 
 	if (matchedObj) {
-		domElement = `<td>
-			<div class="customCheckbox">
-				<input type="checkbox" class="customCheckboxInput" name="selected">
-				<label class="checkbox-b"></label>
-			</div>
-		</td>
+		domElement = `<td></td>
 		<td class="table-data">
 			`+buyer['Order.User.first_name']+` 
 		</td>
@@ -925,12 +880,7 @@ Handlebars.registerHelper('buyerPerformance', function(buyer, compareBuyer){
 			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(buyer.vendor_fees, matchedObj.vendor_fees)+`) </span>
 		</td>`;		
 	} else {
-		domElement = `<td>
-			<div class="customCheckbox">
-				<input type="checkbox" class="customCheckboxInput" name="selected">
-				<label class="checkbox-b"></label>
-			</div>
-		</td>
+		domElement = `<td></td>
 		<td class="table-data">
 			`+buyer['Order.User.first_name']+` 
 		</td>
