@@ -885,10 +885,16 @@ div.product-middle-col .row {
 	position: relative;
 	min-height: 60px;
 }
-div.product-right-col div.prc-bottom {
+/* div.product-right-col div.prc-bottom {
 	position: absolute;
 	bottom: 0;
 	right: 0;
+} */
+div.product-right-col div.prc-bottom {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-bottom: -24px;
 }
 div.product-right-col div.prc-bottom p {
 	margin-bottom: 0;
