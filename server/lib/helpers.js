@@ -125,8 +125,8 @@ Handlebars.registerHelper({
 });
 
 Handlebars.registerHelper('formatTime', function(date, format) {
-	var gmtDateTime = moment.utc(date);
-	return gmtDateTime.local().format(format);
+	var gmtDateTime = moment(date);
+	return gmtDateTime.format(format);
 });
 Handlebars.registerHelper('ISOFormat',function(date){
 	return moment(date).format("DD/MM/YYYY");
@@ -269,7 +269,7 @@ Handlebars.registerHelper('FormatDate', function(context, options) {
 });
 
 Handlebars.registerHelper('timeLeft', function(context, options) {
-	var currentDate = moment().utc().format('YYYY-M-DD HH:mm:ss');
+	var currentDate = moment().format('YYYY-M-DD HH:mm:ss');
 	var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
 	var secondsDiff = '';
 	if (endDate.diff(currentDate) > 0) {
