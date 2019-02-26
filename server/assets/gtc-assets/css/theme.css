@@ -886,18 +886,24 @@ div.product-middle-col .row {
 	position: relative;
 	min-height: 60px;
 }
-/* div.product-right-col div.prc-bottom {
+div.product-right-col div.prc-bottom {
 	position: absolute;
 	bottom: 0;
 	right: 0;
-} */
-div.product-right-col div.prc-bottom {
+}
+div.product-right-col div.prc-bottom-sales {
     position: absolute;
     bottom: 0;
     right: 0;
     margin-bottom: -24px;
 }
 div.product-right-col div.prc-bottom p {
+	margin-bottom: 0;
+	line-height: 1.6;
+	color: #b1b3b5;
+	font-size: 0.813em;
+}
+div.product-right-col div.prc-bottom-sales p {
 	margin-bottom: 0;
 	line-height: 1.6;
 	color: #b1b3b5;

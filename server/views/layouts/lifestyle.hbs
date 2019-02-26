@@ -302,7 +302,7 @@
 														{{else}}
 															<h2 class="price-flag text-normal">{{currency this.price '$'}}</h2>
 														{{/if}}
-														<div class="prc-bottom">
+														<div class="{{#if this.product_discounted_price}}prc-bottom-sales{{else}}prc-bottom{{/if}}">
 															<p>Seller Rating</p>
 															<div class="p-rating pull-right">
 																<a href="shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">

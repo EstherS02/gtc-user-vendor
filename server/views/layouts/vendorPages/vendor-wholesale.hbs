@@ -136,7 +136,7 @@ var xxx={{DisplayJSON categoryWithProductCount}}
 																<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
 																{{/if}}
 																<h4>MOQ : {{this.moq}}</h4>
-																<div class="prc-bottom">
+																<div class="{{#if this.product_discounted_price}}prc-bottom-sales{{else}}prc-bottom{{/if}}">
 																	<p>Seller Rating</p>
 																	<div class="p-rating pull-right">
 																		<a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
@@ -221,7 +221,7 @@ var xxx={{DisplayJSON categoryWithProductCount}}
 														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
 														{{/if}}
 														<h4>MOQ : {{this.moq}}</h4>
-														<div class="prc-bottom">
+														<div class="{{#if this.product_discounted_price}}prc-bottom-sales{{else}}prc-bottom{{/if}}">
 															<p>Seller Rating</p>
 															<div class="p-rating pull-right">
 																<a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
@@ -303,7 +303,7 @@ var xxx={{DisplayJSON categoryWithProductCount}}
 														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
 														{{/if}}
 														<h4>MOQ : {{this.moq}}</h4>
-														<div class="prc-bottom">
+														<div class="{{#if this.product_discounted_price}}prc-bottom-sales{{else}}prc-bottom{{/if}}">
 															<p>Seller Rating</p>
 															<div class="p-rating pull-right">
 																<a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
@@ -385,7 +385,7 @@ var xxx={{DisplayJSON categoryWithProductCount}}
 														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
 														{{/if}}
 														<h4>MOQ : {{this.moq}}</h4>
-														<div class="prc-bottom">
+														<div class="{{#if this.product_discounted_price}}prc-bottom-sales{{else}}prc-bottom{{/if}}">
 															<p>Seller Rating</p>
 															<div class="p-rating pull-right">
 																<a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
