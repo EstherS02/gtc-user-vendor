@@ -5,6 +5,8 @@
 		$('#btnFaSpinner').hide();
 		$('#btnAliExpressFaSpinner').hide();
 		$('#AmazonBtnFaSpinner').hide();
+		$("#gtc-aliExpress-alert").hide();
+		$("#gtc-wooCommerce-alert").hide();
 
 		$('input[type="text"]').keyup(function() {
 			if ($(this).val() != '') {
@@ -41,10 +43,15 @@
 					},
 					error: function(response, status, error) {
 						$('#btnAliExpressFaSpinner').hide();
-						$('.popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+						/*$('.popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
 						setTimeout(function() {
 							$(".popupError p").remove();
-						}, 10000);
+						}, 10000);*/
+						$('#gtc-aliExpress-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#gtc-aliExpress-alert .aliExpress-message').text(response.responseText);
+						$("#gtc-aliExpress-alert").fadeTo(7000, 500).slideUp(500, function() {
+							$("#gtc-aliExpress-alert").slideUp(500);
+						});
 					}
 				});
 			}
@@ -98,10 +105,15 @@
 					},
 					error: function(response, status, error) {
 						$('#btnFaSpinner').hide();
-						$('.popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+						/*$('.popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
 						setTimeout(function() {
 							$(".popupError p").remove();
-						}, 10000);
+						}, 10000);*/
+						$('#gtc-wooCommerce-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#gtc-wooCommerce-alert .wooCommerce-message').text(response.responseText);
+						$("#gtc-wooCommerce-alert").fadeTo(7000, 500).slideUp(500, function() {
+							$("#gtc-wooCommerce-alert").slideUp(500);
+						});
 					}
 				});
 			}
@@ -331,6 +343,12 @@
 			<div class="modal-header">
 				<h5 class="modal-title" id="exampleModalLongTitle">Import Products From Ali Express</h5>
 			</div>
+			<div class="alert" id="gtc-aliExpress-alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<span class="aliExpress-message"></span>
+			</div>
 			<form id="importAliExpressForm" class="form">
 				<div class="modal-body">
 					<div class="row">
@@ -363,7 +381,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-lg-12 popupError"></div>
+						{{!-- <div class="col-lg-12 popupError"></div> --}}
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -384,6 +402,12 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="exampleModalLongTitle">Import Products From Wordpress</h5>
+			</div>
+			<div class="alert" id="gtc-wooCommerce-alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<span class="wooCommerce-message"></span>
 			</div>
 			<form id="importWooCommerceForm" class="form">
 				<div class="modal-body">
@@ -433,7 +457,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-lg-12 popupError"></div>
+						{{!-- <div class="col-lg-12 popupError"></div> --}}
 					</div>
 				</div>
 				<div class="modal-footer">
