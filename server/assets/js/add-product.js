@@ -292,7 +292,8 @@ $(document).ready(function() {
 					if ($("input[name=marketplace]").val() == 'Private Wholesale Marketplace') {
 						return true;
 					} else { return false; }
-				}
+				},
+				digits: true
 			},
 			exchanging_product: {
 				required: function() {
@@ -389,7 +390,10 @@ $(document).ready(function() {
 			status: "Please select product status",
 			exchanging_product: "Please enter the exchanging product name",
 			exchanging_product_quantity: "Please enter exchanging product quantity",
-			moq: "Please enter minimum order quantity",
+			moq:{
+				required: "Please enter minimum order quantity",
+				digits: "Please enter valid quantity"
+			},
 			subscription_duration: {
 				required:"Please enter subscription duration",
 				digits: "Please enter a valid days"
