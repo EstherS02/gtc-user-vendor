@@ -43,6 +43,14 @@
 				$(".exchangingProductQuantityDiv").hide();
 				$('#exchanging_product').removeAttr('value');
 				$('#exchanging_product_quantity').removeAttr('value');
+			}
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
+				$(".exclusiveSaleDiv").hide();
+				$("#exclusive_sale").val(0);
+			}
+			else {
+				$(".exclusiveSaleDiv").show();
+				$("#exclusive_sale").val(0);
 			}  				
 		});
 	});
@@ -353,7 +361,7 @@
 											<textarea class="form-control-customized" name="description" rows="8">{{editProduct.description}}</textarea>
 										</div>
 									</div>
-									<div class="col-lg-12">
+									<div class="col-lg-12 exclusiveSaleDiv">
 										<div class="form-group">
 											<label class="label-control">Would you like to put the product on sale?&nbsp;&nbsp;&nbsp;
 											<div class="customCheckbox">
@@ -366,7 +374,7 @@
 										</div>
 									</div>
 								</div>
-								<div class ="row">
+								<div class ="row exclusiveSaleDiv">
 									<div class="col-lg-4">
 										<div class="form-group">
 											<label class="label-control">Sale start date & time</label>
