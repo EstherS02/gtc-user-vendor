@@ -135,7 +135,7 @@ export async function dispatchOrder(req, res) {
 	var dateAndTime = req.body.expected_delivery_date + " "+ time;
 	var expectedDeliveryDate = moment(dateAndTime);
 
-	if (new Date() > expectedDeliveryDate) {
+	if (moment() > expectedDeliveryDate) {
 		return res.status(400).send("Invalid delivery date.");
 	}
 
@@ -176,7 +176,7 @@ export async function dispatchOrder(req, res) {
 					orderItemPromises.push(service.updateRecordNew(orderItemModelName, {
 						order_item_status: orderItemStatus['SHIPPED'],
 						expected_delivery_date: expectedDeliveryDate,
-						shipped_on: shippedOn,
+						shipped_on: new Date(),
 						last_updated_by: req.user.first_name,
 						last_updated_on: new Date()
 					}, {
