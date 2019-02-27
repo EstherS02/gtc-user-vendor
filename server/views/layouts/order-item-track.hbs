@@ -179,6 +179,10 @@
 												</p>
 												{{#ifCond item.order_item_status '==' @root.orderItemStatus.SHIPPED}}
 												<div class="d-block">
+													<small class="font-weight-light d-inline-block m-r-md">Expected delivery date</small>
+													<small class="font-weight-light m-l-sm">{{formatTime item.expected_delivery_date "MMM DD, YYYY"}}</small>
+												</div>
+												<div class="d-block">
 													<small class="font-weight-light d-inline-block m-r-md">Carrier</small>
 													<small class="font-weight-light m-l-sm">{{objectKey carriersCode item.Order.OrderVendors.[0].Shipping.provider_name}}</small>
 												</div>
