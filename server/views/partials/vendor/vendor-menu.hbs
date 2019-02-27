@@ -93,7 +93,7 @@
 								<li class="nav-item">
 									<a href="javascript:;" class="nav-link" style="cursor:default">
 										<b>Current Plan:
-											{{#ifCond LoggedInUser.UserPlans.plan_id '==' vendorPlan.BULK_BUYER}} Bulk Buyer
+											{{#ifCond LoggedInUser.UserPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}} Bulk Buyer
 											{{/ifCond}}
 										</b>
 									</a>
