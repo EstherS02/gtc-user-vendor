@@ -177,18 +177,22 @@ export async function create(req, res) {
 		if (!existsVendorSKU) {
 			const newProduct = await service.createRow(productModelName, bodyParams);
 			for (let key in req.files) {
+				var fileName;
 				if (key == "product_base_image") {
+					
 					if (req.files.hasOwnProperty(key)) {
 						const parsedFile = path.parse(req.files[key].originalFilename);
+						fileName = parsedFile.name;
+						fileName = fileName.replace(/\s/g,'');
 						const timeInMilliSeconds = new Date().getTime();
-						const uploadPath = config.images_base_path + "/products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+						const uploadPath = config.images_base_path + "/products/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 
 						const productMediaUpload = await move(req.files[key].path, uploadPath);
 						if (productMediaUpload) {
 							productMediaPromises.push(service.createRow(productMediaModelName, {
 								product_id: newProduct.id,
 								type: 1,
-								url: config.imageUrlRewritePath.base + "products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext,
+								url: config.imageUrlRewritePath.base + "products/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext,
 								base_image: 1,
 								status: status['ACTIVE'],
 								created_by: req.user.first_name,
@@ -199,15 +203,17 @@ export async function create(req, res) {
 				} else {
 					if (req.files.hasOwnProperty(key)) {
 						const parsedFile = path.parse(req.files[key].originalFilename);
+						fileName = parsedFile.name;
+						fileName = fileName.replace(/\s/g,'');
 						const timeInMilliSeconds = new Date().getTime();
-						const uploadPath = config.images_base_path + "/products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+						const uploadPath = config.images_base_path + "/products/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 
 						const productMediaUpload = await move(req.files[key].path, uploadPath);
 						if (productMediaUpload) {
 							productMediaPromises.push(service.createRow(productMediaModelName, {
 								product_id: newProduct.id,
 								type: 1,
-								url: config.imageUrlRewritePath.base + "products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext,
+								url: config.imageUrlRewritePath.base + "products/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext,
 								base_image: 0,
 								status: status['ACTIVE'],
 								created_by: req.user.first_name,
@@ -335,17 +341,21 @@ export async function edit(req, res) {
 					id: existingProduct.id
 				});
 				for (let key in req.files) {
+					var fileName;
 					if (req.files.hasOwnProperty(key)) {
 						const parsedFile = path.parse(req.files[key].originalFilename);
+						fileName = parsedFile.name;
+						fileName = fileName.replace(/\s/g,'');
+
 						const timeInMilliSeconds = new Date().getTime();
-						const uploadPath = config.images_base_path + "/products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+						const uploadPath = config.images_base_path + "/products/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 
 						const productMediaUpload = await move(req.files[key].path, uploadPath);
 						if (productMediaUpload) {
 							productMediaPromises.push(service.createRow(productMediaModelName, {
 								product_id: product.id,
 								type: 1,
-								url: config.imageUrlRewritePath.base + "products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext,
+								url: config.imageUrlRewritePath.base + "products/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext,
 								base_image: (key == "product_base_image")? 1 : 0,
 								status: status['ACTIVE'],
 								created_by: req.user.first_name,
