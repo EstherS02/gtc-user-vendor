@@ -211,9 +211,15 @@
 		<li class="nav-bar">
 			<a href="/billing-settings" class="vs-link">Billing Settings</a>
 		</li>
+		{{#if LoggedInUser.Vendor.id}}
 		<li class="nav-bar">
 			<a href="/upgradeplan" class="vs-link">Upgrade Plan</a>
 		</li>
+		{{else}}
+		<li class="nav-bar">
+			<a href="/upgradeplan/userBulkupgradePlan" class="vs-link">Upgrade Plan</a>
+		</li>
+		{{/if}}
 		<li class="nav-bar">
 			<a href="/user/my-profile" class="vs-link">Profile Settings</a>
 		</li>
