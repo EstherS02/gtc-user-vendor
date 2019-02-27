@@ -29,7 +29,7 @@
 											{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}} Bulk buyer 
 											{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}} Wholesaler
 										{{/ifCond}}
-										{{#ifCond LoggedInUser.UserPlans.plan_id '==' vendorPlan.BULK_BUYER}} 
+										{{#ifCond LoggedInUser.UserPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}} 
 											,<br/>
 											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bulk Buyer
 										{{/ifCond}}
