@@ -90,6 +90,9 @@
 				let dispatchInput = $("#dispatchForm :input").filter(function(index, element) {
 					return $(element).val() != '';
 				}).serialize();
+
+				console.log("***********dispatchInput******************",dispatchInput);
+
 				$.ajax({
 					url: '/api/order/dispatch/' + {{ order.Order.id }},
 					type: 'PUT',

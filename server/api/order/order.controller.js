@@ -10,6 +10,7 @@ const ORDER_ITEM_STATUS = require('../../config/order-item-status');
 const statusCode = require('../../config/status');
 const populate = require('../../utilities/populate')
 const orderService = require('./order.service');
+var moment = require('moment');
 
 export function index(req,res){
 		var offset, limit, field, order;
@@ -109,6 +110,7 @@ export function orderItemdetails(req, res) {
 }
 
 export async function dispatchOrder(req, res) {
+
 	var bodyParams = {};
 	var orderItemPromises = [];
 	const orderId = req.params.orderId;
@@ -128,7 +130,10 @@ export async function dispatchOrder(req, res) {
 		return;
 	}
 
-	var expectedDeliveryDate = new Date(req.body.expected_delivery_date);
+	let time = moment().format("HH:mm:ss");
+
+	var dateAndTime = req.body.expected_delivery_date + " "+ time;
+	var expectedDeliveryDate = moment(dateAndTime);
 
 	if (new Date() > expectedDeliveryDate) {
 		return res.status(400).send("Invalid delivery date.");
@@ -167,10 +172,11 @@ export async function dispatchOrder(req, res) {
 					return res.status(400).send("Please confirm all items.");
 				}
 				if (item.order_item_status == orderItemStatus['CONFIRMED']) {
+
 					orderItemPromises.push(service.updateRecordNew(orderItemModelName, {
 						order_item_status: orderItemStatus['SHIPPED'],
 						expected_delivery_date: expectedDeliveryDate,
-						shipped_on: new Date(),
+						shipped_on: shippedOn,
 						last_updated_by: req.user.first_name,
 						last_updated_on: new Date()
 					}, {
