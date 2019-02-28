@@ -8,6 +8,7 @@ const reportsService = require('../../api/reports/reports.service');
 const orderService = require('../../api/order/order.service');
 const moment = require('moment');
 const model = require('../../sqldb/model-connect');
+const async = require('async');
 const Json2csvParser = require('json2csv').Parser;
 
 exports.exportcsv = function(req, res) {
@@ -272,490 +273,268 @@ exports.salesHistoryexportcsv = function(req, res) {
 	}
 };
 
-export function vendorPerformancecsv(req, res) {
-	var queryObj = {};
-	var lhsBetween = [], rhsBetween = [];
-	var limit, offset, compare;
+// export function vendorPerformancecsv(req, res) {
+// 	var queryObj = {};
+// 	var lhsBetween = [], rhsBetween = [];
+// 	var limit, offset, compare;
 
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+// 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+// 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
+// 	if (req.user.role == 1) {
+// 		if (req.query.compare) {
+// 			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
+// 			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
+// 			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
+// 			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
+// 		}
+// 	}
 
-	if (req.user.role == 2)
-		queryObj.vendor_id = req.user.Vendor.id;
-	else
-		queryObj.vendor_id = null;
+// 	if (req.user.role == 2)
+// 		queryObj.vendor_id = req.user.Vendor.id;
+// 	else
+// 		queryObj.vendor_id = null;
 
-	if (req.query.compare) {
-		queryObj.compare = req.query.compare ? req.query.compare : 'false';
-	}
+// 	if (req.query.compare) {
+// 		queryObj.compare = req.query.compare ? req.query.compare : 'false';
+// 	}
 
-	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
+// 	if (req.query.lhs_from && req.query.lhs_to) {
+// 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+// 	} else {
+// 		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+// 	}
 
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-	ReportService.vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-		var finalresults = [];
-		for (let value of results.lhs_result) {
+// 	if (req.query.rhs_from && req.query.rhs_to) {
+// 		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
+// 	} else {
+// 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+// 	}
+// 	ReportService.vendorPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
+// 		var finalresults = [];
+// 		for (let value of results.lhs_result) {
 
-			var result = {};
-			result.vendor_name = value.vendor_name;
-			result.owner_name = value.owner_name;
-			switch (value.type) {
-				case 1:
-					result.type = 'Starter Seller';
-					break;
-				case 2:
-					result.type = 'Service Provider';
-					break;
-				case 3:
-					result.type = 'Lifestyle Provider';
-					break;
-				case 4:
-					result.type = 'Retailer';
-					break;
-				case 6:
-					result.type = 'Wholesaler';
-					break;
-				default:
-					result.type = '-';
-					break;
-			}
-			result.sales = value.sales;
-			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-			result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+// 			var result = {};
+// 			result.vendor_name = value.vendor_name;
+// 			result.owner_name = value.owner_name;
+// 			switch (value.type) {
+// 				case 1:
+// 					result.type = 'Starter Seller';
+// 					break;
+// 				case 2:
+// 					result.type = 'Service Provider';
+// 					break;
+// 				case 3:
+// 					result.type = 'Lifestyle Provider';
+// 					break;
+// 				case 4:
+// 					result.type = 'Retailer';
+// 					break;
+// 				case 6:
+// 					result.type = 'Wholesaler';
+// 					break;
+// 				default:
+// 					result.type = '-';
+// 					break;
+// 			}
+// 			result.sales = value.sales;
+// 			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
+// 			result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
+// 			result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
 
-			finalresults.push(result);
-		}
-		const parser = new Json2csvParser(finalresults);
-		const csv = parser.parse(finalresults);
-		res.write(csv);
-		res.end();
-		return;
-	}).catch((err) => {
-		console.log('compareVendorPerformance err', err);
-		return res.status(500).send(err);
-	});
-}
+// 			finalresults.push(result);
+// 		}
+// 		const parser = new Json2csvParser(finalresults);
+// 		const csv = parser.parse(finalresults);
+// 		res.write(csv);
+// 		res.end();
+// 		return;
+// 	}).catch((err) => {
+// 		console.log('compareVendorPerformance err', err);
+// 		return res.status(500).send(err);
+// 	});
+// }
 
 export function productPerformanceChangescsv(req, res) {
-
-	var queryObj = {};
+	var offset, limit, field, order;
+	var queryParams = {};
+	var LoggedInUser = {};
+	var bottomCategory = {};
+	var categoryModel = "Category";
 	var lhsBetween = [];
 	var rhsBetween = [];
-	var limit, offset, compare, vendorId;
+	var queryURI = {};
+	var selectedMetrics;
+	const dateRangeOptions = [{
+			"column": "Today",
+			"value": 1
+		}, {
+			"column": "Yesterday",
+			"value": 2
+		}, {
+			"column": "Last 7 Days",
+			"value": 3
+		}, {
+			"column": "Last 30 Days",
+			"value": 4
+		}, {
+			"column": "This Month",
+			"value": 5
+		}, {
+			"column": "Last Month",
+			"value": 6
+		}
+	];
+
+	selectedMetrics = req.query.top ? req.query.top : "products";
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	field = 'id';
+	order = 'asc';
 
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
+	if (req.user)
+		LoggedInUser = req.user;
 
-	if (req.user.role == 2){
-		queryObj.vendor_id = req.user.Vendor.id;
-		vendorId = req.user.Vendor.id;
-	}
-	else
-		queryObj.vendor_id = null;
-	if (req.query.compare) {
-		queryObj.compare = req.query.compare ? req.query.compare : 'false';
-	}
+	let user_id = LoggedInUser.id;
+
 	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		lhsBetween.push(moment(req.query.lhs_from).toISOString(), moment(req.query.lhs_to).toISOString());
+		queryURI['range'] = 7;
+	}else{
+		lhsBetween.push(moment().subtract(30, 'days').toISOString(), moment().toISOString());
+		queryURI['range'] = 4;
 	}
+
 	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
+		rhsBetween.push(moment(req.query.rhs_from).toISOString(), moment(req.query.rhs_to).toISOString());
+		queryURI['rhs_from'] = moment(rhsBetween[0]).format("MM/DD/YYYY");
+		queryURI['rhs_to'] = moment(rhsBetween[1]).format("MM/DD/YYYY");
 	}
-
-	ReportService.productPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-		var finalresults = [];
-		for (let value of results.lhs_result) {
-
-			var result = {};
-
-			result.product = value.product_name;
-			result.type = value.marketplace_name;
-			result.sales = value.sales;
-			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-
-			if(vendorId){
-				result.gtc_processing_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-				result.vendor_revenue = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			}else{
-				result.vendor = value.vendor_name
-				result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-				result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-			}
-
-			finalresults.push(result);
-		}
-
-		/*var fields = [];
-		fields = _.map(finalresults, 'columnName');
-		fields.push('product_name', 'marketplace_name', 'vendor_name', 'sales', 'total_fees', 'vendor_fees', 'gtc_fees');
-		const opts = {
-			fields
-		};*/
-
-		const parser = new Json2csvParser(finalresults);
-		const csv = parser.parse(finalresults);
-		res.write(csv);
-		res.end();
-		return;
-	}).catch((err) => {
-		console.log('comparePerformance err', err);
-		return res.status(500).send(err);
-	});
-}
-
-export function compareCategoryPerformancecsv(req, res) {
-	var queryObj = {};
-	var lhsBetween = [];
-	var rhsBetween = [];
-	var limit, offset, compare;
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	limit = req.query.limit ? parseInt(req.query.limit) : 10;
-
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
+	
+	if (req.query.range) {
+		queryURI['range'] = req.query.range;
 	}
+	
+	queryURI['offset'] = offset;
+	queryURI['limit'] = limit;
+	queryURI['lhs_from'] = moment(lhsBetween[0]).format("MM/DD/YYYY");
+	queryURI['lhs_to'] = moment(lhsBetween[1]).format("MM/DD/YYYY");
+	queryURI['top'] = selectedMetrics;
 
-	if (req.user.role == 2)
-		queryObj.vendor_id = req.user.Vendor.id;
-	else
-		queryObj.vendor_id = null;
-	if (req.query.compare) {
-		queryObj.compare = req.query.compare ? req.query.compare : 'false';
-	}
-	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
+	let performanceQueryObj = {};
+			if (req.user.role == 2)
+				performanceQueryObj.vendor_id = req.user.Vendor.id;
 
-	ReportService.categoryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-		var finalresults = [];
-		for (let value of results.lhs_result) {
-			value.total_fees = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-			value.vendor_fees = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			value.gtc_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-			delete value.category_id;
-			finalresults.push(value);
-		}		
-		const parser = new Json2csvParser(finalresults);
-		const csv = parser.parse(finalresults);
-		res.write(csv);
-		res.end();
-		return;
-	}).catch((err) => {
-		console.log('comparePerformance err', err);
-		return res.status(500).send(err);
-	});
-}
-
-export function compareMarketPlacePerformancecsv(req, res) {
-	var queryObj = {};
-	var lhsBetween = [];
-	var rhsBetween = [];
-	var limit, offset, compare, vendorId;
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	limit = req.query.limit ? parseInt(req.query.limit) : 10;
-
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
-
-	if (req.user.role == 2){
-		queryObj.vendor_id = req.user.Vendor.id;
-		vendorId = req.user.Vendor.id;
-	}else
-		queryObj.vendor_id = null;
-	if (req.query.compare) {
-		queryObj.compare = req.query.compare ? req.query.compare : 'false';
-	}
-	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-
-	ReportService.marketplacePerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-
-		var finalresults = [];
-		for (let value of results.lhs_result) {
-
-			var result = {};
-
-			result.marketplace = value.marketplace_name;
-			result.sales = value.sales;
-			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-			
-			if(vendorId){
-				result.gtc_processing_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-				result.vendor_revenue = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			}else{
-				result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-				result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-			}
-
-			finalresults.push(result);
-		}
-		const parser = new Json2csvParser(finalresults);
-		const csv = parser.parse(finalresults);
-		res.write(csv);
-		res.end();
-		return;
-	}).catch((err) => {
-		console.log('comparePerformance err', err);
-		return res.status(500).send(err);
-	});
-}
-
-export function compareCityPerformancecsv(req, res) {
-	var queryObj = {};
-	var lhsBetween = [];
-	var rhsBetween = [];
-	var limit, offset, compare, vendorId;
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	limit = req.query.limit ? parseInt(req.query.limit) : 10;
-
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
-
-	if (req.user.role == 2){
-		queryObj.vendor_id = req.user.Vendor.id;
-		vendorId = req.user.Vendor.id;
-	}else
-		queryObj.vendor_id = null;
-	if (req.query.compare) {
-		queryObj.compare = req.query.compare ? req.query.compare : 'false';
-	}
-	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-
-	ReportService.cityPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-		var finalresults = [];
-		for (let value of results.lhs_result) {
-
-			var result = {};
-			result.city = value['Product.city'];
-
-			result.sales = value.sales;
-			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-
-			if(vendorId){
-				result.gtc_processing_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-				result.vendor_revenue = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			}else{
-				result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-				result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
+			if(req.query.compare == 'true'){
+				performanceQueryObj.compare = req.query.compare;
+				queryURI['compare'] = req.query.compare;
 			}
 			
-			finalresults.push(result);
-		}
-		const parser = new Json2csvParser(finalresults);
-		const csv = parser.parse(finalresults);
-		res.write(csv);
-		res.end();
-		return;
-	}).catch((err) => {
-		console.log('comparePerformance err', err);
-		return res.status(500).send(err);
-	});
+			if (req.query.top == "marketplaces") {
+				ReportService.marketplacePerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+					.then(function(results) {
+					var fields = [];
+				    fields = _.map(results.lhs_result.columns, 'columnName');
+				    fields.push('marketplace_name','sales','total_fees','gtc_fees','vendor_fees');
+				    const opts = {
+					   fields
+			     	};
+				    const parser = new Json2csvParser(opts);
+				    const csv = parser.parse(results.lhs_result);
+				    res.write(csv);
+				    res.end();
+				    return;
+				    }).catch(function(error) {
+					 console.log('Error :::', error);
+					 res.status(500).send("Internal server error");
+					 return
+					});
+			     } else if (req.query.top == "countries") {
+				  ReportService.countryPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+					.then(function(results) {
+					var fields = [];
+				    fields = _.map(results.lhs_result.columns, 'columnName');
+				    fields.push('Product.Country.name','sales','total_fees','gtc_fees','vendor_fees');
+				    const opts = {
+					   fields
+			     	};
+				    const parser = new Json2csvParser(opts);
+				    const csv = parser.parse(results.lhs_result);
+				    res.write(csv);
+				    res.end();
+				    return;
+
+					}).catch(function(error) {
+						//return callback(error);
+						console.log('Error :::', error);
+					 res.status(500).send("Internal server error");
+					 return
+					});
+			} else if (req.query.top == "cities") {
+				ReportService.cityPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+					.then(function(results) {
+						//return callback(null, results);
+					var fields = [];
+				    fields = _.map(results.lhs_result.columns, 'columnName');
+				    fields.push('Product.city','sales', 'total_fees','gtc_fees','vendor_fees');
+				    const opts = {
+					   fields
+			     	};
+				    const parser = new Json2csvParser(opts);
+				    const csv = parser.parse(results.lhs_result);
+				    res.write(csv);
+				    res.end();
+				    return;
+					}).catch(function(error) {
+						//return callback(error);
+						console.log('Error :::', error);
+					 res.status(500).send("Internal server error");
+					 return
+					});
+			} else if (req.query.top == "buyers") {
+				ReportService.userPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+					.then(function(results) {
+                 	var fields = [];
+				    fields = _.map(results.lhs_result.columns, 'columnName');
+				    fields.push('Order.User.first_name','sales','total_fees','gtc_fees', 'vendor_fees');
+				    const opts = {
+					   fields
+			     	};
+				    const parser = new Json2csvParser(opts);
+				    const csv = parser.parse(results.lhs_result);
+				    res.write(csv);
+				    res.end();
+				    return;
+					}).catch(function(error) {
+					console.log('Error :::', error);
+					 res.status(500).send("Internal server error");
+					 return
+
+					});
+			} 
+			else {
+				ReportService.productPerformanceChanges(performanceQueryObj, lhsBetween, rhsBetween, limit, offset)
+					.then(function(results) {
+					var fields = [];
+				    fields = _.map(results.lhs_result.columns, 'columnName');
+				    fields.push( 'product_name','marketplace_name','sales','total_fees','gtc_fees','vendor_fees');
+				    const opts = {
+					   fields
+			     	};
+				    const parser = new Json2csvParser(opts);
+				    const csv = parser.parse(results.lhs_result);
+				    res.write(csv);
+				    res.end();
+				    return;
+					}).catch(function(error) {
+						//return callback(error);
+						console.log('Error :::', error);
+						res.status(500).send("Internal server error");
+						return
+					});
+	}
+	
 }
 
-export function compareCountriesPerformancecsv(req, res) {
-	var queryObj = {};
-	var lhsBetween = [];
-	var rhsBetween = [];
-	var limit, offset, compare, vendorId;
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
-
-	if (req.user.role == 2){
-		queryObj.vendor_id = req.user.Vendor.id;
-		vendorId = req.user.Vendor.id;
-	}else
-		queryObj.vendor_id = null;
-	if (req.query.compare) {
-		queryObj.compare = req.query.compare ? req.query.compare : 'false';
-	}
-	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-
-	ReportService.countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-		var finalresults = [];
-		for (let value of results.lhs_result) {
-
-			var result = {};
-			result.country = value['Product.Country.name'];
-			result.sales = value.sales;
-			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-
-			if(vendorId){
-				result.gtc_processing_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-				result.vendor_revenue = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			}else{
-				result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-				result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-			}
-
-			finalresults.push(result);
-		}
-		const parser = new Json2csvParser(finalresults);
-		const csv = parser.parse(finalresults);
-		res.write(csv);
-		res.end();
-		return;
-	}).catch((err) => {
-		console.log('comparePerformance err', err);
-		return res.status(500).send(err);
-	});
-}
-
-export function compareUserPerformancecsv(req, res) {
-
-	var queryObj = {};
-	var lhsBetween = [];
-	var rhsBetween = [];
-	var limit, offset, compare, vendorId;
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	limit = req.query.limit ? parseInt(req.query.limit) : 10;
-
-	if (req.user.role == 1) {
-		if (req.query.compare) {
-			req.query.lhs_from = new Date(parseInt(req.query.lhs_from));
-			req.query.lhs_to = new Date(parseInt(req.query.lhs_to));
-			req.query.rhs_from = new Date(parseInt(req.query.rhs_from));
-			req.query.rhs_to = new Date(parseInt(req.query.rhs_to));
-		}
-	}
-
-	if (req.user.role == 2){
-		queryObj.vendor_id = req.user.Vendor.id;
-		vendorId = req.user.Vendor.id;
-	}else
-		queryObj.vendor_id = null;
-
-	if (req.query.compare) {
-		queryObj.compare = req.query.compare ? req.query.compare : 'false';
-	}
-
-	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
-	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-
-	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
-	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
-	}
-
-	ReportService.userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
-		var finalresults = [];
-		for (let value of results.lhs_result) {
-
-			var result = {};
-			result.buyer = value['Order.User.first_name'];
-			result.total_purchase = value.sales;
-			result.revenue = ((value.total_fees) > 0) ? (parseFloat(value.total_fees)).toFixed(2) : 0;
-
-			if(vendorId){
-				result.gtc_processing_fees = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-				result.vendor_revenue = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-			}else{
-				result.vendor_pay = ((value.vendor_fees) > 0) ? (parseFloat(value.vendor_fees)).toFixed(2) : 0;
-				result.gtc_revenue = ((value.gtc_fees) > 0) ? (parseFloat(value.gtc_fees)).toFixed(2) : 0;
-			}
-			finalresults.push(result);
-		}
-		const parser = new Json2csvParser(finalresults);
-		const csv = parser.parse(finalresults);
-		res.write(csv);
-		res.end();
-		return;
-
-	}).catch((err) => {
-		console.log('comparePerformance err', err);
-		return res.status(500).send(err);
-	});
-}
 
