@@ -5,51 +5,12 @@
 	var metrics = {{{ DisplayJSON selectedMetrics }}};
 	var range = 7;
 
-	 function exportCsv(args){
-		var from = $('#lhs_from').val();
-		var to = $('#lhs_to').val();
-		var Cfrom = $('#rhs_from').val();
-		var Cto = $('#rhs_to').val();
-		Compare = $('#compare').is(":checked");
-
-		var dates = [from,to,Cfrom,Cto];
-		console.log("dates",dates)
-		var queryDate = [null,null,'',''];
-		dates.forEach(function(key,element){
-			if(key){
-			let time = moment().format("HH:mm:ss");
-			let dateAndTime = key + " "+ time;
-			let timeFrame = moment(dateAndTime, "MM/DD/YYYY HH:mm:ss")._d;
-			queryDate[element] = timeFrame.toISOString();
-			}
-		});
-
-		if ($("#inputTop").val() == 1) {
-			metrics = "products";
-		} else if ($("#inputTop").val() == 2) {
-			metrics = "marketplaces"
-		} else if ($("#inputTop").val() == 3) {
-			metrics = "countries"
-		} else if ($("#inputTop").val() == 4) {
-			metrics = "cities"
-		} else if ($("#inputTop").val() == 5) {
-			metrics = "buyers"
-		}
-
+	function exportCsv(args) {
 		var queryObj = {
-			vendor_id: $('#login_vendoruserid').val(),
-			top :metrics,
-			lhs_from:queryDate[0],
-			lhs_to:queryDate[1],
-			rhs_from:queryDate[2],
-			rhs_to: queryDate[3],
-			compare:Compare,
-			range:range
-
-
-
+			vendor_id: $('#login_vendoruserid').val()
 		}
-		$.ajax({
+		if (metrics == 'products'){
+			$.ajax({
 				type: 'GET',
 				url: '/api/export-csv/export-product-performance',
 				data: queryObj,
@@ -60,9 +21,56 @@
 					console.log('Error::', error);
 				}
 			});
-
-		// location.href = "/store/performance?top=" + metrics + "&lhs_from=" + queryDate[0] + "&lhs_to=" + queryDate[1] + "&rhs_from=" + queryDate[2] + "&rhs_to=" + queryDate[3] + "&compare=" + Compare +"&range="+range; 
-	 }
+		}else if (metrics == 'marketplaces'){
+			$.ajax({
+				type: 'GET',
+				url: '/api/export-csv/export-marketplace-performance',
+				data: queryObj,
+				success: function(data) {
+					exportSuccessFn(data);
+				},
+				error: function(request, status, error) {
+					console.log('Error::', error);
+				}
+			});
+		}else if (metrics == 'countries'){
+			$.ajax({
+				type: 'GET',
+				url: '/api/export-csv/export-country-performance',
+				data: queryObj,
+				success: function(data) {
+					exportSuccessFn(data);
+				},
+				error: function(request, status, error) {
+					console.log('Error::', error);
+				}
+			});
+		}else if (metrics == 'cities'){
+			$.ajax({
+				type: 'GET',
+				url: '/api/export-csv/export-city-performance',
+				data: queryObj,
+				success: function(data) {
+					exportSuccessFn(data);
+				},
+				error: function(request, status, error) {
+					console.log('Error::', error);
+				}
+			});
+		}else if (metrics == 'buyers'){
+			$.ajax({
+				type: 'GET',
+				url: '/api/export-csv/export-user-performance',
+				data: queryObj,
+				success: function(data) {
+					exportSuccessFn(data);
+				},
+				error: function(request, status, error) {
+					console.log('Error::', error);
+				}
+			});
+		}	
+	}
 
 	function exportSuccessFn(data){
 		var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
