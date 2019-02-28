@@ -696,7 +696,6 @@ export function revenueChangesCount(req, res) {
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-	// console.log()
 	ReportService.revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
@@ -978,8 +977,6 @@ export function compareUserPerformance(req, res) {
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
-
-	console.log("********CompareUserPerformance******************",queryObj, lhsBetween, rhsBetween, limit, offset);
 
 	ReportService.userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
 		return res.status(200).send(results);

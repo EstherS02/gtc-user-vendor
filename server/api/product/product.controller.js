@@ -164,7 +164,7 @@ export async function create(req, res) {
 
 	bodyParams = req.body;
  	bodyParams['vendor_id'] = vendorId;
-	bodyParams['publish_date'] = new Date();
+	bodyParams['publish_date'] = moment.utc().local().format('YYYY-MM-DD');
 	bodyParams['product_slug'] = string_to_slug(req.body.product_name);
 	bodyParams['created_by'] = req.user.first_name;
 	bodyParams['created_on'] = new Date();
