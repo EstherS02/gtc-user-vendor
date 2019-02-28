@@ -9,6 +9,7 @@ const _ = require('lodash');
 const stripe = require('../../payment/stripe.payment');
 var featuredProductModel = 'FeaturedProduct';
 const paymentMethod = require('../../config/payment-method');
+const moment = require('moment');
 
 export function index(req, res) {
 
@@ -68,6 +69,9 @@ export function featureProductWithPayment(req, res) {
 		service.findOneRow(featuredProductModel, featureQueryObj)
 			.then(function(row) {
 				if (!row) {
+
+					req.query.start_date = moment(req.query.start_date, 'MM/DD/YYYY').local().format('YYYY-MM-DD HH:mm:ss');
+					req.query.end_date = moment(req.query.end_date, 'MM/DD/YYYY').local().format('YYYY-MM-DD HH:mm:ss');
 
 					var featuredProductBodyParam = req.query;
 
@@ -159,6 +163,10 @@ export function featureProductWithoutPayment(req, res){
 		service.findOneRow(featuredProductModel, featureQueryObj)
 			.then(function(row) {
 				if (!row) {
+
+					req.query.start_date = moment(req.query.start_date, 'MM/DD/YYYY').local().format('YYYY-MM-DD HH:mm:ss');
+					req.query.end_date = moment(req.query.end_date, 'MM/DD/YYYY').local().format('YYYY-MM-DD HH:mm:ss');
+
 					var featuredProductBodyParam = req.body;
 					featuredProductBodyParam['status'] =status.ACTIVE;
 					featuredProductBodyParam['created_by'] = req.user.first_name;

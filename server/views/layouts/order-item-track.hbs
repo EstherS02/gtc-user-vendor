@@ -164,9 +164,9 @@
 													Refund gets credited in your account within 5-6 business days.
 												{{/ifCond}}
 												{{#ifCond item.order_item_status '==' @root.orderItemStatus.AUTO_CANCELED}}	
-													canceled by Administrator.
+													canceled by Administrator.<br/>
+													Refund gets credited in your account within 5-6 business days.
 												{{/ifCond}}
-
 												{{#ifCond item.order_item_status '==' @root.orderItemStatus.REQUEST_FOR_RETURN}}	
 													request for return.
 												{{/ifCond}}
