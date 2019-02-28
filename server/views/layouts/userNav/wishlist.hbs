@@ -250,15 +250,17 @@
 															<input type="hidden" name="vendor_id" id="vendorId{{this.Product.id}}" value={{this.Product.Vendor.id}}>
 															<input type="hidden" name="vendor_id" id="vendorName{{this.Product.id}}" value={{this.Product.Vendor.User.first_name}}>
 														</td>
-														{{#if this.Product.quantity_available}}
-															<td class="text_green_color" style="font-size: 20px;">
-																<i class="fas fa-check-circle"></i>
-															</td>
-														{{else}}
-															<td class="text_orange_color" style="font-size: 20px;">
+														<td>
+															{{#ifCond this.Product.status '==' 1}}
+																{{#if this.Product.quantity_available}}
+																	<i class="fas fa-check-circle"></i>
+																{{else}}
+																	<i class="fas fa-exclamation-circle"></i>
+																{{/if}} 
+															{{else}}
 																<i class="fas fa-exclamation-circle"></i>
-															</td>
-														{{/if}} {{!-- Type --}}
+															{{/ifCond}}
+														</td>
 														{{#ifCond this.Product.marketplace_id "==" 1}}
 															<td>Wholesale</td>
 															{{else ifCond this.Product.marketplace_id "==" 2}}
