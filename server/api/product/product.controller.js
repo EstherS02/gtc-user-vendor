@@ -138,8 +138,8 @@ export async function create(req, res) {
 		}else if(endDate < startDate){
 			return res.status(400).send("Sales end date must be greater than start date.");
 		}else{
-			req.body.exclusive_end_date = new Date(req.body.exclusive_end_date);
-			req.body.exclusive_start_date = new Date(req.body.exclusive_start_date);
+			req.body.exclusive_end_date = moment.utc(req.body.exclusive_end_date, 'YYYY/MM/DD HH:mm').local().format('YYYY-MM-DD HH:mm');
+			req.body.exclusive_start_date = moment.utc(req.body.exclusive_start_date,  'YYYY/MM/DD HH:mm').local().format('YYYY-MM-DD HH:mm');
 		}
 	}
 
@@ -293,11 +293,12 @@ export async function edit(req, res) {
 		// if(startDate <= currentDate){
 		// 	return res.status(400).send("Start date must be greater than current date.");
 		// }else 
+
 		if(endDate < startDate){
 			return res.status(400).send("End date must be greater than start date.");
 		}else{
-			req.body.exclusive_end_date = new Date(req.body.exclusive_end_date);
-			req.body.exclusive_start_date = new Date(req.body.exclusive_start_date);
+			req.body.exclusive_end_date = moment.utc(req.body.exclusive_end_date, 'YYYY/MM/DD HH:mm').local().format('YYYY-MM-DD HH:mm');
+			req.body.exclusive_start_date = moment.utc(req.body.exclusive_start_date,  'YYYY/MM/DD HH:mm').local().format('YYYY-MM-DD HH:mm');
 		}
 	}
 
