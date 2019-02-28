@@ -1066,6 +1066,7 @@ export function countryPerformanceChanges(queryObj, lhsBetween, rhsBetween, limi
 }
 
 export function userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
+
 	const pastRange = _.assign({}, queryObj);
 	pastRange.from = lhsBetween[0];
 	pastRange.to = lhsBetween[1];

@@ -968,7 +968,7 @@ export function compareUserPerformance(req, res) {
 	}
 
 	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"));
 	} else {
 		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
@@ -978,6 +978,8 @@ export function compareUserPerformance(req, res) {
 	} else {
 		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
+
+	console.log("********CompareUserPerformance******************",queryObj, lhsBetween, rhsBetween, limit, offset);
 
 	ReportService.userPerformanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset).then((results) => {
 		return res.status(200).send(results);
