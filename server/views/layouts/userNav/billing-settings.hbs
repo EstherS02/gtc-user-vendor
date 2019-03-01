@@ -74,15 +74,13 @@
 									</div>
 									<p style="font-size: 13px;padding-top: 15px;">Connect Paypal</p>
 									<p style="padding-top: 10px;">
-										<img src="../../img/payment-paypal.png" alt="paypal" style="width: 15%;margin-top: -2px; margin-right: 10px;" />
+										<img src="../../img/payment-paypal.png" alt="paypal" style="width: 15%;margin-top: -2px; margin-right: 15px;" />
 										{{#if LoggedInUser.Vendor.vendor_payout_paypal_email}}
 											<input type="email" placeholder="Enter Your Paypal Email" class="vend_edit_lists_textstyle1" disabled style="width: 50%;margin-right:20px;cursor:not-allowed;"
 											 value="{{LoggedInUser.Vendor.vendor_payout_paypal_email}}" />
-											<input id="paypal_disconnect" class="list_butt_2" style="cursor:pointer;" type="button" onclick="paypalDisconnectEmail()"
-											 value="DISCONNECT" />
+											 <button class="btn btn-md btn-muted" type="button" id="paypal_disconnect" onclick="paypalDisconnectEmail()">DISCONNECT</button>
 										{{else}}
-											<input id="paypal_connect" class="list_butt_2" style="cursor:pointer;" type="button" onclick="paypalVerifyEmail()"
-											 value="CONNECT" />
+											<button class="btn btn-md btn-muted" type="button" id="paypal_connect" onclick="paypalVerifyEmail()">CONNECT</button>
 										{{/if}}
 									</p>
 									<label id="paypal_connect_error" class="error" style="display:none"></label>
