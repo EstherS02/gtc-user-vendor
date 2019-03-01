@@ -15,6 +15,7 @@ export async function cartCalculation(userID, req, res) {
 	const cartModelName = "Cart";
 	const couponModelName = "Coupon";
 	var promoCode = req.cookies.applied_coupon ? req.cookies.applied_coupon : null;
+	res.clearCookie('applied_coupon');
 
 	var products = [];
 	var appliedProducts = [];
