@@ -98,6 +98,14 @@ module.exports = async function(job, done) {
 				});*/
 			}
 
+			if(newPayment){
+				const updateRefundStatus = await service.updateRow(orderItemModelName, {
+					is_refunded:  1,
+					last_updated_by: "Administrator",
+					last_updated_on: new Date()
+				}, item.id);
+			}
+					
 			const orderItemPayoutResponse = await service.createRow(orderItemPayoutModelName, {
 				order_item_id: item.id,
 				payment_id: newPayment.id,

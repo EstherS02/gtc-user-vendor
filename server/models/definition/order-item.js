@@ -151,6 +151,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
+		},
+		is_refunded: {
+            type: DataTypes.INTEGER,
+            field: 'is_refunded',
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),

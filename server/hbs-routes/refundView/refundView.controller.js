@@ -88,6 +88,12 @@ export function refund(req, res) {
 			order_item_status: orderItemStatusCode['RETURN_RECIVED']
 		}, {
 			order_item_status: orderItemStatusCode['REFUND']
+		},{
+			order_item_status: orderItemStatusCode['CANCELED']
+		},{
+			order_item_status: orderItemStatusCode['VENDOR_CANCELED']
+		},{
+			order_item_status: orderItemStatusCode['AUTO_CANCELED']
 		}];
 	}
 

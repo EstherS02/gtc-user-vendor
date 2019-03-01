@@ -123,8 +123,9 @@
 														<th>Order#</th>
 														<th>Buyer Name</th>
 														<th>Product Name</th>
-														<th>Status</th>
-														<th>Reason for return</th>
+														<th>Order Status</th>
+														<th>Reason for return / cancellation</th>
+														<th>Refund Status</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -146,11 +147,20 @@
 															<td>
 																{{#ifCond this.order_item_status '==' ../orderItemStatusCode.REQUEST_FOR_RETURN}}Return Requested
 																{{else ifCond this.order_item_status '==' ../orderItemStatusCode.APPROVED_REQUEST_FOR_RETURN}}Return Approved
-																{{else ifCond this.order_item_status '==' ../orderItemStatusCode.RETURN_RECIVED}}Return Initiated
-																{{else ifCond this.order_item_status '==' ../orderItemStatusCode.REFUND}}Refund Initiated
+																{{else ifCond this.order_item_status '==' ../orderItemStatusCode.RETURN_RECIVED}}Return Received
+																{{else ifCond this.order_item_status '==' ../orderItemStatusCode.VENDOR_CANCELED}}Vendor Cancelled
+																{{else ifCond this.order_item_status '==' ../orderItemStatusCode.CANCELED}}Buyer Cancelled
+																{{else ifCond this.order_item_status '==' ../orderItemStatusCode.AUTO_CANCELED}}Auto Cancelled
 																{{/ifCond}} 
 															</td>
-															<td>{{this.reason_for_return}}</td>
+															<td>{{#if this.reason_for_return}}
+																	{{this.reason_for_return}}
+																{{else}}
+																	{{this.reason_for_cancel}}
+																{{/if}}
+															</td>
+															<td>{{#if this.is_refunded}}Refund Initiated
+															{{else}}Open{{/if}}</td>
 														</tr>
 													{{/each}}
 												</tbody>
