@@ -14,6 +14,7 @@ var moment = require('moment');
 var async = require('async');
 const roles = require('../../config/roles');
 const orderItemStatusCode = require('../../config/order-item-new-status');
+const _ = require('lodash');
 
 export function generateReports(req, res) {
 	var result = {};
@@ -491,6 +492,7 @@ export function topBuyers(req, res) {
 	var result = {}, queryObj = {}, productQueryObj = {};
 	var createdBetween = [];
 	var Limit = 5, Offset = 0;
+	var response;
 
 	if (req.query.limit)
 		Limit = req.query.limit;
@@ -547,14 +549,41 @@ export function topBuyers(req, res) {
 			[sequelize.fn('sum', sequelize.col('OrderItems.quantity')), 'DESC']
 		],
 	}).then(function(results) {
-		if (results.length > 0) {
-			results = results.slice(Offset, Offset + Limit);
+		response = results;
+
+		if (response.length > 0) {
+			response = response.slice(Offset, Offset + Limit);
 		}
-		return res.status(200).send(results);
+
+		var vendorInfoPromises = [];
+
+		_.forOwn(response, function(buyer) {
+			vendorInfoPromises.push(vendorInfo(buyer));
+		});
+
+		return Promise.all(vendorInfoPromises);
+	}).then(function(vendorRes){
+			return res.status(200).send(response);	
 	}).catch(function(error) {
 		console.log('Error:::', error);
-		return res.status(500).send(error)
+		return res.status(500).send(error);
 	});
+}
+
+function vendorInfo(buyer) {
+	let userId = buyer['User.id'];
+	return service.findOneRow('Vendor', {user_id: userId}, [])
+		.then(function(vendor){
+		if(vendor){
+			buyer['vendor_id'] = vendor.id;
+			buyer['vendor_name'] = vendor.vendor_name;	
+			buyer['vendor_profile_pic'] = vendor.vendor_profile_pic_url;	
+		}
+		return Promise.resolve(buyer);
+	}).catch(function(error){
+		console.log('Error::',error);
+		return Promise.reject(error);
+	})
 }
 
 export function topVendors(req, res) {

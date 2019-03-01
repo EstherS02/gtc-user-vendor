@@ -46,12 +46,6 @@ export function refund(req, res) {
 			where: {
 				vendor_id: LoggedInUser.Vendor.id
 			}
-			// include: [
-			// 	{
-			// 		model: model['Vendor'],
-			// 		attributes: ['id', 'vendor_name']
-			// 	}
-			// ]
 		},
 		{
 			model: model['Order'],
