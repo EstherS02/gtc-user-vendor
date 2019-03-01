@@ -462,7 +462,7 @@ export function refundOrder(req, res){
     delete req.query.limit;
     field = req.query.field ? req.query.field : "id";
     delete req.query.field;
-    order = req.query.order ? req.query.order : "asc";
+    order = req.query.order ? req.query.order : "des";
 	delete req.query.order;
 
 	includeArr = [
@@ -505,6 +505,12 @@ export function refundOrder(req, res){
 			order_item_status: orderItemStatusCode['RETURN_RECIVED']
 		},{
 			order_item_status: orderItemStatusCode['REFUND']
+		},{
+			order_item_status: orderItemStatusCode['CANCELED']
+		},{
+			order_item_status: orderItemStatusCode['VENDOR_CANCELED']
+		},{
+			order_item_status: orderItemStatusCode['AUTO_CANCELED']
 		}];	
 	}
 

@@ -43,12 +43,15 @@ export function refund(req, res) {
 		{
 			model: model['Product'],
 			attributes: ['id', 'product_name', 'vendor_id'],
-			include: [
-				{
-					model: model['Vendor'],
-					attributes: ['id', 'vendor_name']
-				}
-			]
+			where: {
+				vendor_id: LoggedInUser.Vendor.id
+			}
+			// include: [
+			// 	{
+			// 		model: model['Vendor'],
+			// 		attributes: ['id', 'vendor_name']
+			// 	}
+			// ]
 		},
 		{
 			model: model['Order'],
@@ -56,13 +59,6 @@ export function refund(req, res) {
 				{
 					model: model['User'],
 					attributes: ['id', 'first_name', 'last_name']
-				},
-				{
-					model: model['OrderVendor'],
-					attributes: ['id', 'vendor_id'],
-					where: {
-						vendor_id: LoggedInUser.Vendor.id
-					}
 				}
 			],
 			attributes: ['id', 'user_id'],
@@ -143,7 +139,7 @@ export function refund(req, res) {
 				});
 		},
 		refunds: function(callback) {
-			service.findAllRows('OrderItem', includeArr,queryObj, offset, limit, field, order)
+			service.findRows('OrderItem', queryObj, offset, limit, field, order, includeArr)
 				.then(function(refunds) {
 					return callback(null, refunds);
 				}).catch(function(error) {

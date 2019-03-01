@@ -69,8 +69,10 @@
 															<option disabled selected>CHANGE STATUS</option>
 															<option value="REQUEST_FOR_RETURN">Return Requested</option>
 															<option value="APPROVED_REQUEST_FOR_RETURN">Return Approved</option>
-															<option value="RETURN_RECIVED">Return Initiated</option>
-															<option value="REFUND">Refund Initiated</option>
+															<option value="RETURN_RECIVED">Return Received</option>
+															<option value="CANCELED">Buyer Cancelled</option>
+															<option value="VENDOR_CANCELED">Vendor Cancelled</option>
+															<option value="AUTO_CANCELED">Auto Cancelled</option>
 														{{/select}}
 													</select>
 												</div>
@@ -170,7 +172,7 @@
 									{{#ifCond refunds.count '>' queryURI.limit}}
 										<div class="row">
 											<div class="col-md-12 align-self-center">
-												{{#pagination products.count queryURI.page queryURI.limit 2}}
+												{{#pagination refunds.count queryURI.page queryURI.limit 2}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
