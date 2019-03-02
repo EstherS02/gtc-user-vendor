@@ -8,11 +8,11 @@
 							<div class="col-md-8 col-xs-8">
 								{{#if VendorDetail.TalkSettings}}
 									<img {{#if VendorDetail.TalkSettings.[0].talk_profile_pic_url}} src="{{VendorDetail.TalkSettings.[0].talk_profile_pic_url}}"
-									 {{else}} src="{{LoggedInUser.user_pic_url }}" {{/if}} width="30px" height="30px" onError="UserImgError(this)"
-									 style="border-radius: 50%">
+									 {{else}} src="{{VendorDetail.vendor_profile_pic_url }}" {{/if}} width="30px" height="30px" onError="UserImgError(this)"
+									 style="border-radius: 50%; border: 2px solid #a51a0b;">
 								{{else}}
-									<img src="/gtc-assets/images/no-product-image.jpg" width="30px" height="30px" onError="UserImgError(this)"
-									 style="border-radius: 50%">
+									<img src="img/avatar.png" width="30px" height="30px" onError="UserImgError(this)"
+									 style="border-radius: 50%; border: 2px solid #a51a0b;">
 								{{/if}}
 								Chat Window </div>
 							<div class="col-md-4 col-xs-4" style="text-align: right; float: right;">
