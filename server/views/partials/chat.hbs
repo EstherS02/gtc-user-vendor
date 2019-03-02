@@ -148,11 +148,11 @@
 			// console.log("socketChat.user", socketChat.user);
 			if (data.from_id == socketChat.user) {
 				base = "base_sent";
-				msg = "msg_sent";
+				msg = "send msg_sent"
 				console.log("base_sent", base);
 			} else {
 				base = "base_receive";
-				msg = "msg_receive"
+				msg = "recieve msg_receive"
 				// console.log("basereceive", base);
 			}
 			var body = '<div class="row msg_container ' + base + '">' +
