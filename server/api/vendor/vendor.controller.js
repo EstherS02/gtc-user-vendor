@@ -25,6 +25,7 @@ export async function createStarterSeller(req, res) {
 	var userModelName = "User";
 	var vendorModelName = "Vendor";
 	var vendorPlanModelName = "VendorPlan";
+	var vendorShippingLoc = "VendorShippingLocation";
 
 	/*if (!req.files.vendor_profile_picture) {
 		return res.status(400).send("Vendor profile picture missing.");
@@ -112,6 +113,17 @@ export async function createStarterSeller(req, res) {
 				verndorPlanObj['created_by'] = req.user.first_name;
 
 				const newPlan = await service.createRow(vendorPlanModelName, verndorPlanObj);
+
+				var shipObj = {};
+
+				shipObj['vendor_id'] = newVendor.id;
+				shipObj['country_id'] = newVendor.base_location;
+				shipObj['status'] = status['ACTIVE'];
+				shipObj['created_by'] = req.user.first_name;
+				shipObj['created_on'] = new Date();
+
+				const shippingLoc = await service.createRow(vendorShippingLoc, shipObj);
+
 				return res.status(201).send("Vendor created successfully.");
 			} else {
 				return res.status(404).send("Plan not found.");
@@ -132,6 +144,7 @@ export async function createVendor(req, res) {
 	var userModelName = "User";
 	var vendorModelName = "Vendor";
 	var vendorPlanModelName = "VendorPlan";
+	var vendorShippingLoc = "VendorShippingLocation";
 	var bodyParamsUser = {};
 
 	if (!req.files.vendor_profile_picture) {
@@ -241,6 +254,17 @@ export async function createVendor(req, res) {
 					verndorPlanObj['created_by'] = req.user.first_name;
 
 					const newPlan = await service.createRow(vendorPlanModelName, verndorPlanObj);
+
+					var shipObj = {};
+
+					shipObj['vendor_id'] = newVendor.id;
+					shipObj['country_id'] = newVendor.base_location;
+					shipObj['status'] = status['ACTIVE'];
+					shipObj['created_by'] = req.user.first_name;
+					shipObj['created_on'] = new Date();
+
+					const shippingLoc = await service.createRow(vendorShippingLoc, shipObj);
+
 					return res.status(201).send({
 						"message": "Success",
 						"messageDetails": "Vendor created successfully."
