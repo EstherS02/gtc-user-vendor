@@ -6,11 +6,15 @@
 	function appendImage() {
 		$('div.base_image').empty();
 		var domElement;
-		domElement = "<span class=\"pip\" id=\"base\">" + "<img src=\"" + adImageArr[0].adImageUrl + "\"/></span>";
+		domElement = "<span class=\"pip\" id=\"base\">" + "<img style='width:400px; height:200px;' src=\"" + adImageArr[0].adImageUrl + "\"/></span>";
 		$('div.base_image').append(domElement);
 	}
 
 	$(document).ready(function() {
+
+		var fileDetails = {};
+		var cropperOutputImage;
+		var cropBoxData, canvasData, cropper, cropperInputImage;
 
 		var adId = $('#id').val();
 		$("#gtc-form-alert").hide();
@@ -25,54 +29,57 @@
 			autohide: true,
 		});
 
-		$('#adImage').change(function(e) {
-			adImageArr.length = 0;
-			var obj = {}
-			if (adImage.files && adImage.files[0]) {
-				var reader = new FileReader();
-				reader.onload = function(e) {
-					var image = new Image();
-					image.src = e.target.result;
-					image.onload = function() {
-						//Determine the Height and Width.
-						var height = this.height;
-						var width = this.width;
-						if (($("#position").val() == 1) || ($("#position").val() == 2) || ($("#position").val() == 6)) {
-							if ((height >= 195 && height<= 220) || (width >= 475 && width<=500)) {
-								obj.adImageUrl = e.target.result;
-								adImageArr.push(obj);
-								appendImage();
-								return true;
-							} else {
-								$('#adImage').attr('src', " ");
-								$('#adImage').val('')
-								alert("Selected image doesn't have valid height and width. Please upload the image of valid size.");
-								return false;
-							}
-						} else if (($("#position").val() == 3) || ($("#position").val() == 4) || ($("#position").val() == 5)) {
-							if ((height >= 45 && height<= 80) || (width >= 475 && width<=500)) {
-								obj.adImageUrl = e.target.result;
-								adImageArr.push(obj);
-								appendImage();
-								return true;
-							} else {
-								$('#adImage').attr('src', " ");
-								$('#adImage').val('')
-								alert("Selected image doesn't have valid height and width. Please upload the image of valid size.");
-								return false;
-							}
-						} else {
-							$('#adImage').value='';
-							alert("Please select Ad position before uplaoding image.");
-						}
-					};
-				}
-				reader.readAsDataURL(adImage.files[0]);
+		$('#adImage').change(function(e){
+			if($("#position").val()){
+				adImageArr.length = 0;
+				imagesPreview(this);
+			}else{
+				$('#adImage').value='';
+				alert("Please select Ad position before uplaoding image.");
+			}	
+		});
+
+		var imagesPreview = function(uploader, placeToInsertImagePreview) {
+			if (uploader.files && uploader.files[0]) {
+				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+				$('#uploaded-ad-image').attr('src', window.URL.createObjectURL(uploader.files[0]));
+				cropperInputImage = document.getElementById('uploaded-ad-image');
+				$('#ad-picture-modal').modal('show');
 			}
-		})
+		};
+
+		$('#ad-picture-modal').on('shown.bs.modal', function() {
+				cropper = new Cropper(cropperInputImage, {
+					aspectRatio: 16 / 9,
+					viewMode: 1,
+					ready: function() {
+						
+					}
+				});			
+		}).on('hidden.bs.modal', function() {
+			cropBoxData = cropper.getCropBoxData();
+			canvasData = cropper.getCanvasData();
+			cropper.destroy();
+		});
+
+		$('#crop-ad-image').click(function() {
+			cropper.getCroppedCanvas().toBlob(function(blob) {
+				cropperOutputImage = blob;
+				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
+				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
+			});
+			var obj = {};
+			obj.adImageUrl = cropper.getCroppedCanvas().toDataURL();
+			adImageArr.push(obj);
+			appendImage();
+
+			$('#ad-picture-modal').modal('hide');
+		});
+
 		$("#position").change(function() {
 			console.log($("#position").val(), $('option:selected', this).attr('width'), $('optionalion:selected', this).attr('height'))
-			var message = "Banner should have " + $('option:selected', this).attr('width') + ' px width & ' + $('option:selected', this).attr('height')+' px height';
+			var message = "Recommended banner size is " + $('option:selected', this).attr('width') + ' px width & ' + $('option:selected', this).attr('height')+' px height.';
 			document.getElementById("alert-text").innerHTML = message;
 		});
 
@@ -231,6 +238,28 @@
 </script> 
 
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+<div class="modal fade" id="ad-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
+ aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document" id="popupSize">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="profile-picture-modalLabel">Crop Ad Image</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" style="margin-right:35px;">
+				<div class="container">
+					<img src="" style="max-width: 100% !important;" id="uploaded-ad-image" alt="Profile Picture">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="crop-ad-image">Crop Image</button>
+			</div>
+		</div>
+	</div>
+</div>
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container"> 	
 		<div class="row">
@@ -345,9 +374,7 @@
 											<div class="input-group">
 												<input type="text" class="form-control-customized" name="start_date" placeholder="MM/DD/YYYY" id="startDate" value="{{ads.start_date}}"
 												aria-describedby="basic-addon2">
-												<div class="input-group-append">
-													{{!-- <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span> --}}
-												</div>
+												<div class="input-group-append"></div>
 											</div>
 										</div>
 									</div>
@@ -359,9 +386,7 @@
 											<div class="input-group ">
 												<input type="text" class="form-control-customized" placeholder="MM/DD/YYYY" value="{{ads.end_date}}" id="endDate" name="end_date"
 												aria-describedby="basic-addon2">
-												<div class="input-group-append">
-													{{!-- <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span> --}}
-												</div>
+												<div class="input-group-append"></div>
 											</div>
 										</div>
 									</div>
