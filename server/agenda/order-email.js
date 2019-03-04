@@ -4,6 +4,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const sequelize = require('sequelize');
 const Handlebars = require('handlebars');
+const complieHelpers = require('./../lib/compile-time-helpers')
 const sendEmail = require('./send-email');
 const service = require('../api/service');
 const config = require('../config/environment');
@@ -11,6 +12,7 @@ const status = require('../config/status');
 const model = require('../sqldb/model-connect');
 
 module.exports = async function(job, done) {
+	Handlebars.registerHelper('imageUrl', complieHelpers.imageUrl);
 
 	const orderID = job.attrs.data.order;
 	const orderModelName = "Order";
@@ -131,6 +133,7 @@ module.exports = async function(job, done) {
 
 			orderVendorEmailTemplate.body = orderVendorEmailTemplate.body.replace(/%URL%/g,config.baseUrl);
 			orderVendorEmailTemplate.body = orderVendorEmailTemplate.body.replace('%ORDER_ID%',orderID);
+
 			var orderVendorTemplate = Handlebars.compile(orderVendorEmailTemplate.body);
 			orderVendor.Order.ordered_date = moment(orderVendor.Order.ordered_date).format('MMM D, Y');
 			var orderVendorResult = orderVendorTemplate(orderVendor.Order);
@@ -156,7 +159,7 @@ module.exports = async function(job, done) {
 				}	
 			}				
 		}));
-
+		
 		if (userOrderResponse.User.email_verified && userOrderResponse.User.user_contact_email) {
 			await sendEmail({
 				to: userOrderResponse.User.user_contact_email,

@@ -12,6 +12,7 @@ const Handlebars = require('handlebars');
 const sendEmail = require('./send-email');
 
 module.exports = async function(job, done) {
+	
 	const code = job.attrs.data.code;
 	const orderModelName = "Order";
 	const productModelName = "Product";

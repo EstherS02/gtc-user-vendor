@@ -950,8 +950,6 @@ function sendUpgrademail(plan_id, user) {
 				})
 		})
 }
-//plan upgrade email ends//
-
 
 export function refundOrder(req, res) {
 
