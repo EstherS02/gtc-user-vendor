@@ -879,7 +879,7 @@ export function importWooCommerceProducts(product, req) {
 					newProductObj['product_slug'] = product.slug;
 					newProductObj['vendor_id'] = req.user.Vendor.id;
 					newProductObj['status'] = status['ACTIVE'];
-					newProductObj['marketplace_id'] = marketplace['PUBLIC'];
+					newProductObj['marketplace_id'] = req.body.marketplace_id;
 					newProductObj['publish_date'] = new Date();
 					newProductObj['product_category_id'] = req.body.category;
 					newProductObj['quantity_available'] = 0;

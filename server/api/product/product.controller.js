@@ -916,7 +916,15 @@ export function importWoocommerce(req, res) {
 					service.findOneRow(planLimitModelName, queryObjPlanLimit)
 						.then(function(planLimit) {
 							if (planLimit) {
-								const maximumProductLimit = planLimit.maximum_product;
+								var maximumProductLimit;
+
+								if(req.body.marketplace_id == marketplace.WHOLESALE || req.body.marketplace_id == marketplace.PUBLIC)
+									maximumProductLimit = planLimit.maximum_product;
+								else if(req.body.marketplace_id == marketplace.SERVICE)
+									maximumProductLimit = planLimit.maximum_services;
+								else if(req.body.marketplace_id == marketplace.LIFESTYLE)
+									maximumProductLimit = planLimit.maximum_subscription;
+
 								service.countRows(productModelName, queryObjProduct)
 									.then(function(existingProductCount) {
 										var remainingProductLength = maximumProductLimit - existingProductCount;
