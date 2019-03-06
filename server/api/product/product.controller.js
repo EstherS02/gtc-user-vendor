@@ -628,7 +628,14 @@ export function importAliExpress(req, res) {
 						return service.findOneRow(planLimitModelName, queryObjPlanLimit)
 							.then((planLimit) => {
 								if (planLimit) {
-									maximumProductLimit = planLimit.maximum_product;
+
+									if(req.body.marketplace_id == marketplace.WHOLESALE || req.body.marketplace_id == marketplace.PUBLIC)
+										maximumProductLimit = planLimit.maximum_product;
+									else if(req.body.marketplace_id == marketplace.SERVICE)
+										maximumProductLimit = planLimit.maximum_services;
+									else if(req.body.marketplace_id == marketplace.LIFESTYLE)
+										maximumProductLimit = planLimit.maximum_subscription;
+
 									return service.countRows(productModelName, queryObjProduct)
 								} else {
 									return res.status(404).send("plan limit not found.");
@@ -636,12 +643,14 @@ export function importAliExpress(req, res) {
 							})
 							.then(async (existingProductCount) => {
 								var remainingProductLength = maximumProductLimit - existingProductCount;
+
 								if (products.length <= remainingProductLength) {
 									agenda.now(config.jobs.aliExpressScrape, {
 										products: products,
 										user: req.user,
 										category: req.body.category,
-										subCategory: req.body.sub_category
+										subCategory: req.body.sub_category,
+										marketplace_id: req.body.marketplace_id
 									});
 									await browser.close();
 									return res.status(200).send("We started importing products from AliExpress. Please check it few minutes later.");

@@ -766,7 +766,8 @@ export async function vendorProducts(queryObj, offset, limit, field, order) {
 	}
 }
 
-export function importAliExpressProducts(product, user, category, subCategory) {
+export function importAliExpressProducts(product, user, category, subCategory, marketplaceId) {
+
 	var productQueryObj = {};
 	var newProductObj = {};
 	productQueryObj['sku'] = product.productId;
@@ -784,7 +785,7 @@ export function importAliExpressProducts(product, user, category, subCategory) {
 					newProductObj['product_slug'] = string_to_slug(product.productTitle);
 					newProductObj['vendor_id'] = user.Vendor.id;
 					newProductObj['status'] = status['ACTIVE'];
-					newProductObj['marketplace_id'] = marketplace['PUBLIC'];
+					newProductObj['marketplace_id'] = marketplaceId;
 					newProductObj['publish_date'] = new Date();
 					newProductObj['product_category_id'] = category;
 					newProductObj['quantity_available'] = 0;
@@ -799,6 +800,7 @@ export function importAliExpressProducts(product, user, category, subCategory) {
 					return Promise.reject(true);
 				}
 			}).then(async (newProduct) => {
+
 				var productMedias = [];
 				for (let i = 0; i < product.pics.length; i++) {
 					var productMediaObj = {};

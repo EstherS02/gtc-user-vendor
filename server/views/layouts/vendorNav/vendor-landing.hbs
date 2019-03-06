@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
 
-	var vendorPlanId ={{{LoggedInUser.Vendor.VendorPlans.[0].plan_id}}};
+	var vendorPlanId ={{{ LoggedInUser.Vendor.VendorPlans.[0].plan_id }}};
 	var vendorPlan = {{{ DisplayJSON vendorPlan }}};
 
 	$(document).ready(function() {
@@ -26,7 +26,18 @@
 			$(':input[type="submit"]').prop('disabled', true);
 
 			if ($('#importAliExpressForm').valid()) {
-				data['marketplace_id'] = 2;
+
+				if(vendorPlanId == vendorPlan['STARTER_SELLER'])
+					data['marketplace_id'] = 2;
+				else if(vendorPlanId == vendorPlan['SERVICE_PROVIDER'])
+					data['marketplace_id'] = 3;
+				else if(vendorPlanId == vendorPlan['LIFESTYLE_PROVIDER'])
+					data['marketplace_id'] = 4;
+				else if(vendorPlanId == vendorPlan['PUBLIC_SELLER'])
+					data['marketplace_id'] = 2;
+				else if(vendorPlanId == vendorPlan['WHOLESALER'])
+					data['marketplace_id'] = 1;
+
 				data['vendor_id'] = $('#inputSellerId').val();
 				data['category'] = $('#ali_category').val();
 				data['sub_category'] = $('#ali_sub_category').val();
@@ -82,7 +93,18 @@
 			$(':input[type="submit"]').prop('disabled', true);
 
 			if ($('#importWooCommerceForm').valid()) {
-				credentials['marketplace_id'] = 2;
+
+				if(vendorPlanId == vendorPlan['STARTER_SELLER'])
+					credentials['marketplace_id'] = 2;
+				else if(vendorPlanId == vendorPlan['SERVICE_PROVIDER'])
+					credentials['marketplace_id'] = 3;
+				else if(vendorPlanId == vendorPlan['LIFESTYLE_PROVIDER'])
+					credentials['marketplace_id'] = 4;
+				else if(vendorPlanId == vendorPlan['PUBLIC_SELLER'])
+					credentials['marketplace_id'] = 2;
+				else if(vendorPlanId == vendorPlan['WHOLESALER'])
+					credentials['marketplace_id'] = 1;
+
 				credentials['store_url'] = $('#inputStoreURL').val();
 				credentials['consumer_key'] = $('#inputConsumerKey').val();
 				credentials['consumer_secret'] = $('#inputConsumerSecret').val();
@@ -199,7 +221,18 @@
 				$("#amazonPopupError p").remove();
 
 				let credentials = {};
-				credentials['marketplace_id'] = 2;
+
+				if(vendorPlanId == vendorPlan['STARTER_SELLER'])
+					credentials['marketplace_id'] = 2;
+				else if(vendorPlanId == vendorPlan['SERVICE_PROVIDER'])
+					credentials['marketplace_id'] = 3;
+				else if(vendorPlanId == vendorPlan['LIFESTYLE_PROVIDER'])
+					credentials['marketplace_id'] = 4;
+				else if(vendorPlanId == vendorPlan['PUBLIC_SELLER'])
+					credentials['marketplace_id'] = 2;
+				else if(vendorPlanId == vendorPlan['WHOLESALER'])
+					credentials['marketplace_id'] = 1;
+
 				credentials['amazon_seller_id'] = $('#amazon_seller_id').val();
 				credentials['amazon_auth_token'] = $('#amazon_auth_token').val();
 				credentials['amazon_marketplace'] = $('#amazon_marketplace').val();
