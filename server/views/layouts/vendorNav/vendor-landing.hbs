@@ -1,6 +1,10 @@
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 
 <script type="text/javascript">
+
+	var vendorPlanId ={{{LoggedInUser.Vendor.VendorPlans.[0].plan_id}}};
+	var vendorPlan = {{{ DisplayJSON vendorPlan }}};
+
 	$(document).ready(function() {
 		$('#btnFaSpinner').hide();
 		$('#btnAliExpressFaSpinner').hide();
@@ -255,6 +259,21 @@
 		});		
 
 	});
+
+	function addProduct() {
+
+		if(vendorPlanId == vendorPlan['STARTER_SELLER'])
+			location.href = '/listings/shop/add-product';
+		else if(vendorPlanId == vendorPlan['SERVICE_PROVIDER'])
+			location.href = '/listings/services/add-product';
+		else if(vendorPlanId == vendorPlan['LIFESTYLE_PROVIDER'])
+			location.href = '/listings/lifestyle/add-product';
+		else if(vendorPlanId == vendorPlan['PUBLIC_SELLER'])
+			location.href = '/listings/shop/add-product';
+		else if(vendorPlanId == vendorPlan['WHOLESALER'])
+			location.href = '/listings/wholesale/add-product';
+
+	}
 </script>
 
 <div class="wrapper-content bg-gray">
@@ -314,7 +333,7 @@
 								<p>
 									<small>or</small>
 								</p>
-								<a href="listings/shop/add-product" class="btn btn-gray button-small font-weight-bold">ADD YOUR FIRST PRODUCT</a>
+								<a href="javascript:;" class="btn btn-gray button-small font-weight-bold" onclick="addProduct();">ADD YOUR FIRST PRODUCT</a>
 								<p class="m-t-lg">
 									<small>Please note: Global Trade Connect is not responsible for any information not imported and it is recommend that the
 										check the products to ensure the information has been relayed properly.</small>
@@ -323,15 +342,15 @@
 						</div>
 					</div>
 				</div>
-				{{else}}
-					<div class="col-md-12">
-						<div class="row">
-							<div class="col-md-2"> </div>
-							<div class="col-md-10">
-								{{> plan-inactive}}
-							</div>
+			{{else}}
+				<div class="col-md-12">
+					<div class="row">
+						<div class="col-md-2"> </div>
+						<div class="col-md-10">
+							{{> plan-inactive}}
 						</div>
 					</div>
+				</div>
 			{{/if}}
 		</div>
 	</div>
