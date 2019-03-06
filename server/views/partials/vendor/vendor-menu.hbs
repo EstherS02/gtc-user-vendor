@@ -21,19 +21,29 @@
 						<ul class="navbar-nav vendor-nav">
 							<li class="nav-item">
 								<a href="javascript:;" class="nav-link" style="cursor:default">
-									<b>Current Plan: 
-										{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.STARTER_SELLER}} Starter Seller 
-											{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.SERVICE_PROVIDER}} Service Provider
-											{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.LIFESTYLE_PROVIDER}} Lifestyle Provider 
-											{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.PUBLIC_SELLER}} Retailer
-											{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}} Bulk buyer 
-											{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}} Wholesaler
-										{{/ifCond}}
+									{{#if LoggedInUser.Vendor.VendorPlans.[0].plan_id}}
+										<b>Current Plan: 
+											{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.STARTER_SELLER}} Starter Seller 
+												{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.SERVICE_PROVIDER}} Service Provider
+												{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.LIFESTYLE_PROVIDER}} Lifestyle Provider 
+												{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.PUBLIC_SELLER}} Retailer
+												{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}} Bulk buyer 
+												{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}} Wholesaler
+												{{!-- {{else}}  --}}
+											{{/ifCond}}
+											{{#ifCond LoggedInUser.UserPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}} 
+												,<br/>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bulk Buyer
+											{{/ifCond}}
+										</b>
+									{{else}}
+										<b>Vendor plan expired 
 										{{#ifCond LoggedInUser.UserPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}} 
 											,<br/>
-											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bulk Buyer
+											User Plan: Bulk Buyer
 										{{/ifCond}}
-									</b>
+										</b> 
+									{{/if}}
 								</a>
 							</li>
 							{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}}
