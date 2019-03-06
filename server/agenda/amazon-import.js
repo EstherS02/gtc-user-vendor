@@ -79,7 +79,16 @@ module.exports = function (job, done) {
             service.findOneRow("PlanLimit", queryObjPlanLimit)
               .then(function (planLimit) {
                 if (planLimit) {
-                  const maximumProductLimit = planLimit.maximum_product;
+					var maximumProductLimit;
+					//const maximumProductLimit = planLimit.maximum_product;
+				
+					if(req.body.marketplace_id == marketplace.WHOLESALE || req.body.marketplace_id == marketplace.PUBLIC)
+						maximumProductLimit = planLimit.maximum_product;
+					else if(req.body.marketplace_id == marketplace.SERVICE)
+						maximumProductLimit = planLimit.maximum_services;
+					else if(req.body.marketplace_id == marketplace.LIFESTYLE)
+						maximumProductLimit = planLimit.maximum_subscription;
+
                   service.countRows("Product", queryObjProduct)
                     .then(function (existingProductCount) {
                       let remainingProductLength = maximumProductLimit - existingProductCount;
@@ -140,7 +149,7 @@ module.exports = function (job, done) {
                     newProductObj['product_slug'] = string_to_slug(currentdata['item-name']);
                     newProductObj['vendor_id'] = agendaObj.user.Vendor.id;
                     newProductObj['status'] = status['ACTIVE'];
-                    newProductObj['marketplace_id'] = marketplace['PUBLIC'];
+                    newProductObj['marketplace_id'] = agendaObj.body.marketplace_id;
                     newProductObj['publish_date'] = new Date();
                     newProductObj['product_category_id'] = agendaObj.body.amazon_category;
                     newProductObj['quantity_available'] = currentdata.quantity;
