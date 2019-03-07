@@ -276,8 +276,14 @@ Handlebars.registerHelper('FormatDate', function(context, options) {
 });
 
 Handlebars.registerHelper('timeLeft', function(context, options) {
-	var currentDate = moment().format('YYYY-M-DD HH:mm:ss');
-	var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
+
+	//var currentDate = moment().format('YYYY-M-DD HH:mm:ss');
+	//var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
+
+	var date = moment.utc().format();
+	var currentDate = moment.utc(date).local().format('YYYY-M-DD HH:mm:ss');
+	var endDate = moment.utc(context, 'YYYY-M-DD HH:mm:ss').local();
+
 	var secondsDiff = '';
 	if (endDate.diff(currentDate) > 0) {
 		var intervals = ['months','days', 'hours', 'minutes'],
