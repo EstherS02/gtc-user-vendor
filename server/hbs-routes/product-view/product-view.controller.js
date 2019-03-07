@@ -432,7 +432,63 @@ export function product(req, res) {
 					return callback(error, null);
 				});
 			},
-
+			Rating: function(callback) {
+				model['Review'].findAndCountAll({
+					include:[{
+						model: model['Product'],
+						where:{
+							vendor_id: LoggedInUser.Vendor.id
+						}
+					}],
+					attributes: [
+						'rating', 'title', 'comment', 'created_on', 'id', [sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
+					],
+					group: ['Review.rating']
+	
+				}).then(function(Reviews) {
+					var productRating = [{
+						"rating": 7,
+						"userCount": 0
+					}, {
+						"rating": 6,
+						"userCount": 0
+					}, {
+						"rating": 5,
+						"userCount": 0
+					}, {
+						"rating": 4,
+						"userCount": 0
+					}, {
+						"rating": 3,
+						"userCount": 0
+					}, {
+						"rating": 2,
+						"userCount": 0
+					}, {
+						"rating": 1,
+						"userCount": 0
+					}];
+					var total = 0;
+					var totalAmt = 0;
+					var responseRatings = JSON.parse(JSON.stringify(Reviews.rows));
+					if (responseRatings.length > 0) {
+						for (var i = 0; i < productRating.length; i++) {
+							for (var j = 0; j < responseRatings.length; j++) {
+								if (productRating[i].rating == responseRatings[j].rating) {
+									total = total + responseRatings[j].userCount;
+									totalAmt = totalAmt + (responseRatings[j].userCount * responseRatings[j].rating)
+									productRating[i].userCount = responseRatings[j].userCount;
+								}
+							}
+						}
+					}
+					Reviews.avgRating = (totalAmt > 0) ? (totalAmt / total).toFixed(1) : 0;
+					return callback(null, Reviews);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+			}
 		},
 		function(error, results) {
 			var selectedPage;
@@ -473,7 +529,8 @@ export function product(req, res) {
 					marketplace: marketplace,
 					VendorAvgRating: results.VendorAvgRating,
 					categoryWithProductCount: results.categoryWithProductCount,
-					return_url:return_url
+					return_url:return_url,
+					avgRating: results.Rating.avgRating
 				});
 			} else {
 		   		res.render('404');
@@ -740,7 +797,63 @@ export function GetProductReview(req, res) {
 				console.log('Error:::', error);
 				return callback(error, null);
 			});
-		},
+		},Rating: function(callback) {
+			model['Review'].findAndCountAll({
+				include:[{
+					model: model['Product'],
+					where:{
+						vendor_id: LoggedInUser.Vendor.id
+					}
+				}],
+				attributes: [
+					'rating', 'title', 'comment', 'created_on', 'id', [sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
+				],
+				group: ['Review.rating']
+
+			}).then(function(Reviews) {
+				var productRating = [{
+					"rating": 7,
+					"userCount": 0
+				}, {
+					"rating": 6,
+					"userCount": 0
+				}, {
+					"rating": 5,
+					"userCount": 0
+				}, {
+					"rating": 4,
+					"userCount": 0
+				}, {
+					"rating": 3,
+					"userCount": 0
+				}, {
+					"rating": 2,
+					"userCount": 0
+				}, {
+					"rating": 1,
+					"userCount": 0
+				}];
+				var total = 0;
+				var totalAmt = 0;
+				var responseRatings = JSON.parse(JSON.stringify(Reviews.rows));
+				if (responseRatings.length > 0) {
+					for (var i = 0; i < productRating.length; i++) {
+						for (var j = 0; j < responseRatings.length; j++) {
+							if (productRating[i].rating == responseRatings[j].rating) {
+								total = total + responseRatings[j].userCount;
+								totalAmt = totalAmt + (responseRatings[j].userCount * responseRatings[j].rating)
+								productRating[i].userCount = responseRatings[j].userCount;
+							}
+						}
+					}
+				}
+				Reviews.avgRating = (totalAmt > 0) ? (totalAmt / total).toFixed(1) : 0;
+				return callback(null, Reviews);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		}
 	}, function(error, results) {
 		var selectedPage;
 		queryPaginationObj['maxSize'] = 2;
@@ -778,8 +891,8 @@ export function GetProductReview(req, res) {
 				Plan: Plan,
 				VendorAvgRating: results.VendorAvgRating,
 				categoryWithProductCount: results.categoryWithProductCount,
-				return_url:return_url
-
+				return_url:return_url,
+				avgRating: results.Rating.avgRating
 			});
 			} else {
 	   			res.render('404');

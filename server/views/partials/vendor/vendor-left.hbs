@@ -16,7 +16,11 @@
 				</tr>
 				<tr>
 					<td><span class="text-muted">User Rating</span></td>
-					{{#if VendorAvgRating}}
+					<td><div class="p-rating">
+							{{starCount this.avgRating}}
+			            </div>
+					</td>
+					{{!-- {{#if VendorAvgRating}}
 					<td>
 						{{#each VendorAvgRating}}
 						<div class="p-rating">
@@ -26,9 +30,6 @@
 							<a href="/reviews">
 								<strong>({{decimalFixedOne this.rating}} Ratings - See All)</strong>
 							</a>
-								{{!-- <a href="/reviews?vendor_id={{../VendorDetail.id}}">
-								<strong>({{this.count}} Ratings - See All)</strong>
-							</a> --}}
 						</p>
 						{{/each}}
 					</td>
@@ -39,7 +40,7 @@
 			            </div>
 			            <p class="v-rating"><a href="/reviews"><strong>(0 Ratings - See All)</strong></a></p>
 					</td>
-					{{/if}}
+					{{/if}} --}}
 				
 				</tr>
 			</tbody>
