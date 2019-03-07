@@ -21,6 +21,9 @@ module.exports = async function(job, done) {
 		var includeArr = [{
 			model: model['User'],
 			attributes: ['id', 'email', 'user_contact_email', 'email_verified', 'first_name'],
+		},{
+			model: model['Vendor'],
+			attributes: ['id','vendor_name']
 		}]
 		var queryObject = {
 			vendor_id: couponDetails.vendor_id,
@@ -39,9 +42,24 @@ module.exports = async function(job, done) {
 							if (response) {
 								var bodyParamsArray = [];
 								for (let result of results.rows) {
+
+									var couponType;
+									if(couponDetails.discount_type == '1')
+										couponType = '%';
+									else
+										couponType = '$'
+
 									var bodyParams = {};
 									bodyParams.user_id = result.User.id;
-									bodyParams.description = response.description.replace('%couponcode%', couponDetails.code);
+									bodyParams.description = response.description;
+									bodyParams.description = bodyParams.description.replace('%USER_NAME%', result.User.first_name);
+									bodyParams.description = bodyParams.description.replace('%VENDOR_NAME%', result.Vendor.vendor_name);
+									bodyParams.description = bodyParams.description.replace('%AMOUNT%', couponDetails.discount_value);
+									bodyParams.description = bodyParams.description.replace('%TYPE%', couponType);
+									bodyParams.description = bodyParams.description.replace('%COUPON_NAME%', couponDetails.coupon_name);
+									bodyParams.description = bodyParams.description.replace('%COUPON_CODE%', couponDetails.code);
+									bodyParams.description = bodyParams.description.replace('%EXPIRY_DATE%', couponDetails.expiry_date);
+									bodyParams.description = bodyParams.description.replace('%PATH%', '/gtc-mail/compose?id='+result.vendor_id+'&text='+result.Vendor.vendor_name);
 									bodyParams.name = response.name;
 									bodyParams.code = response.code;
 									bodyParams.is_read = 0;
