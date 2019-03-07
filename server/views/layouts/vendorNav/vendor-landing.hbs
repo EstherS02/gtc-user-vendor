@@ -41,6 +41,7 @@
 				data['vendor_id'] = $('#inputSellerId').val();
 				data['category'] = $('#ali_category').val();
 				data['sub_category'] = $('#ali_sub_category').val();
+				data['quantity_available'] = $('#ali_quantity_available').val();
 
 				$('#btnAliExpressFaSpinner').show();
 
@@ -110,6 +111,7 @@
 				credentials['consumer_secret'] = $('#inputConsumerSecret').val();
 				credentials['category'] = $('#category').val();
 				credentials['sub_category'] = $('#sub_category').val();
+				credentials['quantity_available'] = $('#quantity_available').val();
 				$('#btnFaSpinner').show()
 				$.ajax({
 					type: 'POST',
@@ -238,6 +240,7 @@
 				credentials['amazon_marketplace'] = $('#amazon_marketplace').val();
 				credentials['amazon_category'] = $('#amazon_category').val();
 				credentials['amazon_sub_category'] = $('#amazon_sub_category').val();
+				credentials['amazon_quantity_available'] = $('#amazon_quantity_available').val();
 
 				$('#AmazonBtnFaSpinner').show();
 				$.ajax({
@@ -433,6 +436,12 @@
 								</div>
 							</div>
 						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control d-block">Product Quantity</label>
+								<input type="text" name="ali_quantity_available" id="ali_quantity_available" class="form-control-customized form-control-sm"/>
+							</div>
+						</div>
 						{{!-- <div class="col-lg-12 popupError"></div> --}}
 					</div>
 				</div>
@@ -507,6 +516,12 @@
 										<option disabled selected>Select Sub Category...</option>
 									</select>	
 								</div>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control d-block">Product Quantity</label>
+								<input type="text" name="quantity_available" class="form-control-customized form-control-sm"/>
 							</div>
 						</div>
 						{{!-- <div class="col-lg-12 popupError"></div> --}}
@@ -601,6 +616,12 @@
 										<option disabled selected>Select Sub Category...</option>
 									</select>	
 								</div>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control d-block">Product Quantity</label>
+								<input type="text" name="amazon_quantity_available" id="amazon_quantity_available" class="form-control-customized form-control-sm"/>
 							</div>
 						</div>
 						<div class="col-lg-12" id="amazonPopupError"></div>

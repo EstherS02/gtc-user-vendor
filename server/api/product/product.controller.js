@@ -650,7 +650,8 @@ export function importAliExpress(req, res) {
 										user: req.user,
 										category: req.body.category,
 										subCategory: req.body.sub_category,
-										marketplace_id: req.body.marketplace_id
+										marketplace_id: req.body.marketplace_id,
+										productQuantity: req.body.quantity_available
 									});
 									await browser.close();
 									return res.status(200).send("We started importing products from AliExpress. Please check it few minutes later.");

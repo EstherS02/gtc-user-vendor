@@ -766,7 +766,7 @@ export async function vendorProducts(queryObj, offset, limit, field, order) {
 	}
 }
 
-export function importAliExpressProducts(product, user, category, subCategory, marketplaceId) {
+export function importAliExpressProducts(product, user, category, subCategory, marketplaceId, productQuantity) {
 
 	var productQueryObj = {};
 	var newProductObj = {};
@@ -788,7 +788,7 @@ export function importAliExpressProducts(product, user, category, subCategory, m
 					newProductObj['marketplace_id'] = marketplaceId;
 					newProductObj['publish_date'] = new Date();
 					newProductObj['product_category_id'] = category;
-					newProductObj['quantity_available'] = 0;
+					newProductObj['quantity_available'] = productQuantity;
 					newProductObj['sub_category_id'] = subCategory;
 					newProductObj['price'] = product.variations[0].pricing;
 					newProductObj['product_location'] = user.Vendor.Country.id;
@@ -882,7 +882,7 @@ export function importWooCommerceProducts(product, req) {
 					newProductObj['marketplace_id'] = req.body.marketplace_id;
 					newProductObj['publish_date'] = new Date();
 					newProductObj['product_category_id'] = req.body.category;
-					newProductObj['quantity_available'] = 0;
+					newProductObj['quantity_available'] = req.body.quantity_available;
 					newProductObj['sub_category_id'] = req.body.sub_category;
 					newProductObj['price'] = product.price;
 					newProductObj['description'] = product.description;
