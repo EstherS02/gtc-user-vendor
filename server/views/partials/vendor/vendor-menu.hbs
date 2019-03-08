@@ -19,7 +19,7 @@
 					</button>
 					<div class="navbar-collapse collapse" id="vendorNavBar">
 						<ul class="navbar-nav vendor-nav">
-							<li class="nav-item">
+							{{!-- <li class="nav-item">
 								<a href="javascript:;" class="nav-link" style="cursor:default">
 									{{#if LoggedInUser.Vendor.VendorPlans.[0].plan_id}}
 										<b>Current Plan: 
@@ -29,7 +29,6 @@
 												{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.PUBLIC_SELLER}} Retailer
 												{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}} Bulk buyer 
 												{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}} Wholesaler
-												{{!-- {{else}}  --}}
 											{{/ifCond}}
 											{{#ifCond LoggedInUser.UserPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}} 
 												,<br/>
@@ -45,6 +44,13 @@
 										</b> 
 									{{/if}}
 								</a>
+							</li> --}}
+							<li class="nav-item">
+								{{#if LoggedInUser.Vendor.VendorPlans.[0].plan_id}}
+								<a href="/upgradeplan" class="nav-link" style="color:#2775c3 !important;">Current Plan</a>
+								{{else}}
+									<b>Vendor plan expired </b>
+								{{/if}}
 							</li>
 							{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}}
 								<li class="nav-item">
