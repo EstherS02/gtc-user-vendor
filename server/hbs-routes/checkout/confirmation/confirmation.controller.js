@@ -81,6 +81,7 @@ export function confirmation(req, res) {
 			})
 		}
 	}, function(error, results) {
+		res.clearCookie('applied_coupon');
 		if (!error && results) {
 			res.render('checkout/confirmation', {
 				title: "Global Trade Connect",

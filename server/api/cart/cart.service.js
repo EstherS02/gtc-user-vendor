@@ -15,7 +15,7 @@ export async function cartCalculation(userID, req, res) {
 	const cartModelName = "Cart";
 	const couponModelName = "Coupon";
 	var promoCode = req.cookies.applied_coupon ? req.cookies.applied_coupon : null;
-	res.clearCookie('applied_coupon');
+	
 
 	var products = [];
 	var appliedProducts = [];
@@ -241,6 +241,7 @@ export async function cartCalculation(userID, req, res) {
 			}));
 			cart['grand_total_with_discounted_amount'] = (cart['grand_total'] - cart['discount_amount']).toFixed(2);
 		}
+		
 		return cart;
 	} catch (error) {
 		console.log("index Error :::", error);
