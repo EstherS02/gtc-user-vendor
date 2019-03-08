@@ -7,9 +7,8 @@
 		window.location.href = "/store/accounting";
 	}
 
-	function  supportticket()
-	{
-		window.location.href= "/support/ticket";
+	function supportticket() {
+		window.location.href = "/support/ticket";
 	}
 
 	$(document).ready(function() {
@@ -52,7 +51,7 @@
 			if (current.indexOf($this.attr('href')) !== -1) {
 				$this.addClass('active');
 			}
-		}); 
+		});
 
 		$('#collapseGTCMail li a').each(function() {
 			var $this = $(this);
@@ -60,7 +59,7 @@
 				$('#collapseGTCMail').addClass('show');
 			}
 		});
-		
+
 		$('#collapseMarketplaceListing li a').each(function() {
 			var $this = $(this);
 			if ($this.attr('class') && $this.attr('class').indexOf('active') !== -1) {
@@ -81,7 +80,7 @@
 				$('#collapseAccounting').addClass('show');
 			}
 		});
-		
+
 		$('#collapse4Support li a').each(function() {
 			var $this = $(this);
 			if ($this.attr('class') && $this.attr('class').indexOf('active') !== -1) {
@@ -92,73 +91,77 @@
 </script>
 
 {{#if LoggedInUser.Vendor.id}}
+	<label style="color: #2775c3 !important; font-size: 15px;">Vendor Infomation :</label>
 	<div class="dropdown-v-list">
+
 		<ul id="StoreNavbar">
 			<li>
-				<a data-toggle="collapse" href="#collapseReporting" role="button" aria-expanded="false" aria-controls="collapseReporting" id="ReportingLink" onclick="openReportPage()">Reporting</a>
+				<a data-toggle="collapse" href="#collapseReporting" role="button" aria-expanded="false" aria-controls="collapseReporting"
+				 id="ReportingLink" onclick="openReportPage()">Reporting</a>
 				{{#if LoggedInUser.Vendor.VendorPlans}}
-				<ul class="collapse m-l vs-nav" id="collapseReporting">
-					<li class="nav-bar">
-						<a class="vs-link" href="/store/performance">Performance</a>
-					</li>
-					<li class="nav-bar">
-						<a href="/store/sales-history" class="vs-link">Sales History</a>
-					</li>
-					<li class="nav-bar">
-						<a data-toggle="collapse" href="#collapseAccounting" role="button" aria-expanded="false" aria-controls="collapseAccounting" id="AccountingLink" onclick="openAccountingPage()">Accounting</a>
-						<ul class="collapse m-l vs-nav" id="collapseAccounting">
-							<li class="nav-bar">
-								<a href="/store/revenue">Ad Revenue</a>
-							</li>
-							<li class="nav-bar">
-								<a href="/store/processing">Processing Fees</a>
-							</li>
-							<li class="nav-bar">
-								<a href="/store/plan-fees">Subscription Fees</a>
-							</li>
-							<li class="nav-bar">
-								<a href="/store/gtcpay">Escrow Fees</a>
-							</li>
-							<li class="nav-bar">
-								<a href="/store/membership">Membership Fees</a>
-							</li>
-							<li class="nav-bar">
-								<a href="/store/tax">Tax Summary</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
+					<ul class="collapse m-l vs-nav" id="collapseReporting">
+						<li class="nav-bar">
+							<a class="vs-link" href="/store/performance">Performance</a>
+						</li>
+						<li class="nav-bar">
+							<a href="/store/sales-history" class="vs-link">Sales History</a>
+						</li>
+						<li class="nav-bar">
+							<a data-toggle="collapse" href="#collapseAccounting" role="button" aria-expanded="false" aria-controls="collapseAccounting"
+							 id="AccountingLink" onclick="openAccountingPage()">Accounting</a>
+							<ul class="collapse m-l vs-nav" id="collapseAccounting">
+								<li class="nav-bar">
+									<a href="/store/revenue">Ad Revenue</a>
+								</li>
+								<li class="nav-bar">
+									<a href="/store/processing">Processing Fees</a>
+								</li>
+								<li class="nav-bar">
+									<a href="/store/plan-fees">Subscription Fees</a>
+								</li>
+								<li class="nav-bar">
+									<a href="/store/gtcpay">Escrow Fees</a>
+								</li>
+								<li class="nav-bar">
+									<a href="/store/membership">Membership Fees</a>
+								</li>
+								<li class="nav-bar">
+									<a href="/store/tax">Tax Summary</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
 				{{/if}}
 			</li>
 			<li class="nav-bar">
 				<a href="/my-order/order" class="vs-link">My Orders</a>
 			</li>
 			{{#if LoggedInUser.Vendor.VendorPlans}}
-			<li>
-				<a data-toggle="collapse" href="#collapseMarketplaceListing" role="button" aria-expanded="false" aria-controls="collapseMarketplaceListing">Edit Listings</a>
-				<ul class="collapse m-l vs-nav" id="collapseMarketplaceListing">
-				{{#marketplacePermission LoggedInUser.Vendor.VendorPlans.[0].Plan.id 1}}
-					<li class="nav-bar">
-						<a href="/listings/wholesale" class="vs-link">Wholesale Listings</a>
-					</li>
-				{{/marketplacePermission}}
-				{{#marketplacePermission LoggedInUser.Vendor.VendorPlans.[0].Plan.id 2}} 
-					<li class="nav-bar">
-						<a href="/listings/shop" class="vs-link">Shop Listings</a>
-					</li>	
-				{{/marketplacePermission}}
-				{{#marketplacePermission LoggedInUser.Vendor.VendorPlans.[0].Plan.id 3}}
-					<li class="nav-bar">
-						<a href="/listings/services" class="vs-link">Services Listings</a>
-					</li>	
-				{{/marketplacePermission}}
-				{{#marketplacePermission LoggedInUser.Vendor.VendorPlans.[0].Plan.id 4}}
-					<li class="nav-bar">
-						<a href="/listings/lifestyle" class="vs-link">Subscription Listings</a>
-					</li>
-				{{/marketplacePermission}}				
-				</ul>
-			</li>
+				<li>
+					<a data-toggle="collapse" href="#collapseMarketplaceListing" role="button" aria-expanded="false" aria-controls="collapseMarketplaceListing">Edit Listings</a>
+					<ul class="collapse m-l vs-nav" id="collapseMarketplaceListing">
+						{{#marketplacePermission LoggedInUser.Vendor.VendorPlans.[0].Plan.id 1}}
+							<li class="nav-bar">
+								<a href="/listings/wholesale" class="vs-link">Wholesale Listings</a>
+							</li>
+						{{/marketplacePermission}}
+						{{#marketplacePermission LoggedInUser.Vendor.VendorPlans.[0].Plan.id 2}}
+							<li class="nav-bar">
+								<a href="/listings/shop" class="vs-link">Shop Listings</a>
+							</li>
+						{{/marketplacePermission}}
+						{{#marketplacePermission LoggedInUser.Vendor.VendorPlans.[0].Plan.id 3}}
+							<li class="nav-bar">
+								<a href="/listings/services" class="vs-link">Services Listings</a>
+							</li>
+						{{/marketplacePermission}}
+						{{#marketplacePermission LoggedInUser.Vendor.VendorPlans.[0].Plan.id 4}}
+							<li class="nav-bar">
+								<a href="/listings/lifestyle" class="vs-link">Subscription Listings</a>
+							</li>
+						{{/marketplacePermission}}
+					</ul>
+				</li>
 			{{/if}}
 			<li class="nav-bar">
 				<a href="/coupons" class="vs-link">Edit/Add Coupons</a>
@@ -193,7 +196,9 @@
 		</ul>
 	</div>
 	<hr/>
+	<label style="color: #2775c3 !important; font-size: 15px;">Personal Infomation :</label>
 {{/if}}
+
 <div class="dropdown-v-list">
 	<ul id="UserNavbar" class="vs-nav">
 		<li class="nav-bar">
@@ -212,13 +217,13 @@
 			<a href="/billing-settings" class="vs-link">Billing Settings</a>
 		</li>
 		{{#if LoggedInUser.Vendor.id}}
-		<li class="nav-bar">
-			<a href="/upgradeplan" class="vs-link">Upgrade Plan</a>
-		</li>
+			<li class="nav-bar">
+				<a href="/upgradeplan" class="vs-link">Upgrade Plan</a>
+			</li>
 		{{else}}
-		<li class="nav-bar">
-			<a href="/upgradeplan/userBulkupgradePlan" class="vs-link">Upgrade Plan</a>
-		</li>
+			<li class="nav-bar">
+				<a href="/upgradeplan/userBulkupgradePlan" class="vs-link">Upgrade Plan</a>
+			</li>
 		{{/if}}
 		<li class="nav-bar">
 			<a href="/user/my-profile" class="vs-link">Profile Settings</a>
@@ -241,9 +246,9 @@
 					<a href="/gtc-mail/deleted" class="vs-link">Deleted</a>
 				</li>
 				{{#if LoggedInUser.Vendor.id}}
-				<li class="nav-bar">
-					<a href="/gtc-mail/mail-settings" class="vs-link">GTC Mail Settings</a>
-				</li>
+					<li class="nav-bar">
+						<a href="/gtc-mail/mail-settings" class="vs-link">GTC Mail Settings</a>
+					</li>
 				{{/if}}
 			</ul>
 		</li>
@@ -260,9 +265,9 @@
 					<a href="/support/faq" class="vs-link">FAQ</a>
 				</li>
 				{{#if LoggedInUser.Vendor.id}}
-				<li class="nav-bar">
-					<a href="javascript:;" class="vs-link pointer" id="supportLink" onclick="supportticket()">Ticket History</a>
-				</li>
+					<li class="nav-bar">
+						<a href="javascript:;" class="vs-link pointer" id="supportLink" onclick="supportticket()">Ticket History</a>
+					</li>
 				{{/if}}
 				<li class="nav-bar">
 					<a href="javascript:;" class="vs-link"> Direct Support(?)</a>
@@ -276,7 +281,9 @@
 {{else}}
 	<a href="/vendor-form">
 		<button class="ladda-button btn btn-md update-btn m-t" data-style="expand-left">
-			<span class="ladda-label"><b>Become a Vendor</b></span>
+			<span class="ladda-label">
+				<b>Become a Vendor</b>
+			</span>
 		</button>
 	</a>
 {{/if}}
