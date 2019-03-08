@@ -71,7 +71,9 @@ export function featureProductWithPayment(req, res) {
 				if (!row) {
 
 					req.query.start_date = moment(req.query.start_date, 'MM/DD/YYYY').local().format('YYYY-MM-DD HH:mm:ss');
-					req.query.end_date = moment(req.query.end_date, 'MM/DD/YYYY').local().format('YYYY-MM-DD HH:mm:ss');
+
+					if(req.query.end_date)
+						req.query.end_date = moment(req.query.end_date, 'MM/DD/YYYY').local().format('YYYY-MM-DD HH:mm:ss');
 
 					var featuredProductBodyParam = req.query;
 
@@ -106,13 +108,13 @@ export function featureProductWithPayment(req, res) {
 											.then(function(featuredRow) {
 												return res.status(200).send({
 													"message": "SUCCESS",
-													"messageDetails": "Product Featured Successfully"
+													"messageDetails": "Product Featured Successfully."
 												});
 											}).catch(function(error) {
 												console.log("Error::",error);
 												return res.status(400).send({
 													"message": "ERROR",
-													"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
+													"messageDetails": "Unable to feature this product at the moment , Please try again later.",
 													"errorDescription": error
 												});
 											})
@@ -120,21 +122,21 @@ export function featureProductWithPayment(req, res) {
 										console.log("Error::",error);
 										return res.status(400).send({
 											"message": "ERROR",
-											"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
+											"messageDetails": "Unable to feature this product at the moment , Please try again later.",
 											"errorDescription": error
 										});
 									})
 							} else {
 								return res.status(500).send({
 									"message": "ERROR",
-									"messageDetails": "Featuring Product UnSuccessfull with Stripe Payment Error. Please try after sometimes"
+									"messageDetails": "Featuring Product UnSuccessfull with Stripe Payment Error, Please try again later."
 								});
 							}
 						}).catch(function(error) {
 							console.log("Error::",error);
 							return res.status(500).send({
 								"message": "ERROR",
-								"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
+								"messageDetails": "Unable to feature this product at the moment , Please try again later.",
 								"errorDescription": error
 							});
 						})
@@ -147,7 +149,7 @@ export function featureProductWithPayment(req, res) {
 			}).catch(function(error) {
 				return res.status(500).send({
 					"message": "ERROR",
-					"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
+					"messageDetails": "Unable to feature this product at the moment , Please try again later.",
 					"errorDescription": error
 				});
 			});
@@ -164,8 +166,10 @@ export function featureProductWithoutPayment(req, res){
 			.then(function(row) {
 				if (!row) {
 
-					req.query.start_date = moment(req.query.start_date, 'MM/DD/YYYY').local().format('YYYY-MM-DD HH:mm:ss');
-					req.query.end_date = moment(req.query.end_date, 'MM/DD/YYYY').local().format('YYYY-MM-DD HH:mm:ss');
+					req.body.start_date = moment(req.body.start_date, 'MM/DD/YYYY').local().format('YYYY-MM-DD HH:mm:ss');
+
+					if(req.body.end_date)
+						req.body.end_date = moment(req.body.end_date, 'MM/DD/YYYY').local().format('YYYY-MM-DD HH:mm:ss');
 
 					var featuredProductBodyParam = req.body;
 					featuredProductBodyParam['status'] =status.ACTIVE;
@@ -175,13 +179,13 @@ export function featureProductWithoutPayment(req, res){
 						.then(function(featuredRow) {
 							return res.status(200).send({
 								"message": "SUCCESS",
-								"messageDetails": "Product Featured Successfully"
+								"messageDetails": "Product Featured Successfully."
 							});
 						}).catch(function(error) {
 							console.log("Error::",error);
 							return res.status(400).send({
 								"message": "ERROR",
-								"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
+								"messageDetails": "Unable to feature this product at the moment , Please try again later.",
 								"errorDescription": error
 							});
 						})
@@ -195,7 +199,7 @@ export function featureProductWithoutPayment(req, res){
 				console.log("Error::",error);
 				return res.status(500).send({
 					"message": "ERROR",
-					"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
+					"messageDetails": "Unable to feature this product at the moment , Please try again later.",
 					"errorDescription": error
 				});
 			});
