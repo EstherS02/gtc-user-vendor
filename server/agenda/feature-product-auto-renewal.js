@@ -89,7 +89,7 @@ function FeatureAutoRenewal(eachFeature){
 	var startDate, featureRenewOn, renewalAmount, renewalPaymentId;
 
 	startDate = eachFeature.start_date;
-	featureRenewOn = moment(startDate, "YYYY-MM-DD").add(+28, 'd');
+	featureRenewOn = moment(startDate, "YYYY-MM-DD").add(+30, 'd');
 	renewalAmount = eachFeature.Payment.amount;
 
 	if (featureRenewOn < currentDate) {

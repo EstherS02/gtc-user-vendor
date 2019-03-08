@@ -733,7 +733,7 @@ $(document).ready(function() {
 	
 					amount = $("#totalFees").html();
 	
-					sum = amount * featureDuration / 28;
+					sum = amount * featureDuration / 30;
 					totalFeatureFees = sum.toFixed(2);
 	
 					$("#feature_total").html(totalFeatureFees);
