@@ -72,8 +72,6 @@
 						//auth.alertService(xhr.status, data);
 						//location.href = '/coupons';
 
-						console.log("***************",xhr.status, data )
-
 						$('#gtc-coupon-alert').removeClass('alert-danger').addClass('alert-success');
 						$('#gtc-coupon-alert .coupon-message').text(data)
 						$("#gtc-coupon-alert").fadeTo(7000, 500).slideUp(500, function() {
@@ -252,12 +250,12 @@
 										<div class="form-group">
 											<div class="input-group">
 												<select name="discount_type" id="inputDiscountType" class="custom-select form-control-customized form-control-sm custom_left_arrow_style" required="true">
-														{{#select coupon.discount_type}}
-															<option value='' selected disabled="true">Discount Type</option>
-															<option value="1">Percentage</option>
-															<option value="2">Fixed Price</option>
-														{{/select}}
-													</select>											
+													{{#select coupon.discount_type}}
+														<option value='' selected disabled="true">Discount Type</option>
+														<option value="1">Percentage</option>
+														<option value="2">Fixed Price</option>
+													{{/select}}
+												</select>											
 											</div>
 										</div>
 										</div>

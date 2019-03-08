@@ -868,6 +868,7 @@ export function makePlanPayment(req, res) {
 			}
 		}).then(function(deactivatedProducts) {
 			if (vendorId != 0) {
+
 				var productActivateQueryObj = {},
 					productActivateBodyParam = {};
 

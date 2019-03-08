@@ -454,23 +454,24 @@ export async function applyCoupon(req, res) {
 
 						if (coupon.CouponCategories.length == 0 && coupon.CouponExcludedCategories.length > 0) {
 							var couponExcludedCategoryProducts = await _.map(coupon.CouponExcludedCategories, 'category_id');
-							appliedCategoryProducts = await _.filter(products, function(excludeProduct) {
+							appliedCategoryProducts = await _.filter(appliedProducts, function(excludeProduct) {
 								return couponExcludedCategoryProducts.indexOf(excludeProduct.product_category_id) === -1;
 							});
 						} else if (coupon.CouponCategories.length > 0) {
 							var couponCategoryProducts = await _.map(coupon.CouponCategories, 'category_id');
-							appliedCategoryProducts = await _.filter(products, function(product) {
+							appliedCategoryProducts = await _.filter(appliedProducts, function(product) {
 								return couponCategoryProducts.indexOf(product.product_category_id) > -1;
 							});
 						} else {
-							appliedCategoryProducts = await products;
+							appliedCategoryProducts = await appliedProducts;
 						}
 
-						var tmpProducts = await _.union(appliedProducts, appliedCategoryProducts);
-						if (tmpProducts.length > 0) {
-							finalProducts = await _.uniqBy(tmpProducts, 'id');
-						}
 
+						// var tmpProducts = await _.union(appliedProducts, appliedCategoryProducts);
+						// if (tmpProducts.length > 0) {
+							finalProducts = await _.uniqBy(appliedCategoryProducts, 'id');
+						// }
+						
 						var errorResponse = "Coupon failed to apply.";
 						var appliedCouponCode;
 
