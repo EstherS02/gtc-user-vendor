@@ -1,22 +1,37 @@
 <script>
 	$(document).ready(function(){
-    $("#filter").keyup(function(){
-		
-        var filter = $(this).val(), count = 0;
-       $(".commentlist li").each(function(){
-            if ($(this).find('.card-question').text().search(new RegExp(filter, "i")) < 0) {
-                $(this).hide();
-            } else {
-                $(this).show();
-                count++;
-            }
-        });
-        var numberItems = count;
-        $("#filter-count").text("Number of Comments = "+count);
-		
-    });
-});
+		$("#filter").keyup(function(){
+			
+			var filter = $(this).val(), count = 0;
+		$(".commentlist li").each(function(){
+				if ($(this).find('.card-question').text().search(new RegExp(filter, "i")) < 0) {
+					$(this).hide();
+				} else {
+					$(this).show();
+					count++;
+				}
+			});
+			var numberItems = count;
+			$("#filter-count").text("Number of Comments = "+count);
+			
+		});
+		$(".rotate").click(function () {
+			$(this).find(".arrow").toggleClass("down");
+		})
+	});
 </script>
+<style>
+	.arrow {
+		-moz-transition: all .5s linear;
+		-webkit-transition: all .5s linear;
+		transition: all .5s linear;
+	}
+	.arrow.down {
+		-moz-transform:rotate(180deg);
+		-webkit-transform:rotate(180deg);
+		transform:rotate(180deg);
+	}
+</style>
 
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
@@ -49,9 +64,10 @@
 								<div class="col-md-12">
 									<ul style="list-style-type:none;" class="commentlist">
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question1" aria-expanded="false" aria-controls="question1">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question1" aria-expanded="false" aria-controls="question1">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Is there a membership fee?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question1">
 												<div class="card-body d-flex">
@@ -61,9 +77,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question2" aria-expanded="false" aria-controls="question2">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question2" aria-expanded="false" aria-controls="question2">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Forgot password / How to retrieve account?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question2">
 												<div class="card-body d-flex">
@@ -73,9 +90,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question3" aria-expanded="false" aria-controls="question3">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question3" aria-expanded="false" aria-controls="question3">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What are the grounds that my account will be temporarily suspended or permanently disabled?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question3">
 												<div class="card-body d-flex">
@@ -85,9 +103,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question4" aria-expanded="false" aria-controls="question4">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question4" aria-expanded="false" aria-controls="question4">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What actions does GlobalTradeConnect take if a buyer is misusing refunds?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question4">
 												<div class="card-body d-flex">
@@ -103,9 +122,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question5" aria-expanded="false" aria-controls="question5">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question5" aria-expanded="false" aria-controls="question5">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What should I include in my Return Policy?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question5">
 												<div class="card-body d-flex">
@@ -119,9 +139,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question6" aria-expanded="false" aria-controls="question6">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question6" aria-expanded="false" aria-controls="question6">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Is ordering online secure? / Is my personal information kept private?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question6">
 												<div class="card-body d-flex">
@@ -131,9 +152,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question7" aria-expanded="false" aria-controls="question7">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question7" aria-expanded="false" aria-controls="question7">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How do I track my orders?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question7">
 												<div class="card-body d-flex">
@@ -143,9 +165,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question8" aria-expanded="false" aria-controls="question8">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question8" aria-expanded="false" aria-controls="question8">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How can I connect my account with PayPal and Stripe?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question8">
 												<div class="card-body d-flex">
@@ -160,9 +183,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question9" aria-expanded="false" aria-controls="question9">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question9" aria-expanded="false" aria-controls="question9">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Do you have an app?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question9">
 												<div class="card-body d-flex">
@@ -173,9 +197,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question10" aria-expanded="false" aria-controls="question10">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question10" aria-expanded="false" aria-controls="question10">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Will there be any additional charges for the item to be listed on the featured products?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question10">
 												<div class="card-body d-flex">
@@ -185,9 +210,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question11" aria-expanded="false" aria-controls="question11">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question11" aria-expanded="false" aria-controls="question11">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How do I place my order?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question11">
 												<div class="card-body d-flex">
@@ -201,9 +227,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question12" aria-expanded="false" aria-controls="question12">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question12" aria-expanded="false" aria-controls="question12">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How can I create a Coupon Code?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question12">
 												<div class="card-body d-flex">
@@ -213,9 +240,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question13" aria-expanded="false" aria-controls="question13">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question13" aria-expanded="false" aria-controls="question13">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How do I view what’s in my shopping cart?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question13">
 												<div class="card-body d-flex">
@@ -225,9 +253,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question14" aria-expanded="false" aria-controls="question14">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question14" aria-expanded="false" aria-controls="question14">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How do I add items to my cart?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question14">
 												<div class="card-body d-flex">
@@ -237,9 +266,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question15" aria-expanded="false" aria-controls="question15">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question15" aria-expanded="false" aria-controls="question15">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How do I remove items from my cart?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question15">
 												<div class="card-body d-flex">
@@ -250,9 +280,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question16" aria-expanded="false" aria-controls="question16">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question16" aria-expanded="false" aria-controls="question16">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How do I change the quantity of a particular item in my cart?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question16">
 												<div class="card-body d-flex">
@@ -264,9 +295,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question17" aria-expanded="false" aria-controls="question17">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question17" aria-expanded="false" aria-controls="question17">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How will I know that you have received my order?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question17">
 												<div class="card-body d-flex">
@@ -277,9 +309,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question18" aria-expanded="false" aria-controls="question18">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question18" aria-expanded="false" aria-controls="question18">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What are your shipping and handling rates?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question18">
 												<div class="card-body d-flex">
@@ -290,9 +323,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question19" aria-expanded="false" aria-controls="question19">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question19" aria-expanded="false" aria-controls="question19">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What is your return policy?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question19">
 												<div class="card-body d-flex">
@@ -303,9 +337,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question20" aria-expanded="false" aria-controls="question20">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question20" aria-expanded="false" aria-controls="question20">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What if I have received a defective item?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question20">
 												<div class="card-body d-flex">
@@ -316,9 +351,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question21" aria-expanded="false" aria-controls="question21">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question21" aria-expanded="false" aria-controls="question21">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How long after placing my order should I expect to receive my shipment?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question21">
 												<div class="card-body d-flex">
@@ -329,9 +365,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question22" aria-expanded="false" aria-controls="question22">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question22" aria-expanded="false" aria-controls="question22">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How do I select items to purchase?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question22">
 												<div class="card-body d-flex">
@@ -342,9 +379,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question23" aria-expanded="false" aria-controls="question23">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question23" aria-expanded="false" aria-controls="question23">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How do I know if an item is in stock?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question23">
 												<div class="card-body d-flex">
@@ -355,9 +393,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question24" aria-expanded="false" aria-controls="question24">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question24" aria-expanded="false" aria-controls="question24">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Can I deliver to another address, other than my card billing address?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question24">
 												<div class="card-body d-flex">
@@ -368,9 +407,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question25" aria-expanded="false" aria-controls="question25">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question25" aria-expanded="false" aria-controls="question25">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Cancellation policy or if a customer wants to change order after it has been checked out.</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question25">
 												<div class="card-body d-flex">
@@ -381,9 +421,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question26" aria-expanded="false" aria-controls="question26">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question26" aria-expanded="false" aria-controls="question26">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What if there are missing or wrong items when I receive my order?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question26">
 												<div class="card-body d-flex">
@@ -394,9 +435,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question27" aria-expanded="false" aria-controls="question27">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question27" aria-expanded="false" aria-controls="question27">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question"> Is there a minimum order quantity?
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question27">
 												<div class="card-body d-flex">
@@ -407,9 +449,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question28" aria-expanded="false" aria-controls="question28">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question28" aria-expanded="false" aria-controls="question28">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What if I was charged twice?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question28">
 												<div class="card-body d-flex">
@@ -420,9 +463,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question29" aria-expanded="false" aria-controls="question29">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question29" aria-expanded="false" aria-controls="question29">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Getting an error message when entering the shipping and billing</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question29">
 												<div class="card-body d-flex">
@@ -433,9 +477,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question30" aria-expanded="false" aria-controls="question30">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question30" aria-expanded="false" aria-controls="question30">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">My Order Won’t Go Through. What Should I Do?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question30">
 												<div class="card-body d-flex">
@@ -446,9 +491,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question31" aria-expanded="false" aria-controls="question31">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question31" aria-expanded="false" aria-controls="question31">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Unsure about the size or have a fit question (applies to apparels / shoes)</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question31">
 												<div class="card-body d-flex">
@@ -459,9 +505,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question32" aria-expanded="false" aria-controls="question32">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question32" aria-expanded="false" aria-controls="question32">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Delivery charges and fees</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question32">
 												<div class="card-body d-flex">
@@ -472,9 +519,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question33" aria-expanded="false" aria-controls="question33">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question33" aria-expanded="false" aria-controls="question33">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question"> If sent internationally, will there be additional fees?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question33">
 												<div class="card-body d-flex">
@@ -485,9 +533,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question34" aria-expanded="false" aria-controls="question34">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question34" aria-expanded="false" aria-controls="question34">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How can I change my shipping address?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question34">
 												<div class="card-body d-flex">
@@ -498,9 +547,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question35" aria-expanded="false" aria-controls="question35">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question35" aria-expanded="false" aria-controls="question35">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Is there a check out limit?
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question35">
 												<div class="card-body d-flex">
@@ -511,9 +561,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question36" aria-expanded="false" aria-controls="question36">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question36" aria-expanded="false" aria-controls="question36">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How are the orders shipped (courier / freight services)</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question36">
 												<div class="card-body d-flex">
@@ -524,9 +575,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question37" aria-expanded="false" aria-controls="question37">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question37" aria-expanded="false" aria-controls="question37">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Can I do a reservation on my desired item? </span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question37">
 												<div class="card-body d-flex">
@@ -537,9 +589,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question38" aria-expanded="false" aria-controls="question38">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question38" aria-expanded="false" aria-controls="question38">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Can I learn enough about the product I want to buy?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question38">
 												<div class="card-body d-flex">
@@ -550,9 +603,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question39" aria-expanded="false" aria-controls="question39">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question39" aria-expanded="false" aria-controls="question39">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How will I know if it's a legitimate seller and not a scam?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question39">
 												<div class="card-body d-flex">
@@ -563,9 +617,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question40" aria-expanded="false" aria-controls="question40">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question40" aria-expanded="false" aria-controls="question40">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center">Why should I sell on GlobalTradeConnect.com?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question40">
 												<div class="card-body d-flex">
@@ -576,9 +631,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question41" aria-expanded="false" aria-controls="question41">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question41" aria-expanded="false" aria-controls="question41">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How do I register myself as a seller on GlobalTradeConnect.com? </span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question41">
 												<div class="card-body d-flex">
@@ -589,9 +645,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question42" aria-expanded="false" aria-controls="question42">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question42" aria-expanded="false" aria-controls="question42">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Are there charges to sell on GlobalTradeConnect.com?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question42">
 												<div class="card-body d-flex">
@@ -602,9 +659,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question43" aria-expanded="false" aria-controls="question43">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question43" aria-expanded="false" aria-controls="question43">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Are there any fees associated when I purchase on GlobalTradeConnect.com?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question43">
 												<div class="card-body d-flex">
@@ -615,9 +673,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question44" aria-expanded="false" aria-controls="question44">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question44" aria-expanded="false" aria-controls="question44">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Who can sell on GlobalTradeConnect.com? </span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question44">
 												<div class="card-body d-flex">
@@ -629,9 +688,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question45" aria-expanded="false" aria-controls="question45">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question45" aria-expanded="false" aria-controls="question45">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What products can I sell on GlobalTradeConnect.com?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question45">
 												<div class="card-body d-flex">
@@ -642,9 +702,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question46" aria-expanded="false" aria-controls="question46">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question46" aria-expanded="false" aria-controls="question46">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">I don't have a website, can I still sell on GlobalTradeConnect.com? </span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question46">
 												<div class="card-body d-flex">
@@ -655,9 +716,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question47" aria-expanded="false" aria-controls="question47">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question47" aria-expanded="false" aria-controls="question47">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How does selling on GlobalTradeConnect.com work? </span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question47">
 												<div class="card-body d-flex">
@@ -668,9 +730,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question48" aria-expanded="false" aria-controls="question48">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question48" aria-expanded="false" aria-controls="question48">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How can I increase my sales?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question48">
 												<div class="card-body d-flex">
@@ -681,9 +744,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question49" aria-expanded="false" aria-controls="question49">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question49" aria-expanded="false" aria-controls="question49">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What should I include in my return policy?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question49">
 												<div class="card-body d-flex">
@@ -694,9 +758,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question50" aria-expanded="false" aria-controls="question50">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question50" aria-expanded="false" aria-controls="question50">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Can I buy from a seller offline?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question50">
 												<div class="card-body d-flex">
@@ -707,9 +772,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question52" aria-expanded="false" aria-controls="question52">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question52" aria-expanded="false" aria-controls="question52">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How do I list my products on GlobalTradeConnect.com? </span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question52">
 												<div class="card-body d-flex">
@@ -720,9 +786,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question53" aria-expanded="false" aria-controls="question53">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question53" aria-expanded="false" aria-controls="question53">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Can I sell immediately after registering?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question53">
 												<div class="card-body d-flex">
@@ -733,9 +800,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question54" aria-expanded="false" aria-controls="question54">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question54" aria-expanded="false" aria-controls="question54">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How will I get paid? </span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question54">
 												<div class="card-body d-flex">
@@ -746,9 +814,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question55" aria-expanded="false" aria-controls="question55">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question55" aria-expanded="false" aria-controls="question55">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Are there different ways to pay?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question55">
 												<div class="card-body d-flex">
@@ -759,9 +828,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question56" aria-expanded="false" aria-controls="question56">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question56" aria-expanded="false" aria-controls="question56">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How do I keep track of sales and orders?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question56">
 												<div class="card-body d-flex">
@@ -772,9 +842,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question57" aria-expanded="false" aria-controls="question57">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question57" aria-expanded="false" aria-controls="question57">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">After payment, when do I receive the product? </span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question57">
 												<div class="card-body d-flex">
@@ -785,9 +856,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question58" aria-expanded="false" aria-controls="question58">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question58" aria-expanded="false" aria-controls="question58">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">How do I calculate customs costs?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question58">
 												<div class="card-body d-flex">
@@ -798,9 +870,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question59" aria-expanded="false" aria-controls="question59">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question59" aria-expanded="false" aria-controls="question59">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">Am I able to cancel for my purchased subscription on GlobalTradeConnect.com?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question59">
 												<div class="card-body d-flex">
@@ -811,10 +884,11 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question60" aria-expanded="false" aria-controls="question60">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question60" aria-expanded="false" aria-controls="question60">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">If I list my products on GlobalTradeConnect.com, will the customer know that they
 													are purchasing from my business on GlobalTradeConnect.com? </span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question60">
 												<div class="card-body d-flex">
@@ -825,9 +899,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question61" aria-expanded="false" aria-controls="question61">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question61" aria-expanded="false" aria-controls="question61">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What is FOB?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question61">
 												<div class="card-body d-flex">
@@ -838,9 +913,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question62" aria-expanded="false" aria-controls="question62">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question62" aria-expanded="false" aria-controls="question62">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What is an Export License? </span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question62">
 												<div class="card-body d-flex">
@@ -851,9 +927,10 @@
 											</div>
 										</li>
 										<li>
-											<div class="card-body cursor d-flex" data-toggle="collapse" data-target="#question63" aria-expanded="false" aria-controls="question63">
+											<div class="card-body cursor d-flex rotate" data-toggle="collapse" data-target="#question63" aria-expanded="false" aria-controls="question63">
 												<span class="float-left m-r symbol-q">Q</span>
 												<span class="float-right card-text justify-content-center align-self-center card-question">What is CPT?</span>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i class="fas fa-chevron-down arrow"></i></small>
 											</div>
 											<div class="collapse bg-gray" id="question63">
 												<div class="card-body d-flex">
