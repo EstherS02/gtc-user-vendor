@@ -25,6 +25,7 @@ const _ = require('lodash');
 const stripe = require('../../payment/stripe.payment');
 const paymentMethod = require('../../config/payment-method');
 const durationUnitCode = require('../../config/duration-unit');
+const gtcPlan = require('../../config/gtc-plan');
 
 export function productView(req, res) {
 	var productID = req.params.id;
@@ -749,6 +750,7 @@ export async function importEbay(req, res) {
 	params.code = req.query.code;
 	params.grant_type = 'authorization_code';
 	params.redirect_uri = config.ebay.redirectUri;
+	var marketplaceId;
 
 	try {
 		if (vendorCurrentPlan) {
@@ -756,9 +758,9 @@ export async function importEbay(req, res) {
 			const planStartDate = moment(vendorCurrentPlan.start_date).format('YYYY-MM-DD');
 			const planEndDate = moment(vendorCurrentPlan.end_date).format('YYYY-MM-DD');
 			if (currentDate >= planStartDate && currentDate <= planEndDate) {
-				var actionsValues = planPermissions[vendorCurrentPlan.plan_id][marketplace['PUBLIC']];
-				if (actionsValues && Array.isArray(actionsValues) && actionsValues.length > 0) {
-					if (getIndexOfAction(actionsValues, '*') > -1) {
+				//var actionsValues = planPermissions[vendorCurrentPlan.plan_id][marketplace['PUBLIC']];
+				//if (actionsValues && Array.isArray(actionsValues) && actionsValues.length > 0) {
+					//if (getIndexOfAction(actionsValues, '*') > -1) {
 						const loginResponse = await getEbayToken(params);
 						ebayCredentials['accessToken'] = loginResponse.access_token;
 						ebayCredentials['startTimeFrom'] = '2018-08-13T00:00:00.000Z';
@@ -784,14 +786,33 @@ export async function importEbay(req, res) {
 								const planLimit = await service.findOneRow(planLimitModelName, queryObjPlanLimit);
 
 								if (planLimit) {
-									maximumProductLimit = planLimit.maximum_product;
+
+									if(vendorCurrentPlan == gtcPlan['STARTER_SELLER'])
+										marketplaceId = 2;
+									else if(vendorCurrentPlan == gtcPlan['SERVICE_PROVIDER'])
+										marketplaceId = 3;
+									else if(vendorCurrentPlan == gtcPlan['LIFESTYLE_PROVIDER'])
+										marketplaceId = 4;
+									else if(vendorCurrentPlan == gtcPlan['PUBLIC_SELLER'])
+										marketplaceId = 2;
+									else if(vendorCurrentPlan == gtcPlan['WHOLESALER'])
+										marketplaceId = 1;
+
+									if(marketplaceId == marketplace.WHOLESALE || marketplaceId == marketplace.PUBLIC)
+										maximumProductLimit = planLimit.maximum_product;
+									else if(marketplaceId == marketplace.SERVICE)
+										maximumProductLimit = planLimit.maximum_services;
+									else if(marketplaceId == marketplace.LIFESTYLE)
+										maximumProductLimit = planLimit.maximum_subscription;
+
 									const existingProductCount = await service.countRows(productModelName, queryObjProduct);
 									const remainingProductLength = maximumProductLimit - existingProductCount;
 
 									if (totalNumberOfEntries <= remainingProductLength) {
 										agenda.now(config.jobs.ebayInventory, {
 											ebayCredentials: ebayCredentials,
-											user: req.user
+											user: req.user,
+											marketplaceId: marketplaceId
 										});
 										return res.render('ebay-callback-close', {
 											layout: false,
@@ -812,12 +833,12 @@ export async function importEbay(req, res) {
 								ebayResponseData: "404 products not found"
 							});
 						}
-					} else {
-						return res.send(403, "Forbidden");
-					}
-				} else {
-					return res.status(403).send("Forbidden");
-				}
+				// 	} else {
+				// 		return res.send(403, "Forbidden");
+				// 	}
+				// } else {
+				// 	return res.status(403).send("Forbidden");
+				//}
 			} else {
 				return res.status(403).send("Sorry your plan expired.");
 			}

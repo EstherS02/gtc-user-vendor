@@ -16,6 +16,7 @@ module.exports = async function(job, done) {
 
 	const ebayCredentials = job.attrs.data.ebayCredentials;
 	const user = job.attrs.data.user;
+	const marketplaceId = job.attrs.data.marketplaceId;
 
 	try {
 		callEbayMethod(1);
@@ -35,7 +36,7 @@ module.exports = async function(job, done) {
 					productObj['product_slug'] = await string_to_slug(item.Title);
 					productObj['vendor_id'] = user.Vendor.id;
 					productObj['status'] = status['ACTIVE'];
-					productObj['marketplace_id'] = marketplace['PUBLIC'];
+					productObj['marketplace_id'] = marketplaceId;
 					productObj['publish_date'] = new Date();
 					productObj['product_category_id'] = otherCategoryId;
 					productObj['quantity_available'] = item.Quantity;

@@ -11,6 +11,7 @@
 		$('#AmazonBtnFaSpinner').hide();
 		$("#gtc-aliExpress-alert").hide();
 		$("#gtc-wooCommerce-alert").hide();
+		$("#gtc-amazon-alert").hide();
 
 		$('input[type="text"]').keyup(function() {
 			if ($(this).val() != '') {
@@ -220,7 +221,7 @@
 
 			if ($('#importAmazonModalForm').valid()) {
 				$(':input[type="submit"]').prop('disabled', true);
-				$("#amazonPopupError p").remove();
+				//$("#amazonPopupError p").remove();
 
 				let credentials = {};
 
@@ -254,7 +255,12 @@
 					},
 					error: function(response, status, error) {
 						$('#AmazonBtnFaSpinner').hide();
-						$('#amazonPopupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+						//$('#amazonPopupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+						$('#gtc-amazon-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#gtc-amazon-alert .amazon-message').text(response.responseText);
+						$("#gtc-amazon-alert").fadeTo(7000, 500).slideUp(500, function() {
+							$("#gtc-amazon-alert").slideUp(500);
+						});
 					}
 				});
 			}
@@ -547,6 +553,12 @@
 			<div class="modal-header">
 				<h5 class="modal-title" id="exampleModalLongTitle">Import Products from Amazon</h5>
 			</div>
+			<div class="alert" id="gtc-amazon-alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<span class="amazon-message"></span>
+			</div>
 			<form id="importAmazonModalForm" class="form">
 				<div class="modal-body">
 					<div class="row">
@@ -624,7 +636,7 @@
 								<input type="text" name="amazon_quantity_available" id="amazon_quantity_available" class="form-control-customized form-control-sm"/>
 							</div>
 						</div>
-						<div class="col-lg-12" id="amazonPopupError"></div>
+						{{!-- <div class="col-lg-12" id="amazonPopupError"></div> --}}
 					</div>
 				</div>
 				<div class="modal-footer">
