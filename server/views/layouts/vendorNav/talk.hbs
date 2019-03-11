@@ -1,5 +1,17 @@
 <script type="text/javascript">
+
+	var talkImageArr = [];
+	talkImageArr = {{{ DisplayJSON talkImage }}};
+
+	function appendImage() {
+		$('.talk_pic').empty();
+		var domElement;
+		domElement = "<span class=\"pip\" id=\"base\">" + "<img style='width:250px; height:250px;' src=\"" + talkImageArr[0].talkImageUrl + "\"/></span>";
+		$('.talk_pic').append(domElement);
+	}
+
 	$(document).ready(function() {
+
 		$("#UpdateTalks").prop('disabled', true);
 		$('input[type=radio][name=gtc_talk_enabled]').change(function() {
 			$("#UpdateTalks").prop('disabled', false);
@@ -25,19 +37,15 @@
 			$("#addTimeSlotFormNew").show();
 			$("#addNewTimeSlotForm").hide();
 			$("#hideNewTimeSlotForm").show();
-
 		});
 		$("#hideNewTimeSlotForm").click(function() {
 			$("#addTimeSlotFormNew").hide();
 			$("#addNewTimeSlotForm").show();
 			$("#hideNewTimeSlotForm").hide();
 		});
-	});
 
-	$(document).ready(function() {
 		$("#uploadOperationHours").click(function(e) {
 			e.preventDefault();
-			// alert($('#start_time').val(), $('input[name=end_time]').val())
 			var op_hours = {};
 			op_hours.from_day = $('#from_day').val();
 			op_hours.to_day = $('#to_day').val();
@@ -62,44 +70,53 @@
 				}
 			});
 		});
-	});
 
-	function outputPopup(data) {
-		$('#gtc-talk-alert').removeClass('alert-danger').addClass('alert-success');
-		$('#gtc-talk-alert .talk-message').text(data)
-		$("#gtc-talk-alert").fadeTo(3000, 500).slideUp(500, function() {
-			$("#gtc-talk-alert").slideUp(500);
-		});
-	}
-	function outputPopupError(data) {
-		$('#gtc-talk-alert').removeClass('alert-success').addClass('alert-danger');
-		$('#gtc-talk-alert .talk-message').text(data);
-		$("#gtc-talk-alert").fadeTo(3000, 500).slideUp(500, function() {
-			$("#gtc-talk-alert").slideUp(500);
-		});
-	}
-	$(document).ready(function() {
-		document.getElementById('selectedFile').onchange = uploadOnChange;
-		function uploadOnChange() {
-			var filename = this.value;
-			var lastIndex = filename.lastIndexOf("\\");
-			if (lastIndex >= 0) {
-				filename = filename.substring(lastIndex + 1);
+		var fileDetails = {};
+		var cropperOutputImage;
+		var cropBoxData, canvasData, cropper, cropperInputImage, talk_pic_name, talk_pic_obj;
+
+		var imagesPreview = function(uploader, placeToInsertImagePreview) {
+			if (uploader.files && uploader.files[0]) {
+				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+				$('#uploaded-talk-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+				cropperInputImage = document.getElementById('uploaded-talk-picture');
+				$('#talk-picture-modal').modal('show');
 			}
-			$("#customfile").html(filename);
-		  readURL(this);
+		};
 
-		// $('#profile_pic').attr('src', this.value);
+		$('#talk-picture-modal').on('shown.bs.modal', function() {
+			cropper = new Cropper(cropperInputImage, {
+				aspectRatio: 1 / 1,
+				viewMode: 1,
+				ready: function() { }
+			});
+		}).on('hidden.bs.modal', function() {
+			cropBoxData = cropper.getCropBoxData();
+			canvasData = cropper.getCanvasData();
+			cropper.destroy();
+		});
 
-		}
-		function readURL(input) {
-		    var reader = new FileReader();
-		    reader.onload = function(e) {
-		      $('#profile_pic').attr('src', e.target.result);
-		    }
-		    reader.readAsDataURL(input.files[0]);
-		}
-		// console.log($('input[name=gtc_talk_enabled]').is(':checked'))
+		$('#selectedFile').on('change', function() {
+			talkImageArr.length = 0;
+			imagesPreview(this);
+		});
+
+		$('#crop-talk-image').click(function() {
+			cropper.getCroppedCanvas().toBlob(function(blob) {
+				cropperOutputImage = blob;
+				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
+				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"];
+				talk_pic_name = fileDetails["fileName"];
+				talk_pic_obj = cropperOutputImage;
+			});
+			var obj = {};
+			obj.talkImageUrl = cropper.getCroppedCanvas().toDataURL();
+			talkImageArr.push(obj);
+			appendImage();
+			$('#talk-picture-modal').modal('hide');
+		});
+
 		$("#gtc-talk-alert").hide();
 
 		$("#UpdateTalks").click(function(e) {
@@ -114,7 +131,7 @@
 			};
 
 			if (img == "old"  && !imgVal) {
-				formData.talk_profile_pic_url = '';//$('input[name=defaultVendor_profile_pic]').val();
+				formData.talk_profile_pic_url = '';
 				$.ajax({
 					type: 'POST',
 					url: '/api/gtc-talk/store',
@@ -131,7 +148,7 @@
 				});
 			}else {
 				var form = new FormData();
-				form.append("file", $("#selectedFile")[0].files[0]);
+				form.append("file", talk_pic_obj);
 				if (imgVal && img == 'new') {
 					$.ajax({
 						type: 'POST',
@@ -180,16 +197,56 @@
 						}
 					});
 					}else{
-						// console.log('status', 'Please select the image' );
 						outputPopupError("Please select profile picture and check Option");
 					}
 			}
 			var imgVal = $('input[name=talk_profile_pic_url]').val();
 		});
+
+		if (talkImageArr && (talkImageArr.length > 0))
+			appendImage();			
 	});
+
+	function outputPopup(data) {
+		$('#gtc-talk-alert').removeClass('alert-danger').addClass('alert-success');
+		$('#gtc-talk-alert .talk-message').text(data)
+		$("#gtc-talk-alert").fadeTo(3000, 500).slideUp(500, function() {
+			$("#gtc-talk-alert").slideUp(500);
+		});
+	}
+
+	function outputPopupError(data) {
+		$('#gtc-talk-alert').removeClass('alert-success').addClass('alert-danger');
+		$('#gtc-talk-alert .talk-message').text(data);
+		$("#gtc-talk-alert").fadeTo(3000, 500).slideUp(500, function() {
+			$("#gtc-talk-alert").slideUp(500);
+		});
+	}
 </script> 
 
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+<div class="modal fade" id="talk-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
+ aria-hidden="true">
+	<div class="modal-dialog modal-md" role="document" id="popupSize">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" style="margin-right:35px;">
+				<div class="container">
+					<img src="" style="max-width: 100% !important;" id="uploaded-talk-picture" alt="Profile Picture">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="crop-talk-image">Crop Image</button>
+			</div>
+		</div>
+	</div>
+</div>
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -254,21 +311,17 @@
 										<br/>
 										<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new" /> Custom {{/if}}
 										<div class="custom-file">
-											<input type="text" value="talk_profile_pic_url" class="custom-file-input" id="talkProfile1">
+											<input type="text" value="talk_profile_pic_url" class="custom-file-input" id="talkProfile1" onclick="document.getElementById('selectedFile').click();"/>
 											<label class="custom-file-label customized-file-label" for="talkProfile" id="customfile">Browse...</label>
 										</div>
 										<input type="file" id="selectedFile" style="display: none;" name="talk_profile_pic_url" />
 										<input class="btn btn-md btn-muted" type="button" value="UPLOAD" onclick="document.getElementById('selectedFile').click();"/>
-
 									</small>
-									</div>
-									{{#if talk.talk_profile_pic_url}}
-									<img id="profile_pic" src="{{talk.talk_profile_pic_url}}" alt="your image" style="object-fit: contain; max-height:210px"
-									/> 
-									{{/if}}
-
-							</div>
-							<br/>
+								</div>								
+							</div><br/>
+							<div class="row">
+								<div class="col-lg-12 talk_pic" style="padding-left:35px;"></div>
+							</div><br/>
 							<div class="row">
 								<div class="col-lg-12 ibox-title">
 									<h2>Default Message</h2>
@@ -289,7 +342,7 @@
 							<div class="row">
 								<div class="col-lg-12">
 									<p>
-										<small>You can set a predefinted set of hours for someone to contact you each week.</small>
+										<small>You can set a predefined set of hours for someone to contact you each week.</small>
 									</p>
 									{{#each busiHours}}
 									<p>
@@ -340,7 +393,6 @@
 											<div class="col-lg-1">
 												<input type="time" name="end_time" class="classic required" id="end_time">
 											</div>
-											{{!-- <label class="label-control" style="padding-left:20px;">Time Zone</label> --}}
 											<div class="col-lg-2" style="padding-left:20px;">
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="time_zone">
 													<option disabled selected>Time Zone</option>

@@ -157,15 +157,16 @@
 													delivered.
 												{{/ifCond}}
 												{{#ifCond item.order_item_status '==' @root.orderItemStatus.CANCELED}}	
-													canceled.
+													canceled.<br/>
+													<small>*The amount will be refunded to you within 5-6 working days.</small>
 												{{/ifCond}}
 												{{#ifCond item.order_item_status '==' @root.orderItemStatus.VENDOR_CANCELED}}	
 													canceled by vendor.<br/>
-													Refund gets credited in your account within 5-6 business days.
+													<small>*The amount will be refunded to you within 5-6 working days.</small>
 												{{/ifCond}}
 												{{#ifCond item.order_item_status '==' @root.orderItemStatus.AUTO_CANCELED}}	
 													canceled by Administrator.<br/>
-													Refund gets credited in your account within 5-6 business days.
+													<small>*The amount will be refunded to you within 5-6 working days.</small>
 												{{/ifCond}}
 												{{#ifCond item.order_item_status '==' @root.orderItemStatus.REQUEST_FOR_RETURN}}	
 													request for return.

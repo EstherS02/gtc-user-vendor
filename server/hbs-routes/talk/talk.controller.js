@@ -118,6 +118,15 @@ export function talk(req, res) {
 				});
 		}
 	}, function(error, results) {
+		
+		let talkImage = [];
+		if(results.talk){
+			talkImage.push({
+				talkImageUrl: results.talk.talk_profile_pic_url,
+				id: results.talk.id
+			})
+		}
+
 		if (!error) {
 			res.render('vendorNav/talk', {
 				title: "Global Trade Connect",
@@ -134,7 +143,8 @@ export function talk(req, res) {
 				cart: results.cartInfo,
 				marketPlace: marketplace,
 				vendorPlan: vendorPlan,
-				statusCode:statusCode
+				statusCode:statusCode,
+				talkImage: talkImage
 			});
 		} else {
 			res.render('vendorNav/talk', error);

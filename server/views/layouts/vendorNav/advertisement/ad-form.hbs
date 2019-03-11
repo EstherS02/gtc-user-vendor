@@ -14,7 +14,7 @@
 
 		var fileDetails = {};
 		var cropperOutputImage;
-		var cropBoxData, canvasData, cropper, cropperInputImage;
+		var cropBoxData, canvasData, cropper, cropperInputImage,ad_image_obj;
 
 		var adId = $('#id').val();
 		$("#gtc-form-alert").hide();
@@ -67,7 +67,8 @@
 			cropper.getCroppedCanvas().toBlob(function(blob) {
 				cropperOutputImage = blob;
 				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
-				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
+				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"];
+				ad_image_obj = cropperOutputImage;
 			});
 			var obj = {};
 			obj.adImageUrl = cropper.getCroppedCanvas().toDataURL();
@@ -109,7 +110,7 @@
 			e.preventDefault();
 			if ($('#adForm').valid()) {
 				var formData = new FormData();
-				formData.append("file", adImage.files[0]);
+				formData.append("file", ad_image_obj);
 
 				let adFormInput = $("#adForm :input").filter(function(index, element) {
 					return $(element).val() != '';

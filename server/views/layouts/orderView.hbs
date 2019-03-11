@@ -45,9 +45,9 @@
 					success: function(result) {
 						$('#itemCancelModal').modal('hide');
 						$('#itemCancelled').modal('show');
-						setTimeout(function() {
+						/*setTimeout(function() {
 							location.reload(true);
-						}, 3000);
+						}, 3000);*/
 					},
 					error: function(error) {
 						$('#cancel-alert').removeClass('alert-success').addClass('alert-danger');
@@ -744,7 +744,7 @@
 				</div>
 				<div class="modal-body">
 					<div class="container">
-						<p>Item cancelled successfully and refund initiated. Refund gets credited in your account within 5-6 business days.</p>
+						<p>Item cancelled successfully. The amount will be refunded to you within 5-6 working days.</p>
 					</div>
 				</div>
 				<div class="modal-footer">
