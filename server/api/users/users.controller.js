@@ -97,19 +97,19 @@ export function create(req, res) {
 	var queryObj = {};
 	var randomCode = uuid.v1();
 
-	req.checkBody('first_name', 'Missing Query Param').notEmpty();
+	req.checkBody('first_name', 'First Name Missing').notEmpty();
 	req.checkBody('provider', 'Missing Query Param').notEmpty();
 
 	if (req.body.provider == providers["OWN"]) {
-		req.checkBody('email', 'Missing Query Param').notEmpty();
+		req.checkBody('email', 'Email Address Missing').notEmpty();
 		req.checkBody('email', 'Please enter a valid email address').isEmail();
 		req.checkBody('email', 'Email Address lowercase letters only').isLowercase();
-		req.checkBody('password', 'Missing Query Param').notEmpty();
+		req.checkBody('password', 'Password Missing').notEmpty();
 	}
 
 	var errors = req.validationErrors();
-	if (errors) {emailemail
-		res.status(400).send('Oops, something was not right');
+	if (errors) {
+		res.status(400).send(errors[0].msg);
 		return;
 	}
 
