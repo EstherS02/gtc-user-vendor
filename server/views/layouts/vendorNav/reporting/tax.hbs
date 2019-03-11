@@ -1,277 +1,30 @@
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
 			</div>
-			{{#if LoggedInUser.Vendor.VendorPlans}}
-				<div class="col-sm-10">
-					<div class="ibox">
-						<div class="ibox-content">
-							<div class="ibox-title">
-								<h2>Tax Summary(CAD)
-									<span class="font-sm m-t-xs text-muted float-right">Current location:
-										<span class="text-black text-500">Calgary,Albetra,Canada</span>
-										<span class="change-color">(Change)</span>
-									</span>
-								</h2>
-							</div>
-							<div class="hr-line"></div>
+			 {{#if LoggedInUser.Vendor.VendorPlans}}
+			 <div class="col-sm-10">
+				 <div class="ibox">
+					 <div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Tax Summary</h2>
+						</div><br/>
 						<div class="content-body">
-					<div class="row">
-						<div class="col-md-12">
-							<form class="form-inline pull-left m-t-md">
-											<div class="form-group m-r">
-												<div class="select-container">
-													<select id="inputDateRange" class="form-control-customized form-control-sm custom-dropdown" name="countyr">
-														<option value="0">Country</option>
-													</select>
-												</div>
-											</div>
-											<div class="form-group m-r-lg">
-										      <label class="label-control">Date Range : </label>
-								        	</div>
-										<div class="form-group">
-										    <div class="input-group rt-20">
-											   <input id="inputFromDate" style="width:107px" type="text" class="custom-form-control date_range_picker" value="{{queryParams.start_date}}" placeholder="MM/DD/YYYY" aria-label="inputFromDateRange" aria-describedby="inputFromDateRange">
-											   <div class="input-group-append cursor-pointer">
-												<span class="input-group-text" id="inputFromDateRange">
-													<img class="calendar-icon" src="../../img/calendar.png">
-												</span>
-											    </div>
-										       </div>
-									    </div>
-											<div class="form-group m-r">
-												<label class="label-control">to</label>
-											</div>
-											
-										<div class="form-group m-r">
-									     	<div class="input-group">
-											   <input id="inputFromDate" style="width:107px" type="text" class="custom-form-control date_range_picker" value="{{queryParams.start_date}}" placeholder="MM/DD/YYYY" aria-label="inputFromDateRange" aria-describedby="inputFromDateRange">
-											   <div class="input-group-append cursor-pointer">
-												<span class="input-group-text" id="inputFromDateRange">
-													<img class="calendar-icon" src="../../img/calendar.png">
-												</span>
-											    </div>
-										       </div>
-									    </div>
-											<div class="form-group m-r">
-												<div class="select-container">
-													<select id="inputDateRange" class="form-control-customized form-control-sm custom-dropdown" name="countyr">
-														<option value="0">Currency</option>
-													</select>
-												</div>
-											</div>
-									
-											 <div class="form-group">
-												<button class="update-btn1 report_update report_update_btn_override" style="color:#fff;background-color:#3bb802">UPDATE</button>
-											</div> 
-										</form>
-											<form class="form-inline pull-right m-t-md" name="search_order_history_form" id="searchOrderHistoryForm">
-											<div class="form-group m-r">
-												<button type="button" class="btn btn-md btn-muted">EXPORT</button>
-											</div>
-											<div class="form-group">
-												<div class="input-group gtc-rounded">
-													<input type="text" placeholder="Search Tax#" name="tax_id" id="orderID" value="" class="form-control form-control-sm" style="width:81px">
-													<button type="submit" class="btn btn-sm btn-gtc">
-														<i class="fa fa-search"></i>
-													</button>
-												</div>
-											</div>
-										</form>
-
-						</div>
-
-					</div>
-								{{!-- <div class="col-md-2">
-
-								</div> --}}
-							</div>
-							<div class="col-md-12" style="padding-top: 20px;">
-
-								
-								
-								<p class="vend_edit_lists_pstyle float-right" style="float: right;">Entries per page: 10 25 100 All</p>
-							</div>
-
 							<div class="row">
-								<div class="col-md-6">
-									<p class="vend_edit_lists_pstyle">333,333 items total from May 01, 2017 to June 30, 2017</p>
-								</div>
-								<div class="col-md-6">
-
+								<div class="col-md-12">
+									In Progress
 								</div>
 							</div>
-							<div class="row">
-								<table class="table table-hover">
-									<thead>
-										<tr>
-											<th>
-													<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-											</th>
-											<th>Tax</th>
-											<th>Taxable Amount</th>
-											<th>Taxes</th>
-
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-												<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-											</td>
-											<td>GST AB (5%)</td>
-											<td>12,339.00 CAD</td>
-											<td>$150.00 CAD</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-											</td>
-											<td>GST AB (5%)</td>
-											<td>12,339.00 CAD</td>
-											<td>$150.00 CAD</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-											</td>
-											<td>GST AB (5%)</td>
-											<td>12,339.00 CAD</td>
-											<td>$150.00 CAD</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-											</td>
-											<td>GST AB (5%)</td>
-											<td>12,339.00 CAD</td>
-											<td>$150.00 CAD</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-											</td>
-											<td>GST AB (5%)</td>
-											<td>12,339.00 CAD</td>
-											<td>$150.00 CAD</td>
-											<tr>
-												<td>
-													<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-												</td>
-												<td>GST AB (5%)</td>
-												<td>12,339.00 CAD</td>
-												<td>$150.00 CAD</td>
-											</tr>
-											<tr>
-												<td>
-													<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-												</td>
-												<td>GST AB (5%)</td>
-												<td>12,339.00 CAD</td>
-												<td>$150.00 CAD</td>
-
-											</tr>
-											<tr>
-												<td>
-													<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-												</td>
-												<td>GST AB (5%)</td>
-												<td>12,339.00 CAD</td>
-												<td>$150.00 CAD</td>
-											</tr>
-											<tr>
-												<td>
-													<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-												</td>
-												<td>GST AB (5%)</td>
-												<td>12,339.00 CAD</td>
-												<td>$150.00 CAD</td>
-											</tr>
-											<tr>
-												<td>
-													<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-												</td>
-												<td>GST AB (5%)</td>
-												<td>12,339.00 CAD</td>
-												<td>$150.00 CAD</td>
-											</tr>
-											<tr>
-												<td>
-												<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-												</td>
-												<td>GST AB (5%)</td>
-												<td>12,339.00 CAD</td>
-												<td>$150.00 CAD</td>
-											</tr>
-											<tr>
-												<td>
-													<div class="customCheckbox">
-															<input type="checkbox"  id="inputTerms" class="customCheckboxInput">
-															<label class="checkbox-b" for="inputTerms"></label>
-														</div>
-												</td>
-												<td>GST AB (5%)</td>
-												<td>12,339.00 CAD</td>
-												<td>$150.00 CAD</td>
-											</tr>
-											<tr>
-												<td></td>
-												<td></td>
-												<td>Total Taxable Amount: $11,227.32 CAD</td>
-												<td>Total Taxable Amount: $11,227.32 CAD</td>
-											</tr>
-									</tbody>
-								</table>
-							</div>
-
 						</div>
-					</div>
-				</div>
+					 </div>
+				 </div>
+			 </div>
+			 {{/if}}
 		</div>
-		{{else}}
-			{{> plan-inactive}}
-			{{/if}}
 	</div>
 </div>
-</div>
+
 {{> footer/bottom-footer}}
