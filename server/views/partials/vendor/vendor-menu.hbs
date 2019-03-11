@@ -79,9 +79,19 @@
 								<a href="/dashboard-vendor-connect" class="nav-link" style="color:#2775c3 !important;">Build Your Store</a>
 							</li>
 						</ul>
-						<a href="/vendor/support/{{this.LoggedInUser.Vendor.id}}">
-							<span class="support" style="font-family:'Roboto', sans-serif">Support</span>
-						</a>
+							{{!-- <span class="support" style="font-family:'Roboto', sans-serif">Support</span> --}}
+						<div id="dropdownField" class="dropdown cursor-pointer">
+							<a href="/vendor/support/{{this.LoggedInUser.Vendor.id}}" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+								<span class="support" id="supportHelp" style="font-family:'Roboto', sans-serif">Support</span>
+							</a>
+							<div class="dropdown-menu dropdown-menu-list" aria-labelledby="dropdownMenuButton">
+								<ul>
+									<li>
+										<a href="https://www.youtube.com/channel/UCR2WynZ2voPqi4aNhPlpK9g">Help</a>
+									</li>
+								</ul>
+							</div>
+						</div>
 					</div>
 				</nav>
 			</div>
@@ -131,6 +141,18 @@
 								</a>
 							</li>
 						</ul>
+						<div id="dropdownField" class="dropdown cursor-pointer">
+							<a href="javascript:;" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+								<span class="support" style="font-family:'Roboto', sans-serif">Support</span>
+							</a>
+							<div class="dropdown-menu dropdown-menu-list" aria-labelledby="dropdownMenuButton">
+								<ul>
+									<li>
+										<a href="https://www.youtube.com/channel/UCR2WynZ2voPqi4aNhPlpK9g">Help</a>
+									</li>
+								</ul>
+							</div>
+						</div>
 					</div>
 				</nav>
 			</div>
@@ -155,6 +177,13 @@
 			socket.on('chat:count:receive', function(result) {
 				document.getElementById('msg-count').innerHTML = `<b class="notification-badge"> ` + result + `</b>`;
 			})
+		});
+
+		$('#supportHelp').click(function(e){
+			var vendor = {{{ DisplayJSON LoggedInUser.Vendor }}};
+			if(vendor != null){
+				window.location.href = '/vendor/support/'+vendor.id;
+			}
 		});
 	});
 </script>
