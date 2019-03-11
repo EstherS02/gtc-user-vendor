@@ -697,60 +697,59 @@ $(document).ready(function() {
 			return $(element).val() != '';
 		}).serialize();
 
-		if(checkedFeaturePositions.length == 1 && checkedFeaturePositions[0] == 'position_profilepage'){
-			featureProductInput = featureProductInput+'&product_id='+ product_id;
-			$.ajax({
-				url: '/api/feature-product',
-				type: 'POST',
-				data: featureProductInput,
-				success: function(data) {
-					$('#feature_response_message').html(data.message);
-					$('#feature_response_message_details').html(data.messageDetails);
-					$('#featureModal').modal('hide');
-					$('#feature-success-modal').modal('show');
-				},
-				error: function(error) {
-					$('#feature_response_message').html(error.responseJSON.message);
-					$('#feature_response_message_details').html(error.responseJSON.messageDetails);
-					$('#featureModal').modal('hide');
-					$('#feature-success-modal').modal('show');
-				}
-			});
-		}
-		else{
-
-			if ($('#featureForm').valid()) {
+		if ($('#featureForm').valid()) {
+			if(checkedFeaturePositions.length == 1 && checkedFeaturePositions[0] == 'position_profilepage'){
+				featureProductInput = featureProductInput+'&product_id='+ product_id;
+				$.ajax({
+					url: '/api/feature-product',
+					type: 'POST',
+					data: featureProductInput,
+					success: function(data) {
+						$('#feature_response_message').html(data.message);
+						$('#feature_response_message_details').html(data.messageDetails);
+						$('#featureModal').modal('hide');
+						$('#feature-success-modal').modal('show');
+					},
+					error: function(error) {
+						$('#feature_response_message').html(error.responseJSON.message);
+						$('#feature_response_message_details').html(error.responseJSON.messageDetails);
+						$('#featureModal').modal('hide');
+						$('#feature-success-modal').modal('show');
+					}
+				});
+			}
+			else{
 
 				var featureStartDate, featureEndDate, from, to, featureDuration, amount, totalFeatureFees, sum;
 				featureStartDate = $('#start_date').val();
-	
+
 				if($('#end_date').val()){
-	
+
 					featureEndDate = $('#end_date').val();
 					from = moment(featureStartDate, 'MM/DD/YYYY'); 
 					to = moment(featureEndDate, 'MM/DD/YYYY');
 					featureDuration = to.diff(from, 'days');
-	
+
 					amount = $("#totalFees").html();
-	
+
 					sum = amount * featureDuration / 30;
 					totalFeatureFees = sum.toFixed(2);
-	
+
 					$("#feature_total").html(totalFeatureFees);
 					$("#feature_start_date").html(featureStartDate);
 					$("#feature_end_date").html(featureEndDate);
-	
+
 				}else{
 					totalFeatureFees  = $("#totalFees").html();
 					$("#feature_total").html(totalFeatureFees);
 					$("#feature_start_date").html(featureStartDate);
 					$("#feature_end_date").html('Indefinitely');	
 				}
-	
+
 				$('#featureModal').modal('hide');
 				$('#featurePaymentModal').modal('show');
-			}
-		}	
+			}	
+		}
 	});
 
 	$("#featurePaymentForm").validate({
