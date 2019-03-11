@@ -919,6 +919,7 @@ export function importWooCommerceProducts(product, req) {
 			}).then((result) => {
 				resolve("success");
 			}).catch(function(error) {
+				console.log("Error::",error);
 				reject(error);
 			});
 	});
