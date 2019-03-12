@@ -12,7 +12,7 @@ const Handlebars = require('handlebars');
 const sendEmail = require('./send-email');
 
 module.exports = async function(job, done) {
-	
+
 	const code = job.attrs.data.code;
 	const orderModelName = "Order";
 	const productModelName = "Product";
@@ -725,7 +725,7 @@ module.exports = async function(job, done) {
 		//VENDOR VERIFICATION SUCCESS NOTIFICATION
 
 		if (code == config.notification.templates.gtcVerificationCompleted) {
-			var vendorId, includeArr = [];
+			var vendorId;
 			if (job.attrs.data.vendorId) {
 				vendorId = job.attrs.data.vendorId;
 			} 
@@ -753,6 +753,48 @@ module.exports = async function(job, done) {
 			}
 		}
 
+		//VENDOR VERIFICATION REJECTED NOTIFICATION
+
+		if (code == config.notification.templates.gtcVerificationRejected) {
+
+			var vendorId, proof, reasonForRejection;
+			if (job.attrs.data.vendorId) {
+				vendorId = job.attrs.data.vendorId;
+			} 
+
+			if (job.attrs.data.proof) {
+				proof = job.attrs.data.proof;
+			}
+
+			if (job.attrs.data.reasonForRejection) {
+				reasonForRejection = job.attrs.data.reasonForRejection;
+			}
+			
+			const verifiedVendorRes = await service.findIdRow(vendorModelName, vendorId);
+			const verifiedVendor = await JSON.parse(JSON.stringify(verifiedVendorRes));
+
+			if(verifiedVendor){
+				const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
+					code: code
+				});
+				if (notificationSettingResponse) {
+					var bodyParams = {};
+					bodyParams.user_id = verifiedVendor.user_id;
+					bodyParams.description = notificationSettingResponse.description;
+					bodyParams.description = bodyParams.description.replace('%VENDOR_NAME%', verifiedVendor.vendor_name);
+					bodyParams.description = bodyParams.description.replace('%PROOF_NAME%', proof);
+					bodyParams.description = bodyParams.description.replace('%REASON_FOR_REJECTION%', reasonForRejection);
+					bodyParams.description = bodyParams.description.replace('%PATH%', '/verification');
+					bodyParams.name = notificationSettingResponse.name;
+					bodyParams.code = notificationSettingResponse.code;
+					bodyParams.is_read = 0;
+					bodyParams.status = 1;
+					bodyParams.created_on = new Date();
+					bodyParams.created_by = "Administrator";
+					const notificationResponse = await service.createRow(notificationModelName, bodyParams);
+				}
+			}
+		}
 		done();
 	} catch (error) {
 		console.log("Error::", error);

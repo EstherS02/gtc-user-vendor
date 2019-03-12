@@ -205,6 +205,34 @@ export async function updateStatus(req,res){
 							code: config.notification.templates.gtcVerificationCompleted
 						});
 					}
+					if(req.body.personal_id_reason_for_reject ||
+						req.body.personal_address_reason_for_reject ||
+						req.body.business_id_reason_for_reject || 
+						req.body.business_address_reason_for_reject ){
+
+						var proof, reasonForRejection;
+
+						if(req.body.personal_id_reason_for_reject){
+							proof = 'Personal Id',
+							reasonForRejection = req.body.personal_id_reason_for_reject
+						}else if(req.body.personal_address_reason_for_reject){
+							proof = 'Personal Address',
+							reasonForRejection = req.body.personal_address_reason_for_reject
+						}else if(req.body.business_id_reason_for_reject){
+							proof = 'Business Id',
+							reasonForRejection = req.body.business_id_reason_for_reject
+						}else if(req.body.business_address_reason_for_reject){
+							proof = 'Business Address',
+							reasonForRejection = req.body.business_address_reason_for_reject
+						}
+
+						agenda.now(config.jobs.orderNotification, {
+							vendorId: verificationRequest.vendor_id,
+							code: config.notification.templates.gtcVerificationRejected,
+							proof: proof,
+							reasonForRejection: reasonForRejection
+						});
+					}
 					return res.status(200).send(updateRow);
 				} else {
 					return res.status(404).send("Unable to update");

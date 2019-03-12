@@ -112,7 +112,8 @@ var all = {
 			couponCode : 'COUPON_CODE',
 			orderItemCancelledByVendor: 'ORDER_CANCELLED_BY_VENDOR',
 			orderItemCancelledByAdmin: 'ORDER_CANCELLED_BY_ADMIN',
-			gtcVerificationCompleted: 'VERIFICATION_COMPLETED'
+			gtcVerificationCompleted: 'VERIFICATION_COMPLETED',
+			gtcVerificationRejected: 'VERIFICATION_REJECTED'
 		}
 	},
 	jobs: {
