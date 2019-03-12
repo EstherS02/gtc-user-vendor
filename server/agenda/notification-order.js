@@ -27,6 +27,7 @@ module.exports = async function(job, done) {
 	const discussionBoardPostCommentModelName = "DiscussionBoardPostComment";
 	const discussionBoardPostLikeModelName = "DiscussionBoardPostLike";
 	const emailTemplateModelName = "EmailTemplate";
+	const vendorModelName = "Vendor";
 
 	try {
 		
@@ -720,8 +721,41 @@ module.exports = async function(job, done) {
 				}
 			}
 		}
+
+		//VENDOR VERIFICATION SUCCESS NOTIFICATION
+
+		if (code == config.notification.templates.gtcVerificationCompleted) {
+			var vendorId, includeArr = [];
+			if (job.attrs.data.vendorId) {
+				vendorId = job.attrs.data.vendorId;
+			} 
+			
+			const verifiedVendorRes = await service.findIdRow(vendorModelName, vendorId);
+			const verifiedVendor = await JSON.parse(JSON.stringify(verifiedVendorRes));
+
+			if(verifiedVendor){
+				const notificationSettingResponse = await service.findRow(notificationSettingModelName, {
+					code: code
+				});
+				if (notificationSettingResponse) {
+					var bodyParams = {};
+					bodyParams.user_id = verifiedVendor.user_id;
+					bodyParams.description = notificationSettingResponse.description;
+					bodyParams.description = bodyParams.description.replace('%VENDOR_NAME%', verifiedVendor.vendor_name);
+					bodyParams.name = notificationSettingResponse.name;
+					bodyParams.code = notificationSettingResponse.code;
+					bodyParams.is_read = 0;
+					bodyParams.status = 1;
+					bodyParams.created_on = new Date();
+					bodyParams.created_by = "Administrator";
+					const notificationResponse = await service.createRow(notificationModelName, bodyParams);
+				}
+			}
+		}
+
 		done();
 	} catch (error) {
+		console.log("Error::", error);
 		done(error);
 	}
 };

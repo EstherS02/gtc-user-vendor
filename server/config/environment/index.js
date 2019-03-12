@@ -111,7 +111,8 @@ var all = {
 			likesComments: 'LIKE_AND_COMMENT',
 			couponCode : 'COUPON_CODE',
 			orderItemCancelledByVendor: 'ORDER_CANCELLED_BY_VENDOR',
-			orderItemCancelledByAdmin: 'ORDER_CANCELLED_BY_ADMIN'
+			orderItemCancelledByAdmin: 'ORDER_CANCELLED_BY_ADMIN',
+			gtcVerificationCompleted: 'VERIFICATION_COMPLETED'
 		}
 	},
 	jobs: {

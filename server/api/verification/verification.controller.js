@@ -187,3 +187,37 @@ export async function updateData(req, res) {
 		});
 	}
 }
+
+export async function updateStatus(req,res){
+	var bodyParams = req.body;
+	var paramsID = req.params.id;
+	var agenda = require('../../app').get('agenda');
+
+	service.findIdRow('VendorVerification',paramsID)
+	.then(function(verificationRequest){
+		if(verificationRequest){
+			service.updateRow('VendorVerification', bodyParams, paramsID)
+			.then(function(updateRow){
+				if (updateRow) {
+					if(req.body.vendor_verified_status == verificationStatus['APPROVED']){
+						agenda.now(config.jobs.orderNotification, {
+							vendorId: verificationRequest.vendor_id,
+							code: config.notification.templates.gtcVerificationCompleted
+						});
+					}
+					return res.status(200).send(updateRow);
+				} else {
+					return res.status(404).send("Unable to update");
+				}
+			}).catch(function(error){
+				console.log("Error::",error);
+				return res.status(500).send("Internal server error");
+			})
+		}else{
+			return res.status(404).send("Not Found");
+		}	
+	}).catch(function(error){
+		console.log("Error::",error);
+		return res.status(500).send("Internal server error");
+	})	
+}

@@ -49,7 +49,7 @@
 								{{#if LoggedInUser.Vendor.VendorPlans.[0].plan_id}}
 								<a href="/upgradeplan" class="nav-link" style="color:#2775c3 !important;">Current Plan</a>
 								{{else}}
-									<b>Vendor plan expired </b>
+									<a href="javascript:;" class="nav-link"><b>Vendor plan expired </b></a>
 								{{/if}}
 							</li>
 							{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}}
