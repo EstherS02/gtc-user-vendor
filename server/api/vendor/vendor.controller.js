@@ -467,8 +467,8 @@ export function index(req, res) {
 		var queryObj = {};
 		var queryObj1 = {};
 		let productQueryObj = {};
-		let field = 'id';
-		let order = 'asc';
+		let field = 'created_on';
+		let order = 'desc';
 		var params = req.query;
 		let limit = req.query.limit ? parseInt(req.query.limit) : 10;
 		let offset = req.query.offset ? parseInt(req.query.offset) : 0;
