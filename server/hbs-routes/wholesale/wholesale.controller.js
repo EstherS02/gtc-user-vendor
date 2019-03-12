@@ -51,8 +51,8 @@ export function wholesale(req, res) {
 
 	offset = 0;
 	limit = 20;
-	field = "id";
-	order = "asc";
+	field = "created_on";
+	order = "desc";
 
 	queryObj['status'] = status["ACTIVE"];
 
@@ -158,7 +158,7 @@ export function wholesale(req, res) {
 			delete queryObj['position'];
 			delete queryObj['is_featured_product'];
 
-			service.findRows(countryModel, queryObj, offset, tempLimit, field, order)
+			service.findRows(countryModel, queryObj, offset, tempLimit, 'id', 'asc')
 				.then(function(country) {
 					return callback(null, country.rows);
 				}).catch(function(error) {
@@ -169,7 +169,7 @@ export function wholesale(req, res) {
 		type: function(callback) {
 			const tempLimit = null;
 
-			service.findRows(typeModel, queryObj, offset, tempLimit, field, order)
+			service.findRows(typeModel, queryObj, offset, tempLimit, 'id', 'asc')
 				.then(function(type) {
 					return callback(null, type.rows);
 				}).catch(function(error) {

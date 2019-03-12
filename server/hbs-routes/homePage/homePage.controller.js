@@ -22,8 +22,8 @@ export function homePage(req, res) {
 
 	offset = 0;
 	limit = 5;
-	field = "id";
-	order = "asc";
+	field = "created_on";
+	order = "desc";
 
 	queryObj['status'] = status["ACTIVE"];
 

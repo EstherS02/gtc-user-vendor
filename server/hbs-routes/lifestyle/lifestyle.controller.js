@@ -25,8 +25,8 @@ export function lifestyle(req, res) {
 
 	limit = 20;
 	offset = 0;
-	field = "id";
-	order = "asc";
+	field = "created_on";
+	order = "desc";
 
 	queryObj['status'] = status["ACTIVE"];
 	queryObj['marketplace_id'] = 4;

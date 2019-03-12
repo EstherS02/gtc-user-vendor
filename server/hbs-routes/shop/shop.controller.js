@@ -25,8 +25,8 @@ export function shop(req, res) {
 
 	offset = 0;
 	limit = 20;
-	field = "id";
-	order = "asc";
+	field = "created_on";
+	order = "desc";
 
 	queryObj['status'] = status["ACTIVE"];
 	queryObj['marketplace_id'] = 2;

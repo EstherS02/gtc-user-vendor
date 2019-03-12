@@ -26,8 +26,8 @@ export function services(req, res) {
 		LoggedInUser = req.gtcGlobalUserObj;
 
 	offset = 0;
-	field = "id";
-	order = "asc";
+	field = "created_on";
+	order = "desc";
 	limit = 20;
 
 	queryObj['status'] = status["ACTIVE"];
