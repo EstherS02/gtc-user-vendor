@@ -44,7 +44,11 @@ export async function AccountingReport(vendorID, queryParams) {
 			attributes: ['id', 'plan_id', 'vendor_id', 'payment_id']
 		});
 		const memberShipExpensive = await JSON.parse(JSON.stringify(memberShipExpensiveResponse));
-		accounting['membership'] = await parseFloat(_.sumBy(memberShipExpensive, 'Payment.amount'));
+		//accounting['membership'] = await parseFloat(_.sumBy(memberShipExpensive,'Payment.amount'));
+
+		accounting['membership']  = await _.reduce(memberShipExpensive, function(s, entry) {
+			return s + parseFloat(entry.Payment.amount);
+		}, 0);
 
 		const featuredProductExpensiveResponse = await model['FeaturedProduct'].findAll({
 			include: [{
@@ -64,8 +68,11 @@ export async function AccountingReport(vendorID, queryParams) {
 			attributes: ['id', 'product_id', 'payment_id']
 		});
 		const featuredProductExpensive = await JSON.parse(JSON.stringify(featuredProductExpensiveResponse));
-		accounting['featured_product'] = await parseFloat(_.sumBy(featuredProductExpensive, 'Payment.amount'));
+		//accounting['featured_product'] = await parseFloat(_.sumBy(featuredProductExpensive, 'Payment.amount'));
 
+		accounting['featured_product']  = await _.reduce(featuredProductExpensive, function(s, entry) {
+			return s + parseFloat(entry.Payment.amount);
+		}, 0);
 
 		const productAdSettingsExpensiveResponse = await model['ProductAdsSetting'].findAll({
 			include: [ {
@@ -79,8 +86,12 @@ export async function AccountingReport(vendorID, queryParams) {
 			attributes: ['id', 'product_id', 'payment_id']
 		});
 		const productAdSettingsExpensive = await JSON.parse(JSON.stringify(productAdSettingsExpensiveResponse));
-		accounting['featured_product'] = accounting['featured_product'] + await parseFloat(_.sumBy(productAdSettingsExpensive, 'Payment.amount'));
 
+		var adSum = await _.reduce(productAdSettingsExpensive, function(s, entry) {
+			return s + parseFloat(entry.Payment.amount);
+		}, 0);
+
+		accounting['featured_product'] = accounting['featured_product'] + adSum;
 
 		const processingFees = await model['OrderVendor'].findAll({
 			raw: true,
