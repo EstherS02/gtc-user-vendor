@@ -437,7 +437,7 @@ export function product(req, res) {
 					include:[{
 						model: model['Product'],
 						where:{
-							vendor_id: LoggedInUser.Vendor.id
+							vendor_id: vendorID
 						}
 					}],
 					attributes: [
@@ -802,7 +802,7 @@ export function GetProductReview(req, res) {
 				include:[{
 					model: model['Product'],
 					where:{
-						vendor_id: LoggedInUser.Vendor.id
+						vendor_id: vendorID
 					}
 				}],
 				attributes: [

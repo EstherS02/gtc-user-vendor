@@ -237,7 +237,7 @@ export function vendorLifestyle(req, res) {
 				include:[{
 					model: model['Product'],
 					where:{
-						vendor_id: LoggedInUser.Vendor.id
+						vendor_id: vendor_id
 					}
 				}],
 				attributes: [
