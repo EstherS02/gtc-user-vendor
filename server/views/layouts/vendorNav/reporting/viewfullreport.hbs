@@ -148,7 +148,7 @@
 									{{#ifCond vendorRevenue.count '>' queryURI.limit}}
 										<div class="row">
 											<div class="col-md-12 align-self-center">
-												{{#pagination products.count queryURI.page queryURI.limit 2}}
+												{{#pagination vendorRevenue.count queryURI.page queryURI.limit 2}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
@@ -258,7 +258,7 @@
 									{{#ifCond processingFee.count '>' queryURI.limit}}
 										<div class="row">
 											<div class="col-md-12 align-self-center">
-												{{#pagination products.count queryURI.page queryURI.limit 2}}
+												{{#pagination processingFee.count queryURI.page queryURI.limit 2}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
@@ -368,7 +368,7 @@
 									{{#ifCond subscriptionFee.count '>' queryURI.limit}}
 										<div class="row">
 											<div class="col-md-12 align-self-center">
-												{{#pagination products.count queryURI.page queryURI.limit 2}}
+												{{#pagination subscriptionFee.count queryURI.page queryURI.limit 2}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
@@ -475,7 +475,7 @@
 									{{#ifCond gtcPayFee.count '>' queryURI.limit}}
 										<div class="row">
 											<div class="col-md-12 align-self-center">
-												{{#pagination products.count queryURI.page queryURI.limit 2}}
+												{{#pagination gtcPayFee.count queryURI.page queryURI.limit 2}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
@@ -612,7 +612,7 @@
 									{{#ifCond membershipDetails.count '>' queryURI.limit}}
 										<div class="row">
 											<div class="col-md-12 align-self-center">
-												{{#pagination products.count queryURI.page queryURI.limit 2}}
+												{{#pagination membershipDetails.count queryURI.page queryURI.limit 2}}
 													<nav aria-label="Page navigation example">
 														<ul class="pagination justify-content-center">
 															{{#unless startFromFirstPage}}
