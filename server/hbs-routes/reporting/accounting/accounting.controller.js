@@ -316,9 +316,7 @@ export function processing(req, res) {
 			}]
 
 			service.findRows(orderVendorModel, queryObj, offset, limit, field, order, includeArr)
-				.then(function(rows) {
-					
-
+				.then(function(rows) {					
 					return callback(null, rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
