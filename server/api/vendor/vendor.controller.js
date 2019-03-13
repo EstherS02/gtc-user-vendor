@@ -462,6 +462,7 @@ export function deleteVendor(req, res) {
 		}
 	});
 }
+
 export function index(req, res) {
 	return new Promise((resolve, reject) => {
 		var queryObj = {};
@@ -519,7 +520,7 @@ export function index(req, res) {
 				model: model['VendorPlan'],
 				where: vendorPlanQuery,
 				attributes: ['plan_id'],
-				required:false
+				required:true
 			});
 		} else {
 			includeArr.push({
