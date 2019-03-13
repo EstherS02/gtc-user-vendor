@@ -206,7 +206,7 @@ export function forgotPassword(req, res) {
 				categories: results.categories
 			});
 		} else {
-			res.render('userNav/user-profile', err);
+			res.render('users/forgot-password', err);
 		}
 	});
 }
@@ -250,7 +250,7 @@ export function resetPassword(req, res) {
 				categories: results.categories
 			});
 		} else {
-			res.render('userNav/user-profile', err);
+			res.render('users/password-reset', err);
 		}
 	});
 }

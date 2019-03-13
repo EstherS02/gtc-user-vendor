@@ -722,9 +722,9 @@ export function forgotPassword(req, res) {
 											body = response.body.replace('%USERNAME%', username);
 
 											if (role == roles['ADMIN'])
-												body = body.replace('%LINK%', config.clientURL + '/reset-password?email=' + email + "&forgot_password_token=" + forgot_password_token);							
+												body = body.replace('%LINK%', config.clientURL + '/reset-password?email=' + user['email'] + "&forgot_password_token=" + forgot_password_token);							
 											else
-												body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + email + "&forgot_password_token=" + forgot_password_token);
+												body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + user['email'] + "&forgot_password_token=" + forgot_password_token);
 
 											var mailArray = [];
 											mailArray.push({
