@@ -33,7 +33,7 @@ export async function cartCalculation(userID, req, res) {
 
 	const includeArray = [{
 		model: model['Product'],
-		attributes: ['id', 'product_name', 'product_slug', 'marketplace_id', 'marketplace_type_id', 'vendor_id', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'subscription_duration', 'subscription_duration_unit'],
+		attributes: ['id', 'product_name', 'product_slug', 'marketplace_id', 'marketplace_type_id', 'vendor_id', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'subscription_duration', 'subscription_duration_unit', 'shipping_cost'],
 		include: [{
 			model: model['Vendor'],
 			attributes: ['id', 'vendor_name']
@@ -220,6 +220,7 @@ export async function cartCalculation(userID, req, res) {
 				}
 
 				cart['marketplace_summary'][aCart.Product.marketplace_id].sub_total += aCart.total_price;
+				cart['marketplace_summary'][aCart.Product.marketplace_id].shipping_ground += parseFloat(aCart.Product.shipping_cost);
 				cart['marketplace_summary'][aCart.Product.marketplace_id].total = cart['marketplace_summary'][aCart.Product.marketplace_id].sub_total + cart['marketplace_summary'][aCart.Product.marketplace_id].shipping_ground;
 
 				cart['marketplace_products'][aCart.Product.marketplace_id].count += 1;
