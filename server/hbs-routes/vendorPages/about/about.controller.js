@@ -189,7 +189,17 @@ export function vendorAbout(req, res) {
 						}
 					}
 				}
+				Reviews.productRating = productRating;
 				Reviews.avgRating = (totalAmt > 0) ? (totalAmt / total).toFixed(1) : 0;
+				var counts = JSON.parse(JSON.stringify(Reviews.count));
+				var count = 0;
+
+				if (counts.length > 0) {
+					for (var a = 0; a < counts.length; a++) {
+						count = count + counts[a].count;
+					}
+				}
+				Reviews.totalCount = count;
 				return callback(null, Reviews);
 			}).catch(function(error) {
 				console.log('Error :::', error);
@@ -205,6 +215,7 @@ export function vendorAbout(req, res) {
 				VendorDetail: results.VendorDetail,
 				follower: results.Follower,
 				avgRating: results.Rating.avgRating,
+				ratingCount: results.Rating.totalCount,
 				cart: results.cartInfo,
 				marketPlace: marketplace,
 				LoggedInUser: LoggedInUser,

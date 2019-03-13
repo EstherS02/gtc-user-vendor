@@ -19,6 +19,13 @@
 					<td><div class="p-rating">
 							{{starCount this.avgRating}}
 			            </div>
+						{{#ifCond LoggedInUser.Vendor.id '==' VendorDetail.id}}
+						<p class="v-rating">
+							<a href="/reviews">
+								<strong>({{this.ratingCount}} Ratings - See All)</strong>
+							</a>
+						</p>
+						{{/ifCond}}
 					</td>
 					{{!-- {{#if VendorAvgRating}}
 					<td>
