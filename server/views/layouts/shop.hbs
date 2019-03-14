@@ -13,13 +13,28 @@
 				$('#myModal').modal('show');
 			}
 		});
+
+		$('#adClick').click(function(){
+			var id= {{shopRandomAd.id}}
+			$.ajax({
+				url: '/api/feature-product/click/'+id,
+				type: 'PUT',
+				success: function(data) {
+					console.log("click response:",data);						
+				},
+				error: function(error) {
+					console.log("click err:",error);
+				}
+			});
+			window.open('{{shopRandomAd.target_url}}', '_blank');
+		});
 	});
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}
 <div class="marketplace-banner-small shop d-flex align-items-center">
 	<div class="gtc-container">
 		<div class="row">
 			<div class="col-md-5 d-flex align-items-center">
-				<a href="{{shopRandomAd.target_url}}" target="_blank">
+				<a id="adClick" href="javascript:;" target="_blank">
 					<img class="img-fluid" src="{{shopRandomAd.image_url}}">
 				</a>
 			</div>

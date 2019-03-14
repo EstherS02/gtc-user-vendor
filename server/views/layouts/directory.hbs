@@ -1,23 +1,23 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <script>
-	// $(document).ready(function () {
-	//  $('#depart').on('change', function () {
-	//     $('#searchSubmit').prop('disabled', !$(this).val());
-	// }).trigger('change');
-	//  $('#category').on('change', function () {
-	//     $('#searchSubmit').prop('disabled', !$(this).val());
-	// }).trigger('change');
-	//  $('#location').on('change', function () {
-	//      $('#searchSubmit').prop('disabled', !$(this).val());
-	// }).trigger('change');
-	// $("#searchForm").submit(function (e) {
-	//    e.preventDefault();
-	//  let formInput = $("#searchForm :input").filter(function (index, element) {
-	//     return $(element).val() != '';
-	// }).serialize();
-	//  window.location.href = '/directories/search?' + formInput;
-	// });
-	// });
+	/* $(document).ready(function () {
+	  $('#depart').on('change', function () {
+	     $('#searchSubmit').prop('disabled', !$(this).val());
+	 }).trigger('change');
+	  $('#category').on('change', function () {
+	     $('#searchSubmit').prop('disabled', !$(this).val());
+	 }).trigger('change');
+	  $('#location').on('change', function () {
+	      $('#searchSubmit').prop('disabled', !$(this).val());
+	 }).trigger('change');
+	 $("#searchForm").submit(function (e) {
+	    e.preventDefault();
+	  let formInput = $("#searchForm :input").filter(function (index, element) {
+	     return $(element).val() != '';
+	 }).serialize();
+	  window.location.href = '/directories/search?' + formInput;
+	 });
+	 });*/
 	$(document).ready(function() {
 		$('#searchSubmitDirectory').prop('disabled', true);
 		$('#depart').val('');
@@ -39,6 +39,21 @@
 			}).serialize();
 			window.location.href = '/directories/search?' + formInput;
 		});
+
+		$('#adClick').click(function(){
+			var id= {{directoryRandomAd.id}}
+			$.ajax({
+				url: '/api/feature-product/click/'+id,
+				type: 'PUT',
+				success: function(data) {
+					console.log("click response:",data);						
+				},
+				error: function(error) {
+					console.log("click err:",error);
+				}
+			});
+			window.open('{{directoryRandomAd.target_url}}', '_blank');
+		});
 	});
 </script>
 <div class="marketplace-banner directory">
@@ -46,7 +61,7 @@
 		<div class="row">
 			<div class="col-md-5">
 				<div class="advertisement py-xl-4">
-					<a href="{{directoryRandomAd.target_url}}" target="_blank">
+					<a id="adClick" href="javascript:;" target="_blank">
 						<img class="img-fluid" src="{{directoryRandomAd.image_url}}">
 					</a>
 				</div>

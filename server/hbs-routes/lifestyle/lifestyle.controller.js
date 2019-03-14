@@ -107,7 +107,6 @@ export function lifestyle(req, res) {
 			console.log("Max buyer count");
 			productService.userBuyerCount(marketplace['LIFESTYLE'])
 			.then((response) => {
-				console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",JSON.parse(JSON.stringify(response)))
 				return callback(null, response);
 			})
 			.catch((error) => {
@@ -126,6 +125,17 @@ export function lifestyle(req, res) {
 				where: queryObj
 			}).then(function(row) {
 				if (row) {
+					model[productAdModelName].increment({
+						'impression': 1
+					}, {
+						where: {
+							id: row.id
+						}
+					}).then(function(updatedRow){
+						console.log("Impression Response::", updatedRow);
+					}).catch(function(error){
+						console.log("Error::", error);
+					})
 					return callback(null, row.toJSON());
 				} else {
 					return callback(null);

@@ -13,13 +13,28 @@
 				$('#myModal').modal('show');
 			}
 		});
+
+		$('#adClick').click(function(){
+			var id= {{lifestyleRandomAd.id}}
+			$.ajax({
+				url: '/api/feature-product/click/'+id,
+				type: 'PUT',
+				success: function(data) {
+					console.log("click response:",data);						
+				},
+				error: function(error) {
+					console.log("click err:",error);
+				}
+			});
+			window.open('{{lifestyleRandomAd.target_url}}', '_blank');
+		});
 	});
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}
 <div class="marketplace-banner-small lifestyle d-flex align-items-center">
 	<div class="gtc-container">
 		<div class="row">
 			<div class="col-md-5 d-flex align-items-center">
-				<a href="{{lifestyleRandomAd.target_url}}" target="_blank">
+				<a id="adClick" href="javascript:;" target="_blank">
 					<img class="img-fluid" src="{{lifestyleRandomAd.image_url}}">
 				</a>				
 			</div>

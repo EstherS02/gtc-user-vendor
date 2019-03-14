@@ -20,6 +20,21 @@
 			}).serialize();
 			window.location.href = '/products/search?' + formInput;
 		});
+
+		$('#adClick').click(function(){
+			var id= {{productsRandomAd.id}}
+			$.ajax({
+				url: '/api/feature-product/click/'+id,
+				type: 'PUT',
+				success: function(data) {
+					console.log("click response:",data);						
+				},
+				error: function(error) {
+					console.log("click err:",error);
+				}
+			});
+			window.open('{{productsRandomAd.target_url}}', '_blank');
+		});
 	});
 </script>
 <div class="marketplace-banner products">
@@ -27,7 +42,7 @@
 		<div class="row">
 			<div class="col-md-5">
 				<div class="advertisement py-xl-4">
-					<a href="{{productsRandomAd.target_url}}" target="_blank">
+					<a id="adClick" href="javascript:;" target="_blank">
 						<img class="img-fluid" src="{{productsRandomAd.image_url}}">
 					</a>
 				</div>

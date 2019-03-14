@@ -158,8 +158,17 @@ export function directory(req, res) {
 				where: queryObj
 			}).then(function(row) {
 				if (row) {
-
-					console.log("***************************************",row);
+					model[productAdModelName].increment({
+						'impression': 1
+					}, {
+						where: {
+							id: row.id
+						}
+					}).then(function(updatedRow){
+						console.log("Impression Response::", updatedRow);
+					}).catch(function(error){
+						console.log("Error::", error);
+					})
 					return callback(null, row.toJSON());
 				} else {
 					return callback(null);
