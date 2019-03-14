@@ -98,6 +98,21 @@ export function vendor(req, res) {
 						delete queryObj['is_featured_product'];
 						productService.queryAllProducts(LoggedInUser.id, queryObj, 0, limit)
 							.then(function(results) {
+								var featureIds = [];
+								for (var i = 0; i < results.rows.length; i++) { 
+									featureIds.push(results.rows[i].FeaturedProducts[0].id);
+								}
+								model['FeaturedProduct'].increment({
+									'impression': 1
+								}, {
+									where: {
+										id: featureIds
+									}
+								}).then(function(updatedRow){
+									console.log("Impression Response::", updatedRow);
+								}).catch(function(error){
+									console.log("Error::", error);
+								})
 								return callback(null, results);
 							});
 					} else {
