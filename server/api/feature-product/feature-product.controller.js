@@ -206,8 +206,23 @@ export function featureProductWithoutPayment(req, res){
 	}
 }
 
-export function clickCalculation(req, res){
+export function adClick(req, res){
 	model['ProductAdsSetting'].increment({
+		'clicks': 1
+	}, {
+		where: {
+			id: req.params.id
+		}
+	}).then(function(updatedRow){
+		return res.status(200).send(updatedRow);
+	}).catch(function(error){
+		console.log("Error::", error);
+		return res.status(500).send(error);
+	})
+}
+
+export function featureClick(req, res){
+	model['FeaturedProduct'].increment({
 		'clicks': 1
 	}, {
 		where: {

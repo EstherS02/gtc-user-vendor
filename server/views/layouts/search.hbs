@@ -105,6 +105,19 @@
 		var key = 'is_featured_product';
 		location.href = url.replace(new RegExp(key + "=\\w+"), "").replace("?&", "?").replace("&&", "&").replace("& ", "");
 	}
+
+	function featureClick(featureId) {
+		$.ajax({
+			url: '/api/feature-product/featureClick/'+featureId,
+			type: 'PUT',
+			success: function(data) {
+				console.log("click response:",data);						
+			},
+			error: function(error) {
+				console.log("click err:",error);
+			}
+		});
+	}
 </script>
 <style>
 	#category li {
@@ -382,7 +395,7 @@
 														<tr class="d-flex">
 															<td class="col-3">
 																<div class="product-left-col">
-																	<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue">
+																	<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue" onclick="return featureClick(`{{this.FeaturedProducts.[0].id}}`);">
 																		<img class="object-fit" src="{{this.ProductMedia.[0].url}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
 																	</a>
 																</div>
@@ -390,7 +403,7 @@
 															<td class="col-6">
 																<div class="product-middle-col">
 																	<h3>
-																		<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue" title="{{this.product_name}}">
+																		<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue" title="{{this.product_name}}" onclick="return featureClick(`{{this.FeaturedProducts.[0].id}}`);">
 																			{{#if ../selectedMarketPlaceType}}{{../selectedMarketPlaceType.code}} - {{/if}}{{this.product_name}}</a>
 																	</h3>
 																	<div class="row no-margins">
@@ -455,7 +468,7 @@
 												<tr class="d-flex">
 													<td class="col-2">
 														<div class="product-left-col">
-															<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue">
+															<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue" onclick="return featureClick(`{{this.FeaturedProducts.[0].id}}`);">
 																<img class="object-fit" src="{{this.ProductMedia.[0].url}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
 															</a>
 														</div>
@@ -463,10 +476,9 @@
 													<td class="col-7">
 														<div class="product-middle-col">
 															<h3>
-																<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue">
+																<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue" onclick="return featureClick(`{{this.FeaturedProducts.[0].id}}`);">
 																	{{#if ../selectedMarketPlaceType}}{{../selectedMarketPlaceType.code}} - {{/if}}{{this.product_name}}</a>
 															</h3>
-
 															<div class="row no-margins">
 																<span>Origin&nbsp;:</span>
 																<span class="text-500">&nbsp;{{this.Country.name}}&nbsp;|&nbsp;</span>

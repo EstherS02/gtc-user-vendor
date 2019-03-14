@@ -45,6 +45,19 @@
 			window.open('{{wholesaleRandomAd.target_url}}', '_blank');
 		});
 	});
+
+	function featureClick(featureId) {
+		$.ajax({
+			url: '/api/feature-product/featureClick/'+featureId,
+			type: 'PUT',
+			success: function(data) {
+				console.log("click response:",data);						
+			},
+			error: function(error) {
+				console.log("click err:",error);
+			}
+		});
+	}
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}
 <div class="marketplace-banner wholesale">
 	<div class="gtc-container">
@@ -205,7 +218,7 @@
 													<tr class="d-flex">
 														<td class="col-3">
 															<div class="product-left-col">
-																<a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+																<a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" onclick="return featureClick(`{{this.FeaturedProducts.[0].id}}`);">
 																	<img class="object-fit" onError="imgError(this)" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
 																</a>
 															</div>
@@ -213,7 +226,7 @@
 														<td class="col-9">
 															<div class="product-middle-col">
 																<h3>
-																	<a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a>
+																	<a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue" onclick="return featureClick(`{{this.FeaturedProducts.[0].id}}`);">{{this.product_name}}</a>
 																</h3>
 																<div class="row no-margins">
 																	<div class="col-md-12 col-12 no-padding">
@@ -748,7 +761,6 @@
 			</div>
 		</div>
 	</div>
-
 </div>
 
 

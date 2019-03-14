@@ -68,6 +68,19 @@
 			window.location.href = 'geo-locate/search?keyword=' + $('#keyword').val();
 		}
 	}
+
+	function featureClick(featureId) {
+		$.ajax({
+			url: '/api/feature-product/featureClick/'+featureId,
+			type: 'PUT',
+			success: function(data) {
+				console.log("click response:",data);						
+			},
+			error: function(error) {
+				console.log("click err:",error);
+			}
+		});
+	}
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}
 {{#if LoggedInUser.id}} {{else}}
 	<div class="home-banner">
@@ -1000,7 +1013,7 @@
 													<tr class="d-flex">
 														<td class="col-3">
 															<div class="product-left-col">
-																<a href="products/{{this.product_slug}}/{{this.id}}">
+																<a href="products/{{this.product_slug}}/{{this.id}}" onclick="return featureClick(`{{this.FeaturedProducts.[0].id}}`);">
 																	<img class="object-fit" onError="imgError(this)" src="{{this.ProductMedia.[0].url}}" alt="{{this.product_name}}" title="{{this.product_name}}">
 																</a>
 															</div>
@@ -1008,7 +1021,7 @@
 														<td class="col-9">
 															<div class="product-middle-col">
 																<h3>
-																	<a href="/products/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a>
+																	<a href="/products/{{this.product_slug}}/{{this.id}}" class="text-blue" onclick="return featureClick(`{{this.FeaturedProducts.[0].id}}`);">{{this.product_name}}</a>
 																</h3>
 																<div class="row no-margins">
 																	<div class="col-md-12 col-12 no-padding">
