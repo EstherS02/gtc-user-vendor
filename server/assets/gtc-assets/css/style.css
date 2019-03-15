@@ -3381,3 +3381,8 @@ p.address-info{
 		margin: 0 50px;
 	}
 }*/
+.small-ad{
+    height: 75px !important;
+    object-fit: fill !important;
+    width: 490px !important;
+}
