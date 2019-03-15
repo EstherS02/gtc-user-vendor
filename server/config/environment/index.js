@@ -39,8 +39,8 @@ var all = {
 	paginationLimit: 10,
 
 	wooCommercePerPageLimit: process.env.WOO_COMMERCE_PER_PAGE_LIMIT || 50,
-	aliExpressLoginId: process.env.ALI_EXPRESS_USER_ID || "chandrumail4u@gmail.com",
-	aliExpressLoginPassword: process.env.ALI_EXPRESS_USER_PASSWORD || "13229502",
+	aliExpressLoginId: process.env.ALI_EXPRESS_USER_ID,
+	aliExpressLoginPassword: process.env.ALI_EXPRESS_USER_PASSWORD,
 
 	clientURL: process.env.CLIENT_BASE_URL,
 
@@ -239,7 +239,7 @@ var all = {
 	},
 
 	payPalConfig: {
-		'mode': 'sandbox', //sandbox or live
+		'mode': process.env.PAYPAL_MODE, 
 		'client_id': process.env.PAYPAL_CLIENT_ID,
 		'client_secret': process.env.PAYPAL_SECRET_KEY
 	},
@@ -247,7 +247,7 @@ var all = {
 	payPalOAuth: {
 		clientId: process.env.PAYPAL_CLIENT_ID,
 		clientSecret: process.env.PAYPAL_SECRET_KEY,
-		redirectUrl: process.env.PAYPAL_REDIRECT_URL,
+		redirectUrl: process.env.DOMAIN + '/api/paypal',
 		payPalMode: process.env.PAYPAL_MODE,
 		scope: 'openid profile email'
 	},
@@ -269,7 +269,7 @@ var all = {
 	//video call stun server
 	videoCall : {
 		'iceServers': [{
-			'urls': 'stun:stun.l.google.com:19302'
+			'urls': process.env.STUN_SERVER_1_URL
 		}]
 	},
 
