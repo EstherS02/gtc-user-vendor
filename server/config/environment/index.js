@@ -269,7 +269,7 @@ var all = {
 	//video call stun server
 	videoCall : {
 		'iceServers': [{
-			'urls': process.env.STUN_SERVER_1_URL
+			'urls': process.env.STUN_SERVER_URL
 		}]
 	},
 
