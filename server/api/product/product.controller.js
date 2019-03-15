@@ -787,15 +787,15 @@ export async function importEbay(req, res) {
 
 								if (planLimit) {
 
-									if(vendorCurrentPlan == gtcPlan['STARTER_SELLER'])
+									if(vendorCurrentPlan.plan_id == gtcPlan['STARTER_SELLER'])
 										marketplaceId = 2;
-									else if(vendorCurrentPlan == gtcPlan['SERVICE_PROVIDER'])
+									else if(vendorCurrentPlan.plan_id == gtcPlan['SERVICE_PROVIDER'])
 										marketplaceId = 3;
-									else if(vendorCurrentPlan == gtcPlan['LIFESTYLE_PROVIDER'])
+									else if(vendorCurrentPlan.plan_id == gtcPlan['LIFESTYLE_PROVIDER'])
 										marketplaceId = 4;
-									else if(vendorCurrentPlan == gtcPlan['PUBLIC_SELLER'])
+									else if(vendorCurrentPlan.plan_id == gtcPlan['PUBLIC_SELLER'])
 										marketplaceId = 2;
-									else if(vendorCurrentPlan == gtcPlan['WHOLESALER'])
+									else if(vendorCurrentPlan.plan_id == gtcPlan['WHOLESALER'])
 										marketplaceId = 1;
 
 									if(marketplaceId == marketplace.WHOLESALE || marketplaceId == marketplace.PUBLIC)
@@ -846,7 +846,7 @@ export async function importEbay(req, res) {
 			return res.status(403).send("Forbidden");
 		}
 	} catch (error) {
-		console.log("error", error);
+		console.log("Ebay error", error);
 		return res.status(500).send('Internal Server Error');
 	}
 }
