@@ -130,7 +130,7 @@ Handlebars.registerHelper('formatTime', function(date, format) {
 });
 
 Handlebars.registerHelper('formatTimeLocal', function(date, format) {
-	
+
 	var gmtDateTime = moment.utc(date).local();
 	return gmtDateTime.format(format);
 });
@@ -277,21 +277,12 @@ Handlebars.registerHelper('FormatDate', function(context, options) {
 
 Handlebars.registerHelper('timeLeft', function(context, options) {
 
-	console.log("---------------------",context);
-
 	var currentDate = moment().format('YYYY-M-DD HH:mm:ss');
 	var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
-
-	console.log("------------currentDate--------------", currentDate);
-	console.log("------------endDate--------------", endDate);
 
 	var localDate = moment.utc().format();
 	var localcurrentDate = moment.utc(localDate).local().format('YYYY-M-DD HH:mm:ss');
 	var localendDate = moment.utc(context, 'YYYY-M-DD HH:mm:ss').local();
-
-	console.log("*********localDate***************",localDate );
-	console.log("*********localcurrentDate***************",localcurrentDate );
-	console.log("*********localDate***************",localendDate );
 
 	var secondsDiff = '';
 	if (endDate.diff(currentDate) > 0) {
@@ -675,7 +666,7 @@ Handlebars.registerHelper('productPerformance', function(product, compareProduct
 				break;
 		}
 	}
-	
+
 	if (matchedObj) {
 		domElement = `<td></td>
 		<td class="table-data">
@@ -701,7 +692,7 @@ Handlebars.registerHelper('productPerformance', function(product, compareProduct
 		<td>
 			`+currencyFormat(product.vendor_fees)+`<span class = "` + getTextColor(product.vendor_fees, matchedObj.vendor_fees) + `">`+currencyFormat(product.vendor_fees-matchedObj.vendor_fees)+`</span>
 			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(product.vendor_fees, matchedObj.vendor_fees)+`) </span>
-		</td>`;		
+		</td>`;
 	} else {
 		domElement = `<td></td>
 		<td class="table-data">
@@ -723,7 +714,7 @@ Handlebars.registerHelper('productPerformance', function(product, compareProduct
 		</td>
 		<td>
 			`+currencyFormat(product.vendor_fees)+`
-		</td>`;	
+		</td>`;
 	}
 	return new Handlebars.SafeString(domElement);
 })
@@ -754,7 +745,7 @@ Handlebars.registerHelper('marketplacePerformance', function(marketplace, compar
 		<td>
 			`+currencyFormat(marketplace.vendor_fees)+`<span class = "` + getTextColor(marketplace.vendor_fees, matchedObj.vendor_fees) + `">`+currencyFormat(marketplace.vendor_fees-matchedObj.vendor_fees)+`</span>
 			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(marketplace.vendor_fees, matchedObj.vendor_fees)+`) </span>
-		</td>`;		
+		</td>`;
 	} else {
 		domElement = `<td></td>
 		<td class="table-data">
@@ -771,7 +762,7 @@ Handlebars.registerHelper('marketplacePerformance', function(marketplace, compar
 		</td>
 		<td>
 			`+currencyFormat(marketplace.vendor_fees)+`
-		</td>`;	
+		</td>`;
 	}
 	return new Handlebars.SafeString(domElement);
 })
@@ -802,7 +793,7 @@ Handlebars.registerHelper('cityPerformance', function(city, compareCity){
 		<td>
 			`+currencyFormat(city.vendor_fees)+`<span class = "` + getTextColor(city.vendor_fees, matchedObj.vendor_fees) + `">`+currencyFormat(city.vendor_fees-matchedObj.vendor_fees)+`</span>
 			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(city.vendor_fees, matchedObj.vendor_fees)+`) </span>
-		</td>`;		
+		</td>`;
 	} else {
 		domElement = `<td></td>
 		<td class="table-data">
@@ -819,7 +810,7 @@ Handlebars.registerHelper('cityPerformance', function(city, compareCity){
 		</td>
 		<td>
 			`+currencyFormat(city.vendor_fees) +`
-		</td>`;	
+		</td>`;
 	}
 	return new Handlebars.SafeString(domElement);
 })
@@ -851,7 +842,7 @@ Handlebars.registerHelper('countryPerformance', function(country, compareCountry
 		<td>
 			`+currencyFormat(country.vendor_fees)+`<span class = "` + getTextColor(country.vendor_fees, matchedObj.vendor_fees) + `"> `+currencyFormat(country.vendor_fees-matchedObj.vendor_fees)+`</span>
 			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(country.vendor_fees, matchedObj.vendor_fees)+`) </span>
-		</td>`;		
+		</td>`;
 	} else {
 		domElement = `<td></td>
 		<td class="table-data">
@@ -868,7 +859,7 @@ Handlebars.registerHelper('countryPerformance', function(country, compareCountry
 		</td>
 		<td>
 			`+currencyFormat(country.vendor_fees) +`
-		</td>`;	
+		</td>`;
 	}
 	return new Handlebars.SafeString(domElement);
 })
@@ -883,7 +874,7 @@ Handlebars.registerHelper('buyerPerformance', function(buyer, compareBuyer){
 	if (matchedObj) {
 		domElement = `<td></td>
 		<td class="table-data">
-			`+buyer['Order.User.first_name']+` 
+			`+buyer['Order.User.first_name']+`
 		</td>
 		<td>
 			`+buyer.sales+`<span class = "` + getTextColor(buyer.sales, matchedObj.sales) + `"> +`+(buyer.sales-matchedObj.sales)+`</span>
@@ -900,11 +891,11 @@ Handlebars.registerHelper('buyerPerformance', function(buyer, compareBuyer){
 		<td>
 			`+currencyFormat(buyer.vendor_fees)+`<span class = "` + getTextColor(buyer.vendor_fees, matchedObj.vendor_fees) + `">`+currencyFormat(buyer.vendor_fees-matchedObj.vendor_fees)+`</span>
 			<span class = "text_grey_color"> vs `+currencyFormat(matchedObj.vendor_fees)+`(`+ calculatePercentage(buyer.vendor_fees, matchedObj.vendor_fees)+`) </span>
-		</td>`;		
+		</td>`;
 	} else {
 		domElement = `<td></td>
 		<td class="table-data">
-			`+buyer['Order.User.first_name']+` 
+			`+buyer['Order.User.first_name']+`
 		</td>
 		<td>
 		`+buyer.sales+`
@@ -917,7 +908,7 @@ Handlebars.registerHelper('buyerPerformance', function(buyer, compareBuyer){
 		</td>
 		<td>
 			`+currencyFormat(buyer.vendor_fees)+`
-		</td>`;	
+		</td>`;
 	}
 	return new Handlebars.SafeString(domElement);
 })
