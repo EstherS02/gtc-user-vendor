@@ -277,12 +277,21 @@ Handlebars.registerHelper('FormatDate', function(context, options) {
 
 Handlebars.registerHelper('timeLeft', function(context, options) {
 
-	//var currentDate = moment().format('YYYY-M-DD HH:mm:ss');
-	//var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
+	console.log("---------------------",context);
 
-	var date = moment.utc().format();
-	var currentDate = moment.utc(date).local().format('YYYY-M-DD HH:mm:ss');
-	var endDate = moment.utc(context, 'YYYY-M-DD HH:mm:ss').local();
+	var currentDate = moment().format('YYYY-M-DD HH:mm:ss');
+	var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
+
+	console.log("------------currentDate--------------", currentDate);
+	console.log("------------endDate--------------", endDate);
+
+	var localDate = moment.utc().format();
+	var localcurrentDate = moment.utc(localDate).local().format('YYYY-M-DD HH:mm:ss');
+	var localendDate = moment.utc(context, 'YYYY-M-DD HH:mm:ss').local();
+
+	console.log("*********localDate***************",localDate );
+	console.log("*********localcurrentDate***************",localcurrentDate );
+	console.log("*********localDate***************",localendDate );
 
 	var secondsDiff = '';
 	if (endDate.diff(currentDate) > 0) {
