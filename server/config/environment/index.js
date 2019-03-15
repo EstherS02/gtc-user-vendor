@@ -136,21 +136,34 @@ var all = {
 		"couponNotification" : "notification-coupon",
 		"couponEmail" : "coupon-email"
 	},
+
+	jobTimings: {
+		orderItemPayout: process.env.ORDER_ITEM_PAYOUT || '12 hours',
+		vendorPayouts : process.env.VENDOR_PAYOUT || '12 hours',
+		planRenewal: process.env.PLAN_RENEWAL || '12 hours',
+		bulkUserPlanRenewal: process.env.USER_PLAN_RENEWAL || '12 hours',
+		subscriptionAutoRenewal: process.env.SUBSCRIPTION_RENEWAL || '12 hours',
+		featureProductAutoRenewal: process.env.FEATURE_RENEWAL || '12 hours',
+		starterPlanExpire: process.env.STARTER_PLAN_EXPIRE || '12 hours',
+		featureProductExpire: process.env.FEATURE_EXPIRE || '12 hours',
+		subscriptionExpire: process.env.SUBSCRIPTION_EXPIRE || '12 hours',
+	},
+
 	fee: {
 		gtc_fees: 0.01,
 		plan_fees: 0.1,
 	},
 	order: {
-		currency: "usd",
-		gtc_fees: 1,
-		service_fee: 10,
-		lifestyle_fee: 10
+		currency: process.env.CURRENCY || "usd",
+		gtc_fees: process.env.GTC_FEE || 1 ,
+		service_fee: process.env.SERVICE_FEE || 10,
+		lifestyle_fee: process.env.LIFESTYLE_FEE || 10
 	},
 	payment: {
-		"cancelOrderItem": 3,
-		"returnOrderItem": 3,
-		"noResposeOrderItem": 3,
-		"vendorPayout": 30
+		"cancelOrderItem": process.env.CANCEL_REFUND_DAYS || 3,
+		"returnOrderItem": process.env.RETURN_REFUND_DAYS || 3,
+		"noResposeOrderItem": process.env.NO_RESPONSE_REFUND_DAYS || 3,
+		"vendorPayout": process.env.VENDOR_PAYOUT_DAYS || 30
 	},
 	sesTransporter: {
 		accessKeyId: process.env.SES_ACCESS_KEY_ID,
@@ -219,8 +232,8 @@ var all = {
 	stripeConfig: {
 		keyPublishable: process.env.STRIPE_PUBLISHABLE_KEY,
 		keySecret: process.env.STRIPE_SECRET_KEY,
-		clientId: 'ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW',
-		connectUrl: 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW&scope=read_write&redirect_uri='+process.env.DOMAIN+'/api/stripe/connect',
+		clientId: process.env.STRIPE_CLIENT_ID,
+		connectUrl: 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id='+process.env.STRIPE_CLIENT_ID+'&scope=read_write&redirect_uri='+process.env.DOMAIN+'/api/stripe/connect',
 		OAuthUrl: 'https://connect.stripe.com/oauth/token',
 		disconnectUrl: 'https://connect.stripe.com/oauth/deauthorize'
 	},

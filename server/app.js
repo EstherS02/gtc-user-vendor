@@ -60,15 +60,15 @@ agenda.define(config.jobs.couponEmail, couponEmail);
 
 agenda.on('ready', function() {
 	console.log('agenda onReady');
-	agenda.every('5 minutes', config.jobs.orderItemPayout);
-	agenda.every('5 minutes', config.jobs.vendorPayouts);
-	agenda.every('12 hours', 'planRenewal');
-	agenda.every('12 hours', 'bulkUserPlanRenewal');
-	agenda.every('12 hours', 'subscriptionAutoRenewal');
-	agenda.every('12 hours', 'featureProductAutoRenewal');
-	agenda.every('12 hours', 'starterPlanExpire');
-	agenda.every('12 hours', 'featureProductExpire');
-	agenda.every('12 hours', 'subscriptionExpire');
+	agenda.every(config.jobTimings.orderItemPayout, config.jobs.orderItemPayout);
+	agenda.every(config.jobTimings.vendorPayouts, config.jobs.vendorPayouts);
+	agenda.every(config.jobTimings.planRenewal, 'planRenewal');
+	agenda.every(config.jobTimings.bulkUserPlanRenewal, 'bulkUserPlanRenewal');
+	agenda.every(config.jobTimings.subscriptionAutoRenewal, 'subscriptionAutoRenewal');
+	agenda.every(config.jobTimings.featureProductAutoRenewal, 'featureProductAutoRenewal');
+	agenda.every(config.jobTimings.starterPlanExpire, 'starterPlanExpire');
+	agenda.every(config.jobTimings.featureProductExpire, 'featureProductExpire');
+	agenda.every(config.jobTimings.subscriptionExpire, 'subscriptionExpire');
 	agenda.start();
 });
 
