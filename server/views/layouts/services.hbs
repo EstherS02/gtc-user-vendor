@@ -46,9 +46,11 @@
 	<div class="gtc-container">
 		<div class="row">
 			<div class="col-md-5 d-flex align-items-center">
-				<a id="adClick" href="javascript:;" target="_blank">
-					<img class="img-fluid small-ad" src="{{serviceRandomAd.image_url}}">
-				</a>		
+				{{#if serviceRandomAd.image_url}}
+					<a id="adClick" href="javascript:;" target="_blank">
+						<img class="img-fluid small-ad" src="{{serviceRandomAd.image_url}}" onError="imgError(this)">
+					</a>	
+				{{/if}}	
 			</div>
 			{{!-- {{{DisplayJSON buyerCount}}} --}}
 			<div class="col-md-7">
