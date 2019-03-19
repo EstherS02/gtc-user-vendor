@@ -328,18 +328,31 @@ module.exports = async function(job, done) {
 
 		// order status change notification and email
 		if (code == config.notification.templates.orderStatus) {
+
 			const itemId = job.attrs.data.itemId;
 			const orderItemResponse = await model[orderItemModelName].findOne({
 				where: {
 					id: itemId,
 				},
-				attributes: ['id', 'order_id', 'product_id', 'quantity', 'price', 'status', 'order_item_status', 'last_updated_by'],
+				attributes: ['id', 'order_id', 'product_id', 'quantity', 'price', 'status', 'order_item_status', 'last_updated_by','expected_delivery_date'],
 				include: [{
 					model: model['Order'],
 					attributes: ['id', 'ordered_date', 'user_id', 'total_price'],
 					include: [{
 						model: model['User'],
 						attributes: ['id', 'first_name', 'user_contact_email']
+					},
+					{
+						model: model['Address'],
+						as: 'shippingAddress1',
+						attributes: ['id', 'first_name', 'last_name', 'company_name', 'address_line1', 'address_line2', 'city', 'postal_code'],
+						include: [{
+							model: model['State'],
+							attributes: ['id', 'name']
+						}, {
+							model: model['Country'],
+							attributes: ['id', 'name']
+						}]
 					}]
 				}, {
 					model: model['Product'],
@@ -351,6 +364,9 @@ module.exports = async function(job, done) {
 							base_image: 1
 						},
 						attributes: ['id', 'product_id', 'type', 'url', 'base_image']
+					},{
+						model: model['Vendor'],
+						attributes: ['id', 'vendor_name'],
 					}]
 				}]
 			});
@@ -359,20 +375,27 @@ module.exports = async function(job, done) {
 				const orderItemStatusEmailTemplate = await service.findOneRow(emailTemplateModelName, {
 					name: "ORDER-ITEM-STATUS"
 				});
+
 				if (orderItemStatusEmailTemplate) {
+
 					let orderStatusSubject = orderItemStatusEmailTemplate.subject;
+					orderStatusSubject = orderStatusSubject.replace('%ORDER_ID%',orderItem.order_id);
 					let orderStatusBody = orderItemStatusEmailTemplate.body;
+					orderStatusBody = orderStatusBody.replace('%ORDER_ID%', orderItem.order_id);
+					orderStatusBody = orderStatusBody.replace(/%URL%/g,config.baseUrl);
 					orderItem.Order.ordered_date = moment(orderItem.Order.ordered_date).format('MMM D, Y');
+					orderStatusBody = orderStatusBody.replace('%ITEM_NAME%', orderItem.Product.product_name);
 					if (orderItem.order_item_status == oredrItemStatus['CONFIRMED'])
-						orderStatusBody = orderStatusBody.replace('%status%', 'confirm by vendor');
+						orderStatusBody = orderStatusBody.replace('%TEXT%', 'has confirmed by the vendor. You will receive an email when your item is shipped.');
 					else if (orderItem.order_item_status == oredrItemStatus['SHIPPED'])
-						orderStatusBody = orderStatusBody.replace('%status%', 'dispatched by vendor');
+						orderStatusBody = orderStatusBody.replace('%TEXT%', 'has shipped. The expected delivery date is: '+ moment(orderItem.expected_delivery_date).format('MMM D, Y'));
 					else if (orderItem.order_item_status == oredrItemStatus['DELIVERED'])
-						orderStatusBody = orderStatusBody.replace('%status%', 'delivered');
+						orderStatusBody = orderStatusBody.replace('%TEXT%', 'has delivered on '+ moment(orderItem.delivered_on).format('MMM D, Y'));
 					else if (orderItem.order_item_status == oredrItemStatus['COMPLETED'])
-						orderStatusBody = orderStatusBody.replace('%status%', 'completed');
+						orderStatusBody = orderStatusBody.replace('%TEXT%', 'completed');
 					let template = Handlebars.compile(orderStatusBody);
 					let result = template(orderItem);
+
 					if (orderItem.Order.User.user_contact_email) {
 						await sendEmail({
 							to: orderItem.Order.User.user_contact_email,
@@ -389,15 +412,17 @@ module.exports = async function(job, done) {
 					var bodyParams = {};
 					bodyParams.user_id = orderItem.Order.user_id;
 					bodyParams.description = notificationSettingResponse.description;
+
+					bodyParams.description = bodyParams.description.replace('%USER_NAME%', orderItem.Order.User.first_name);
 					bodyParams.description = bodyParams.description.replace('%ORDER_ID%', orderItem.order_id);
 					if (orderItem.order_item_status == oredrItemStatus['CONFIRMED'])
-						bodyParams.description = bodyParams.description.replace('%ORDER_STATUS%', 'Confirm by vendor');
+						bodyParams.description = bodyParams.description.replace('%ORDER_STATUS%', 'confirm by vendor');
 					else if (orderItem.order_item_status == oredrItemStatus['SHIPPED'])
-						bodyParams.description = bodyParams.description.replace('%ORDER_STATUS%', 'Dispatched by vendor');
+						bodyParams.description = bodyParams.description.replace('%ORDER_STATUS%', 'dispatched');
 					else if (orderItem.order_item_status == oredrItemStatus['DELIVERED'])
-						bodyParams.description = bodyParams.description.replace('%ORDER_STATUS%', 'Delivered');
+						bodyParams.description = bodyParams.description.replace('%ORDER_STATUS%', 'delivered');
 					else if (orderItem.order_item_status == oredrItemStatus['COMPLETED'])
-						bodyParams.description = bodyParams.description.replace('%ORDER_STATUS%', 'Completed');
+						bodyParams.description = bodyParams.description.replace('%ORDER_STATUS%', 'completed');
 					bodyParams.description = bodyParams.description.replace('%#Order%', '/order-history/' + orderItem.order_id + '/track-order-item/' + orderItem.id);
 					bodyParams.name = notificationSettingResponse.name;
 					bodyParams.code = notificationSettingResponse.code;
