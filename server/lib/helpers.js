@@ -1196,3 +1196,9 @@ Handlebars.registerHelper('planName', function(plan_id) {
 	}
 	return planName;
 });
+
+Handlebars.registerHelper("toInt", function(number) {
+    if (number) {
+		return parseInt(number, 10);
+    }
+});

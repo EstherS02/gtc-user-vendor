@@ -359,7 +359,11 @@
 									{{#if compareProducts.[0]}}
 										<div class="p-rating d-inline">
 											{{starCount compareProducts.[0].product_rating}}
-											<span class="text-sm">(<a href="javascript:;">{{compareProducts.[0].user_count}} Ratings - See All</a>)</span>
+											<span class="text-sm" style="color: #4078b0;">&nbsp;&nbsp;({{compareProducts.[0].user_count}} Ratings 
+												{{#if (toInt compareProducts.[0].product_rating) }}
+												<a href="/{{MarketPlaceURL compareProducts.[0].marketplace_id}}/{{compareProducts.[0].product_slug}}/{{compareProducts.[0].id}}/reviews">- See All</a>
+												{{/if}})
+											</span>
 										</div>
 									{{/if}}
 								</div>
@@ -369,7 +373,11 @@
 									{{#if compareProducts.[1]}}
 										<div class="p-rating d-inline">
 											{{starCount compareProducts.[1].product_rating}}
-											<span class="text-sm">(<a href="javascript:;">{{compareProducts.[1].user_count}} Ratings - See All</a>)</span>
+											<span class="text-sm" style="color: #4078b0;">&nbsp;&nbsp;({{compareProducts.[1].user_count}} Ratings
+												{{#if (toInt compareProducts.[1].product_rating) }}
+												<a href="/{{MarketPlaceURL compareProducts.[1].marketplace_id}}/{{compareProducts.[1].product_slug}}/{{compareProducts.[1].id}}/reviews">- See All</a>
+												{{/if}})
+											</span>
 										</div>
 									{{/if}}
 								</div>
@@ -379,7 +387,11 @@
 									{{#if compareProducts.[2]}}
 										<div class="p-rating d-inline">
 											{{starCount compareProducts.[2].product_rating}}
-											<span class="text-sm">(<a href="javascript:;">{{compareProducts.[2].user_count}} Ratings - See All</a>)</span>
+											<span class="text-sm" style="color: #4078b0;">&nbsp;&nbsp;({{compareProducts.[2].user_count}} Ratings 
+												{{#if (toInt compareProducts.[2].product_rating) }}
+												<a href="/{{MarketPlaceURL compareProducts.[2].marketplace_id}}/{{compareProducts.[2].product_slug}}/{{compareProducts.[2].id}}/reviews">- See All</a>
+												{{/if}})
+											</span>
 										</div>
 									{{/if}}
 								</div>
