@@ -201,7 +201,7 @@
 			}
 		})
 
-		$('#Seller_Info').click(function() {
+		$('.Seller_Info').click(function() {
 			$('#myModal').modal('show');
 		});
 	});
@@ -649,7 +649,7 @@
 																							{{#if ../LoggedInUser.email}}
 																								<a class="text-500" title="{{this.Vendor.vendor_name}}" href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a>
 																							{{else}}
-																								<a title="compareForceSignup" class="text-500" id="Seller_Info" href="javascript:;">(Login for Seller Info)</a>
+																								<a title="compareForceSignup" class="text-500 Seller_Info"  href="javascript:;">(Login for Seller Info)</a>
 																							{{/if}}
 																						</div>
 																					</div>
