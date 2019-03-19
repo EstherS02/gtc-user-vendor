@@ -234,7 +234,12 @@
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category_id" id="sub_category"
 												 required>
 													{{#if editProduct.sub_category_id}}
-														<option value="{{editProduct.sub_category_id}}">{{editProduct.SubCategory.name}}</option>
+														{{!-- <option value="{{editProduct.sub_category_id}}">{{editProduct.SubCategory.name}}</option> --}}
+														{{#select editProduct.sub_category_id}}
+															{{#each subCategories}}
+																<option value="{{this.id}}">{{ Titlecase this.name}}</option>
+															{{/each}}
+														{{/select}}
 													{{else}}
 														<option disabled selected>Select Sub Category...</option>
 													{{/if}}
@@ -272,7 +277,12 @@
 											<div class="input-group">
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state" value="">
 													{{#if editProduct.state_id}}
-														<option value="{{editProduct.state_id}}">{{editProduct.State.name}}</option>
+														{{!-- <option value="{{editProduct.state_id}}">{{editProduct.State.name}}</option> --}}
+														{{#select editProduct.state_id}}
+															{{#each state}}
+																<option value="{{this.id}}">{{ Titlecase this.name}}</option>
+															{{/each}}
+														{{/select}}
 													{{else}}
 														<option disabled selected>Select State...</option>
 													{{/if}}

@@ -156,7 +156,8 @@ export function adForm(req, res) {
 	var LoggedInUser = {},
 		bottomCategory = {},
 		queryObj = {},
-		queryObjAds = {};
+		queryObjAds = {},
+		state ={};
 	var user_id;
 	var includeArrAds = [];
 
@@ -218,6 +219,12 @@ export function adForm(req, res) {
 			service.findRow('ProductAdsSetting', queryObjAds, includeArrAds)
 				.then(function(ad) {
 					if (ad) {
+						service.findRows('State',{country_id: ad.country_id}, null, null, 'name', 'asc')
+						.then(function(State){
+							state = State.rows;
+						}).catch(function(error){
+							console.log("Error::", error);
+						})
 						return callback(null, ad);
 					} else {
 						return callback(null);
@@ -273,7 +280,8 @@ export function adForm(req, res) {
 				selectedPage: 'ad-form',
 				vendorPlan: vendorPlan,
 				position:position,
-				adImage: adImage
+				adImage: adImage,
+				state:state
 			});
 		} else {
 			res.render('vendorNav/ad-form', err);

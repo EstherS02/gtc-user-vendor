@@ -411,7 +411,12 @@
 											<label class="label-control">Province</label>
 											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state">
 												{{#if ads.state_id}}
-													<option value="{{ads.state_id}}">{{ads.State.name}}</option>
+													{{!-- <option value="{{ads.state_id}}">{{ads.State.name}}</option> --}}
+													{{#select ads.state_id}}
+														{{#each state}}
+															<option value="{{this.id}}">{{ Titlecase this.name}}</option>
+														{{/each}}
+													{{/select}}
 												{{else}}
 													<option disabled selected>Select...</option>
 												{{/if}}

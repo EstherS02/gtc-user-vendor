@@ -18,6 +18,7 @@ export function addProduct(req, res) {
 
 	var editProductId;
 	var queryObj = {}, LoggedInUser = {}, bottomCategory = {}, cardQueryObj, productIncludeArr = [];
+	var subCategories = {}, state ={};
 
 	var offset, limit, field, order, type;
 
@@ -83,9 +84,8 @@ export function addProduct(req, res) {
 		},
 		country: function(callback) {
 			service.findRows('Country', queryObj, offset, limit, 'name', order)
-				.then(function(country) {
+				.then(function(country) {				
 					return callback(null, country.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -104,8 +104,19 @@ export function addProduct(req, res) {
 		editProduct: function(callback) {
 			service.findIdRow('Product', editProductId, productIncludeArr)
 				.then(function(editProduct) {
+					service.findRows('SubCategory',{category_id: editProduct.product_category_id}, null, null, 'name', 'asc')
+					.then(function(SubCategory){
+						subCategories = SubCategory.rows;
+					}).catch(function(error){
+						console.log("Error::", error);
+					})
+					service.findRows('State',{country_id: editProduct.product_location}, null, null, 'name', 'asc')
+					.then(function(State){
+						state = State.rows;
+					}).catch(function(error){
+						console.log("Error::", error);
+					})
 					return callback(null, editProduct);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -115,7 +126,6 @@ export function addProduct(req, res) {
 			
 			service.findAllRows('PaymentSetting', [], cardQueryObj, offset, limit, field, order)
 				.then(function(paymentSetting) {
-
 					return callback(null, paymentSetting.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -173,7 +183,9 @@ export function addProduct(req, res) {
 				editProduct: results.editProduct,
 				productImages: productImages,
 				productBaseImage: productBaseImage,
-				statusCode: statusCode
+				statusCode: statusCode,
+				subCategories: subCategories,
+				state:state
 			});
 		} else {
 			res.render('vendorNav/listings/add-product', err);
