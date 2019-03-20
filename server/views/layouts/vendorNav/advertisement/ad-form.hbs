@@ -227,7 +227,9 @@
 		$.validator.addMethod("lesserThan",
 			function(value, element, params) {
 				if (!/Invalid|NaN/.test(new Date(value))) {
-					return new Date(value) > new Date();
+					var timeStamp =  new Date();
+					var currentDate = new Date(timeStamp.setHours(0,0,0,0))
+					return new Date(value) >= currentDate;
 				}
 				return isNaN(value) && isNaN($(params).val())
 					|| (Number(value) > Number($(params).val()));
@@ -373,7 +375,7 @@
 												<span class="text-danger">*</span>
 											</label>
 											<div class="input-group">
-												<input type="text" class="form-control-customized" name="start_date" placeholder="MM/DD/YYYY" id="startDate" value="{{ads.start_date}}"
+												<input type="text" class="form-control-customized" name="start_date" placeholder="MM/DD/YYYY" id="startDate" value="{{formatTime ads.start_date "MM/DD/YYYY"}}"
 												aria-describedby="basic-addon2">
 												<div class="input-group-append"></div>
 											</div>
@@ -385,7 +387,7 @@
 												<span class="text-danger">*</span>
 											</label>
 											<div class="input-group ">
-												<input type="text" class="form-control-customized" placeholder="MM/DD/YYYY" value="{{ads.end_date}}" id="endDate" name="end_date"
+												<input type="text" class="form-control-customized" placeholder="MM/DD/YYYY" value="{{formatTime ads.end_date "MM/DD/YYYY"}}" id="endDate" name="end_date"
 												aria-describedby="basic-addon2">
 												<div class="input-group-append"></div>
 											</div>

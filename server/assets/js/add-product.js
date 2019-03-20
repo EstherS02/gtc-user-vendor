@@ -667,7 +667,9 @@ $(document).ready(function() {
 	$.validator.addMethod("lesserThan",
 		function(value, element, params) {
 			if (!/Invalid|NaN/.test(new Date(value))) {
-				return new Date(value) > new Date();
+				var timeStamp =  new Date();
+				var currentDate = new Date(timeStamp.setHours(0,0,0,0));
+				return new Date(value) >= currentDate;
 			}
 			return isNaN(value) && isNaN($(params).val())
 				|| (Number(value) > Number($(params).val()));
