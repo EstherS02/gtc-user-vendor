@@ -280,6 +280,7 @@ export async function vendorOrderDetails(queryObj) {
 				order['Order'].total_order_items = order['marketplace_products'][aProduct.Product.marketplace_id].count;
 				order['marketplace_products'][aProduct.Product.marketplace_id].products.push(aProduct);
 			}));
+			order['expected_delivery_date'] = order.Order.OrderItems[0].expected_delivery_date;
 			delete order.Order.OrderItems;
 			return order;
 		} else {

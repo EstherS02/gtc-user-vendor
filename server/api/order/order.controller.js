@@ -166,6 +166,8 @@ export async function dispatchOrder(req, res) {
 				if (item.order_item_status == orderItemStatus['ORDER_INITIATED']) {
 					return res.status(400).send("Please confirm all items.");
 				}
+			}
+			for (let item of vendorOrder.Order.OrderItems) {
 				if (item.order_item_status == orderItemStatus['CONFIRMED']) {
 
 					orderItemPromises.push(service.updateRecordNew(orderItemModelName, {
