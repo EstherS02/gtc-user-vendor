@@ -233,7 +233,7 @@
 													</th>
 													<th>Order#</th>
 													<th>Date</th>
-													<th>Method</th>
+													{{!-- <th>Method</th> --}}
 													<th>Status</th>
 													<th>Amount</th>
 												</tr>
@@ -249,7 +249,7 @@
 														</td>
 														<td><a href="../my-order/order/{{this.Order.id}}">{{this.Order.id}}</a></td>
 														<td>{{formatTime this.created_on "MMM D, Y"}}</td>
-														<td>Stripe</td>
+														{{!-- <td>Stripe</td> --}}
 														<td>
 															{{#if this.status}} 
 																<span class="text_green_color">Active</span> 
@@ -261,7 +261,7 @@
 													</tr>
 												{{/each}}
 												<tr>
-													<td colspan="4"></td>
+													<td colspan="3"></td>
 													<td class="text-right">Total Transaction : </td>
 													<td>{{currency @root.orders.total '$'}} CAD</td>
 												</tr>

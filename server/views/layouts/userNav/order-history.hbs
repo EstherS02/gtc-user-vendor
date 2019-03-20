@@ -240,7 +240,7 @@
 													</th>
 													<th>Order#</th>
 													<th>Date</th>
-													<th>Method</th>
+													{{!-- <th>Method</th> --}}
 													<th>Status</th>
 													<th>Amount</th>
 												</tr>
@@ -258,7 +258,7 @@
 															<a href="../order-history/{{this.id}}">{{this.id}}</a>
 														</td>
 														<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
-														<td>Stripe</td>
+														{{!-- <td>Stripe</td> --}}
 														<td>
 															{{#if this.status}} Active {{else}}Failed {{/if}}
 														</td>
@@ -267,7 +267,7 @@
 													</tr>
 												{{/each}}
 												<tr>
-													<td colspan="4"></td>
+													<td colspan="3"></td>
 													<td class="text-right">Total Transaction : </td>
 													<td>{{currency @root.orders.total '$'}} CAD</td>
 												</tr>
