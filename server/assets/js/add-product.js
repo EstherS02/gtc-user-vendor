@@ -172,9 +172,6 @@ $(document).ready(function() {
 		if (uploader.files && uploader.files[0]) {
 			fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
 			fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
-
-			console.log("*************************************************************",window.URL.createObjectURL(uploader.files[0]));
-
 			$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
 			cropperInputImage = document.getElementById('uploaded-profile-picture');
 			$('#profile-picture-modal').modal('show');
