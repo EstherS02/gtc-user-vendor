@@ -57,6 +57,10 @@ function isGlobalObj() {
 				}).then(function(userObj) {
 					if (userObj) {
 						req.gtcGlobalUserObj = userObj.toJSON();
+						
+						req.gtcGlobalUserObj['googleClientID'] = config.googleLogin.clientId;
+						req.gtcGlobalUserObj['facebookClientID'] = config.facebookLogin.clientId;
+						req.gtcGlobalUserObj['linkedinClientID'] = config.linkedInLogin.clientId;
 						req.gtcGlobalUserObj['isAvailable'] = true;
 
 						let vendorQueryObj = {};
@@ -95,18 +99,27 @@ function isGlobalObj() {
 						});
 					} else {
 						req.gtcGlobalUserObj = {};
-						req.gtcGlobalUserObj['isAvailable'] = false;
+						req.gtcGlobalUserObj['isAvailable'] = true;
+						req.gtcGlobalUserObj['googleClientID'] = config.googleLogin.clientId;
+						req.gtcGlobalUserObj['facebookClientID'] = config.facebookLogin.clientId;
+						req.gtcGlobalUserObj['linkedinClientID'] = config.linkedInLogin.clientId;
 						next();
 					}
 				}).catch(function(error) {
 					req.gtcGlobalUserObj = {};
-					req.gtcGlobalUserObj['isAvailable'] = false;
+					req.gtcGlobalUserObj['isAvailable'] = true;
+					req.gtcGlobalUserObj['googleClientID'] = config.googleLogin.clientId;
+					req.gtcGlobalUserObj['facebookClientID'] = config.facebookLogin.clientId;
+					req.gtcGlobalUserObj['linkedinClientID'] = config.linkedInLogin.clientId;
 					next();
 				});
 
 			} else {
 				req.gtcGlobalUserObj = {};
-				req.gtcGlobalUserObj['isAvailable'] = false;
+				req.gtcGlobalUserObj['googleClientID'] = config.googleLogin.clientId;
+				req.gtcGlobalUserObj['facebookClientID'] = config.facebookLogin.clientId;
+				req.gtcGlobalUserObj['linkedinClientID'] = config.linkedInLogin.clientId;
+				req.gtcGlobalUserObj['isAvailable'] = true;
 				next();
 			}
 		});

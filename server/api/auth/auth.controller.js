@@ -15,8 +15,8 @@ const model = require('../../sqldb/model-connect');
 var OAuth = require('oauth').OAuth;
 
 export function requestTwitter(req, res) {
-	var redirect_uri = config.baseUrl + '/api/auth/twitter';
-	var oauth = new OAuth(config.twitterLogin.requestTokenUrl, config.twitterLogin.accessTokenUrl, config.twitterLogin.clientId, config.twitterLogin.secretKey, '1.0A', redirect_uri, 'HMAC-SHA1');
+	//var redirect_uri = config.baseUrl + '/api/auth/twitter';
+	var oauth = new OAuth(config.twitterLogin.requestTokenUrl, config.twitterLogin.accessTokenUrl, config.twitterLogin.clientId, config.twitterLogin.secretKey, '1.0A', config.twitterLogin.redirectUrl, 'HMAC-SHA1');
 	oauth.getOAuthRequestToken(function(error, oAuthToken, oAuthTokenSecret, results) {
 		if (!error) {
 			res.redirect("https://api.twitter.com/oauth/authenticate?oauth_token=" + oAuthToken);
@@ -167,6 +167,8 @@ function getAccessToken(params, accessTokenUrl) {
 }
 
 function getPeople(accessToken, peopleApiUrl) {
+
+	console.log("-------------------------------------------------", accessToken);
 	return new Promise(function(resolve, reject) {
 		request.get({
 			url: peopleApiUrl,
@@ -175,9 +177,11 @@ function getPeople(accessToken, peopleApiUrl) {
 			},
 			json: true
 		}, function(error, response, body) {
+			console.log("----------------body--------------------------------",body )
 			if (!error && response.statusCode == 200) {
 				return resolve(body);
 			} else {
+				console.log("-----------------error------------------------------",error )
 				return reject(error);
 			}
 		});
@@ -412,6 +416,7 @@ export async function linkedin(req, res) {
 		} else {
 			const token = await getAccessToken(params, accessTokenUrl);
 			const profile = await getPeople(token.access_token, peopleApiUrl);
+
 			if (!profile.emailAddress) {
 				profile['emailAddress'] = profile.id + '@linkedin.com';
 				bodyParams['user_contact_email'] = null;
@@ -497,6 +502,7 @@ export async function linkedin(req, res) {
 }
 
 export async function twitter(req, res) {
+
 	var dbUser = {};
 	var rspTokens = {};
 	var bodyParams = {};
@@ -505,12 +511,15 @@ export async function twitter(req, res) {
 	var oauth = new OAuth(config.twitterLogin.requestTokenUrl, config.twitterLogin.accessTokenUrl, config.twitterLogin.clientId, config.twitterLogin.secretKey, '1.0A', redirect_uri, 'HMAC-SHA1');
 	oauth.getOAuthAccessToken(req.query.oauth_token, config.twitterLogin.secretKey, req.query.oauth_verifier, async function(error, oauth_access_token, oauth_access_token_secret, results) {
 		if (error === null) {
+
 			oauth.get('https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true',
 				oauth_access_token,
 				oauth_access_token_secret,
 				async function(error, twitterResponseData, result) {
+
 					if (error == null) {
 						const profile = JSON.parse(twitterResponseData);
+
 						if (!profile.email) {
 							profile['email'] = profile.id + '@twitter.com';
 							bodyParams['user_contact_email'] = null;
@@ -557,7 +566,7 @@ export async function twitter(req, res) {
 							bodyParams["status"] = status["ACTIVE"];
 							bodyParams['provider'] = providers["TWITTER"];
 							bodyParams['first_name'] = profile.name;
-							bodyParams['user_pic_url'] = profile.profile_image_url_https;
+							bodyParams['user_pic_url'] = profile.profile_image_url;
 							bodyParams['twitter_id'] = profile.id;
 
 							dbUser = await service.createRow('User', bodyParams);

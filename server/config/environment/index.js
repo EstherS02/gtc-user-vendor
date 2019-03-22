@@ -203,7 +203,8 @@ var all = {
 		secretKey: process.env.TWITTER_SECRET_KEY,
 		requestTokenUrl: "https://api.twitter.com/oauth/request_token",
 		accessTokenUrl: "https://api.twitter.com/oauth/access_token",
-		peopleApiUrl: "https://api.twitter.com/1.1/account/verify_credentials.json"
+		peopleApiUrl: "https://api.twitter.com/1.1/account/verify_credentials.json",
+		redirectUrl: process.env.DOMAIN + '/api/auth/twitter' 
 	},
 	mysql: {
 		host: process.env.MYSQL_HOST,

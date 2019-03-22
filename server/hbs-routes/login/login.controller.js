@@ -6,6 +6,11 @@ const status = require('../../config/status');
 export function login(req, res) {
 	var bottomCategory = {};
 	var categoryModel = "Category";
+	var LoggedInUser = {};
+
+	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
+		LoggedInUser = req.gtcGlobalUserObj;
+	}
 
 	if (req.currentUser) {
 		res.redirect('/')
@@ -26,11 +31,13 @@ export function login(req, res) {
 				bottomCategory['right'] = categories.slice(8, 16);
 				res.render('login', {
 					title: "Global Trade Connect",
-					bottomCategory: bottomCategory
+					bottomCategory: bottomCategory,
+					LoggedInUser: LoggedInUser
 				});
 			}).catch(function(error) {
 				res.render('login', {
-					title: "Global Trade Connect"
+					title: "Global Trade Connect",
+					LoggedInUser: LoggedInUser
 				});
 			});
 	}

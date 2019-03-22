@@ -1,18 +1,19 @@
 const auth = Auth();
 $(document).ready(function() {
 	var googleUser = {};
-	var googleClientID = "365861189994-btvs30d57molferkqd7kds8u9e5qapi6.apps.googleusercontent.com";
+	/*var googleClientID = "365861189994-btvs30d57molferkqd7kds8u9e5qapi6.apps.googleusercontent.com";
 	var facebookClientID = "2176475222638001";
-	var linkedinClientID = "81wncf8gzyo3oh";
-
-	var startGoogleLoginProcess = function() {
-		gapi.load('auth2', function() {
-			auth2 = gapi.auth2.init({
-				client_id: googleClientID,
-				cookiepolicy: 'single_host_origin'
+	var linkedinClientID = "81wncf8gzyo3oh";*/
+	if(!userId){
+		var startGoogleLoginProcess = function() {
+			gapi.load('auth2', function() {
+				auth2 = gapi.auth2.init({
+					client_id: googleClientID,
+					cookiepolicy: 'single_host_origin'
+				});
 			});
-		});
-	};
+		};
+	}
 
 	$('#gtc-google-login').click(function() {
 		auth2.grantOfflineAccess().then(signInCallback);
@@ -46,7 +47,9 @@ $(document).ready(function() {
 		}
 	}
 
-	startGoogleLoginProcess();
+	if(!userId){
+		startGoogleLoginProcess();
+	}
 
 	function facebookLogin() {
 		var credentials = {
