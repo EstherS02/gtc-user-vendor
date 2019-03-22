@@ -145,21 +145,23 @@ export function wholesale(req, res) {
 
 			productService.queryAllProducts(LoggedInUser.id, queryObj, 0, tempLimit)
 				.then(function(results) {
-					var featureIds = [];
-					for (var i = 0; i < results.rows.length; i++) { 
-						featureIds.push(results.rows[i].FeaturedProducts[0].id);
-					}
-					model['FeaturedProduct'].increment({
-						'impression': 1
-					}, {
-						where: {
-							id: featureIds
+					if(results.count > 0 ){
+						var featureIds = [];
+						for (var i = 0; i < results.rows.length; i++) { 
+							featureIds.push(results.rows[i].FeaturedProducts[0].id);
 						}
-					}).then(function(updatedRow){
-						console.log("Impression Response::", updatedRow);
-					}).catch(function(error){
-						console.log("Error::", error);
-					})
+						model['FeaturedProduct'].increment({
+							'impression': 1
+						}, {
+							where: {
+								id: featureIds
+							}
+						}).then(function(updatedRow){
+							console.log("Impression Response::", updatedRow);
+						}).catch(function(error){
+							console.log("Error::", error);
+						})
+					}
 					return callback(null, results);
 				}).catch(function(error) {
 					console.log('Error :::', error);
