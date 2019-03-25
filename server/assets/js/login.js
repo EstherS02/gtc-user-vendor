@@ -57,7 +57,7 @@ $(document).ready(function() {
             redirect_uri: window.origin + "/api/auth/facebook",
             scope: 'email'
         }
-        var facebookWindow = window.open("https://www.facebook.com/v3.1/dialog/oauth?" + serialize(credentials), 'facebookPopup', 'location=0,status=0,width=800,height=400');
+        var facebookWindow = window.open("https://www.facebook.com/v3.1/dialog/oauth?" + serialize(credentials), 'facebookPopup', 'location=0,status=0,width=800,height=600');
     };
 
     $("#gtc-fb-login").click(function() {
@@ -104,7 +104,7 @@ $(document).ready(function() {
 
     function twitterLogin() {
         var oAuthURL = "/api/auth/request-twitter";
-        var twitterWindow = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
+        var twitterWindow = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=600');
     };
 
     $("#gtc-twitter-login").click(function() {
