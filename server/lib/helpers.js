@@ -277,12 +277,14 @@ Handlebars.registerHelper('FormatDate', function(context, options) {
 
 Handlebars.registerHelper('timeLeft', function(context, options) {
 
-	var currentDate = moment().format('YYYY-M-DD HH:mm:ss');
-	var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
+	//var currentDate = moment().format('YYYY-MM-DD HH:mm:ss');
 
-	var localDate = moment.utc().format();
-	var localcurrentDate = moment.utc(localDate).local().format('YYYY-M-DD HH:mm:ss');
-	var localendDate = moment.utc(context, 'YYYY-M-DD HH:mm:ss').local();
+	var currentDate = moment.utc().local().format('YYYY-MM-DD HH:mm:ss')
+	var endDate = moment(context, 'YYYY-MM-DD HH:mm:ss');
+
+	//var localDate = moment.utc().format();
+	//var localcurrentDate = moment.utc(localDate).local().format('YYYY-M-DD HH:mm:ss');
+	//var localendDate = moment.utc(context, 'YYYY-M-DD HH:mm:ss').local();
 
 	var secondsDiff = '';
 	if (endDate.diff(currentDate) > 0) {
