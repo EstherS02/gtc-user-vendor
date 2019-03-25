@@ -116,6 +116,12 @@ export function vendorWholesale(req, res) {
 		},
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
+				model: model['Country'],
+				//attributes: ['id', 'name']
+			}, {
+				model: model['State'],
+				attributes: ['id', 'name']
+			}, {
 				model: model['VendorPlan'],
 				attributes: ['id', 'plan_id'],
 				where: {
