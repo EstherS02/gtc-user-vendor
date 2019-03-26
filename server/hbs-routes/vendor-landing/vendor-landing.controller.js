@@ -59,7 +59,8 @@ export function vendorLanding(req, res) {
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				vendorPlan: vendorPlan,
-				statusCode: statusCode
+				statusCode: statusCode,
+				ebayCredential: config.ebay
 			});
 		} else {
 			res.render('vendorNav/vendor-landing', err);

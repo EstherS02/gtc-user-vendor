@@ -1,9 +1,6 @@
 const auth = Auth();
 $(document).ready(function() {
     var googleUser = {};
-    /*var googleClientID = "365861189994-btvs30d57molferkqd7kds8u9e5qapi6.apps.googleusercontent.com";
-    var facebookClientID = "2176475222638001";
-    var linkedinClientID = "81wncf8gzyo3oh";*/
     if (!userId) {
         var startGoogleLoginProcess = function() {
             gapi.load('auth2', function() {

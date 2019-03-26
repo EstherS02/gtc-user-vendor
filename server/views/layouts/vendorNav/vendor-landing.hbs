@@ -4,6 +4,7 @@
 
 	var vendorPlanId ={{{ LoggedInUser.Vendor.VendorPlans.[0].plan_id }}};
 	var vendorPlan = {{{ DisplayJSON vendorPlan }}};
+	var ebayCredential = {{{ DisplayJSON ebayCredential }}};
 
 	$(document).ready(function() {
 		$('#btnFaSpinner').hide();
@@ -182,10 +183,13 @@
 		}
 
 		$("#importEbay").click(function() {
+
 			const credentials = {
-				client_id: 'ChandruM-GlobalTr-PRD-aed499e41-c30cc664',
+				client_id: ebayCredential.clientId,
+				redirect_uri: ebayCredential.redirectUri,
+				//client_id: 'GlobalTr-GlobalTr-PRD-279703086-a368e611',
 				response_type: 'code',
-				redirect_uri: 'Chandru_M-ChandruM-Global-wbhtpk',
+				//redirect_uri: 'Global_Trade_Co-GlobalTr-Global-blxex',
 				scope: 'https://api.ebay.com/oauth/api_scope https://api.ebay.com/oauth/api_scope/sell.marketing.readonly https://api.ebay.com/oauth/api_scope/sell.marketing https://api.ebay.com/oauth/api_scope/sell.inventory.readonly https://api.ebay.com/oauth/api_scope/sell.inventory https://api.ebay.com/oauth/api_scope/sell.account.readonly https://api.ebay.com/oauth/api_scope/sell.account https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly https://api.ebay.com/oauth/api_scope/sell.fulfillment https://api.ebay.com/oauth/api_scope/sell.analytics.readonly'
 			};
 			ebayWindow = window.open('https://auth.ebay.com/oauth2/authorize?' + serialize(credentials), 'ebayOAuthPopup', 'location=0,status=0,width=800,height=400');
