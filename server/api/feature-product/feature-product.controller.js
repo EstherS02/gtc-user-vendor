@@ -10,6 +10,7 @@ const stripe = require('../../payment/stripe.payment');
 var featuredProductModel = 'FeaturedProduct';
 const paymentMethod = require('../../config/payment-method');
 const moment = require('moment');
+const CURRENCY = config.order.currency;
 
 export function index(req, res) {
 
@@ -85,7 +86,7 @@ export function featureProductWithPayment(req, res) {
 						.then(function(cardDetails) {
 
 							return stripe.chargeCustomerCard(cardDetails.stripe_customer_id, cardDetails.stripe_card_id,
-								req.body.feature_amount, 'Payment for Featuring Product', 'usd');
+								req.body.feature_amount, 'Payment for Featuring Product', CURRENCY);
 						}).then(function(paymentDetails) {
 
 							if (paymentDetails.paid) {

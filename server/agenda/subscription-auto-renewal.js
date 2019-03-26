@@ -11,7 +11,7 @@ const paymentMethod = require('../config/payment-method');
 const marketPlaceCode = require('../config/marketplace');
 const uuidv1 = require('uuid/v1');
 
-const CURRENCY = 'usd';
+const CURRENCY = config.order.currency;
 const current_date = new Date();
 
 export function subscriptionAutoRenewal(job, done) {

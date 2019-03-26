@@ -8,7 +8,7 @@ const _ = require('lodash');
 const stripe = require('../payment/stripe.payment');
 const paymentMethod = require('../config/payment-method');
 
-const CURRENCY = 'usd';
+const CURRENCY = config.order.currency;
 const currentDate = new Date();
 
 

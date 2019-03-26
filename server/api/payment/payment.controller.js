@@ -26,7 +26,7 @@ const cartService = require('../../api/cart/cart.service');
 
 const stripe = require('../../payment/stripe.payment');
 
-const CURRENCY = 'usd';
+const CURRENCY = config.order.currency;
 
 export async function makePayment(req, res) {
 	var vendorArray = [];

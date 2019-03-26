@@ -9,7 +9,7 @@ const paymentMethod = require('../config/payment-method');
 const gtcPlan = require('../config/gtc-plan');
 const moment = require('moment');
 
-const CURRENCY = 'usd';
+const CURRENCY = config.order.currency;
 var currentDate = new Date();
 
 
