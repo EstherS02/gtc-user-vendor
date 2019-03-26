@@ -138,15 +138,15 @@ var all = {
     },
 
     jobTimings: {
-        orderItemPayout: process.env.ORDER_ITEM_PAYOUT || '12 hours',
+        orderItemPayout: process.env.ORDER_ITEM_REFUND || '12 hours',
         vendorPayouts: process.env.VENDOR_PAYOUT || '12 hours',
-        planRenewal: process.env.PLAN_RENEWAL || '12 hours',
-        bulkUserPlanRenewal: process.env.USER_PLAN_RENEWAL || '12 hours',
-        subscriptionAutoRenewal: process.env.SUBSCRIPTION_RENEWAL || '12 hours',
-        featureProductAutoRenewal: process.env.FEATURE_RENEWAL || '12 hours',
+        planRenewal: process.env.VENDOR_PLAN_AUTO_RENEWAL || '12 hours',
+        bulkUserPlanRenewal: process.env.BULK_BUYER_PLAN_AUTO_RENEWAL || '12 hours',
+        subscriptionAutoRenewal: process.env.LIFESTYLE_ORDER_AUTO_RENEWAL || '12 hours',
+        featureProductAutoRenewal: process.env.PRODUCT_FEATURE_AUTO_RENEWAL || '12 hours',
         starterPlanExpire: process.env.STARTER_PLAN_EXPIRE || '12 hours',
-        featureProductExpire: process.env.FEATURE_EXPIRE || '12 hours',
-        subscriptionExpire: process.env.SUBSCRIPTION_EXPIRE || '12 hours',
+        featureProductExpire: process.env.PRODUCT_FEATURE_EXPIRE || '12 hours',
+        subscriptionExpire: process.env.LIFESTYLE_ORDER_EXPIRE || '12 hours',
     },
 
     fee: {
