@@ -179,10 +179,10 @@ function subscriptionOrder(eachSubscription) {
 							orderItemBodyParam['quantity'] = eachSubscription.quantity;
 							orderItemBodyParam['price'] = subscriptionTotalAmount;
 							orderItemBodyParam['shipping_cost'] = 0;
-							orderItemBodyParam['gtc_fees'] = (subscriptionTotalAmount / 100 * config.order.gtc_fees).toFixed(2);
+							orderItemBodyParam['gtc_fees'] = (subscriptionTotalAmount / 100 * parseFloat(config.order.gtc_fees)).toFixed(2);
 
 							if (subscribedProduct.marketplace_id == marketPlaceCode['SERVICE']) {
-								orderItemBodyParam['plan_fees'] = (subscriptionTotalAmount / 100 * config.order.service_fee).toFixed(2);
+								orderItemBodyParam['plan_fees'] = (subscriptionTotalAmount / 100 * parseFloat(config.order.service_fee)).toFixed(2);
 							} else if (subscribedProduct.marketplace_id == marketPlaceCode['LIFESTYLE']) {
 								orderItemBodyParam['plan_fees'] = (subscriptionTotalAmount / 100 * config.order.lifestyle_fee).toFixed(2);
 							} else {
@@ -208,9 +208,9 @@ function subscriptionOrder(eachSubscription) {
 								total_price: parseFloat(subscriptionOrderItemRow['price']),
 								shipping_cost: parseFloat(subscriptionOrderItemRow['shipping_cost']),
 								gtc_fees: parseFloat(subscriptionOrderItemRow['gtc_fees']),
-								gtc_fees_percent: config.order.gtc_fees,
+								gtc_fees_percent: parseFloat(config.order.gtc_fees),
 								plan_fees: parseFloat(subscriptionOrderItemRow['plan_fees']),
-								plan_fees_percent: config.order.service_fee,
+								plan_fees_percent: parseFloat(config.order.service_fee),
 								coupon_amount: parseFloat(subscriptionOrderItemRow['coupon_amount']),
 								final_price: parseFloat(subscriptionOrderItemRow['final_price']),
 								status: statusCode['ACTIVE'],

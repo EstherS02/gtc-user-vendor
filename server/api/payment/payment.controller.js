@@ -111,10 +111,10 @@ export async function makePayment(req, res) {
 				newProductItem['quantity'] = cartItem.quantity;
 				newProductItem['price'] = cartItem.total_price;
 				newProductItem['shipping_cost'] = 0;
-				newProductItem['gtc_fees'] = (cartItem.total_price / 100 * config.order.gtc_fees).toFixed(2);
+				newProductItem['gtc_fees'] = (cartItem.total_price / 100 * parseFloat(config.order.gtc_fees)).toFixed(2);
 
 				if (cartItem.Product.marketplace_id == marketPlaceCode['SERVICE']) {
-					newProductItem['plan_fees'] = (cartItem.total_price / 100 * config.order.service_fee).toFixed(2);
+					newProductItem['plan_fees'] = (cartItem.total_price / 100 * parseFloat(config.order.service_fee)).toFixed(2);
 				} else if (cartItem.Product.marketplace_id == marketPlaceCode['LIFESTYLE']) {
 					newProductItem['plan_fees'] = (cartItem.total_price / 100 * config.order.lifestyle_fee).toFixed(2);
 				} else {
@@ -174,9 +174,9 @@ export async function makePayment(req, res) {
 						total_price: parseFloat(newProductItem['price']),
 						shipping_cost: parseFloat(newProductItem['shipping_cost']),
 						gtc_fees: parseFloat(newProductItem['gtc_fees']),
-						gtc_fees_percent: config.order.gtc_fees,
+						gtc_fees_percent: parseFloat(config.order.gtc_fees),
 						plan_fees: parseFloat(newProductItem['plan_fees']),
-						plan_fees_percent: config.order.service_fee,
+						plan_fees_percent: parseFloat(config.order.service_fee),
 						coupon_amount: parseFloat(newProductItem['coupon_amount']),
 						final_price: parseFloat(newProductItem['final_price']),
 						status: status['ACTIVE'],
