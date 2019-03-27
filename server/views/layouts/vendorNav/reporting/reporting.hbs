@@ -405,7 +405,7 @@
 							var tag = `<div class="reporting_block_content_individual">
 									<div class="row">
 										<div class="col-md-3 col-1 no-padding">
-											<img src="${aObj["user_pic_url"]}" class="avatar-img" alt="${aObj["first_name"]}" onError="imgError(this)">
+											<img src="${aObj.Order.User.user_pic_url}" class="avatar-img" alt="${aObj.Order.User.first_name}" onError="imgError(this)">
 										</div>
 										<div class="col-md-9 col-11 no-padding">
 											<h4 class="reporting_subject reporting_title">
@@ -505,7 +505,7 @@
 									<div class="col-md-8">
 										<div class="row">
 											<div class="col-md-12">
-												<section class="reporting_date_range">
+												<section>
 													<form id="compareForm" class="form-inline pull-left m-t-md">
 														<div class="form-group m-r-lg">
 															<label class="label-control">Date Range </label>
