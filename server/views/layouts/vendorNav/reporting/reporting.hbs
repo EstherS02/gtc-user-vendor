@@ -356,7 +356,6 @@
 				type: "GET",
 				url: "/api/reports/top-buyers",
 				success: function(data) {
-					console.log("***************************************************************",data)
 					if (data.length > 0) {
 						data.forEach(function(aObj) {
 							var activeBuyerList = $("#reporting-most-active-buyers");

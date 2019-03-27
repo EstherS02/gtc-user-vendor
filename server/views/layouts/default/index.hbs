@@ -16,6 +16,11 @@
 				image.src = "img/avatar.png";
 				return true;
 			}
+			function bannerError(image) {
+				image.onerror = "";
+				image.src = "gtc-assets/images/inner_page_bnr.jpg";
+				return true;
+			}
 		</script>
 		<script type="text/javascript">
 			var userId = {{{ DisplayJSON LoggedInUser.id }}};

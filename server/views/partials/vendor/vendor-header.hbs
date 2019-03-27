@@ -29,6 +29,7 @@
 		}
 	});
 </script>
+
 <script>
 	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
 	// var marketplacetype = {{{ DisplayJSON selectedPage}}}
@@ -334,7 +335,7 @@ $(document).on('click', '#navbardrop', function() {
 			<span id="editPicture" class="edit-icon-align"><i class="fa fa-pencil icon_padding"></i><b>CHANGE COVER</b></span>
 		</div>
 		{{!-- <img src="https://media.istockphoto.com/photos/curvy-roads-silk-trading-route-between-china-and-india-picture-id523035682?s=2048x2048" class="object-fit"> --}}
-		<img {{#if VendorDetail.vendor_cover_pic_url}} src="{{VendorDetail.vendor_cover_pic_url}}"  {{else}}src="gtc-assets/images/inner_page_bnr.jpg"{{/if}} class="object-fit">
+		<img {{#if VendorDetail.vendor_cover_pic_url}} src="{{VendorDetail.vendor_cover_pic_url}}"  {{else}}src="gtc-assets/images/inner_page_bnr.jpg"{{/if}} class="object-fit" onError="bannerError(this)">
 	</div>
 	<div class="vp-title">
 		<div class="gtc-container">
