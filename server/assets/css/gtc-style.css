@@ -1652,10 +1652,10 @@ margin-bottom:0px;
 }
 .product_hr
 {
-		background-color:#ffffff;
-		color:#e7e7e7;
-		margin: 0px;
-		padding: 0px;
+	background-color:#ffffff;
+	color:#e7e7e7;
+	margin: 0px;
+	padding: 0px;
 }
 .product_hr hr
 {
@@ -1664,7 +1664,7 @@ margin-bottom:0px;
 }
 .product_submit
 {
-			background-color:#ffffff;
+	background-color:#ffffff;
 	color:#809fce;
 }
 .product_submit_para
@@ -1710,16 +1710,16 @@ margin-bottom:0px;
 }
 .product_star
 {
-		background-color:#ffffff;
-		color:#fbb546;
-		font-size:14px;		
-		margin-bottom: 8px;
+	background-color:#ffffff;
+	color:#fbb546;
+	font-size:14px;		
+	margin-bottom: 8px;
 }
 .product_we
 {
-			background-color:#ffffff;
-color:#aaaaaa;
-font-size:11px;
+	background-color:#ffffff;
+	color:#aaaaaa;
+	font-size:11px;
 }
 .product_ago
 {
@@ -1728,7 +1728,7 @@ font-size:11px;
 }
 .product_great_bg
 {
-				background-color:#ffffff;
+	background-color:#ffffff;
 
 }
 .product_search
@@ -2803,7 +2803,7 @@ font-size: 12px;
 }
 .service_provider
 {
-	    background-color: #69BC88;
+	background-color: #69BC88;
     color: #fff;
     padding-top: 50px;
     border-top-left-radius: 70px;

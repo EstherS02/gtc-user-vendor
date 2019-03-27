@@ -2592,7 +2592,7 @@ select.file-uploade:after {
 	left: 5px;
 	width: 25%;
 	padding-left: 15px;
-	padding-right: 78px;
+	padding-right: 55px;
 	height: 440px;
 	margin-top: 50px;
 }
@@ -2603,10 +2603,10 @@ select.file-uploade:after {
 	border-top-left-radius: 70px;
 	border-bottom-left-radius: 70px;
 	position: relative;
-	left: -66px;
+	left: -50px;
 	width: 25%;
 	padding-left: 15px;
-	padding-right: 78px;
+	padding-right: 55px;
 	height: 440px;
 	margin-top: 50px;
 }
@@ -2640,9 +2640,9 @@ select.file-uploade:after {
 	background-color: #D88505;
 	color: #fff;
 	padding-top: 50px;
-	border-radius: 70px;
+	border-radius: 30px;
 	position: relative;
-	left: -200px;
+	left: -120px;
 	width: 25%;
 	padding-left: 15px;
 	padding-right: 15px;
@@ -2656,10 +2656,10 @@ select.file-uploade:after {
 	border-top-left-radius: 70px;
 	border-bottom-left-radius: 70px;
 	position: relative;
-	left: -136px;
+	left: -100px;
 	width: 25%;
 	padding-left: 15px;
-	padding-right: 78px;
+	padding-right: 40px;
 	min-height: 580px;
 }
 
