@@ -312,7 +312,10 @@
 											<label class="label-control">Price&nbsp;(in US Dollar)
 												<span class="text-danger">*</span>
 											</label>
-											<input type="text" name="price" id="price" class="form-control-customized form-control-sm" value="{{editProduct.price}}">
+											<div class="input-group mb-3">
+												<span class="input-group-text" id="basic-addon1">$</span>
+												<input type="text" name="price" id="price" class="form-control-customized form-control-sm" style="width:91% !important" value="{{editProduct.price}}" aria-describedby="basic-addon1">
+											</div>
 										</div>
 									</div>
 									<div class="col-lg-4">
@@ -362,7 +365,10 @@
 									<div class="col-lg-4 shippingDiv">
 										<div class="form-group">
 											<label class="label-control">Shipping Cost&nbsp;(in US Dollar)</label>
-											<input type="text" class="form-control-customized form-control-sm" name="shipping_cost" id="shipping_cost" value="{{editProduct.shipping_cost}}">
+											<div class="input-group mb-3">
+												<span class="input-group-text" id="basic-addon1">$</span>
+												<input type="text" name="shipping_cost" id="shipping_cost" class="form-control-customized form-control-sm" style="width:91% !important" value="{{editProduct.shipping_cost}}" aria-describedby="basic-addon1">
+											</div>
 										</div>
 									</div>
 									<div class="col-lg-12">
@@ -388,19 +394,19 @@
 									<div class="col-lg-4">
 										<div class="form-group">
 											<label class="label-control">Sale start date & time</label>
-											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_start_date}}value="{{formatTime editProduct.exclusive_start_date "YYYY/MM/DD HH:mm"}}" {{/if}} name="exclusive_start_date" id="exclusive_start_date" disabled>
+											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_sale}}value="{{formatTime editProduct.exclusive_start_date "YYYY/MM/DD HH:mm"}}" {{/if}} name="exclusive_start_date" id="exclusive_start_date" disabled>
 										</div>
 									</div>
 									<div class="col-lg-4">
 										<div class="form-group">
 											<label class="label-control">Sale end date & time</label>
-											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_end_date}}value="{{formatTime editProduct.exclusive_end_date "YYYY/MM/DD HH:mm"}}" {{/if}} name="exclusive_end_date" id="exclusive_end_date" disabled>
+											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_sale}}value="{{formatTime editProduct.exclusive_end_date "YYYY/MM/DD HH:mm"}}" {{/if}} name="exclusive_end_date" id="exclusive_end_date" disabled>
 										</div>
 									</div>
 									<div class="col-lg-4">
 										<div class="form-group">
 											<label class="label-control">Offer amount (in %)</label>
-											<input type="text" class="form-control-customized form-control-sm salesDiv" value="{{editProduct.exclusive_offer}}" name="exclusive_offer" disabled>
+											<input type="text" class="form-control-customized form-control-sm salesDiv" {{#if editProduct.exclusive_sale}}value="{{editProduct.exclusive_offer}}"{{/if}} name="exclusive_offer" disabled>
 										</div>
 									</div>
 								</div>
