@@ -317,9 +317,9 @@ Handlebars.registerHelper('timeLeft', function(context, options) {
 			 secondsDiff = secondsDiff+ arrayEle['days'] % 24;
 				 secondsDiff = secondsDiff +'d ';
 			}
+		}
+		secondsDiff = secondsDiff +' left!';
 	}
-	secondsDiff = secondsDiff +' left!';
-}
 	return secondsDiff;
 });
 

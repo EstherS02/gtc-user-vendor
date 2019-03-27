@@ -629,29 +629,29 @@ $(document).ready(function() {
 			start_date: {
 				required: true,
 				date: true,
-				lesserThan: 'currentDate'
+				lesserThanFeature: 'currentDate'
 			},
 			end_date: {
 				required: "#feature_indefinitely:unchecked",
 				date: true,
-				greaterThan: "#start_date"
+				greaterThanFeature: "#start_date"
 			}
 		},
 		messages: {
 			start_date: {
 				required: "Select start date",
 				date: "Enter valid date",
-				lesserThan: "Must be greater than current date"
+				lesserThanFeature: "Must be greater than current date"
 			},
 			end_date: {
 				required: "Select end date",
 				date: "Enter valid date",
-				greaterThan: "Must be greater than start date"
+				greaterThanFeature: "Must be greater than start date"
 			}
 		}
 	});
 
-	$.validator.addMethod("greaterThan",
+	$.validator.addMethod("greaterThanFeature",
 		function(value, element, params) {
 
 			if(!value){
@@ -664,7 +664,7 @@ $(document).ready(function() {
 				|| (Number(value) > Number($(params).val()));
 		}, 'Must be greater than {0}.');
 
-	$.validator.addMethod("lesserThan",
+	$.validator.addMethod("lesserThanFeature",
 		function(value, element, params) {
 			if (!/Invalid|NaN/.test(new Date(value))) {
 				var timeStamp =  new Date();
