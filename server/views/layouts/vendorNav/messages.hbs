@@ -42,75 +42,59 @@
 		var time = '';
 		socket.emit('chat:count', userInfo.id);
 		var domElementUserName = '';
-		if(to_id){
-		domElementUserName = domElementUserName + ` <div class="row">
-                                <div class="col-2 avatar"> 
-                                    <img src="` + userProfile(to_id) + `" alt="User Avatar" style="width: 60px; margin-left: 30px;">
-                                </div>
-                                <div class="col-8">
-                                  <strong><p>`+ to_id.first_name + ` </h4></p></strong>
-                                  <small id="on-off"></small>
-                                </div>
-                              </div>`;
-		document.getElementById('chatUserName').innerHTML = domElementUserName;
-		if (onlineUsers.indexOf(to_id.id) > -1) {
-			document.getElementById('on-off').innerHTML = '<p style="color: green">online</p>';
-			$("#init-btn-video-call").show();
-		} else {
-			document.getElementById('on-off').innerHTML = '<p>offline</p>';
-			$("#init-btn-video-call").hide();
-		}
-		result.forEach(function(element) {
-			console.log("element", element);
-			if (element.from_id == userInfo.id) {
-				time = 'pull-right';
-				domElement = domElement + `<li class="left clearfix">
-      			<div class="chat-body clearfix">
-      				<div class="header">
-      					<small class="text-muted ` + time + `"><i class="fa fa-clock-o">` + FormatDate(element.created_on) + `</i> </small>
-      				</div>
-      				<p>` + element.message + `</p>
-      			</div>
-      		  </li>`;
+		if (to_id) {
+			domElementUserName = domElementUserName + ` <div class="row"><div class="col-2 avatar"> 
+                                <img src="` + userProfile(to_id) + `" alt="User Avatar" style="width: 60px; margin-left: 30px;"></div>
+                                <div class="col-8"><strong><p>`+ to_id.first_name + ` </h4></p></strong><small id="on-off"></small></div></div>`;
+
+			document.getElementById('chatUserName').innerHTML = domElementUserName;
+			if (onlineUsers.indexOf(to_id.id) > -1) {
+				document.getElementById('on-off').innerHTML = '<p style="color: green">online</p>';
+				$("#init-btn-video-call").show();
 			} else {
-				userInformation = element;
-				time = 'pull-left';
-				domElement = domElement + `<li class="right clearfix" >
-      			<div class="chat-body clearfix">																		
-      				<div class="header m-b-xs">		
-      					<small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(element.created_on) + `</small>
-      				</div>
-      				<p>` + element.message + `</p>
-      			</div>
-		     </li>`;
+				document.getElementById('on-off').innerHTML = '<p>offline</p>';
+				$("#init-btn-video-call").hide();
 			}
-		});
-		$('.chats').attr('id', threadId);
-		$("#" + threadId).show();
-		document.getElementById(threadId).innerHTML = domElement;
-		var element = document.querySelector('#scrollMessage');
-		element.scrollTop = element.scrollHeight - element.clientHeight;
-		$('#replayBox').show();
-	}
+
+			result.forEach(function(element) {
+				console.log("element", element);
+				if (element.from_id == userInfo.id) {
+					time = 'pull-right';
+					domElement = domElement + `<li class="left clearfix"><div class="chat-body clearfix"><div class="header">
+      					<small class="text-muted ` + time + `"><i class="fa fa-clock-o">` + FormatDate(element.created_on) + `</i> </small></div>
+      					<p>` + element.message + `</p></div></li>`;
+				}else {
+					userInformation = element;
+					time = 'pull-left';
+					domElement = domElement + `<li class="right clearfix" ><div class="chat-body clearfix"><div class="header m-b-xs">		
+      					<small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(element.created_on) + `</small>
+      					</div><p>` + element.message + `</p></div></li>`;
+				}
+			});
+
+			$('.chats').attr('id', threadId);
+			$("#" + threadId).show();
+			document.getElementById(threadId).innerHTML = domElement;
+			var element = document.querySelector('#scrollMessage');
+			element.scrollTop = element.scrollHeight - element.clientHeight;
+			$('#replayBox').show();
+		}
 	}
 
 	function lastname(name) {
 		if (name != '' && name != null && name != 'null')
 			return name;
-
 		return '';
 	}
 
 	function FormatDate(testDate) {
-
-var gmtDateTime = moment.utc(testDate);
-	return gmtDateTime.local().format("L LT");
+		var gmtDateTime = moment.utc(testDate);
+		return gmtDateTime.local().format("L LT");
 	}
 
 	function userProfile(context) {
 		if (context && context.user_pic_url)
-			return context.user_pic_url;
-
+		return context.user_pic_url;
 		return '/img/avatar.png'
 	}
 
@@ -127,7 +111,6 @@ var gmtDateTime = moment.utc(testDate);
 				'to_id': to_id.id,
 				'message': chat,
 			}
-			//console.log("chat:send", sendSocket);
 			//emitSocket.chatSend(sendSocket);
 			socket.emit('chat:send', sendSocket);
 			$('#btn-input').val('');
@@ -135,7 +118,6 @@ var gmtDateTime = moment.utc(testDate);
 	}
 
 	$(document).ready(function() {
-
 		messenger.forEach(function(element) {
 			message_count.forEach(function(msgCount) {
 				if (element.thread_id == msgCount.talk_thread_id && element.user_id != userInfo.id) {
@@ -144,8 +126,6 @@ var gmtDateTime = moment.utc(testDate);
 				}
 			})
 		})
-
-
 
 		socket.on('user:online', function(users) {
 			onlineUsers = users;
@@ -164,24 +144,20 @@ var gmtDateTime = moment.utc(testDate);
 					document.getElementById("online" + element.User.id).innerHTML =
 						`<i class="on b-white top" style="border: green"></i>`;
 				} else {
-					// console.log(element.TalkThread.Talks[0].from_id);
 					let fromId = element.TalkThread.Talks;
-					if(fromId.length>0) {
-					if(element.TalkThread.Talks[0].from_id != userInfo.id){
-					document.getElementById("online" + element.User.id).innerHTML =
-						`<i class="off b-white top" style="border: white"></i>`;
-					}
+					if (fromId.length > 0) {
+						if (element.TalkThread.Talks[0].from_id != userInfo.id) {
+							document.getElementById("online" + element.User.id).innerHTML =
+								`<i class="off b-white top" style="border: white"></i>`;
+						}
 					}
 				}
 			})
-
 		})
 
 		var commonInfo, base, base1, time;
 
-
 		socket.on('chat:receive', function(data) {
-
 			messenger.forEach(function(element) {
 				if ([data.from_id, data.to_id].indexOf(element.User.id) > -1) {
 					// console.log("its coming in receive");
@@ -203,7 +179,6 @@ var gmtDateTime = moment.utc(testDate);
 				//    console.log("commonInfo User Info", commonInfo);
 				//  console.log("base sent", base);
 			} else {
-
 				base = "pull-right"
 				base1 = "right";
 				time = 'pull-left';
@@ -212,23 +187,11 @@ var gmtDateTime = moment.utc(testDate);
 				//console.log("base receive", base);
 			}
 
-			var body = `<li class="` + base1 + ` clearfix" >
-                    <div class="chat-body clearfix">
-                        <div class="header m-b-xs">
-                          	<small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(data.created_on) +
-							`</small>
-                        </div>
-                        <p>` + data.message + `</p>
-                      </div>
-                    </li>`;
-					`<li class="left clearfix">
-						<div class="chat-body clearfix">
-							<div class="header">
-							<small class="text-muted ` + base + `"></small>
-							</div>
-							<p>` + data.message + `</p>
-						</div>
-					</li>`;
+			var body = `<li class="` + base1 + ` clearfix" ><div class="chat-body clearfix"><div class="header m-b-xs">
+                        <small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(data.created_on) +`</small>
+                        </div><p>` + data.message + `</p></div></li>`;
+						`<li class="left clearfix"><div class="chat-body clearfix"><div class="header">
+						<small class="text-muted ` + base + `"></small></div><p>` + data.message + `</p></div></li>`;
 
 			//$('.chats').attr('id', data.talk_thread_id);
 			$(body).appendTo("#" + data.talk_thread_id);
@@ -238,10 +201,6 @@ var gmtDateTime = moment.utc(testDate);
 			$("#" + data.talk_thread_id).animate({
 				scrollTop: $("#" + data.talk_thread_id)[0].scrollHeight - $("#" + data.talk_thread_id)[0].clientHeight
 			}, 'slow');
-
-			/* }
-		   })*/
-
 		});
 
 		$("#btn-chat").click(function() {
@@ -285,9 +244,7 @@ var gmtDateTime = moment.utc(testDate);
 		image.src = "/img/avatar.png";
 		return true;
 	}
-
 </script> 
-
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -302,8 +259,6 @@ var gmtDateTime = moment.utc(testDate);
 							<h6>{{!-- {{messenger.length}} --}}</h6>
 						</div>
 						<div class="content-body">
-
-							<!--message-->
 							<div class="row" ng-show="messages">
 								<div class="col-md-12">
 									<div class="panel panel-default t-b-nopadding">
@@ -312,66 +267,55 @@ var gmtDateTime = moment.utc(testDate);
 											<div class="bootstrap snippet hidden-xs" ng-show="totalMessengers>0">
 												<div class="row">
 													<div class="col-md-4 bg-white">
-														<!-- =============================================================== -->
-														<!-- member list -->
 														<ul class="messager-list">
 															{{#each messenger}}
-															{{#if this.TalkThread.Talks}}
-															{{#ifCond this.TalkThread.Talks.[0].from_id "!=" ../LoggedInUser.id}}
-																<li class="bounceInDown">
-																	<a href="javascript:;" onclick="getConversations({{this.thread_id}})" class="clearfix msg-a">
-																		<span class="avatar">
-																			<img src="{{this.User.user_pic_url}}" onError="noProfilePic(this)" class="img-circle m-r-sm">
-																		</span>
-																		<div class="messager-name" style="display: flex">
-																			<strong>{{this.User.first_name}}
-																				{{#if this.User.last_name}}{{this.User.last_name}} {{/if}}
-																			</strong>
-																			<span>
-																				<small id="count{{this.thread_id}}"></small>
-																			</span>
-																			<span class="m-l-sm"></span>
-																		</div>
-																		<div class="last-messager text-muted" id="lastMsg{{this.User.id}}">
-																			{{#if this.TalkThread.Talks}}
-																				{{#ifCond this.TalkThread.Talks.[0].is_read "==" 0 }}
-																					{{#ifCond this.TalkThread.Talks.[0].from_id "==" ../LoggedInUser.id}}
-																						<p>{{this.TalkThread.Talks.[0].message}}</p>
+																{{#if this.TalkThread.Talks}}
+																	{{#ifCond this.TalkThread.Talks.[0].from_id "!=" ../LoggedInUser.id}}
+																		<li class="bounceInDown">
+																			<a href="javascript:;" onclick="getConversations({{this.thread_id}})" class="clearfix msg-a">
+																				<span class="avatar">
+																					<img src="{{this.User.user_pic_url}}" onError="noProfilePic(this)" class="img-circle m-r-sm">
+																				</span>
+																				<div class="messager-name" style="display: flex">
+																					<strong>{{this.User.first_name}}
+																						{{#if this.User.last_name}}{{this.User.last_name}} {{/if}}
+																					</strong>
+																					<span>
+																						<small id="count{{this.thread_id}}"></small>
+																					</span>
+																					<span class="m-l-sm"></span>
+																				</div>
+																				<div class="last-messager text-muted" id="lastMsg{{this.User.id}}">
+																					{{#if this.TalkThread.Talks}}
+																						{{#ifCond this.TalkThread.Talks.[0].is_read "==" 0 }}
+																							{{#ifCond this.TalkThread.Talks.[0].from_id "==" ../LoggedInUser.id}}
+																								<p>{{this.TalkThread.Talks.[0].message}}</p>
 																					{{else}}
 																						<p>
 																							<strong>{{this.TalkThread.Talks.[0].message}}</strong>
 																						</p>
-																					{{/ifCond}}
-																				{{else}}
-																					<p>{{this.TalkThread.Talks.[0].message}}</p>
-																				{{/ifCond}}
-																			{{/if}}
+																							{{/ifCond}}
+																					{{else}}
+																						<p>{{this.TalkThread.Talks.[0].message}}</p>
+																						{{/ifCond}}
+																					{{/if}}
 
-																		</div>
-																		<small class="time text-muted">
-
-																			{{#if this.TalkThread.Talks}}{{formatTime this.TalkThread.Talks.[0].created_on "LT"}}{{/if}}
-																		</small>
-
-
-																		<small class="chat-alert online" id="online{{this.User.id}}">
-																		</small>
-																	</a>
-																</li>
-																{{/ifCond}}
+																				</div>
+																				<small class="time text-muted">
+																					{{#if this.TalkThread.Talks}}{{formatTimeLocal this.TalkThread.Talks.[0].created_on "LT"}}{{/if}}
+																				</small>
+																				<small class="chat-alert online" id="online{{this.User.id}}"></small>
+																			</a>
+																		</li>
+																	{{/ifCond}}
 																{{/if}}
 															{{/each}}
 														</ul>
 													</div>
-													<!--=========================================================-->
-													<!-- selected chat -->
 													<div class="col-md-8 bg-white">
 														<div class="chat-name col-md-12" id="chatUserName"></div>
 														<div class="chats-messager chat-content-body" id="scrollMessage">
-															<ul class="chats" id="message">
-
-
-															</ul>
+															<ul class="chats" id="message"></ul>
 														</div>
 														<div class="chat-box bg-white" id="replayBox">
 															<form class="input-group">
@@ -381,32 +325,27 @@ var gmtDateTime = moment.utc(testDate);
 																	<button class="btn btn-info btn-color" id="init-btn-video-call" style="background-color: #4178bb">
 																		<i class="fas fa-video" style="padding-right:2px;"></i>Call</button>
 																	<button id="btn-chat" class="btn btn-danger no-rounded" type="button" style="margin-left: 0px !important;
-																margin-right: 15px !important;">Send</button>
+																	margin-right: 15px !important;">SEND</button>
 																</span>
 															</form>
-															<!-- /input-group -->
 														</div>
 													</div>
 												</div>
 											</div>
-
-											{{else}}
-												<div class="wrapper-sm" ng-show="totalMessengers==0">
-													<div class="row m-t-md">
-														<div class="col-md-12 text-center inline">
-															<span class="h6 text-muted block m-t-md m-b-md" style="line-height: inherit;">
-																There is no conversations.
-															</span>
-														</div>
+										{{else}}
+											<div class="wrapper-sm" ng-show="totalMessengers==0">
+												<div class="row m-t-md">
+													<div class="col-md-12 text-center inline">
+														<span class="h6 text-muted block m-t-md m-b-md" style="line-height: inherit;">
+															There is no conversations.
+														</span>
 													</div>
 												</div>
-
+											</div>
 										{{/ifCond}}
 									</div>
 								</div>
 							</div>
-							<!--end message-->
-
 						</div>
 					</div>
 				</div>
