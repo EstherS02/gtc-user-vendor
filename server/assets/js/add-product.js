@@ -99,7 +99,7 @@ function testPercent(count) {
 $(function() {
 	$('#quantity_available').change(function() {
 		if ($('#quantity_available').val() == '0') {
-			$('#product_status option').removeAttr('selected').filter('[value=SOLDOUT]').attr('selected', true);
+			$('#product_status option').removeAttr('selected').filter('[value=9]').attr('selected', true);
 			$("#product_status").prop("disabled", true);
 		} else {
 			$("#product_status").prop("disabled", false);
