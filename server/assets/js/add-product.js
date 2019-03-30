@@ -155,6 +155,7 @@ $(document).ready(function() {
 	});
 
 	$('#profile-picture-modal').on('shown.bs.modal', function() {
+		console.log("-----------------------------------------------", Cropper)
 		cropper = new Cropper(cropperInputImage, {
 			aspectRatio: NaN,//16 / 16,
 			// minCropBoxHeight: 280,
