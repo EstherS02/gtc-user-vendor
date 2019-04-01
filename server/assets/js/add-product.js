@@ -117,6 +117,21 @@ $(document).ready(function() {
 	$('#gtc-feature-form-alert').hide();
 	$('.indefiniteFeatureMsg').hide();
 
+
+	$('#description').summernote({
+		placeholder: 'Product description',
+		tabsize: 2,
+		height: 200,
+		toolbar: [
+					['style', ['bold', 'italic', 'underline', 'clear']],
+					['font', ['strikethrough', 'superscript', 'subscript']],
+					['fontsize', ['fontsize']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['height', ['height']]
+				]
+	});
+
 	$("#productImage").click(function(e) {
 		$("#imageUpload").click();
 	});
@@ -155,7 +170,6 @@ $(document).ready(function() {
 	});
 
 	$('#profile-picture-modal').on('shown.bs.modal', function() {
-		console.log("-----------------------------------------------", Cropper)
 		cropper = new Cropper(cropperInputImage, {
 			aspectRatio: NaN,//16 / 16,
 			// minCropBoxHeight: 280,

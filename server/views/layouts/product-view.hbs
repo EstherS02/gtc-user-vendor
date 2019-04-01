@@ -15,7 +15,7 @@
 		var ellipsestext = "...";
 		var moretext = "(See more...)";
 		var lesstext = "(See less)";
-		if ($(".p-description p").length == 0) {
+		/*if ($(".p-description p").length == 0) {
 			$('.p-description').each(function() {
 				var content = $(this).html();
 				if (content.length > showChar) {
@@ -36,7 +36,7 @@
 					$(this).html(html);
 				}
 			});
-		}
+		}*/
 		$(".morelink").click(function() {
 			if ($(this).hasClass("less")) {
 				$(this).removeClass("less");
@@ -497,7 +497,7 @@
 												<div class="p-description">
 													{{{product.description}}}
 												</div>
-												<input type="hidden" maxlength="110" id="productdescription" value="{{product.description}}">{{!-- {{/limit}} --}}
+												<input type="hidden" maxlength="110" id="productdescription" value="{{product.description}}">
 												<div class="p-hr"></div>
 											{{/if}}
 											<div class="product-rating d-flex m-t-sm m-b-sm">
