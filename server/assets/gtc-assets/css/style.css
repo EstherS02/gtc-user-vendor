@@ -3386,3 +3386,7 @@ p.address-info{
     object-fit: fill !important;
     width: 490px !important;
 }
+
+.att-size{
+	font-size:15px;
+}

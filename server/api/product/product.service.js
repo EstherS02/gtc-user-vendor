@@ -234,7 +234,7 @@ export function productView(productID, isUserId) {
 		vendorAttributes = ['vendor_profile_pic_url'];
 	}
 	return new Promise((resolve, reject) => {
-		model['Product'].findOne({
+		model['Product'].find({
 			where: {
 				id: productID,
 				status: status['ACTIVE']
@@ -308,6 +308,17 @@ export function productView(productID, isUserId) {
 					[sequelize.fn('AVG', sequelize.col('Reviews.rating')), 'productRating']
 				],
 				group: ['Reviews.user_id'],
+				required: false
+			}, {
+				model: model['ProductAttribute'],
+				include: [{
+					model: model['Attribute'],
+				}],
+				where: {
+					status: status['ACTIVE'],
+				},
+				limit: 20,
+				offset: 0,
 				required: false
 			}]
 		}).then((product) => {

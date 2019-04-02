@@ -353,8 +353,6 @@ export function product(req, res) {
 												talk: JSON.parse(JSON.stringify(talk))
 											});
 										} else {
-
-
 											callback(null, {
 												threadId: threadArr[0],
 												talk: JSON.parse(JSON.stringify(talk))
