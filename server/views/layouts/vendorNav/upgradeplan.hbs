@@ -39,7 +39,6 @@
 	$(document).ready(function() {
 
 		$('#gtc-form-alert').hide();
-	//	$('#planDetailShow').hide();
 		$("#plandetailsform").validate({
 			rules: {
 				selectplan: {
@@ -168,14 +167,10 @@
 									<div class="col-lg-2"><p>Payment method</p></div>
 									<div class="col-lg-3" style="padding-left:0px;">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" id="selectcard_details" required>
-											{{!-- {{#ifCond carddetails '!=' '' }} --}}
 											<option disabled='disabled' selected>Select Payment Method...</option>
-												{{#each carddetails}}
-													<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
-												{{/each}}
-											{{!-- {{else}}
-												<option disabled="" selected="">Select...</option>
-											{{/ifCond}} --}}
+											{{#each carddetails}}
+												<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
+											{{/each}}
 										</select>
 									</div>
 									<div class="col-lg-3">

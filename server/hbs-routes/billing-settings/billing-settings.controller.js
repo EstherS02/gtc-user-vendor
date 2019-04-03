@@ -83,9 +83,8 @@ export function billingSettings(req, res) {
 			queryObjCategory.user_id = req.user.id;
 
 			service.findAllRows('PaymentSetting', includeArr, queryObjCategory, offset, limit, field, order)
-				.then(function(paymentSetting) {
-					var paymentSettings = paymentSetting.rows;
-					return callback(null, paymentSettings);
+				.then(function(paymentSettings) {
+					return callback(null, paymentSettings.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -103,8 +102,7 @@ export function billingSettings(req, res) {
 
 			service.findAllRows('Address', includeArr, queryObjCategory, offset, limit, field, order)
 				.then(function(billingAddressdetails) {
-					var billingAddressdetails = billingAddressdetails.rows;
-					return callback(null, billingAddressdetails);
+					return callback(null, billingAddressdetails.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);

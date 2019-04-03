@@ -123,11 +123,11 @@ function processCheckout(req, res, callback) {
 			const order = "asc";
 			var queryObjCategory = {};
 			queryObjCategory.user_id = req.user.id;
+			queryObjCategory.status = status.ACTIVE;
 
 			service.findAllRows('PaymentSetting', includeArr, queryObjCategory, offset, limit, field, order)
 				.then(function(paymentSetting) {
-					var paymentSettings = paymentSetting.rows;
-					return callback(null, paymentSettings);
+					return callback(null, paymentSettings.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);

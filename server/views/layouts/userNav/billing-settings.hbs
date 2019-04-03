@@ -11,13 +11,17 @@
 					<div class="ibox-content">
 						<div class="ibox-title">
 							<h2>Billing Settings</h2>
-						</div>
+						</div><br/>
 						<div class="content-body">
-							<div class="row">
-								<div class="col-md-12">
-									<p style="font-size: 13px;" class="vend_edit_lists_pstyle">Credit Cards on File</p>
-								</div>
-							</div>
+							{{#if cards.length}}
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group">
+											<p style="font-size: 15px;">Credit Cards on File</p>
+										</div>
+									</div>
+								</div><br/>
+							{{/if}}
 							<div class="row">
 								<div class="col-md-8">
 									{{#each cards}}
@@ -39,9 +43,17 @@
 											</div>
 										</div>
 									{{/each}}
-									<p style="padding-top: 15px;">
-										<a href="javascript:;" onclick="toggleAddCard();">
-											<i class="fas fa-plus-circle text_orange_color"></i>&nbsp;&nbsp;Add another card</a></p>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<p><a href="javascript:;" onclick="toggleAddCard();">
+														<i class="fas fa-plus-circle text_orange_color"></i>&nbsp;&nbsp;
+														Add {{#if cards.length}}another{{/if}} card
+													</a>
+												</p>
+											</div>
+										</div>
+									</div>
 									<div style="display:none;border: 1px solid #eee;padding: 20px 10px 20px 10px;" id="add_new_card_content" class="pyt_group">
 										<div class="row">
 											<div class="col-md-8" style="margin-left: 15px">
@@ -65,14 +77,21 @@
 													</div>
 													<div id="stripe-error-validation" class="alert alert-warning" style="display:none;"></div>
 													<div class="row" style="margin-left: 0;">
-														<button type="submit" class="list_butt_2" style="cursor:pointer;">SUBMIT</button>
+														<button type="submit" class="btn btn-md btn-muted" style="cursor:pointer;">SUBMIT</button>
 														<span id="add-card-form-error" class="error" style="margin:3px 0 0 5px"></span>
 													</div>
 												</form>
 											</div>
 										</div>
 									</div>
-									<p style="font-size: 13px;padding-top: 15px;">Connect Paypal</p>
+									<!-- ======================== Please don't remove =================================== --->
+									{{!-- <div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<p style="font-size: 15px;">Connect Paypal</p>
+											</div>
+										</div>
+									</div>
 									<p style="padding-top: 10px;">
 										<img src="../../img/payment-paypal.png" alt="paypal" style="width: 15%;margin-top: -2px; margin-right: 15px;" />
 										{{#if LoggedInUser.Vendor.vendor_payout_paypal_email}}
@@ -83,14 +102,17 @@
 											<button class="btn btn-md btn-muted" type="button" id="paypal_connect" onclick="paypalVerifyEmail()">CONNECT</button>
 										{{/if}}
 									</p>
-									<label id="paypal_connect_error" class="error" style="display:none"></label>
+									<label id="paypal_connect_error" class="error" style="display:none"></label> --}}
 								</div>
 							</div>
-							<hr />
-							<div class="row" style="font-size: 13px;">
+							<div class="row">
+								<div class="col-md-12"></div>
+							</div>
+							<hr/>
+							<div class="row" style="font-size: 15px;">
 								<div class="col-md-8">
 									<div class="row">
-										<div class="col-md-8">
+										<div class="col-md-7">
 											<p style="margin-bottom: 15px;">Billing Address</p>
 											<p>{{billingAddress.[0].company_name}}</p>
 											<p style="margin-bottom: 0rem;">{{billingAddress.[0].address_line1}}</p>
@@ -139,7 +161,6 @@
 					fontSize: '16px',
 					lineHeight: '38px',
 					fontSmoothing: 'antialiased',
-
 					'::placeholder': {
 						color: '#b1afaf'
 					}
@@ -251,6 +272,4 @@
 	function toggleAddCard() {
 		$('#add_new_card_content').toggle();
 	}
-
-
 </script>
