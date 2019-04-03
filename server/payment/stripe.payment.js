@@ -23,14 +23,14 @@ let Stripe = {
 			custId, {
 				source: source
 			}
-		).then(function(card, err) {
+		).then(function(card, err) {	
 			if (err) {
 				return Promise.reject(err);
 			}
 			if (makeDefault === true) {
-				return stripe.customers.update(
-					custObj.id, {
-						default_source: source
+				stripe.customers.update(
+					custId, {
+						default_source: card.id
 					}
 				);
 			}

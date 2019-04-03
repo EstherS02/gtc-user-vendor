@@ -236,7 +236,8 @@ export async function makePayment(req, res) {
 
 export function createCard(req, res) {
 	let user = req.user;
-	var paymentSetting;
+	var paymentSetting,
+	cardDetails;
 	if (_.isUndefined(user.stripe_customer_id) || _.isNull(user.stripe_customer_id)) {
 		stripe.createCustomer(user, req.body.token.id)
 			.then(customer => {
@@ -255,7 +256,15 @@ export function createCard(req, res) {
 	} else {
 		stripe.addCard(user.stripe_customer_id, req.body.token.id, req.body.isPrimary)
 			.then(card => {
-				return savePaymentSetting(user, card, req.body.isPrimary);
+				cardDetails = card
+				if(req.body.isPrimary){
+					return service.updateManyRecord('PaymentSetting',{is_primary: 0},{
+						status: status["ACTIVE"],
+						user_id: user.id,
+					})
+				}
+			}).then( updateRow =>{
+				return savePaymentSetting(user, cardDetails, req.body.isPrimary);
 			}).then(result => {
 				paymentSetting = result;
 				return res.status(200).send(paymentSetting);
@@ -267,13 +276,14 @@ export function createCard(req, res) {
 }
 
 function savePaymentSetting(user, card, isPrimary) {
+	var isPrimary= isPrimary ? 1 : 0;
 	let paymentSetting = {
 		user_id: user.id,
 		stripe_card_id: card.id,
 		stripe_customer_id: user.stripe_customer_id,
 		card_type: card.brand,
 		status: status["ACTIVE"],
-		isPrimary: isPrimary,
+		is_primary: isPrimary,
 		card_details: JSON.stringify(card)
 	};
 	return service.createRow('PaymentSetting', paymentSetting);
@@ -549,7 +559,7 @@ export function deleteCard(req, res) {
 		});
 }
 
-export function sendOrderMail(orderIdStore, req) { // export function sendOrderMail(req,res) {//
+export function sendOrderMail(orderIdStore, req) { 
 	var user = {};
 	user = req.user;
 	var orderIdStore = orderIdStore;

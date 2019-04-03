@@ -75,6 +75,18 @@
 															<div id="card-element" style="margin-top:3px"></div>
 														</div>
 													</div>
+													{{#if cards.length}}
+													<div class="row" style="margin-bottom:20px">
+														<div class="col-md-2"></div>
+														<div class="col-md-10">
+															<div class="customCheckbox">
+															<input type="checkbox" name="is_primary" id="is_primary" 
+																{{#unless cards.length}} checked {{/unless}} class="customCheckboxInput">
+															<label class="checkbox-b" for="is_primary"></label>
+															</div>&nbsp;&nbsp;&nbsp;&nbsp;Is primary card
+														</div>
+													</div>
+													{{/if}}
 													<div id="stripe-error-validation" class="alert alert-warning" style="display:none;"></div>
 													<div class="row" style="margin-left: 0;">
 														<button type="submit" class="btn btn-md btn-muted" style="cursor:pointer;">SUBMIT</button>
@@ -121,7 +133,7 @@
 											<p style="margin-bottom: 0rem;">{{billingAddress.[0].city}}</p>
 										</div>
 										<div class="col-md-4">
-												<a href="user/my-profile">
+											<a href="user/my-profile">
 												<p class="text_blue_color">Edit</p>
 											</a>
 										</div>
@@ -141,7 +153,6 @@
 <script src="https://js.stripe.com/v3/"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-
 		var stripe = Stripe('{{stripePublishableKey}}');
 		var elements = stripe.elements({
 			fonts: [{
@@ -149,7 +160,6 @@
 			}],
 			locale: 'auto'
 		});
-
 		var card = elements.create('card', {
 			hidePostalCode: true,
 			style: {
@@ -168,20 +178,17 @@
 			}
 		});
 		card.mount('#card-element');
-
 		$("#add-card-form").submit(function(e) {
 			e.preventDefault();
+			var is_primary = $('#is_primary').prop('checked');
 			let extraDetails = {
 				name: $('#card-name').val(),
 			};
 			var promise = stripe.createToken(card, extraDetails);
 			promise.then(function(result) {
-				//console.log(result);
 				var errorElement = $('#stripe-error-validation')
 				errorElement.css("display", "none");
 				if (result.error && result.error.message) {
-					//$("#add-card-form-error").text(result.error.message);
-
 					errorElement.text(result.error.message);
 					errorElement.css("display", "block");
 					return;
@@ -191,7 +198,7 @@
 					type: 'POST',
 					contentType: 'application/json',
 					dataType: "json",
-					data: JSON.stringify({ token: result.token, isPrimary: false }),
+					data: JSON.stringify({ token: result.token, isPrimary: is_primary }),
 					success: function(data) {
 						window.location.reload();
 					},
@@ -202,12 +209,9 @@
 				});
 			});
 		});
-
 		$(".card-delete").click(function(e) {
 			e.preventDefault();
 			var id = $(this).attr('data-id');
-			console.log(id);
-
 			$.ajax({
 				url: '/api/payment/card',
 				type: 'DELETE',
@@ -222,11 +226,9 @@
 				}
 			});
 		});
-
 	});
 
 	var paypalCheckConnect, paypalOAuthWin;
-
 	function paypalVerifyEmail() {
 		var paypalOAuthURL = '{{{payPalOAuthUrl}}}';
 		paypalOAuthWin = window.open(paypalOAuthURL, 'PaypalOAuthPopup', 'location=0,status=0,width=800,height=700');
