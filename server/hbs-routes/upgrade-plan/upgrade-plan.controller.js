@@ -135,7 +135,6 @@ export function upgradeplan(req, res) {
 			var limit = 1;
 			service.findAllRows('VendorPlan', includeArr, queryObjs, 0, limit, field, order)
 				.then(function(planDetails) {
-					var planDetails = planDetails;
 					return callback(null, planDetails);
 				}).catch(function(error) {
 					console.log('Error :::', error);

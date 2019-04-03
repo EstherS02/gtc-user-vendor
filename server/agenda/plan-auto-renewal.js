@@ -15,7 +15,7 @@ var currentDate = new Date();
 
 export function planRenewal(job, done) {
 
-	console.log("**********JOBS CALLED")
+	console.log('**********JOBS CALLED');
     console.log('agenda for plan-auto-renewal..');
 
 	var offset, limit, field, order;
@@ -26,7 +26,7 @@ export function planRenewal(job, done) {
 	order = 'asc';
 
 	var planQueryObj = {}, planIncludeArr = [];
-	var vendorModel = 'VendorPlan';
+	var vendorPlanModel = 'VendorPlan';
 
 	planQueryObj['status'] = statusCode['ACTIVE'];
 	planQueryObj['end_date'] = {
@@ -62,7 +62,7 @@ export function planRenewal(job, done) {
 		}
 	]
 
-	service.findAllRows(vendorModel, planIncludeArr, planQueryObj, offset, limit, field, order)
+	service.findAllRows(vendorPlanModel, planIncludeArr, planQueryObj, offset, limit, field, order)
 		.then(function(plans){
 
 			var primaryCardPromise = [];
@@ -165,7 +165,6 @@ function primaryCardDetails(vendorPlan){
 function updatePrimaryCardMail(vendorPlan) {
 
 	var vendor = vendorPlan.Vendor;
-	
 	var emailTemplateQueryObj = {};
 	var mailArray = [];
     var emailTemplateModel = "EmailTemplate";

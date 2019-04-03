@@ -140,13 +140,16 @@
 										<div class="form-group">
 											<label><b>Current plan:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{planName PlanDetails.rows.[0].Plan.id}}</b></label>
 										</div>
+										<div class="form-group">
+											<label><b>Expire on:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{formatTime PlanDetails.rows.[0].end_date "MMM DD, YYYY"}}</b></label>
+										</div>
 									</div>
 								</div><br/>
 								<div class="row">
 									<div class="col-lg-2"><p>Change plan</p></div>
 									<div class="col-lg-3" style="padding-left:0px;">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan" required>
-											<option disabled selected>Select...</option>
+											<option disabled selected>Select Plan...</option>
 											{{#ifCond PlanDetails.rows.[0].Plan.name '==' "WHOLESALE PRICING GUIDE"}}
 												<option value="6">Wholesaler</option>
 											{{else}}
@@ -162,16 +165,17 @@
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-lg-2"><p>Payment card</p></div>
+									<div class="col-lg-2"><p>Payment method</p></div>
 									<div class="col-lg-3" style="padding-left:0px;">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" id="selectcard_details" required>
-											{{#ifCond carddetails '!=' '' }}
+											{{!-- {{#ifCond carddetails '!=' '' }} --}}
+											<option disabled='disabled' selected>Select Payment Method...</option>
 												{{#each carddetails}}
 													<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
 												{{/each}}
-											{{else}}
+											{{!-- {{else}}
 												<option disabled="" selected="">Select...</option>
-											{{/ifCond}}
+											{{/ifCond}} --}}
 										</select>
 									</div>
 									<div class="col-lg-3">
