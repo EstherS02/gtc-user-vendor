@@ -71,9 +71,19 @@ export function planRenewal(job, done) {
 				if(vendorPlan.auto_renewal == 1){
 					primaryCardPromise.push(primaryCardDetails(vendorPlan));
 				}else{
-					if(vendorPlan.Vendor.User.user_contact_email){
-						planDeactivated(vendorPlan);
+
+					var vendorPlanModel = 'VendorPlan';
+					var planUpdateObj = {
+						status: statusCode['INACTIVE']
 					}
+					return service.updateRow( vendorPlanModel, planUpdateObj,vendorPlan.id)
+						.then(function(planRow){
+							if(vendorPlan.Vendor.User.user_contact_email){
+								planDeactivated(vendorPlan);
+							}
+						}).catch(function(error){
+							console.log("Error::",error);
+						})
 				}
 			});
 			return Promise.all(primaryCardPromise);

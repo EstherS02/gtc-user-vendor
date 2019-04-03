@@ -59,9 +59,18 @@ export function bulkUserPlanRenewal(job, done) {
 				if(userPlan.auto_renewal == 1){
 					primaryCardPromise.push(primaryCardDetails(userPlan));
 				}else{
-					if(userPlan.User.user_contact_email){
-						planDeactivated(userPlan);
+					var userPlanModel = 'UserPlan';
+					var planUpdateObj = {
+						status: statusCode['INACTIVE']
 					}
+					return service.updateRow( userPlanModel, planUpdateObj,userPlan.id)
+						.then(function(planRow){
+							if(userPlan.User.user_contact_email){
+								planDeactivated(userPlan);
+							}
+						}).catch(function(error){
+							console.log("Error::",error);
+						})
 				}				
 			});
 			return Promise.all(primaryCardPromise);
