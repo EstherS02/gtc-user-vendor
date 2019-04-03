@@ -127,7 +127,7 @@ function processCheckout(req, res, callback) {
 
 			service.findAllRows('PaymentSetting', includeArr, queryObjCategory, offset, limit, field, order)
 				.then(function(paymentSetting) {
-					return callback(null, paymentSettings.rows);
+					return callback(null, paymentSetting.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
