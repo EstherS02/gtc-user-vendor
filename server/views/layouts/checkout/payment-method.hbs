@@ -231,6 +231,8 @@
 </div>
 <script src="https://js.stripe.com/v3/"></script>
 <script type="text/javascript">
+	var cardDetails = {{{ DisplayJSON cards }}}
+
 	var stripe = Stripe('{{stripePublishableKey}}');
 	var errorElement = $('#stripe-error-validation');
 
@@ -307,6 +309,15 @@
 						return;
 					}
 
+					var isPrimary;
+
+					console.log("===========================================================", cardDetails.length);
+
+					if(!cardDetails.length)
+						isPrimary = true;
+					else
+						isPrimary = false;
+					
 					$.ajax({
 						url: '/api/payment/card', 
 						type: 'POST',
@@ -314,7 +325,7 @@
 						dataType: "json",
 						data: JSON.stringify({
 							token: result.token,
-							isPrimary: false
+							isPrimary: isPrimary
 						}),
 						success: function(data) {
 							var paymentSettingId = data.id;
@@ -329,6 +340,8 @@
 							});
 						}
 					});
+
+
 				});
 			},
 			error: function(error) {
