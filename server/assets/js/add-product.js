@@ -240,6 +240,7 @@ $(document).ready(function() {
 				$("#attributeDiv").empty();
 				var attributeRow;
 				attributeRow = '<tr></tr>';
+
 				for (var i = 0; i < result.rows.length; i++) {
 					var productAttribute;
 					productAttribute = "<tr><td>" + result.rows[i].Attribute.attr_name + "</td><td>" +
@@ -253,7 +254,9 @@ $(document).ready(function() {
 					'<th class="shop_list_title"><b>Attribute</b></th><th class="shop_list_title">' +
 					'<b>Value</b></th><th></th></tr></thead><tbody>' + attributeRow + '</tbody></table></div></div></div></div>'
 
-				$('#attributeDiv').append(attributeSection);
+				if(result.rows.length){
+					$('#attributeDiv').append(attributeSection);
+				}
 			},
 			error: function(error) {
 				console.log("Error", error);
