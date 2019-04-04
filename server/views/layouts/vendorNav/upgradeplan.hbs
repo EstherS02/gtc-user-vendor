@@ -1,9 +1,13 @@
 <script type="text/javascript">
 	
+	var currentPlan = {{{ DisplayJSON PlanDetails.rows }}};
+
 	function makePayment() {
 		var plan_id = document.getElementById("selectplan").value;
-		if ($('[type="checkbox"]').is(":checked")) {
-			var autoRenewalMail = 1;
+		var autoRenewalMail = 0;
+
+		if ($('#autorenewalmail').is(":checked")) {
+			 autoRenewalMail = 1;
 		}
 		$.ajax({
 			url: '/api/payment/planpay',
@@ -113,7 +117,29 @@
 
 		$('#paymentSuccessOk').click(function(e){
 			window.location = '/upgradeplan';
-		})
+		});
+
+		$('#autoRenew').on('change', function() {
+			var autoRenewal;
+			if (!$("#autoRenew").is(":checked")) {
+				autoRenewal = 0;
+			}else{
+				autoRenewal = 1;
+			}
+			$.ajax({		
+				url: '/api/vendor-plans/'+currentPlan[0].id,
+				type: 'PUT',
+				data: {
+					auto_renewal: autoRenewal
+				},
+				success: function(data) {
+					location.reload(true);
+				},
+				error: function(error) {
+					console.log("Error::",error)
+				}
+			});			
+		});
 	});
 
 </script> 
@@ -137,11 +163,19 @@
 								<div class="row">
 									<div class="col-lg-12">
 										<div class="form-group">
-											<label><b>Current plan:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{planName PlanDetails.rows.[0].Plan.id}}</b></label>
+											<label><b>Current plan:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{planName PlanDetails.rows.[0].Plan.id}}</b></label>
 										</div>
-										<div class="form-group">
-											<label><b>Expire on:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{formatTime PlanDetails.rows.[0].end_date "MMM DD, YYYY"}}</b></label>
-										</div>
+										{{#ifCond PlanDetails.rows.[0].plan_id '==' vendorPlan.STARTER_SELLER}}
+											<div class="form-group">
+												<label><b>Expire On:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{formatTime PlanDetails.rows.[0].end_date "MMM DD, YYYY"}} </b></label>
+											</div>
+										{{else}}
+											<div class="form-group">
+												<label><b>Auto-renew:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="checkbox" id="autoRenew" {{#if PlanDetails.rows.[0].auto_renewal}} checked {{/if}} data-toggle="toggle" data-size="xs" data-onstyle="success">&nbsp;&nbsp;&nbsp; {{#if PlanDetails.rows.[0].auto_renewal}}Renews {{else}}Expire{{/if}} on {{formatTime PlanDetails.rows.[0].end_date "MMM DD, YYYY"}} {{#if PlanDetails.rows.[0].auto_renewal}}  for  {{currency PlanDetails.rows.[0].Plan.cost '$'}} {{/if}}
+												</b></label>
+											</div>
+										{{/ifCond}}
 									</div>
 								</div><br/>
 								<div class="row">
@@ -181,8 +215,8 @@
 									<div class="col-lg-2"><p>Auto-renew</p></div>
 									<div class="col-lg-3" style="padding-left:0px;">
 										<div class="customCheckbox">
-											<input type="checkbox" id="inputTerms"  name="autorenewalmail" class="customCheckboxInput">
-											<label class="checkbox-b" for="inputTerms"></label>
+											<input type="checkbox" id="autorenewalmail" name="autorenewalmail" class="customCheckboxInput">
+											<label class="checkbox-b" for="autorenewalmail"></label>
 										</div>&nbsp;&nbsp;&nbsp;&nbsp;Yes
 									</div>
 								</div>
@@ -373,8 +407,9 @@
 				<button type="reset" class="btn btn-md btn-muted m-t" data-dismiss="modal">
 					<b>CANCEL<b/>
 				</button>
-				<button type="submit" id="paybtn" class="btn btn-md update-btn m-t" onclick="makePayment()">
-					<b>PAY</b>
+				<button type="submit" id="paybtn" class="ladda-button btn btn-md update-btn m-t" onclick="makePayment()" data-style="expand-left">
+					<span class="ladda-label">PAY</span>
+					<span class="ladda-spinner"></span>
 				</button>
 			</div>
 		</div>
