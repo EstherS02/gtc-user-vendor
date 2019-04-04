@@ -105,7 +105,7 @@ export async function createStarterSeller(req, res) {
 				}
 
 				if (startSellerPlan.duration_unit == durationUnit['MONTHS']) {
-					var totalDays = startSellerPlan.duration * 28;
+					var totalDays = startSellerPlan.duration * 30;
 					verndorPlanObj['end_date'] = moment().add(totalDays, 'days').format('YYYY-MM-DD');
 				}
 
@@ -249,7 +249,7 @@ export async function createVendor(req, res) {
 					}
 
 					if (startSellerPlan.duration_unit == durationUnit['MONTHS']) {
-						var totalDays = startSellerPlan.duration * 28;
+						var totalDays = startSellerPlan.duration * 30;
 						verndorPlanObj['end_date'] = moment().add(totalDays, 'days').format('YYYY-MM-DD');
 					}
 

@@ -777,7 +777,7 @@ export function makePlanPayment(req, res) {
 	desc = "GTC Plan Payment";
 	convertMoment = moment();
 	start_date = new Date(convertMoment);
-	end_date = moment().add(28, 'd').toDate();
+	end_date = moment().add(30, 'd').toDate();
 
 	stripe.chargeCustomerCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY)
 		.then(function(paymentResponse) {
