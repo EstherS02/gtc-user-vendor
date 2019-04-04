@@ -539,9 +539,13 @@ aria-hidden="true">
 												<div class="form-group">
 													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="b_state" id="b_state">
 														{{#if billingAddress.province_id}}
-														<option value="{{billingAddress.province_id}}">{{billingAddress.State.name}}</option>
+															{{#select billingAddress.province_id}}
+																{{#each billingState}}
+																	<option value="{{this.id}}">{{ Titlecase this.name}}</option>
+																{{/each}}
+															{{/select}}
 														{{else}}
-														<option disabled selected>Province/State</option>
+															<option disabled selected>Province/State</option>
 														{{/if}}
 													</select>
 												</div>
@@ -648,9 +652,13 @@ aria-hidden="true">
 													<div class="form-group">
 														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="s_state" id="s_state">
 															{{#if shippingAddress.province_id}}
-															<option value="{{shippingAddress.province_id}}">{{shippingAddress.State.name}}</option>
+																{{#select shippingAddress.province_id}}
+																	{{#each shippingState}}
+																		<option value="{{this.id}}">{{ Titlecase this.name}}</option>
+																	{{/each}}
+																{{/select}}
 															{{else}}
-															<option disabled selected>Province/State</option>
+																<option disabled selected>Province/State</option>
 															{{/if}}
 														</select>
 													</div>

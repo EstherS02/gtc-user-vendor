@@ -33,7 +33,9 @@ export function userProfile(req, res) {
 
 	var offset, limit, field, order;
 	var queryObj = {},
-		LoggedInUser = {};
+		LoggedInUser = {},
+		billingState = {}, shippingState = {};
+
 
 
 	offset = 0;
@@ -74,7 +76,6 @@ export function userProfile(req, res) {
 					id: user_id
 				})
 				.then(function(user) {
-					console.log("user", user);
 					return callback(null, user);
 				}).catch(function(error) {
 					return callback(null);
@@ -86,6 +87,12 @@ export function userProfile(req, res) {
 					address_type: addressCode['SHIPPINGADDRESS']
 				}, addressIncludeArr)
 				.then(function(shippingAddress) {
+					service.findRows('State',{country_id: billingAddress.country_id}, null, null, 'name', 'asc')
+					.then(function(State){
+						shippingState = State.rows;
+					}).catch(function(error){
+						console.log("Error::", error);
+					})
 					return callback(null, shippingAddress);
 				}).catch(function(error) {
 					return callback(null);
@@ -97,6 +104,12 @@ export function userProfile(req, res) {
 					address_type: addressCode['BILLINGADDRESS']
 				}, addressIncludeArr)
 				.then(function(billingAddress) {
+					service.findRows('State',{country_id: billingAddress.country_id}, null, null, 'name', 'asc')
+					.then(function(State){
+						billingState = State.rows;
+					}).catch(function(error){
+						console.log("Error::", error);
+					})
 					return callback(null, billingAddress);
 				}).catch(function(error) {
 					return callback(null);
@@ -164,7 +177,9 @@ export function userProfile(req, res) {
 				marketPlace: marketplace,
 				bottomCategory: bottomCategory,
 				categories: results.categories,
-				providersCode: providersCode
+				providersCode: providersCode,
+				shippingState:shippingState,
+				billingState: billingState
 			});
 		} else {
 			res.render('userNav/user-profile', err);
