@@ -214,8 +214,20 @@ function processGeoLocateSearch(req, res, cbNext) {
 			},
 			products: function(callback) {
 				let includeArr = [{
-					model: model['Vendor']
-					
+					model: model['Vendor'], //
+					include: [{
+						model: model['VendorPlan'],
+						attributes: [],
+						where: {
+							status: status['ACTIVE'],
+							start_date: {
+								'$lte': moment().format('YYYY-MM-DD')
+							},
+							end_date: {
+								'$gte': moment().format('YYYY-MM-DD')
+							}
+						}
+					}] //
 				}, {
 					model: model["ProductMedia"],
 					where: {
