@@ -10,6 +10,20 @@
 		var cropperOutputImage;
 		var cropBoxData, canvasData, cropper, cropperInputImage, vendor_cover_name, vendor_profile_name, vendor_cover_pic_obj, vendor_profile_pic_obj;
 
+		$('#about').summernote({
+			placeholder: 'Vendor description',
+			tabsize: 2,
+			height: 200,
+			toolbar: [
+						['style', ['bold', 'italic', 'underline', 'clear']],
+						['font', ['strikethrough', 'superscript', 'subscript']],
+						['fontsize', ['fontsize']],
+						['color', ['color']],
+						['para', ['ul', 'ol', 'paragraph']],
+						['height', ['height']]
+					]
+		});
+
 		var imagesPreview = function(uploader, placeToInsertImagePreview) {
 			if (uploader.files && uploader.files[0]) {
 				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
@@ -374,7 +388,7 @@
 									<div class="col-lg-12">
 										<div class="form-group">
 											<label class="label-control">About</label>
-											<textarea class="form-control-customized" name="about" rows="6"></textarea>
+											<textarea class="form-control-customized" name="about" id="about" ></textarea>
 										</div>
 									</div>
 								</div>

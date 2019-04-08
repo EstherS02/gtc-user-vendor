@@ -41,7 +41,7 @@
 						<div class="ibox">
 							<div class="ibox-content">
 								<div class="row">
-									<div class="col-md-7">
+									<div class="col-md-7" style="text-align: justify; text-justify: inter-word;">
 										<p class="about_head">
 											<i class="fas fa-user-circle icon_style_abt"></i>
 											<label class="mg-l-15">{{follower.count}} FOLLOWERS</label>
@@ -64,9 +64,10 @@
 											<i class="fas fa-info-circle icon_style_abt"></i>
 											<label class="mg-l-15">SNAPSHOT</label>
 										</p>
-										<p class="about_para">
+										{{!-- <p class="about_para">
 											<label class="mg-l-15">{{VendorDetail.about}}</label>
-										</p>
+										</p> --}}
+										{{{VendorDetail.about}}}
 									</div>
 
 									<div class="col-md-5">
