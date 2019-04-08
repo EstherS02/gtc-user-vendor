@@ -1299,3 +1299,32 @@ export async function updateAttribute(req,res){
 		});
 	}
 }
+
+export function attributes(req, res){
+
+	var includeArr = [{
+		model: model['Attribute'],
+		where:{
+			status: status['ACTIVE']
+		}
+	}]
+
+	var queryObj = {
+		status: status['ACTIVE'],
+		category_id: req.query.category_id
+	}
+
+	var offset, limit, field, order;
+	offset = 0;
+	limit = null;
+	field = "id";
+	order = "asc";
+
+	service.findAllRows('CategoryAttribute', includeArr, queryObj, offset, limit, field, order)
+	.then(function(attributes){
+		return res.status(200).send(attributes);
+	}).catch(function(error){
+		console.log("Error::",error);
+		return res.status(500).send(error);
+	})
+}

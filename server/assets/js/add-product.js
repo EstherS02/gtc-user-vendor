@@ -234,7 +234,7 @@ $(document).ready(function() {
 		});
 
 		$.ajax({
-			url: '/api/category-attributes?populate=Attribute&category_id=' + category_id,
+			url: '/api/product/attributes/index?category_id=' + category_id,
 			type: 'GET',
 			success: function(result) {
 				$("#attributeDiv").empty();

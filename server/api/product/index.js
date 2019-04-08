@@ -27,5 +27,6 @@ router.get('/admin/vendors', auth.hasRole(roles['ADMIN']), controller.planActive
 router.get('/admin/active-vendor-products', auth.hasRole(roles['ADMIN']), controller.activeVendorProducts);
 router.post('/attributes', auth.hasRole(roles['ADMIN']), controller.createAttribute);
 router.put('/attributes/:id', auth.hasRole(roles['ADMIN']), controller.updateAttribute);
+router.get('/attributes/index', auth.hasRole(roles['VENDOR']), controller.attributes);
 
 module.exports = router;
