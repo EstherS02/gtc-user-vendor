@@ -164,10 +164,13 @@
 									<div class="col-lg-12">
 										<div class="form-group">
 											<label><b>Current plan:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{planName PlanDetails.rows.[0].Plan.id}}</b></label>
+											{{#ifCond PlanDetails.rows.[0].plan_id '!=' vendorPlan.STARTER_SELLER}}
+												&nbsp;&nbsp;&nbsp;<a href="/store/membership">( history )</a>
+											{{/ifCond}}
 										</div>
 										{{#ifCond PlanDetails.rows.[0].plan_id '==' vendorPlan.STARTER_SELLER}}
 											<div class="form-group">
-												<label><b>Expire On:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{formatTime PlanDetails.rows.[0].end_date "MMM DD, YYYY"}} </b></label>
+												<label><b>Expire on:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{formatTime PlanDetails.rows.[0].end_date "MMM DD, YYYY"}} </b></label>
 											</div>
 										{{else}}
 											<div class="form-group">
