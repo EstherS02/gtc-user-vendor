@@ -81,7 +81,7 @@ exports.exportcsv = function(req, res) {
 				else
 					result.clicks = 0;
 				if(value.impression && value.clicks)
-					result.ctr = ((this.clicks/this.impression)*100);
+					result.ctr = ((value.clicks/value.impression)*100);
 				else
 					result.ctr = 0;
 				if (value.Payment) 
