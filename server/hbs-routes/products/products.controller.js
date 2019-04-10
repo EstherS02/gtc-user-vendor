@@ -122,7 +122,7 @@ export function products(req, res) {
 				});
 		},
 		country: function(callback) {
-			service.findRows(countryModel, queryObj, offset, limit, field, order)
+			service.findRows(countryModel, queryObj, offset, limit, 'name', order)
 				.then(function(country) {
 					return callback(null, country.rows);
 				}).catch(function(error) {

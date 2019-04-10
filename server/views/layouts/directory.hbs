@@ -90,7 +90,7 @@
 									<select class="form-control-customized form-control-sm rounded" id="category" name="category">
 										<option value='' disabled selected>Category</option>
 										{{#each categories}}
-											<option value="{{this.id}}">{{ this.name}}</option>
+											<option value="{{this.id}}">{{Titlecase this.name}}</option>
 										{{/each}}
 									</select>
 								</div>
@@ -356,7 +356,7 @@
 								{{/each}}
 							{{else}}
 								<div class="col">
-									<label class="empty">No Selling Providers</label>
+									<label class="empty">No Services Providers</label>
 								</div>
 							{{/if}}
 						</div>
