@@ -192,7 +192,7 @@
 
 		for (let i = 0; i < mapObjVendor.length; i++) {
 			let mapObjProduct = vendorGroupedObj[mapObjVendor[i]];
-			var content = `<p><img src="` + mapObjProduct[0].vendor_profile_pic_url + `" style="width: 50px; height: 50px;">
+			var content = `<p><img src="` + mapObjProduct[0].vendor_profile_pic_url + `" style="width: 50px; height: 50px;" onError="imgError(this)">
                 <a href="/vendor/`+ mapObjProduct[0].vendor_id + `" style="font-size: 12px;">` + mapObjProduct[0].vendor_name + `</a>
                 <span class="text_blue_color" style="font-size: 8px;left: 49px;position: absolute;top: 35px;">Online Payments</span>
                 </p>`;
@@ -206,7 +206,6 @@
 			content = content + `<p>` + more_content + `<a href="/vendor/` + mapObjProduct[0].vendor_id + `">See All</a></p>`;
 			createMarker(mapObjProduct[0].latitude, mapObjProduct[0].longitude, content, title);
 		}
-
 
 		if (mapObjVendor.length > 0)
 			map.fitBounds(bounds);

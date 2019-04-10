@@ -109,8 +109,12 @@
 	    line-height: 200px;
 	}
 	.progress-circle .progress-circle-value {
-		line-height: 185px;
+		line-height: 170px;
 		font-size: 38px;
+	}
+	.circleContent{
+		font-size: 12px;
+		margin-top: -150px
 	}
 	.home-bottom-banner-3 .coming-soon {
 		display: block;
@@ -209,8 +213,12 @@
 	    line-height: 200px;
 	}
 	.progress-circle .progress-circle-value {
-		line-height: 185px;
+		line-height: 170px;
 		font-size: 38px;
+	}
+	.circleContent{
+		font-size: 12px;
+		margin-top: -150px
 	}
 	.home-bottom-banner-2 .home-ad {
 		height: 424px;
@@ -729,8 +737,12 @@
 	    line-height: 250px;
 	}
 	.progress-circle .progress-circle-value {
-		line-height: 235px;
+		line-height: 225px;
 		font-size: 48px;
+	}
+	.circleContent{
+		font-size: 14px;
+		margin-top: -205px
 	}
 	.home-bottom-banner-2 h1 {
 		font-size: 2.5rem;
