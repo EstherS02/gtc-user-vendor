@@ -136,7 +136,7 @@
 														</td>
 														<td>
 															{{#ifCond this.impression '&&' this.clicks}}
-																((this.clicks/this.impression)*100)
+																{{roundOff (math this.impression '/' this.clicks) '2'}}
 															{{else}}0
 															{{/ifCond}}
 														</td>
@@ -576,7 +576,7 @@
 														<label class="checkbox-b" for="inputCheckbox"></label>
 													</div>
 												</th> --}}
-														<th scope="col">Plan Type</th>
+														<th scope="col">Plan</th>
 														<th scope="col">Start Date</th>
 														<th scope="col">End Date</th>
 														<th scope="col">Status </th>
@@ -596,16 +596,16 @@
 															<td>
 																{{#ifCond this.plan_id '==' 2}} Service Provider{{/ifCond}}
 																{{#ifCond this.plan_id '==' 3}} Lifestyle Provider {{/ifCond}}
-																{{#ifCond this.plan_id '==' 4}} Public Seller Pricing Guide{{/ifCond}}
-																{{#ifCond this.plan_id '==' 6}} Wholesale Pricing Guide{{/ifCond}}
+																{{#ifCond this.plan_id '==' 4}} Retailer{{/ifCond}}
+																{{#ifCond this.plan_id '==' 6}} Wholesaler{{/ifCond}}
 															</td>
 															<td>{{formatTime this.start_date "MMM DD, YYYY"}}</td>
 															<td>{{formatTime this.end_date "MMM DD, YYYY"}}</td>
 															<td>
 																{{#ifCond this.status '==' 1}}
-																	<div style="color:green">ACTIVE</div>
+																	<div style="color:green">Active</div>
 																{{else}}
-																	<div style="color:red">INACTIVE</div>
+																	<div style="color:red">InActive</div>
 																{{/ifCond}}
 															</td>
 															<td>{{formatTime this.Payment.created_on "MMM DD, YYYY"}}</td>

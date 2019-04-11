@@ -1211,3 +1211,21 @@ Handlebars.registerHelper("toInt", function(number) {
 		return parseInt(number, 10);
     }
 });
+
+Handlebars.registerHelper("math", function(lvalue, operator, rvalue, options) {
+    lvalue = parseFloat(lvalue);
+    rvalue = parseFloat(rvalue);
+        
+    return {
+        "+": lvalue + rvalue,
+        "-": lvalue - rvalue,
+        "*": lvalue * rvalue,
+        "/": lvalue / rvalue,
+        "%": lvalue % rvalue
+    }[operator];
+});
+
+
+Handlebars.registerHelper('roundOff', function(value, decimal) {
+	return parseFloat(value).toFixed(decimal);
+});
