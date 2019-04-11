@@ -131,7 +131,7 @@ export function directory(req, res) {
 		vendorCounts: function(callback) {
 			vendorService.activeVendorcounts(marketplace['WHOLESALE'])
 				.then((vendorCount) => {
-					return callback(null, vendorCount.rows);
+					return callback(null, vendorCount[0].vendorCount);
 				}).catch((error) => {
 					return callback(error);
 				});

@@ -97,7 +97,7 @@ let sqlQueries = {
 		return query;
 	},
 	activeVendorcountsQuery: function(params) {
-		let query = `SELECT COUNT(vendor.id) AS vendorCount FROM vendor LEFT OUTER JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id where vendor.status = 1 AND vendor_plan.status = 1 AND vendor_plan.start_date <='` + new Date().toISOString().slice(0, 10) + `' AND vendor_plan.end_date >= '` + new Date().toISOString().slice(0, 10) + `'`;
+		let query = `SELECT COUNT(vendor.id) AS vendorCount FROM vendor LEFT OUTER JOIN vendor_plan ON vendor.id = vendor_plan.vendor_id where vendor.status = 1 AND vendor_plan.status = 1 AND vendor_plan.start_date <='` + new Date().toISOString().slice(0, 10) + `' AND vendor_plan.end_date >= '` + new Date().toISOString().slice(0, 10) + `' AND vendor_plan.plan_id IN(2,4,6)`;
 		return query;
 	},
 	compareProductQuery: function(params) {
