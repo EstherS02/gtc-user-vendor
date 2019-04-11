@@ -572,12 +572,19 @@ Handlebars.registerHelper('marketPlaceChart', function(totalAmt, marketPlaceArr)
 		"Services Marketplace": "service",
 		"Lifestyle Marketplace": "lifestyle"
 	}
+	var mpTitleKey = {
+		"Private Wholesale Marketplace": "Wholesale",
+		"Public Marketplace": "Shop",
+		"Services Marketplace": "Services",
+		"Lifestyle Marketplace": "Subscriptions"
+	}
 	var option;
 	for (var i = 0, len = marketPlaceArr.length; i < len; i++) {
 		let amt = parseFloat(marketPlaceArr[i].amount).toFixed(2);
+
 		var mPlaceClass = mpKeyValue[marketPlaceArr[i].marketplace_name] ? mpKeyValue[marketPlaceArr[i].marketplace_name] : "wholesale";
 		option = `<li><p class="top_perf_marketplace_chart_price">$ ${amt}</p>
-        <span class = "` + mPlaceClass + ` reporting_chart_` + mPlaceClass + `_color" style = "height:` + calculatePercentage(totalAmt, marketPlaceArr[i].amount) + `" title = "` + marketPlaceArr[i].marketplace_name + `"></span></li>`
+        <span class = "` + mPlaceClass + ` reporting_chart_` + mPlaceClass + `_color" style = "height:` + calculatePercentage(totalAmt, marketPlaceArr[i].amount) + `" title = "` + mpTitleKey[marketPlaceArr[i].marketplace_name] + `"></span></li>`
 		ret += option;
 	}
 	return new Handlebars.SafeString(ret);

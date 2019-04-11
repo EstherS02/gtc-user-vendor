@@ -601,7 +601,11 @@
 															{{#each topProducts.rows as |item|}}
 																<div class="top_perf_content row">
 																	<div class="col-md-4 col-4">
-																		<p class="top_perf_product_name">{{item.product_name}}</p>
+																		<p class="top_perf_product_name" title="{{item.product_name}}">
+																			<a href="javascript:;" title="{{item.product_name}}">
+																				{{item.product_name}}
+																			</a>
+																		</p>
 																	</div>
 																	<div class="col-md-4 col-4 top_perf_padding_override">
 																		<div class="progress top_perf_progress" style="width: 134px;">
@@ -610,7 +614,7 @@
 																		</div>
 																	</div>
 																	<div class="col-md-4 col-4">
-																		<p class="top_perf_product_price">{{currency item.amount '$'}}</p>
+																		<p class="top_perf_product_price">&nbsp;&nbsp;&nbsp;{{currency item.amount '$'}}</p>
 																	</div>
 																</div>
 															{{/each}}
@@ -752,9 +756,7 @@
 												<div class="col-md-6 reporting_widget_padding">
 													<div class="card reporting_widget_block">
 														<p class="card-title reporting_widget_active_buyers">Top Buyers</p>
-														<div class="card-body reporting_widget_block_content reporting_bottom_widget_override" id="reporting-most-active-buyers">
-
-														</div>
+														<div class="card-body reporting_widget_block_content reporting_bottom_widget_override" id="reporting-most-active-buyers"></div>
 														<p class="card-title reporting_widget_see_all">
 															<a href="/store/performance?top=buyers">SEE ALL &#9658;</a>
 														</p>
