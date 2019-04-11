@@ -65,12 +65,14 @@ export async function storeData(req, res) {
 		for (let key in req.files) {
 			if (req.files.hasOwnProperty(key)) {
 				const parsedFile = path.parse(req.files[key].originalFilename);
+				var fileName = parsedFile.name;
+				fileName = fileName.replace(/\s/g,'');
 				const timeInMilliSeconds = new Date().getTime();
-				const uploadPath = config.images_base_path+"/verification/"+ parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+				const uploadPath = config.images_base_path+"/verification/"+ fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 
 				const productMediaUpload = await service.move(req.files[key].path, uploadPath);
 				if (productMediaUpload) {
-					bodyParam[key] = config.imageUrlRewritePath.base +"verification/"+ parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+					bodyParam[key] = config.imageUrlRewritePath.base +"verification/"+ fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 					var status = key;
 					status = status.replace('link', 'status');
 					bodyParam[status] = verificationStatus['WAITING'];
@@ -123,11 +125,13 @@ export async function updateData(req, res) {
 			for (let key in req.files) {
 				if (req.files.hasOwnProperty(key)) {
 					const parsedFile = path.parse(req.files[key].originalFilename);
+					var fileName = parsedFile.name;
+					fileName = fileName.replace(/\s/g,'');
 					const timeInMilliSeconds = new Date().getTime();
-					const uploadPath = config.images_base_path + "/verification/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+					const uploadPath = config.images_base_path + "/verification/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 					const productMediaUpload = await service.move(req.files[key].path, uploadPath);
 					if (productMediaUpload) {
-						bodyParam[key] = config.imageUrlRewritePath.base +"verification/"+ parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+						bodyParam[key] = config.imageUrlRewritePath.base +"verification/"+ fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 						deleteImg[key] = findData[key];
 						var status = key;
 						status = status.replace('link', 'status');

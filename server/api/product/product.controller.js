@@ -308,6 +308,7 @@ export async function edit(req, res) {
 
 	var errors = req.validationErrors();
 	if (errors) {
+		console.log("Error::", errors);
 		res.status(400).send(errors[0].msg);
 		return;
 	}

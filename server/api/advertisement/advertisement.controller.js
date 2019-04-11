@@ -72,12 +72,14 @@ export async function createAd(req, res) {
 
 	var file = req.files.file;
 	var parsedFile = path.parse(file.originalFilename);
+	var fileName = parsedFile.name;
+	fileName = fileName.replace(/\s/g,'');
 	var timeInMilliSeconds = new Date().getTime();
-	uploadPath = config.images_base_path + "/advertisment/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+	uploadPath = config.images_base_path + "/advertisment/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 	adImageUpload = await service.move(file.path, uploadPath);
 
 	if (adImageUpload) {
-		bodyParam['image_url'] = config.imageUrlRewritePath.base + "advertisment/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+		bodyParam['image_url'] = config.imageUrlRewritePath.base + "advertisment/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 
 		service.createRow(AdModel, bodyParam)
 			.then(function(created) {
@@ -142,12 +144,14 @@ export async function editAd(req, res) {
 	if (req.files.file) {
 		var file = req.files.file;
 		var parsedFile = path.parse(file.originalFilename);
+		var fileName = parsedFile.name;
+		fileName = fileName.replace(/\s/g,'');
 		var timeInMilliSeconds = new Date().getTime();
-		uploadPath = config.images_base_path + "/advertisment/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+		uploadPath = config.images_base_path + "/advertisment/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 		adImageUpload = await service.move(file.path, uploadPath);
 
 		if (adImageUpload) {
-			bodyParam['image_url'] = config.imageUrlRewritePath.base + "advertisment/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+			bodyParam['image_url'] = config.imageUrlRewritePath.base + "advertisment/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 		}
 	}
 

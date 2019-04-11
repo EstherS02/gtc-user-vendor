@@ -157,12 +157,14 @@ export async function create(req, res) {
             if (req.files.admin_profile_pic) {
 
                 const userProfilePicture = req.files.admin_profile_pic;
-                const parsedFile = path.parse(userProfilePicture.originalFilename);
+				const parsedFile = path.parse(userProfilePicture.originalFilename);
+				var fileName = parsedFile.name;
+				fileName = fileName.replace(/\s/g,'');
                 const timeInMilliSeconds = new Date().getTime();
-                const uploadPath = config.images_base_path + "/user/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+                const uploadPath = config.images_base_path + "/user/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 				const userProfilePictureUpload = await move(userProfilePicture.path, uploadPath);
                 if (userProfilePictureUpload) {
-                    bodyParams['user_pic_url'] = config.imageUrlRewritePath.base + "user/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+                    bodyParams['user_pic_url'] = config.imageUrlRewritePath.base + "user/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
                 }
 			}
 
@@ -303,13 +305,15 @@ export async function edit(req, res) {
     try {
          if (req.files.admin_profile_pic) {
                 const userProfilePicture = req.files.admin_profile_pic;
-                const parsedFile = path.parse(userProfilePicture.originalFilename);
+				const parsedFile = path.parse(userProfilePicture.originalFilename);
+				var fileName = parsedFile.name;
+				fileName = fileName.replace(/\s/g,'');
                 const timeInMilliSeconds = new Date().getTime();
-                const uploadPath = config.images_base_path + "/user/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+                const uploadPath = config.images_base_path + "/user/" + fileName+ "-" + timeInMilliSeconds + parsedFile.ext;
 
                 const userProfilePictureUpload = await move(userProfilePicture.path, uploadPath);
                 if (userProfilePictureUpload) {
-                    userBodyParam['user_pic_url'] = config.imageUrlRewritePath.base + "user/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+                    userBodyParam['user_pic_url'] = config.imageUrlRewritePath.base + "user/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
                 }
 			}
 			

@@ -66,24 +66,28 @@ export async function createStarterSeller(req, res) {
 				if (req.files.vendor_profile_picture) {
 					const vendorProfilePicture = req.files.vendor_profile_picture;
 					const parsedFile = path.parse(vendorProfilePicture.originalFilename);
+					var fileName = parsedFile.name;
+					fileName = fileName.replace(/\s/g,'');
 					const timeInMilliSeconds = new Date().getTime();
-					const uploadPath = config.images_base_path + "/vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+					const uploadPath = config.images_base_path + "/vendor/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 
 					const vendorProfilePictureUpload = await move(vendorProfilePicture.path, uploadPath);
 					if (vendorProfilePictureUpload) {
-						bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+						bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 					}
 				}
 
 				if (req.files.vendor_cover_picture) {
 					const vendorCoverPicture = req.files.vendor_cover_picture;
 					const parsedFileVendorCover = path.parse(vendorCoverPicture.originalFilename);
+					var fileName = parsedFileVendorCover.name;
+					fileName = fileName.replace(/\s/g,'');
 					const timeInMilliSeconds = new Date().getTime();
-					const uploadPathVendorCover = config.images_base_path + "/vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+					const uploadPathVendorCover = config.images_base_path + "/vendor/" + fileName + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
 
 					const vendorCoverPictureUpload = await move(vendorCoverPicture.path, uploadPathVendorCover);
 					if (vendorCoverPictureUpload) {
-						bodyParams['vendor_cover_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+						bodyParams['vendor_cover_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + fileName + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
 					}
 				}
 
@@ -214,24 +218,29 @@ export async function createVendor(req, res) {
 					if(req.files.vendor_profile_picture){
 						const vendorProfilePicture = req.files.vendor_profile_picture;
 						const parsedFile = path.parse(vendorProfilePicture.originalFilename);
+						var fileName = parsedFile.name;
+						fileName = fileName.replace(/\s/g,'');
 						const timeInMilliSeconds = new Date().getTime();
-						const uploadPath = config.images_base_path + "/vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+
+						const uploadPath = config.images_base_path + "/vendor/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 
 						const vendorProfilePictureUpload = await move(vendorProfilePicture.path, uploadPath);
 						if (vendorProfilePictureUpload) {
-							bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+							bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 						}
 					}
 
 					if (req.files.vendor_cover_picture) {
 						const vendorCoverPicture = req.files.vendor_cover_picture;
 						const parsedFileVendorCover = path.parse(vendorCoverPicture.originalFilename);
+						var fileName = parsedFileVendorCover.name;
+						fileName = fileName.replace(/\s/g,'');
 						const timeInMilliSeconds = new Date().getTime();
-						const uploadPathVendorCover = config.images_base_path + "/vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+						const uploadPathVendorCover = config.images_base_path + "/vendor/" + fileName + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
 
 						const vendorCoverPictureUpload = await move(vendorCoverPicture.path, uploadPathVendorCover);
 						if (vendorCoverPictureUpload) {
-							bodyParams['vendor_cover_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+							bodyParams['vendor_cover_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + fileName + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
 						}
 					}
 
@@ -354,24 +363,28 @@ export async function edit(req, res) {
 	if (req.files.vendor_profile_picture) {
 		const vendorProfilePicture = req.files.vendor_profile_picture;
 		const parsedFile = path.parse(vendorProfilePicture.originalFilename);
+		var fileName = parsedFile.name;
+		fileName = fileName.replace(/\s/g,'');
 		const timeInMilliSeconds = new Date().getTime();
-		const uploadPath = config.images_base_path + "/vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+		const uploadPath = config.images_base_path + "/vendor/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 
 		const vendorProfilePictureUpload = await move(vendorProfilePicture.path, uploadPath);
 		if (vendorProfilePictureUpload) {
-			bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+			bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + fileName + "-" + timeInMilliSeconds + parsedFile.ext;
 		}
 	}
 
 	if (req.files.vendor_cover_picture) {
 		const vendorCoverPicture = req.files.vendor_cover_picture;
 		const parsedFileVendorCover = path.parse(vendorCoverPicture.originalFilename);
+		var fileName = parsedFileVendorCover.name;
+		fileName = fileName.replace(/\s/g,'');
 		const timeInMilliSeconds = new Date().getTime();
-		const uploadPathVendorCover = config.images_base_path + "/vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+		const uploadPathVendorCover = config.images_base_path + "/vendor/" + fileName + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
 
 		const vendorCoverPictureUpload = await move(vendorCoverPicture.path, uploadPathVendorCover);
 		if (vendorCoverPictureUpload) {
-			bodyParams['vendor_cover_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+			bodyParams['vendor_cover_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + fileName + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
 		}
 	}
 	try {
