@@ -221,7 +221,6 @@ export function wholesale(req, res) {
 			}
 			productService.productCount(marketplaceQuery)
 			.then((response)=>{
-
 				return callback(null,response)
 			}).catch((error)=>{
 				console.log("Error:::", error);

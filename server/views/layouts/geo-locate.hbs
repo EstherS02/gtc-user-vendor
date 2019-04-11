@@ -13,7 +13,9 @@
 
 		location.href = newURL;
 	}
-</script> {{> header/top-header LoggedInUser = LoggedInUser}}
+</script> 
+
+{{> header/top-header LoggedInUser = LoggedInUser}}
 <section class="constant-height" style="height: 650px;">
 	<div class="container-fluid">
 		<div class="row">
@@ -38,9 +40,9 @@
 					{{/ifCond}}
 					{{#each geoLocateObj}}
 						<div class="row">
-							<div class="col-md-3 col-2" style="text-align: center;">
+							<div class="col-md-3 col-2">
 								<a href="/{{MarketPlaceURL this.marketplace_id}}/{{this.product_slug}}/{{this.product_id}}">
-									<img src="{{this.product_media_base_image}}" onerror="imgError(this)" style="width: 75px; height: 70px;">
+									<img src="{{this.product_media_base_image}}" onerror="imgError(this)" style="width: 62px; height: 70px;">
 								</a>
 							</div>
 							<div class="col-md-9 col-10">

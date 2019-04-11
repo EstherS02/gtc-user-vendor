@@ -281,7 +281,7 @@ let sqlQueries = {
 		return query;
 	},
 	userBuyerCount: function(params) {
-		let query = `SELECT
+		/*let query = `SELECT
                 COUNT(order_item.product_id) AS count
             FROM
                 order_item
@@ -292,7 +292,10 @@ let sqlQueries = {
             GROUP BY
                 MONTH(\`order\`.ordered_date)
             ORDER BY
-                MONTH(\`order\`.ordered_date)`;
+				MONTH(\`order\`.ordered_date)`;*/
+		
+		let query =	`SELECT COUNT(id) AS count FROM users WHERE status =1 AND role IN(2,3);`
+
 		return query;
 	},
 	vendorShippingLocation: function(params) {

@@ -992,6 +992,7 @@ export function productCount(Query) {
 		}]
 	}];
 	Query['status'] = status['ACTIVE'];
+	
 	return new Promise((resolve, reject) => {
 		model: model[productModel].count({
 			where: Query,
@@ -1004,6 +1005,7 @@ export function productCount(Query) {
 		});
 	});
 }
+
 export function compareProducts(params) {
 	return new Promise((resolve, reject) => {
 		if (params) {
