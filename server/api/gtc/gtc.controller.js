@@ -503,7 +503,10 @@ exports.multipleUpload = function(req, res) {
 	async.mapSeries(files, function(data, callback) {
 
 		let parsedFile = path.parse(data.originalFilename);
-		let uploadPath = config.images_base_path + "/" + parsedFile.name + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
+		var fileName = parsedFile.name;
+		fileName = fileName.replace(/\s/g,'');
+
+		let uploadPath = config.images_base_path + "/" + fileName + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
 		mv(data.path, uploadPath, {
 			clobber: true,
 			mkdirp: true
@@ -512,7 +515,7 @@ exports.multipleUpload = function(req, res) {
 				console.log('Error:::', error)
 				return callback(null);
 			} else {
-				let image = config.imageUrlRewritePath.base + parsedFile.name + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
+				let image = config.imageUrlRewritePath.base + fileName + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
 				return callback(null, image);
 			}
 		});
@@ -526,9 +529,11 @@ exports.multipleUpload = function(req, res) {
 exports.upload = function(req, res) {
 	let file = req.files.file;
 	let parsedFile = path.parse(file.originalFilename);
+	var fileName = parsedFile.name;
+	fileName = fileName.replace(/\s/g,'');
 	let timeInMilliSeconds = new Date().getTime();
 
-	let uploadPath = config.images_base_path + "/" + parsedFile.name + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
+	let uploadPath = config.images_base_path + "/" + fileName + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
 
 	console.log(uploadPath)
 
@@ -540,7 +545,7 @@ exports.upload = function(req, res) {
 			console.log('Error:::', error)
 			return res.status(400).send("Failed to upload");
 		} else {
-			let image = config.imageUrlRewritePath.base + parsedFile.name + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
+			let image = config.imageUrlRewritePath.base + fileName + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
 			return res.status(201).json({
 				imageURL: image
 			});
