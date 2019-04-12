@@ -6,7 +6,7 @@
 	function appendImage() {
 		$('.talk_pic').empty();
 		var domElement;
-		domElement = "<span class=\"pip\" id=\"base\">" + "<img style='width:250px; height:250px;' src=\"" + talkImageArr[0].talkImageUrl + "\"/></span>";
+		domElement = "<span class=\"pip\" id=\"base\">" + "<img style='width:250px; height:250px;' src=\"" + talkImageArr[0].talkImageUrl + "\"/  onError='imgError(this)'></span>";
 		$('.talk_pic').append(domElement);
 	}
 
