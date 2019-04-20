@@ -61,7 +61,8 @@
 					id: plan_id
 				}),
 				success: function(data) {
-					$('#Plan_cost').html("Total plan charge: $" + data.data.cost);
+					var planCost = parseFloat(data.data.cost).toFixed(2);
+					$('#Plan_cost').html("Total plan charge: $" + planCost);
 					$('#useramount').val(data.data.cost);
 					$('#myModal').modal('show');
 

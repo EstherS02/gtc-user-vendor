@@ -9,6 +9,7 @@ var roles = require('../../config/roles');
 var router = express.Router();
 router.post('/pay', auth.isAuthenticatedUser(), controller.makePayment);
 router.post('/planpay', auth.isAuthenticated(), controller.makePlanPayment);
+router.post('/plan-upgrade', auth.hasRole(roles['VENDOR']), controller.planUpgradeWithoutPayment);
 router.post('/card', auth.isAuthenticatedUser(), controller.createCard);
 router.post('/cancel-order-item', auth.isAuthenticated(), controller.cancelOrderItem);
 router.post('/return-order-item', auth.isAuthenticated(), controller.returnOrderItem);

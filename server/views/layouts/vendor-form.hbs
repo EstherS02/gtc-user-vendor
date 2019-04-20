@@ -24,7 +24,7 @@
 					]
 		});
 
-		var imagesPreview = function(uploader, placeToInsertImagePreview) {
+		var imagesPreview = function(uploader) {
 			if (uploader.files && uploader.files[0]) {
 				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
 				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];

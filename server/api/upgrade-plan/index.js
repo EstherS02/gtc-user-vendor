@@ -6,6 +6,6 @@ var controller = require('./upgrade-plan.controller');
 
 var router = express.Router();
 
-router.post('/selectplan', controller.selectVendorplan);
+router.get('/selectplan/:id', controller.selectVendorplan);
 
 module.exports = router;

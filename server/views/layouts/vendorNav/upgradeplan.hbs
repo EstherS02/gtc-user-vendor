@@ -9,6 +9,7 @@
 		if ($('#autorenewalmail').is(":checked")) {
 			 autoRenewalMail = 1;
 		}
+
 		$.ajax({
 			url: '/api/payment/planpay',
 			type: 'POST',
@@ -16,10 +17,45 @@
 			dataType: "json",
 			data: JSON.stringify({
 				stripe_customer_id: $('input[name="stripe_customer_id"]').val(),
-				amount: $('input[name="amount"]').val(),
+				amount: $('#amount').val(),
 				carddetailsid: $('input[name="carddetailsid"]').val(),
 				plan_id: plan_id,
 				user_id: $('input[name="user_id"]').val(),
+				vendor_id: $('input[name="vendor_id"]').val(),
+				autoRenewalMail: autoRenewalMail
+			}),
+			success: function(data) {
+				$('#myModal').hide();
+				setTimeout(function() {
+					$('#paymentSuccess').modal('show');
+					$('#paybtn').prop('disabled', true);
+				}, 1000);
+			},
+			error: function(error) {
+				$("#planPay_error").html(error);
+				$('#paybtn').prop('disabled', false);
+				$('#paybtn').css({
+					'cursor': "pointer"
+				});
+			}
+		});
+	}
+
+	function upgradeWithoutPayment(){
+		var plan_id = document.getElementById("selectplan").value;
+		var autoRenewalMail = 0;
+
+		if ($('#autorenewalmail').is(":checked")) {
+			 autoRenewalMail = 1;
+		}
+
+		$.ajax({
+			url: '/api/payment/plan-upgrade',
+			type: 'POST',
+			contentType: 'application/json',
+			dataType: "json",
+			data: JSON.stringify({
+				plan_id: plan_id,
 				vendor_id: $('input[name="vendor_id"]').val(),
 				autoRenewalMail: autoRenewalMail
 			}),
@@ -48,17 +84,17 @@
 				selectplan: {
 					required: true
 				},
-				selectcard_details: {
+				/*selectcard_details: {
 					required: true
-				}
+				}*/
 			},
 			messages: {
 				selectplan: {
 					required: "Please select the plan",
 				},
-				selectcard_details: {
+				/*selectcard_details: {
 					required: "Please select the card details",
-				}
+				}*/
 			}
 		});
 
@@ -81,19 +117,22 @@
 
 		function planUpgrade(){
 			if ($('#plandetailsform').valid()) {
-				var plan_id = document.getElementById("selectplan").value;
+				var plan_id = $('#selectplan').val();
 				$.ajax({
-					url: '/api/upgrade-plan/selectplan',
-					type: 'POST',
+					url: '/api/upgrade-plan/selectplan/'+plan_id,
+					type: 'GET',
 					contentType: 'application/json',
 					dataType: "json",
-					data: JSON.stringify({
-						id: plan_id
-					}),
 					success: function(data) {
-						$('#Plan_cost').html("Total plan charge: $" + data.data.cost);
-						$('#amount').val(data.data.cost);
-						$('#myModal').modal('show');
+						if(parseInt(data.data.cost)){
+							var planCost = parseFloat(data.data.cost).toFixed(2);
+							$('#Plan_cost').html("Total plan charge: $" + planCost);
+							$('#amount').val(data.data.cost);
+							$('#myModal').modal('show');
+						}else{
+							$('#amount').val(0);
+							upgradeWithoutPayment();
+						}						
 					},
 					error: function(error) {
 						$('#complete-order-submit').prop('disabled', false);
@@ -203,7 +242,7 @@
 								<div class="row">
 									<div class="col-lg-2"><p>Payment method</p></div>
 									<div class="col-lg-3" style="padding-left:0px;">
-										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" id="selectcard_details" required>
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" id="selectcard_details">
 											<option disabled='disabled' selected>Select Payment Method...</option>
 											{{#each carddetails}}
 												<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
