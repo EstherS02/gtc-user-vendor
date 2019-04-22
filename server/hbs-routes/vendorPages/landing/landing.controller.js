@@ -12,7 +12,6 @@ const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const productService = require('../../../api/product/product.service');
 const moment = require('moment');
-import series from 'async/series';
 var async = require('async');
 
 export function vendor(req, res) {
@@ -313,7 +312,6 @@ export function vendor(req, res) {
 				avgRating: results.Rating.avgRating,
 				ratingCount: results.Rating.totalCount,
 				VendorAvgRating: results.VendorAvgRating
-				// selectedPage:'shop'
 			});
 		} else {
 			res.render('404');
