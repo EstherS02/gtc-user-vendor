@@ -297,7 +297,7 @@ export function vendor(req, res) {
 			});
 		}
 	}, function(err, results) {
-		if (!err && results.vendorPlan) {
+		if (!err) {
 			res.render('vendorPages/vendor', {
 				title: "Global Trade Connect",
 				categories: results.categories,
