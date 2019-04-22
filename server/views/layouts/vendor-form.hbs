@@ -185,6 +185,7 @@
 		})
 
 		$("#vendorForm").validate({
+			ignore: ":hidden:not(#about),.note-editable.card-block",
 			rules: {
 				vendor_name: "required",
 				address: "required",

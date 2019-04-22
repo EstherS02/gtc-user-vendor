@@ -265,6 +265,7 @@ $(document).ready(function() {
 	});
 
 	$("#productForm").validate({
+		ignore: ":hidden:not(#description),.note-editable.card-block",
 		rules: {
 			product_name: "required",
 			product_category_id: "required",
