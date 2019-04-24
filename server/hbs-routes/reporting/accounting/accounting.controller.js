@@ -641,17 +641,18 @@ export function membership(req, res) {
 			var includeArr = [{
 				model: model['Payment'],
 				attributes: ['id', 'amount', 'date', 'created_on'],
-				where: {
+				/*where: {
 					id: {
 						$ne: null
 					}
-				}	
+				}	*/
+				required:false
 			}]
 			var queryObj = {
 				vendor_id: LoggedInUser.Vendor.id,
-				payment_id: {
+				/*payment_id: {
 					$ne: null
-				}
+				}*/
 			}
 
 			service.findAllRows('VendorPlan', includeArr, queryObj, offset, limit, field, order).
