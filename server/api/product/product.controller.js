@@ -554,6 +554,8 @@ export async function discountProduct(req, res) {
 
 export function importAliExpress(req, res) {
 
+	console.log("==================commin hereeeeeee=================================================================");
+
 	var products = [];
 	var perPageLimit = 36;
 	var maximumProductLimit = 0;
@@ -616,6 +618,8 @@ export function importAliExpress(req, res) {
 					var productId = productLink.split(/[\s/]+/).pop().slice(0, -5).split('_')[1];
 					products.push(productId);
 				});
+
+				console.log("*********************products*****************************************", products)
 				if (products.length > 0) {
 					if (req.user.role === roles['VENDOR']) {
 						var vendorCurrentPlan = req.user.Vendor.VendorPlans[0];
@@ -672,6 +676,7 @@ export function importAliExpress(req, res) {
 						return res.status(403).send("Forbidden");
 					}
 				} else {
+					console.log("==========not found.....====================================================")
 					return res.status(404).send("products not found.");
 				}
 			} else {

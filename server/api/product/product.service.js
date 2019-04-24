@@ -809,6 +809,12 @@ export function importAliExpressProducts(product, user, category, subCategory, m
 					newProductObj['city'] = user.Vendor.city;
 					newProductObj['city_id'] = user.Vendor.city_id;
 					newProductObj['created_on'] = new Date();
+
+					if(marketplaceId == 1){
+						newProductObj['moq'] = 0;
+						newProductObj['marketplace_type_id'] = 1
+					}
+
 					return service.createRow('Product', newProductObj);
 				} else {
 					console.log("============exist....!=====================================================");
