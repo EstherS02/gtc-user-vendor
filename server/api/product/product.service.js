@@ -791,6 +791,9 @@ export function importAliExpressProducts(product, user, category, subCategory, m
 		service.findOneRow('Product', productQueryObj, [])
 			.then((existingProduct) => {
 				if (!existingProduct) {
+
+					console.log("-----------------not exist---------------------------------------",  product.variations[0].pricing.replace(/,/g,""))
+					
 					newProductObj['sku'] = product.productId;
 					newProductObj['product_name'] = product.productTitle;
 					newProductObj['product_slug'] = string_to_slug(product.productTitle);
@@ -801,13 +804,14 @@ export function importAliExpressProducts(product, user, category, subCategory, m
 					newProductObj['product_category_id'] = category;
 					newProductObj['quantity_available'] = productQuantity;
 					newProductObj['sub_category_id'] = subCategory;
-					newProductObj['price'] = product.variations[0].pricing;
+					newProductObj['price'] = product.variations[0].pricing.replace(/,/g,"");
 					newProductObj['product_location'] = user.Vendor.Country.id;
 					newProductObj['city'] = user.Vendor.city;
 					newProductObj['city_id'] = user.Vendor.city_id;
 					newProductObj['created_on'] = new Date();
 					return service.createRow('Product', newProductObj);
 				} else {
+					console.log("============exist....!=====================================================");
 					return Promise.reject(true);
 				}
 			}).then(async (newProduct) => {
