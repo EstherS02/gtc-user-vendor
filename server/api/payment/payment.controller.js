@@ -1057,9 +1057,9 @@ function sendUpgrademail(plan_id, user) {
 					var subject = response.subject;
 					var body;
 					var body = response.body;
-					body = body.replace('%first_name%', user.first_name);
-					body = body.replace('%name%', upgradeplanobj.name);
-					body = body.replace('%cost%', numeral(upgradeplanobj.cost).format('0,0.00'));
+					body = body.replace('%FIRST_NAME%', user.first_name);
+					body = body.replace('%PLAN_NAME%', upgradeplanobj.name);
+					body = body.replace('%PLAN_COST%', '$ '+numeral(upgradeplanobj.cost).format('0,0.00'));
 					var mailArray = [];
 					mailArray.push({
 						to: email,
