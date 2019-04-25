@@ -142,7 +142,11 @@ module.exports = function (job, done) {
               .then((existingProduct) => {
                   console.log("existingProduct",existingProduct)
                 if (!existingProduct) {
-                  let newProductObj = {};
+				  let newProductObj = {};
+					
+					var itemCost = currentdata.price.replace('$', '');
+					itemCost = itemCost.replace(/,/g,"");
+				  
                     newProductObj['sku'] = currentdata['seller-sku'];
                     newProductObj['product_name'] = currentdata['item-name'];
                     newProductObj['description'] = currentdata['item-description'];
@@ -155,7 +159,8 @@ module.exports = function (job, done) {
 				   // newProductObj['quantity_available'] = currentdata.quantity;
 				    newProductObj['quantity_available'] = agendaObj.body.amazon_quantity_available;
                     newProductObj['sub_category_id'] = agendaObj.body.amazon_sub_category;
-                    newProductObj['price'] = currentdata.price.replace('$', '');
+					//newProductObj['price'] = currentdata.price.replace('$', '');
+					newProductObj['price'] = itemCost;
                     newProductObj['product_location'] = agendaObj.user.Vendor.Country.id;
                     newProductObj['city'] = agendaObj.user.Vendor.city;
                     newProductObj['created_on'] = new Date();
