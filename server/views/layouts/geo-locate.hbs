@@ -195,8 +195,8 @@
 		for (let i = 0; i < mapObjVendor.length; i++) {
 			let mapObjProduct = vendorGroupedObj[mapObjVendor[i]];
 			var content = `<p><img src="` + mapObjProduct[0].vendor_profile_pic_url + `" style="width: 50px; height: 50px;" onError="imgError(this)">
-                <a href="/vendor/`+ mapObjProduct[0].vendor_id + `" style="font-size: 12px;">` + mapObjProduct[0].vendor_name + `</a>
-                <span class="text_blue_color" style="font-size: 10px;left: 67px;position: absolute;top: 45px;">Online Payments</span>
+                <a href="/vendor/`+ mapObjProduct[0].vendor_id + `" style="font-size: 14px;color:black;"><b>` + mapObjProduct[0].vendor_name + `</b></a>
+                <span class="text_blue_color" style="font-size: 10px;left: 67px;position: absolute;top: 47px;">Online Payments</span>
                 </p>`;
 			let more_content = "", title = mapObjProduct[0].vendor_name;;
 			for (let j = 0; j < mapObjProduct.length; j++) {

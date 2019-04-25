@@ -249,8 +249,8 @@
 		for (let i = 0; i < advMapObj.length; i++) {
 			let mapObjProduct = advSearchVendorObj[advMapObj[i]];
 			var content = `<p><img src="` + mapObjProduct[0].Vendor.vendor_profile_pic_url + `" onError="imgError(this)" style="width: 50px; height: 50px;">
-                <span style="font-size: 12px;"><b>`+ mapObjProduct[0].Vendor.vendor_name + `</b></span><br/>
-                <span href="javascript:;" style="font-size: 10px;left: 67px;position: absolute;top:45px;">Online Payments</span>
+                <span style="font-size: 14px; color:black;left: 67px;"><b>`+ mapObjProduct[0].Vendor.vendor_name + `</b></span><br/>
+                <span href="javascript:;" style="font-size: 10px;left: 67px;position: absolute;top:47px;">Online Payments</span>
                 </p>`;
 			let more_content = "", title = mapObjProduct[0].Vendor.vendor_name;
 			for (let j = 0; j < mapObjProduct.length; j++) {
