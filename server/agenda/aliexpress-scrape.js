@@ -29,6 +29,7 @@ module.exports = async function(job, done) {
 		data.productTitle = /itemprop="name">(.*)</.exec(response)[1];
 		// attributes
 		data.attributes = [];
+
 		$(response).find('#j-product-info-sku').children().each((i, child) => {
 			const attributeData = {};
 			attributeData.title = $(child).find('.p-item-title').text().replace(':', '');
@@ -50,6 +51,7 @@ module.exports = async function(job, done) {
 			});
 			data.attributes.push(attributeData);
 		});
+
 		// seller/store data
 		data.store = {
 			name: $(response).find('span.shop-name').find('a').text(),

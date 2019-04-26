@@ -790,10 +790,7 @@ export function importAliExpressProducts(product, user, category, subCategory, m
 	return new Promise((resolve, reject) => {
 		service.findOneRow('Product', productQueryObj, [])
 			.then((existingProduct) => {
-				if (!existingProduct) {
-
-					console.log("-----------------not exist---------------------------------------",  product.variations[0].pricing.replace(/,/g,""))
-					
+				if (!existingProduct) {					
 					newProductObj['sku'] = product.productId;
 					newProductObj['product_name'] = product.productTitle;
 					newProductObj['product_slug'] = string_to_slug(product.productTitle);
@@ -817,11 +814,9 @@ export function importAliExpressProducts(product, user, category, subCategory, m
 
 					return service.createRow('Product', newProductObj);
 				} else {
-					console.log("============exist....!=====================================================");
 					return Promise.reject(true);
 				}
 			}).then(async (newProduct) => {
-
 				var productMedias = [];
 				for (let i = 0; i < product.pics.length; i++) {
 					var productMediaObj = {};

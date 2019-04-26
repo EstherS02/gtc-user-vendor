@@ -554,8 +554,6 @@ export async function discountProduct(req, res) {
 
 export function importAliExpress(req, res) {
 
-	console.log("==================commin hereeeeeee=================================================================");
-
 	var products = [];
 	var perPageLimit = 36;
 	var maximumProductLimit = 0;
@@ -607,9 +605,11 @@ export function importAliExpress(req, res) {
 			pageCount += 1;
 
 			var store_url = "https://www.aliexpress.com/store/" + req.body.vendor_id + "/search/" + pageCount + ".html";
+			
 			await vendorProductListPage.goto(store_url);
 			var content = await vendorProductListPage.content();
 			var $ = cheerio.load(content);
+
 			const listItems = $('.ui-box-body');
 
 			if ($(listItems).find('ul.items-list.util-clearfix').children().length < perPageLimit) {
@@ -619,7 +619,6 @@ export function importAliExpress(req, res) {
 					products.push(productId);
 				});
 
-				console.log("*********************products*****************************************", products)
 				if (products.length > 0) {
 					if (req.user.role === roles['VENDOR']) {
 						var vendorCurrentPlan = req.user.Vendor.VendorPlans[0];
@@ -669,14 +668,12 @@ export function importAliExpress(req, res) {
 								}
 							})
 							.catch((error) => {
-								console.log("Error:::", error);
 								return res.status(500).send("Internal server error");
 							});
 					} else {
 						return res.status(403).send("Forbidden");
 					}
 				} else {
-					console.log("==========not found.....====================================================")
 					return res.status(404).send("products not found.");
 				}
 			} else {
