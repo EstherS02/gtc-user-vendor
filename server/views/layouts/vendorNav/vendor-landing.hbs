@@ -52,6 +52,7 @@
 					url: '/api/product/import-aliexpress',
 					data: data,
 					success: function(data) {
+						$('#importAliExpressForm')[0].reset();
 						$('#btnAliExpressFaSpinner').hide();
 						$('#importAliExpressModal').modal('toggle');
 						$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data + '</p>');
