@@ -303,7 +303,19 @@
 		$("#amazon_category").change(function() {
 			var category_id = $('#amazon_category').val();
 			subCategories(category_id, "#amazon_sub_category")
-		});		
+		});	
+
+		$('#importAliExpressModal').on('hidden.bs.modal', function () {
+		    $(this).find('#importAliExpressForm').trigger('reset');
+		});
+
+		$('#importWooCommerModal').on('hidden.bs.modal', function () {
+		    $(this).find('#importWooCommerceForm').trigger('reset');
+		});
+
+		$('#importAmazonModal').on('hidden.bs.modal', function () {
+		    $(this).find('#importAmazonModalForm').trigger('reset');
+		});
 
 	});
 
@@ -429,7 +441,7 @@
 								<label class="label-control">Category</label>
 								<div class="input-group">
 									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="ali_category" id="ali_category" required>
-										<option disabled selected>Select Category...</option>
+										<option disabled selected>Select...</option>
 										{{#each categories}}
 										<option value="{{this.id}}">{{ Titlecase this.name}}</option>
 										{{/each}}
@@ -442,7 +454,7 @@
 								<label class="label-control">Sub Category</label>
 								<div class="input-group">
 									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="ali_sub_category" id="ali_sub_category" required>
-										<option disabled selected>Select Sub Category...</option>
+										<option disabled selected>Select...</option>
 									</select>	
 								</div>
 							</div>
@@ -457,7 +469,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+					<button type="reset" class="btn btn-small btn-muted" data-dismiss="modal">
 						<b>CLOSE</button>
 					<button type="submit" class="btn btn-small btn-primary">
 						<strong>SUBMIT</strong>
@@ -511,7 +523,7 @@
 								<label class="label-control">Category</label>
 								<div class="input-group">
 									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="category" id="category" required>
-										<option disabled selected>Select Category...</option>
+										<option disabled selected>Select...</option>
 										{{#each categories}}
 										<option value="{{this.id}}">{{ Titlecase this.name}}</option>
 										{{/each}}
@@ -524,7 +536,7 @@
 								<label class="label-control">Sub Category</label>
 								<div class="input-group">
 									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category" id="sub_category" required>
-										<option disabled selected>Select Sub Category...</option>
+										<option disabled selected>Select...</option>
 									</select>	
 								</div>
 							</div>
@@ -551,7 +563,6 @@
 	</div>
 </div>
 
-
 <div class="modal fade" id="importAmazonModal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -573,11 +584,13 @@
 								<input type="text" id="amazon_dev_id" name="amazon_dev_id" value="{{AmazonDeveloperID}}" class="form-control-customized form-control-sm"
 								 disabled required style="cursor:not-allowed;" />
 							</div>
-							<p class="label-control d-block">Note: Copy paste our Developer ID into Amazon seller central console, authorize us and provide the Merchant Id and
+							<div class="form-group">
+								<p class="label-control d-block">Note: Copy paste our Developer ID into Amazon seller central console, authorize us and provide the Merchant Id and
 								Auth token below to import produts into GTC. For more information visit -
-								<a href="https://docs.developer.amazonservices.com/en_IT/faq.html#faq__developForSeller"
-								 target="_blank">Amazon seller central - Authorize a Developer</a>
-							</p>
+									<a href="https://docs.developer.amazonservices.com/en_IT/faq.html#faq__developForSeller"
+								 	target="_blank">Amazon seller central - Authorize a Developer</a>
+								</p>
+							</div>
 						</div>
 						<div class="col-lg-12">
 							<div class="form-group">
@@ -592,24 +605,26 @@
 							</div>
 						</div>
 						<div class="col-lg-12">
-							<div class="select-container custom-select-container">
+							<div class="form-group">
 								<label class="label-control d-block">Choose MarketPlace Region</label>
-								<select class="form-control-customized form-control-sm" id="amazon_marketplace" name="amazon_marketplace" required>
-									<option value="">Select Seller Country</option>
-									<option value="CA">Canada</option>
-									<option value="US">United States</option>
-									<option value="MX">Mexico</option>
-									<option value="ES">Spain</option>
-									<option value="GB">UK</option>
-									<option value="FR">France</option>
-									<option value="DE">Germany</option>
-									<option value="IT">Italy</option>
-									<option value="BR">Brazil</option>
-									<option value="IN">India</option>
-									<option value="CN">China</option>
-									<option value="JP">Japan</option>
-									<option value="AU">Australia</option>
-								</select>
+								<div class="input-group">
+									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="amazon_marketplace" name="amazon_marketplace" required>
+										<option value="">Select Seller Country...</option>
+										<option value="AU">Australia</option>
+										<option value="BR">Brazil</option>
+										<option value="CA">Canada</option>
+										<option value="CN">China</option>
+										<option value="FR">France</option>
+										<option value="DE">Germany</option>
+										<option value="IN">India</option>
+										<option value="IT">Italy</option>
+										<option value="JP">Japan</option>
+										<option value="MX">Mexico</option>
+										<option value="ES">Spain</option>
+										<option value="GB">UK</option>
+										<option value="US">United States</option>
+									</select>
+								</div>
 							</div>
 						</div>
 						<div class="col-lg-12">
@@ -617,7 +632,7 @@
 								<label class="label-control">Category</label>
 								<div class="input-group">
 									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="amazon_category" id="amazon_category" required>
-										<option disabled selected>Select Category...</option>
+										<option disabled selected>Select...</option>
 										{{#each categories}}
 										<option value="{{this.id}}">{{ Titlecase this.name}}</option>
 										{{/each}}
@@ -630,7 +645,7 @@
 								<label class="label-control">Sub Category</label>
 								<div class="input-group">
 									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="amazon_sub_category" id="amazon_sub_category" required>
-										<option disabled selected>Select Sub Category...</option>
+										<option disabled selected>Select...</option>
 									</select>	
 								</div>
 							</div>
