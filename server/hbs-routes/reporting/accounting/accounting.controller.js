@@ -581,6 +581,8 @@ export function membership(req, res) {
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
 	delete req.query.page;
+	field = req.query.field ? req.query.field : "created_on";
+	delete req.query.field;
 
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
@@ -627,17 +629,6 @@ export function membership(req, res) {
 		},
 		membershipDetails: function(callback) {
 			var queryParams = {};
-			var field = "id";
-			var order = "desc";
-			var offset = 0;
-			var limit = null;
-			var limit = req.query.limit ? parseInt(req.query.limit) : 10;
-			var offset = req.query.offset ? parseInt(req.query.offset) : 0;
-			var page = req.query.page ? parseInt(req.query.page) : 1;
-
-			queryParams['page'] = page;
-			queryParams['limit'] = limit;
-			offset = (page - 1) * limit;
 			var includeArr = [{
 				model: model['Payment'],
 				attributes: ['id', 'amount', 'date', 'created_on'],
@@ -657,7 +648,6 @@ export function membership(req, res) {
 
 			service.findAllRows('VendorPlan', includeArr, queryObj, offset, limit, field, order).
 				then(function(membershipDetails) {
-					var membershipDetails = membershipDetails;
 					return callback(null, membershipDetails);
 				}).catch(function(error) {
 					console.log('Error :::', error);
