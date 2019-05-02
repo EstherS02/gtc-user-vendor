@@ -451,7 +451,11 @@ Handlebars.registerHelper('vendorSelectedcountry', function(context, test) {
 });
 
 Handlebars.registerHelper('upperCount', function(limit, offset, count, option) {
-	return count - (limit * offset);
+	var upperLimit = limit * offset;
+	if(upperLimit>count){
+		upperLimit = count;
+	}
+	return upperLimit;
 });
 
 Handlebars.registerHelper('bgColor', function(type, option) {

@@ -93,7 +93,7 @@
 					</div>
 					<div class="col-md-6 header-lg-text">
 						<span style="padding-left:310px">{{#if publicMarketplace.count}} Showing
-							<b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicMarketplace.count}}</b>
+							<b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.page publicMarketplace.count}}</b>
 							of
 							<b>{{publicMarketplace.count}}</b>
 
@@ -202,7 +202,7 @@
 										<ul class="pagination justify-content-center">
 											{{#unless startFromFirstPage}}
 											<li class="page-item">
-												<a class="page-link" href="../vendor/shop/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+												<a class="page-link" href="../vendor/shop/{{../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
 											</li>
 											{{/unless}} {{#each pages}}
 											<li class="page-item {{#if isCurrent}} active {{/if}}">
@@ -210,7 +210,7 @@
 											</li>
 											{{/each}} {{#unless endAtLastPage}}
 											<li class="page-item">
-												<a class="page-link" href="../vendor/shop/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+												<a class="page-link" href="../vendor/shop/{{../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
 											</li>
 											{{/unless}}
 										</ul>
@@ -222,7 +222,7 @@
 							<div class="col-md-6">
 								{{#if publicMarketplace.count}}
 								<label class="label-control">Showing
-									<b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicMarketplace.count}}</b> of
+									<b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.page publicMarketplace.count}}</b> of
 									<b>{{publicMarketplace.count}}</b> Products matching
 									{{#if queryPaginationObj.keyword}}
 									<span><b>"{{queryPaginationObj.keyword}}"</b>{{/if}}</span>
