@@ -17,16 +17,16 @@
 									<div class="col-md-12 no-padding ">
 										<p id="shipping-policy" class="terms_head">SHIPPING POLICY </p>
 										{{#if Support.shipping_policy}}
-											<p class="terms_para overflow-scroll">{{Support.shipping_policy}}</p>
+											<p class="terms_para">{{{Support.shipping_policy}}}</p>
 										{{else}}
 											<p class="terms_para">Not yet updated by vendor</p>
 										{{/if}}
 									</div>
 									<hr>
 									<div class="col-md-12 no-padding">
-										<p id="return-policy" class="terms_head">Return Policy </p>
+										<p id="return-policy" class="terms_head">RETURN POLICY</p>
 										{{#if Support.return_policy}}
-											<p class="terms_para overflow-scroll">{{Support.return_policy}}</p>
+											<p class="terms_para">{{{Support.return_policy}}}</p>
 										{{else}}
 											<p class="terms_para">Not yet updated by vendor</p>
 										{{/if}}
@@ -35,7 +35,7 @@
 									<div class="col-md-12 no-padding">
 										<p id="terms-of-use" class="terms_head">TERMS OF USE</p>
 										{{#if Support.terms_of_use}}
-											<p class="terms_para overflow-scroll">{{Support.terms_of_use}}</p>
+											<p class="terms_para">{{{Support.terms_of_use}}}</p>
 										{{else}}
 											<p class="terms_para">Not yet updated by vendor</p>
 										{{/if}}
