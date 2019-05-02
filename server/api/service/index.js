@@ -23,6 +23,7 @@ export function findRows(modelName, queryObj, offset, limit, field, order, inclu
 		}).then(function(rows) {
 			resolve(rows);
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		});
 	});
@@ -50,6 +51,7 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 					result.rows = convertRowsJSON;
 					return resolve(result);
 				}).catch(function(error) {
+					console.log('Error:::', error);
 					return reject(error);
 				});
 			} else {
@@ -58,6 +60,7 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 				return resolve(result);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		});
 	});
@@ -71,6 +74,7 @@ export function countRows(modelName, queryObj, includeArr) {
 		}).then(function(count) {
 			resolve(count);
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		});
 	});
@@ -90,6 +94,7 @@ export function findIdRow(modelName, id, includeArr) {
 				resolve(null);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		});
 	});
@@ -107,6 +112,7 @@ export function findRow(modelName, queryObj, includeArr) {
 				resolve(null);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		});
 	});
@@ -124,6 +130,7 @@ export function findAllRow(modelName, queryObj, includeArr) {
 				resolve(null);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		});
 	});
@@ -141,6 +148,7 @@ export function findOneRow(modelName, queryObj, includeArr) {
 				resolve(null);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		});
 	});
@@ -156,6 +164,7 @@ export function createRow(modelName, bodyParams) {
 					resolve(null);
 				}
 			}).catch(function(error) {
+				console.log('Error:::', error);
 				reject(error);
 			});
 	})
@@ -173,6 +182,7 @@ export function createBulkRow(modelName, bodyParams) {
 					resolve(null);
 				}
 			}).catch(function(error) {
+				console.log('Error:::', error);
 				reject(error);
 			});
 	})
@@ -190,6 +200,7 @@ export function updateRecord(modelName, bodyParams, queryObj) {
 				resolve(null);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		})
 	})
@@ -207,6 +218,7 @@ export function updateRecordNew(modelName, bodyParams, queryObj) {
 				return resolve(null);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			return reject(error);
 		})
 	});
@@ -224,6 +236,7 @@ export function updateManyRecord(modelName, bodyParams, queryObj) {
 				resolve(null);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		})
 	})
@@ -242,6 +255,7 @@ export function updateRow(modelName, bodyParams, id) {
 				resolve(null);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		})
 	})
@@ -263,6 +277,7 @@ export function destroyManyRow(modelName, ids) {
 				resolve(null);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		});
 	});
@@ -286,6 +301,7 @@ export function destroyRow(modelName, id) {
 				resolve(null);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		});
 	});
@@ -334,6 +350,7 @@ export function destroyRecord(modelName, id) {
 				resolve(null);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		})
 	});
@@ -352,6 +369,7 @@ export function destroyManyRecord(modelName, ids) {
 				resolve(null);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		})
 	});
@@ -437,10 +455,9 @@ export function getCategory(categoryQueryObj, productCountQueryParames) {
 				}).then(function(count) {
 					result.count = count;
 					result.rows = JSON.parse(JSON.stringify(results));
-
 					resolve(result);
 				}).catch(function(error) {
-
+					console.log("Error::",error);
 					reject(error);
 				});
 			} else {
@@ -477,6 +494,7 @@ export function getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryPa
 					result.rows = JSON.parse(JSON.stringify(results));
 					resolve(result);
 				}).catch(function(error) {
+					console.log('Error:::', error);
 					reject(error);
 				});
 			} else {
@@ -585,6 +603,7 @@ export function getAllFindRow(modelName, includeArr, queryObj, field, order) {
 					result.rows = convertRowsJSON;
 					return resolve(result);
 				}).catch(function(error) {
+					console.log('Error:::', error);
 					return reject(error);
 				});
 			} else {
@@ -593,6 +612,7 @@ export function getAllFindRow(modelName, includeArr, queryObj, field, order) {
 				return resolve(result);
 			}
 		}).catch(function(error) {
+			console.log('Error:::', error);
 			reject(error);
 		});
 	});

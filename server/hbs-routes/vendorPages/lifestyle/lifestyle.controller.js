@@ -182,7 +182,7 @@ export function vendorLifestyle(req, res) {
 					return callback(null);
 				});
 		},
-		categoriesWithCount: function(callback) {
+		/*categoriesWithCount: function(callback) {
 			var result = {};
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
@@ -199,7 +199,7 @@ export function vendorLifestyle(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		},
+		},*/
 		categoryWithProductCount: function(callback) {
 			var resultObj = {};
 			var categoryWithProductCount = {};
@@ -310,7 +310,7 @@ export function vendorLifestyle(req, res) {
 				lifestyleMarketplace: results.lifestyleMarketplace,
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
-				categoriesWithCount: results.categoriesWithCount,
+				//categoriesWithCount: results.categoriesWithCount,
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				cart: results.cartInfo,

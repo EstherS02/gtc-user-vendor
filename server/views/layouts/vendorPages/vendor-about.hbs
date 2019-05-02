@@ -1,31 +1,31 @@
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0"></script>
 <script type="text/javascript">
-
-  // $(document).ready(function() {
-  //    codeAddress()
-  // });
-  // function codeAddress(){
-  //           var data = {{{DisplayJSON VendorDetail}}}
-  //           var lat = parseFloat(data.latitude);
-  //           var lng = parseFloat(data.longitude);
-  //           var address= '';
-  //           if(lng && lat){
-  //           var latlng = new google.maps.LatLng(lat, lng);
-  //           var geocoder = geocoder = new google.maps.Geocoder();
-  //           geocoder.geocode({ 'latLng': latlng }, function (results, status) {
-  //               if (status == google.maps.GeocoderStatus.OK) {
-  //                   if (results[1]) {
-  //                       // alert("Location: " + results[1].formatted_address);
-  //                       address = results[1].formatted_address;
-  //                   }
-  //               }
-  //           });
-  //         }else{
-  //           address = data.mapAddress;
-  //         }
-  //         document.getElementById("googleMap").innerHTML = `<iframe width="100%" height="300" frameborder="0" style="border:0" src=https://maps.google.com/maps?q=`+address+`&hl=es;&z=10&amp;libraries=places&amp;key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&amp;output=embed"></iframe>`;
-  //       }
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-header VendorDetail = VendorDetail}}
+  /* $(document).ready(function() {
+      codeAddress()
+   });
+   function codeAddress(){
+		var data = {{{DisplayJSON VendorDetail}}}
+		var lat = parseFloat(data.latitude);
+		var lng = parseFloat(data.longitude);
+		var address= '';
+		if(lng && lat){
+		var latlng = new google.maps.LatLng(lat, lng);
+		var geocoder = geocoder = new google.maps.Geocoder();
+		geocoder.geocode({ 'latLng': latlng }, function (results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				if (results[1]) {
+					// alert("Location: " + results[1].formatted_address);
+					address = results[1].formatted_address;
+				}
+			}
+		});
+		}else{
+			address = data.mapAddress;
+		}
+		document.getElementById("googleMap").innerHTML = `<iframe width="100%" height="300" frameborder="0" style="border:0" src=https://maps.google.com/maps?q=`+address+`&hl=es;&z=10&amp;libraries=places&amp;key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&amp;output=embed"></iframe>`;
+	}*/
+</script> 
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-header VendorDetail = VendorDetail}}
 <section class="vendor-product bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -46,17 +46,14 @@
 											<i class="fas fa-user-circle icon_style_abt"></i>
 											<label class="mg-l-15">{{follower.count}} FOLLOWERS</label>
 										</p>
-
 										{{#if follower.count}}
 											<p class="about_para">
 												<label class="mg-l-15">Followers you may know</label>
-
 												{{#each follower.rows}}
 													{{#if this.User.user_pic_url}}
 														<img class="about_para_logo" src="{{this.User.user_pic_url}}">
 													{{/if}}
 												{{/each}}
-
 												<a href="">See all</a>
 											</p>
 										{{/if}}
@@ -69,12 +66,10 @@
 										</p> --}}
 										{{{VendorDetail.about}}}
 									</div>
-
 									<div class="col-md-5">
 										{{!-- {{VendorDetail.mapAddress}} --}}
 										{{!-- <div id= "googleMap"></div> --}}
 										<iframe width="100%" height="300" frameborder="0" style="border:0" src="https://maps.google.com/maps?q={{VendorDetail.mapAddress}}&hl=es;&z=10&amp;libraries=places&amp;key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&amp;output=embed"></iframe>
-
 										{{!-- {{VendorDetail.mapAddress}} --}}
 									</div>
 								</div>
@@ -83,5 +78,7 @@
 					</div>
 				</div>
 			</div>
+		</div>
+	</div>
 </section>
 {{> footer/bottom-footer}}

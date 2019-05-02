@@ -208,7 +208,7 @@ export function vendorWholesale(req, res) {
 					return callback(null);
 				});
 		},
-		categoriesWithCount: function(callback) {
+		/*categoriesWithCount: function(callback) {
 			var result = {};
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
@@ -225,7 +225,7 @@ export function vendorWholesale(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		},
+		},*/
 		marketPlaceTypes: function(callback) {
 			var result = {};
 			var marketplaceTypeQueryObj = {};
@@ -374,7 +374,7 @@ export function vendorWholesale(req, res) {
 				queryURI: queryURI,
 				requestForQuote: results.requestForQuote,
 				categories: results.categories,
-				categoriesWithCount: results.categoriesWithCount,
+				//categoriesWithCount: results.categoriesWithCount,
 				bottomCategory: bottomCategory,
 				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser,

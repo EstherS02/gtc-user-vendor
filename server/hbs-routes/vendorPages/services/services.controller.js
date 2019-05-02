@@ -181,7 +181,7 @@ export function vendorServices(req, res) {
 					return callback(null);
 				});
 		},
-		categoriesWithCount: function(callback) {
+		/*categoriesWithCount: function(callback) {
 			var result = {};
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
@@ -197,7 +197,7 @@ export function vendorServices(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		},
+		},*/
 		categoryWithProductCount: function(callback) {
 			var resultObj = {};
 			var categoryWithProductCount = {};
@@ -311,7 +311,7 @@ export function vendorServices(req, res) {
 				queryURI: queryURI,
 				page: page,
 				categories: results.categories,
-				categoriesWithCount: results.categoriesWithCount,
+				//categoriesWithCount: results.categoriesWithCount,
 				bottomCategory: bottomCategory,
 				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser,

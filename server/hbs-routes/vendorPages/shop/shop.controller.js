@@ -24,7 +24,6 @@ export function vendorShop(req, res) {
 
 	let user_id = LoggedInUser.id;
 
-	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var bottomCategory = {};
 	var offset, limit, field, order, page;
@@ -153,6 +152,7 @@ export function vendorShop(req, res) {
 					return callback(null, response);
 
 				}).catch(function(error) {
+					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
@@ -177,7 +177,7 @@ export function vendorShop(req, res) {
 					return callback(null);
 				});
 		},
-		categoriesWithCount: function(callback) {
+		/*categoriesWithCount: function(callback) {
 			var result = {};
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
@@ -194,7 +194,7 @@ export function vendorShop(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		},
+		},*/
 		categoryWithProductCount: function(callback) {
 			var resultObj = {};
 			var categoryWithProductCount = {};
@@ -236,7 +236,7 @@ export function vendorShop(req, res) {
 					}
 				}],
 				attributes: [
-					'rating', 'title', 'comment', 'created_on', 'id', [sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
+					//'rating', 'title', 'comment', 'created_on', 'id', [sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
 				],
 				group: ['Review.rating']
 
@@ -308,7 +308,7 @@ export function vendorShop(req, res) {
 				publicMarketplace: results.publicMarketplace,
 				categories: results.categories,
 				bottomCategory: bottomCategory,
-				categoriesWithCount: results.categoriesWithCount,
+				//categoriesWithCount: results.categoriesWithCount,
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
 				selectedPage: 'shop',
